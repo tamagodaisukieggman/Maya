@@ -7,14 +7,6 @@ def get_enums(obj_attr=None):
         if enums:
             return enums.split(':')
 
-def reset_transform(obj, func):
-    wt = cmds.xform(obj, q=True, t=True, ws=True)
-    wr = cmds.xform(obj, q=True, ro=True, ws=True)
-
-    func()
-
-    cmds.xform(obj, t=wt, ro=wr, ws=True, a=True)
-
 def round_attrs(obj=None, attrs=None):
     for at in attrs:
         set_at = '{}.{}'.format(obj, at)
@@ -28,3 +20,19 @@ def round_attrs(obj=None, attrs=None):
                 cmds.setAttr(set_at, truncate(round(val, 3), 3))
             except Exception as e:
                 print(traceback.format_exc())
+
+def set_rgb_color(ctrl=None, color=[1,1,1]):
+    rgb = ("R","G","B")
+    shape = cmds.listRelatives(ctrl, s=1)[0]
+    cmds.setAttr(shape + ".overrideEnabled",1)
+    cmds.setAttr(shape + ".overrideRGBColors",1)
+    for channel, color in zip(rgb, color):
+        cmds.setAttr(shape + ".overrideColor{}".format(channel), color)
+
+def set_obj_color(obj=None, color=[0.5, 0.5, 0.5], outliner=None):
+    cmds.setAttr(obj+'.useObjectColor', 2)
+    cmds.setAttr(obj+'.wireColorRGB', *color)
+
+    if outliner:
+        cmds.setAttr(obj+'.useOutlinerColor', 1)
+        cmds.setAttr(obj+'.outlinerColor', *color)
