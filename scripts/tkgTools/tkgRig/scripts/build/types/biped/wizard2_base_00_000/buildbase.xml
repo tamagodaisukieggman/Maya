@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<buildbasetype>
+  <characters dir="C:\Users\CF0990\Documents\maya\scripts\tkgTools\tkgRig\scripts\build\types\biped\wizard2_base_00_000\000_data\" >
+    <character charaID="chr0005" basejoint="" savefilepath="" />
+    <character charaID="chr0006" basejoint="" savefilepath="" />
+    <character charaID="p2" basejoint="" savefilepath="" />
+    <character charaID="p1" basejoint="" savefilepath="" />
+    <character charaID="armgimmick" basejoint="" savefilepath="" />
+  </characters>
+  <characters dir="C:\Users\kesun\Documents\maya\scripts\tkgTools\tkgRig\scripts\build\types\biped\wizard2_base_00_000\000_data\" >
+    <character charaID="" basejoint="" savefilepath="" />
+    <character charaID="" basejoint="" savefilepath="" />
+    <character charaID="" basejoint="" savefilepath="" />
+    <character charaID="" basejoint="" savefilepath="" />
+  </characters>
+</buildbasetype>
