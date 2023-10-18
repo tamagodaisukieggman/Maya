@@ -1,0 +1,23 @@
+{
+    "costume": {
+        "pro_c_albert01": "c:/cygames/wiz2/team/3dcg/chr/pro/costume/albert01/fbx/pro_c_albert01.fbx",
+        "pro_c_albertsword01": "c:/cygames/wiz2/team/3dcg/chr/pro/costume/albert01/fbx/pro_c_albertsword01.fbx",
+        "pro_c_arisa01_01": "c:/cygames/wiz2/team/3dcg/chr/pro/costume/arisa01/fbx/pro_c_arisa01_01.fbx",
+        "pro_c_arisa01_02": "c:/cygames/wiz2/team/3dcg/chr/pro/costume/arisa01/fbx/pro_c_arisa01_02.fbx",
+        "pro_c_arisa01_03": "c:/cygames/wiz2/team/3dcg/chr/pro/costume/arisa01/fbx/pro_c_arisa01_03.fbx",
+        "pro_c_cerberus01": "c:/cygames/wiz2/team/3dcg/chr/pro/costume/cerberus01/fbx/pro_c_cerberus01.fbx",
+        "p0_w_erikasword01": "c:/cygames/wiz2/team/3dcg/chr/pro/costume/erikasword01/fbx/p0_w_erikasword01.fbx",
+        "pro_c_eris01": "c:/cygames/wiz2/team/3dcg/chr/pro/costume/eris01/fbx/pro_c_eris01.fbx",
+        "pro_c_erisstaff01": "c:/cygames/wiz2/team/3dcg/chr/pro/costume/eris01/fbx/pro_c_erisstaff01.fbx",
+        "p0_w_erisstaff01": "c:/cygames/wiz2/team/3dcg/chr/pro/costume/erisstaff01/fbx/p0_w_erisstaff01.fbx",
+        "pro_c_filene01": "c:/cygames/wiz2/team/3dcg/chr/pro/costume/filene01/fbx/pro_c_filene01.fbx",
+        "pro_c_filenespear01": "c:/cygames/wiz2/team/3dcg/chr/pro/costume/filene01/fbx/pro_c_filenespear01.fbx",
+        "pro_c_luna01": "c:/cygames/wiz2/team/3dcg/chr/pro/costume/luna01/fbx/pro_c_luna01.fbx",
+        "pro_c_rowen01": "c:/cygames/wiz2/team/3dcg/chr/pro/costume/rowen01/fbx/pro_c_rowen01.fbx",
+        "pro_c_rowenspear01": "c:/cygames/wiz2/team/3dcg/chr/pro/costume/rowen01/fbx/pro_c_rowenspear01.fbx",
+        "p0_w_rowenspear01": "c:/cygames/wiz2/team/3dcg/chr/pro/costume/rowenspear01/fbx/p0_w_rowenspear01.fbx"
+    },
+    "general": {
+        "pro_g_book01": "c:/cygames/wiz2/team/3dcg/chr/pro/general/book01/fbx/pro_g_book01.fbx"
+    }
+}

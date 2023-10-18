@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="issues">
+    <option name="index">
+      <map>
+        <entry key="/a.dummy">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/AnimationTuner/animtuner.py">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/AnimationTuner/app/files.py">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/AnimationTuner/app/mainapp.py">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/AnimationTuner/app/optiongroupbase.py">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/AnimationTuner/app/optionlistbase.py">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/AnimationTuner/app/options.py">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/AnimationTuner/batch.bat">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/AnimationTuner/config/config.py">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/AnimationTuner/files.bat">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/AnimationTuner/files.yaml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/AnimationTuner/maya/processfile.py">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/AnimationTuner/maya/scaleanimation.py">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/AnimationTuner/mayabatch.bat">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/AnimationTuner/mayabatch.py">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/AnimationTuner/mayabatchstandalone.py">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/AnimationTuner/mayafiles.py">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/AnimationTuner/options.yaml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/AnimationTuner/util/fileutil.py">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/AnimationTuner/util/logutil.py">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/AnimationTuner/util/mayautil.py">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/AnimationTuner/util/yamlutil.py">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/anim_scaler/anim_scaler.bat">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/anim_scaler/anim_scaler.py">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/anim_scaler/animscaler.bat">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/anim_scaler/animscaler.py">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/anim_scaler/app/appfiles.py">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/anim_scaler/app/appoptions.py">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/anim_scaler/app/fileconfig.py">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/anim_scaler/app/files.py">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/anim_scaler/app/globaloptions.py">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/anim_scaler/app/mainapp.py">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/anim_scaler/app/options.py">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/anim_scaler/app/userfiles.py">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/anim_scaler/config/fileconfig.py">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/anim_scaler/config/options.yaml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/anim_scaler/file_config.bat">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/anim_scaler/fileconfig.py">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/anim_scaler/mayabatch.log">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/anim_scaler/mayafiles.bat">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/anim_scaler/mayafiles.py">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/anim_scaler/options/optiongroupbase.py">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/anim_scaler/options/optionlistbase.py">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/anim_scaler/util/logutil.py">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="D:/Projects/Cygames/Mutsunokami/Maya/anim_scaler/util/yamlutil.py">
+          <value>
+            <set />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

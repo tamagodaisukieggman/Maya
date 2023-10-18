@@ -1,0 +1,63 @@
+{
+    "assets": [
+        "ply:male00",
+        "ply:female00",
+        "pod:pod00"
+    ],
+    "status": [
+        "Rigging",
+        "Report",
+        "Confluence"
+    ],
+    "progress": {
+        "New": "grey",
+        "Waiting": "olive",
+        "Working": "blue",
+        "Checking": "#FF4F02",
+        "Completed": "green",
+        "Omit": "purple",
+        "Discontinued": "black",
+        "Pending": "teal",
+        "Fixing":"#7B3CFF",
+        "Prohibiting":"red"
+    },
+    "priority":[
+      1,2,3,4,5,6,7,8,9
+    ],
+    "expire_limit_colors": {
+      "0":"rgb(255,0,0)",
+      "1":"rgb(253,0,8.5)",
+      "2":"rgb(245,0,17)",
+      "3":"rgb(236.5,0,25.5)",
+      "4":"rgb(228,0,33.5)",
+      "5":"rgb(219.5,0,42)",
+      "6":"rgb(211,0,50.5)",
+      "7":"rgb(202.5,0,59)",
+      "8":"rgb(194,0,67.5)",
+      "9":"rgb(185.5,0,76)",
+      "10":"rgb(177,0,84.5)",
+      "11":"rgb(168.5,0,93)",
+      "12":"rgb(160,0,101.5)",
+      "13":"rgb(151.5,0,109)",
+      "14":"rgb(143,0,117.5)",
+      "15":"rgb(134.5,0,126)",
+      "16":"rgb(126,0,134.5)",
+      "17":"rgb(117.5,0,143)",
+      "18":"rgb(109,0,151.5)",
+      "19":"rgb(101.5,0,160)",
+      "20":"rgb(93,0,168.5)",
+      "21":"rgb(84.5,0,177)",
+      "22":"rgb(76,0,185.5)",
+      "23":"rgb(67.5,0,194)",
+      "24":"rgb(59,0,202.5)",
+      "25":"rgb(50.5,0,211)",
+      "26":"rgb(42,0,219.5)",
+      "27":"rgb(33.5,0,228)",
+      "28":"rgb(25.5,0,236.5)",
+      "29":"rgb(17,0,243)",
+      "30":"rgb(8.5,0,225)"
+    },
+    "exclude": [],
+    "init_file": "C:/Users/CF0990/Documents/maya/scripts/tkgTools/launchers/maya/tkgTools/python/tkgfile/checkStatus/data/projects/world/world_task.json",
+    "cur_file": "C:/Users/CF0990/Documents/maya/scripts/tkgTools/launchers/maya/tkgTools/python/tkgfile/checkStatus/data/projects/world/world_task_current.json"
+}

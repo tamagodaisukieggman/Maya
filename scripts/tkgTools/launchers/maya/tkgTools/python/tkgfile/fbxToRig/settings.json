@@ -1,0 +1,10 @@
+{
+    "rig": {
+        "id": {
+            "p1": "c:/cygames/wiz2/team/3dcg/mot/start/p1_anim.ma",
+            "p2": "c:/cygames/wiz2/team/3dcg/mot/start/p2_anim.ma",
+            "chr0005_00": "c:/cygames/wiz2/team/3dcg/mot/start/chr0005_00_anim.ma",
+            "chr0006_00": "c:/cygames/wiz2/team/3dcg/mot/start/chr0006_00_anim.ma"
+        }
+    }
+}

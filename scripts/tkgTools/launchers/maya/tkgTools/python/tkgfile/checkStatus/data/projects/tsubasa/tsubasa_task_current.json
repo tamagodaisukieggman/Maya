@@ -1,0 +1,1974 @@
+{
+    "we0000 ゴブリン突撃兵・剣": {
+        "checkBox": true,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                10,
+                22
+            ],
+            [
+                2021,
+                10,
+                1
+            ]
+        ],
+        "description": "てｓｔ"
+    },
+    "we1900 チェーンソーブレード": {
+        "checkBox": true,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                10,
+                22
+            ],
+            [
+                2021,
+                10,
+                23
+            ]
+        ],
+        "description": ""
+    },
+    "wn0390 ローランの本": {
+        "checkBox": true,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                10,
+                22
+            ],
+            [
+                2021,
+                10,
+                23
+            ]
+        ],
+        "description": ""
+    },
+    "wp0003 アルバコアブレード": {
+        "checkBox": true,
+        "priority": "7",
+        "expire_date": [
+            [
+                2021,
+                11,
+                4
+            ],
+            [
+                2021,
+                11,
+                11
+            ]
+        ],
+        "description": ""
+    },
+    "wp0004 オメガスウォード": {
+        "checkBox": true,
+        "priority": "7",
+        "expire_date": [
+            [
+                2021,
+                11,
+                4
+            ],
+            [
+                2021,
+                11,
+                11
+            ]
+        ],
+        "description": ""
+    },
+    "wp0201 フレイムレイピア": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2021,
+                11,
+                4
+            ],
+            [
+                2021,
+                11,
+                11
+            ]
+        ],
+        "description": ""
+    },
+    "wp0801 霧氷剣ペルソス": {
+        "checkBox": true,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                10,
+                22
+            ],
+            [
+                2021,
+                10,
+                22
+            ]
+        ],
+        "description": ""
+    },
+    "wp0802 ブランコムネージュ": {
+        "checkBox": true,
+        "priority": "7",
+        "expire_date": [
+            [
+                2021,
+                11,
+                4
+            ],
+            [
+                2021,
+                11,
+                11
+            ]
+        ],
+        "description": ""
+    },
+    "wp0803 ベガルタ": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2021,
+                10,
+                25
+            ],
+            [
+                2021,
+                11,
+                11
+            ]
+        ],
+        "description": "https://cg275.slack.com/archives/C01GUEU542E/p1644482634409789?thread_ts=1619057772.144300&cid=C01GUEU542E\n"
+    },
+    "wp0804 ナイト・オブ・アイス": {
+        "checkBox": true,
+        "priority": "9",
+        "expire_date": [
+            [
+                2021,
+                10,
+                25
+            ],
+            [
+                2021,
+                10,
+                28
+            ]
+        ],
+        "description": "コミット禁止"
+    },
+    "wp0805 ダマスカスナイフ": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2021,
+                11,
+                4
+            ],
+            [
+                2021,
+                11,
+                11
+            ]
+        ],
+        "description": "F:/tsubasa/wp0805"
+    },
+    "wp1001 ローエングリン": {
+        "checkBox": true,
+        "priority": "7",
+        "expire_date": [
+            [
+                2021,
+                11,
+                4
+            ],
+            [
+                2021,
+                11,
+                11
+            ]
+        ],
+        "description": "F:/tsubasa/wp1001/"
+    },
+    "wp1002 アントウェルペン": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2021,
+                11,
+                4
+            ],
+            [
+                2021,
+                11,
+                11
+            ]
+        ],
+        "description": ""
+    },
+    "wp1104 ヴィントホーゼ": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2021,
+                10,
+                22
+            ],
+            [
+                2021,
+                10,
+                22
+            ]
+        ],
+        "description": ""
+    },
+    "wp1401 虎徹": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2021,
+                11,
+                11
+            ],
+            [
+                2021,
+                11,
+                17
+            ]
+        ],
+        "description": ""
+    },
+    "wp1905 バハムートソード": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2021,
+                11,
+                25
+            ],
+            [
+                2021,
+                11,
+                25
+            ]
+        ],
+        "description": ""
+    },
+    "wp1004 ロード・オブ・フレイム": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2021,
+                11,
+                4
+            ],
+            [
+                2021,
+                11,
+                11
+            ]
+        ],
+        "description": "F:/tsubasa/wp1004/"
+    },
+    "we0003 ゴブリン重装兵の剣": {
+        "checkBox": true,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                10,
+                22
+            ],
+            [
+                2021,
+                10,
+                21
+            ]
+        ],
+        "description": "逃げ恥"
+    },
+    "we0009 ゴブリンソルジャーの剣": {
+        "checkBox": true,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                10,
+                22
+            ],
+            [
+                2021,
+                10,
+                22
+            ]
+        ],
+        "description": ""
+    },
+    "wp0001 デュランダル": {
+        "checkBox": true,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                10,
+                22
+            ],
+            [
+                2021,
+                10,
+                21
+            ]
+        ],
+        "description": ""
+    },
+    "wp0002 リリンク武器": {
+        "checkBox": true,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                10,
+                22
+            ],
+            [
+                2021,
+                10,
+                22
+            ]
+        ],
+        "description": ""
+    },
+    "wp0005 七星剣": {
+        "checkBox": true,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                10,
+                22
+            ],
+            [
+                2021,
+                10,
+                22
+            ]
+        ],
+        "description": ""
+    },
+    "wp0800 アルタキエラ": {
+        "checkBox": true,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                10,
+                22
+            ],
+            [
+                2021,
+                10,
+                22
+            ]
+        ],
+        "description": ""
+    },
+    "wp1003 ジュワユース": {
+        "checkBox": true,
+        "priority": "7",
+        "expire_date": [
+            [
+                2021,
+                11,
+                4
+            ],
+            [
+                2021,
+                11,
+                11
+            ]
+        ],
+        "description": "F:/tsubasa/wp1003"
+    },
+    "wpbase1400 ナルメア基準武器": {
+        "checkBox": true,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                10,
+                25
+            ],
+            [
+                2021,
+                10,
+                25
+            ]
+        ],
+        "description": ""
+    },
+    "we0011 ゴブリンウォーリア剣": {
+        "checkBox": false,
+        "priority": "6",
+        "expire_date": [
+            [
+                2021,
+                10,
+                26
+            ],
+            [
+                2021,
+                10,
+                26
+            ]
+        ],
+        "description": ""
+    },
+    "we0012 ゴブリンウォーリア盾": {
+        "checkBox": false,
+        "priority": "6",
+        "expire_date": [
+            [
+                2021,
+                10,
+                26
+            ],
+            [
+                2021,
+                10,
+                26
+            ]
+        ],
+        "description": "https://cg275.slack.com/archives/CH3G2KK8V/p1635238770131700?thread_ts=1635226611.121900&cid=CH3G2KK8V"
+    },
+    "wp1005 ゴットフリート": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2021,
+                11,
+                4
+            ],
+            [
+                2021,
+                11,
+                11
+            ]
+        ],
+        "description": ""
+    },
+    "we0100 スケルトン剣": {
+        "checkBox": true,
+        "priority": "9",
+        "expire_date": [
+            [
+                2021,
+                10,
+                29
+            ],
+            [
+                2021,
+                11,
+                4
+            ]
+        ],
+        "description": "キャラに修正依頼\nhttps://cg275.slack.com/archives/C01HJA71ZEU/p1635389414015500?thread_ts=1628233939.003600&cid=C01HJA71ZEU"
+    },
+    "wp1300 ヨダルラーハ初期武器": {
+        "checkBox": true,
+        "priority": "9",
+        "expire_date": [
+            [
+                2021,
+                11,
+                8
+            ],
+            [
+                2021,
+                11,
+                12
+            ]
+        ],
+        "description": "F:/tsubasa/wp1300/\n\n修正依頼\n紐の筒部分の割が少なすぎる\nhttps://cg275.slack.com/archives/C01GUEU542E/p1635389071008500?thread_ts=1621391960.002500&cid=C01GUEU542E"
+    },
+    "wp1301 阿修羅": {
+        "checkBox": true,
+        "priority": "7",
+        "expire_date": [
+            [
+                2021,
+                11,
+                8
+            ],
+            [
+                2021,
+                11,
+                12
+            ]
+        ],
+        "description": ""
+    },
+    "wp0590 オイゲンの投擲爆弾": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2021,
+                11,
+                4
+            ],
+            [
+                2021,
+                11,
+                11
+            ]
+        ],
+        "description": "Mayaだけ"
+    },
+    "wp0291 アレスの剣": {
+        "checkBox": true,
+        "priority": "7",
+        "expire_date": [
+            [
+                2021,
+                11,
+                4
+            ],
+            [
+                2021,
+                11,
+                11
+            ]
+        ],
+        "description": ""
+    },
+    "wp1105 バルムンク": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2021,
+                11,
+                4
+            ],
+            [
+                2021,
+                11,
+                11
+            ]
+        ],
+        "description": ""
+    },
+    "wp1303 晩蝉": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2021,
+                11,
+                2
+            ],
+            [
+                2021,
+                11,
+                2
+            ]
+        ],
+        "description": ""
+    },
+    "wp0292 アレスの盾": {
+        "checkBox": true,
+        "priority": "7",
+        "expire_date": [
+            [
+                2021,
+                11,
+                4
+            ],
+            [
+                2021,
+                11,
+                4
+            ]
+        ],
+        "description": "https://cg275.slack.com/archives/C01GUEU542E/p1636103482035000?thread_ts=1635502568.016600&cid=C01GUEU542E"
+    },
+    "wp1302 不動国行": {
+        "checkBox": true,
+        "priority": "7",
+        "expire_date": [
+            [
+                2021,
+                11,
+                5
+            ],
+            [
+                2021,
+                11,
+                11
+            ]
+        ],
+        "description": ""
+    },
+    "we1902 ガトリングガン": {
+        "checkBox": true,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                11,
+                5
+            ],
+            [
+                2021,
+                11,
+                5
+            ]
+        ],
+        "description": ""
+    },
+    "we1903 火炎放射器": {
+        "checkBox": true,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                11,
+                5
+            ],
+            [
+                2021,
+                11,
+                5
+            ]
+        ],
+        "description": ""
+    },
+    "wp1205 ガラティーン": {
+        "checkBox": true,
+        "priority": "7",
+        "expire_date": [
+            [
+                2021,
+                11,
+                5
+            ],
+            [
+                2021,
+                11,
+                5
+            ]
+        ],
+        "description": ""
+    },
+    "we1904 エナジーミサイル肩": {
+        "checkBox": true,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                11,
+                5
+            ],
+            [
+                2021,
+                11,
+                5
+            ]
+        ],
+        "description": ""
+    },
+    "we1905 エナジーミサイル右肩外側": {
+        "checkBox": true,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                11,
+                5
+            ],
+            [
+                2021,
+                11,
+                5
+            ]
+        ],
+        "description": ""
+    },
+    "we1906 エナジーミサイル左肩外側": {
+        "checkBox": true,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                11,
+                8
+            ],
+            [
+                2021,
+                11,
+                8
+            ]
+        ],
+        "description": ""
+    },
+    "wp0204 エフェメロン": {
+        "checkBox": false,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                11,
+                9
+            ],
+            [
+                2021,
+                11,
+                9
+            ]
+        ],
+        "description": ""
+    },
+    "wp1902 スサノヲ": {
+        "checkBox": false,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                11,
+                9
+            ],
+            [
+                2021,
+                11,
+                9
+            ]
+        ],
+        "description": ""
+    },
+    "wp1704 サイス・オブ・コスモス": {
+        "checkBox": false,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                11,
+                9
+            ],
+            [
+                2021,
+                11,
+                9
+            ]
+        ],
+        "description": ""
+    },
+    "wp1305 太刀魚": {
+        "checkBox": false,
+        "priority": "7",
+        "expire_date": [
+            [
+                2021,
+                11,
+                9
+            ],
+            [
+                2021,
+                11,
+                9
+            ]
+        ],
+        "description": ""
+    },
+    "wp1304 六道・普天幻魔": {
+        "checkBox": true,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                11,
+                9
+            ],
+            [
+                2021,
+                11,
+                9
+            ]
+        ],
+        "description": ""
+    },
+    "wp0203 シュヴァリエソード・マグナ": {
+        "checkBox": false,
+        "priority": "7",
+        "expire_date": [
+            [
+                2021,
+                11,
+                10
+            ],
+            [
+                2021,
+                11,
+                10
+            ]
+        ],
+        "description": ""
+    },
+    "we0005 ゴブリンライダーのハルバード": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2021,
+                11,
+                10
+            ],
+            [
+                2021,
+                11,
+                10
+            ]
+        ],
+        "description": ""
+    },
+    "we0104 ゲラシーンの斧": {
+        "checkBox": false,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                11,
+                10
+            ],
+            [
+                2021,
+                11,
+                10
+            ]
+        ],
+        "description": ""
+    },
+    "we0105 スカルミリオーネの斧": {
+        "checkBox": false,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                11,
+                10
+            ],
+            [
+                2021,
+                11,
+                10
+            ]
+        ],
+        "description": ""
+    },
+    "we1100 マギラフリラ兵の剣": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2021,
+                11,
+                10
+            ],
+            [
+                2021,
+                11,
+                10
+            ]
+        ],
+        "description": ""
+    },
+    "we2100 マギラフリラの剣": {
+        "checkBox": false,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                11,
+                10
+            ],
+            [
+                2021,
+                11,
+                10
+            ]
+        ],
+        "description": ""
+    },
+    "wp0205 ブルトガング": {
+        "checkBox": false,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                11,
+                10
+            ],
+            [
+                2021,
+                11,
+                10
+            ]
+        ],
+        "description": ""
+    },
+    "wp0401 ジェズル": {
+        "checkBox": true,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                11,
+                10
+            ],
+            [
+                2021,
+                11,
+                10
+            ]
+        ],
+        "description": ""
+    },
+    "wp0402 ガンバンテイン": {
+        "checkBox": true,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                11,
+                10
+            ],
+            [
+                2021,
+                11,
+                10
+            ]
+        ],
+        "description": ""
+    },
+    "wp0403 コロッサスケーン・マグナ": {
+        "checkBox": true,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                11,
+                10
+            ],
+            [
+                2021,
+                11,
+                10
+            ]
+        ],
+        "description": ""
+    },
+    "wp0601 ソードブレイカー": {
+        "checkBox": true,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                11,
+                10
+            ],
+            [
+                2021,
+                11,
+                10
+            ]
+        ],
+        "description": ""
+    },
+    "wp0602 エターナル・ラヴ": {
+        "checkBox": true,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                11,
+                10
+            ],
+            [
+                2021,
+                11,
+                10
+            ]
+        ],
+        "description": ""
+    },
+    "wp0603 ローズクリスタルナイフ": {
+        "checkBox": true,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                11,
+                10
+            ],
+            [
+                2021,
+                11,
+                10
+            ]
+        ],
+        "description": ""
+    },
+    "wp0605 バハムートダガー・フツルス": {
+        "checkBox": true,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                11,
+                10
+            ],
+            [
+                2021,
+                11,
+                10
+            ]
+        ],
+        "description": ""
+    },
+    "wp0900 初期武器": {
+        "checkBox": false,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                11,
+                10
+            ],
+            [
+                2021,
+                11,
+                10
+            ]
+        ],
+        "description": ""
+    },
+    "wp0901 スワン": {
+        "checkBox": false,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                11,
+                10
+            ],
+            [
+                2021,
+                11,
+                10
+            ]
+        ],
+        "description": ""
+    },
+    "wp0902 SSR斧": {
+        "checkBox": false,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                11,
+                10
+            ],
+            [
+                2021,
+                11,
+                10
+            ]
+        ],
+        "description": ""
+    },
+    "wp0903 ウコンバサラ": {
+        "checkBox": false,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                11,
+                10
+            ],
+            [
+                2021,
+                11,
+                10
+            ]
+        ],
+        "description": ""
+    },
+    "wp0904 ブロッサムアックス": {
+        "checkBox": false,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                11,
+                10
+            ],
+            [
+                2021,
+                11,
+                10
+            ]
+        ],
+        "description": ""
+    },
+    "wp1103 フルンティング": {
+        "checkBox": true,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                11,
+                10
+            ],
+            [
+                2021,
+                11,
+                10
+            ]
+        ],
+        "description": ""
+    },
+    "wp1200 クラウ・ソラス": {
+        "checkBox": false,
+        "priority": "7",
+        "expire_date": [
+            [
+                2021,
+                11,
+                10
+            ],
+            [
+                2021,
+                11,
+                10
+            ]
+        ],
+        "description": ""
+    },
+    "wp1201 アロンダイト": {
+        "checkBox": false,
+        "priority": "7",
+        "expire_date": [
+            [
+                2021,
+                11,
+                10
+            ],
+            [
+                2021,
+                11,
+                10
+            ]
+        ],
+        "description": ""
+    },
+    "wp1901 アヴィアン・フォセ": {
+        "checkBox": true,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                11,
+                10
+            ],
+            [
+                2021,
+                11,
+                10
+            ]
+        ],
+        "description": ""
+    },
+    "wp1500 梵天添甲": {
+        "checkBox": true,
+        "priority": "9",
+        "expire_date": [
+            [
+                2021,
+                11,
+                15
+            ],
+            [
+                2021,
+                11,
+                15
+            ]
+        ],
+        "description": ""
+    },
+    "wp1805 ゾーシモス": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2021,
+                11,
+                15
+            ],
+            [
+                2021,
+                11,
+                15
+            ]
+        ],
+        "description": ""
+    },
+    "wp1605 ゲイボルグ": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2021,
+                11,
+                16
+            ],
+            [
+                2021,
+                11,
+                16
+            ]
+        ],
+        "description": ""
+    },
+    "wp1802 円環の書": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2021,
+                11,
+                16
+            ],
+            [
+                2021,
+                11,
+                16
+            ]
+        ],
+        "description": ""
+    },
+    "we2113 石油武器槍": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2021,
+                11,
+                17
+            ],
+            [
+                2021,
+                11,
+                17
+            ]
+        ],
+        "description": ""
+    },
+    "wp0202 ミュルグレス": {
+        "checkBox": false,
+        "priority": "7",
+        "expire_date": [
+            [
+                2021,
+                11,
+                18
+            ],
+            [
+                2021,
+                11,
+                18
+            ]
+        ],
+        "description": ""
+    },
+    "wp0302 ベネディーア": {
+        "checkBox": true,
+        "priority": "7",
+        "expire_date": [
+            [
+                2021,
+                11,
+                18
+            ],
+            [
+                2021,
+                11,
+                18
+            ]
+        ],
+        "description": ""
+    },
+    "wp1204\tシャフレワル": {
+        "checkBox": false,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                11,
+                18
+            ],
+            [
+                2021,
+                11,
+                18
+            ]
+        ],
+        "description": ""
+    },
+    "wp1803 ホーリーインデックス": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2021,
+                11,
+                18
+            ],
+            [
+                2021,
+                11,
+                18
+            ]
+        ],
+        "description": "1. 初期武器 ＋ 基準武器 鎖の階層を増やす → _c00 ～ _c09 → ホーリーインデックス と 夢見の書に反映\n2. 初期武器に c00_lock_LOD0 と c10_lock_LOD0 の階層を追加 基準武器内に同じ階層がある。 → 表示切り替えのRelationを作成\n3. 栞とベルト ホーリーインデックスと夢見の書の揺れものJoint追加"
+    },
+    "wp1204 シャフレワル": {
+        "checkBox": false,
+        "priority": "7",
+        "expire_date": [
+            [
+                2021,
+                11,
+                18
+            ],
+            [
+                2021,
+                11,
+                18
+            ]
+        ],
+        "description": ""
+    },
+    "wp0700 ガイストパイチェ": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2021,
+                11,
+                18
+            ],
+            [
+                2021,
+                11,
+                18
+            ]
+        ],
+        "description": ""
+    },
+    "wp1904 エッケザックス": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2021,
+                11,
+                25
+            ],
+            [
+                2021,
+                11,
+                25
+            ]
+        ],
+        "description": ""
+    },
+    "wp1891 カリオストロ錬金武器": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2021,
+                11,
+                25
+            ],
+            [
+                2021,
+                11,
+                25
+            ]
+        ],
+        "description": ""
+    },
+    "wp0905 ミョルニル": {
+        "checkBox": false,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                11,
+                25
+            ],
+            [
+                2021,
+                11,
+                25
+            ]
+        ],
+        "description": ""
+    },
+    "wp1801 夢見の書": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2021,
+                11,
+                26
+            ],
+            [
+                2021,
+                11,
+                26
+            ]
+        ],
+        "description": "1. 初期武器 ＋ 基準武器 鎖の階層を増やす → _c00 ～ _c09 → ホーリーインデックス と 夢見の書に反映\n2. 初期武器に c00_lock_LOD0 と c10_lock_LOD0 の階層を追加 基準武器内に同じ階層がある。 → 表示切り替えのRelationを作成\n3. 栞とベルト ホーリーインデックスと夢見の書の揺れものJoint追加"
+    },
+    "we2111 石油武器斧": {
+        "checkBox": false,
+        "priority": "1",
+        "expire_date": [
+            [
+                2021,
+                11,
+                26
+            ],
+            [
+                2021,
+                11,
+                26
+            ]
+        ],
+        "description": ""
+    },
+    "wp1501 綱巻甲": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2021,
+                11,
+                29
+            ],
+            [
+                2021,
+                11,
+                29
+            ]
+        ],
+        "description": ""
+    },
+    "we7207 フラカーン 女神武器 左手": {
+        "checkBox": false,
+        "priority": "7",
+        "expire_date": [
+            [
+                2021,
+                12,
+                1
+            ],
+            [
+                2021,
+                12,
+                1
+            ]
+        ],
+        "description": ""
+    },
+    "wp1903 プレミアムソード": {
+        "checkBox": true,
+        "priority": "7",
+        "expire_date": [
+            [
+                2021,
+                12,
+                1
+            ],
+            [
+                2021,
+                12,
+                1
+            ]
+        ],
+        "description": ""
+    },
+    "wp0701 レザーベルト": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2021,
+                12,
+                1
+            ],
+            [
+                2021,
+                12,
+                1
+            ]
+        ],
+        "description": ""
+    },
+    "wp0705 エリンネルグ(リミテッド進化後)": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2021,
+                12,
+                6
+            ],
+            [
+                2021,
+                12,
+                6
+            ]
+        ],
+        "description": ""
+    },
+    "wp1800 マグヌム・オプス": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2021,
+                12,
+                7
+            ],
+            [
+                2021,
+                12,
+                7
+            ]
+        ],
+        "description": "1. 初期武器 ＋ 基準武器 鎖の階層を増やす → _c00 ～ _c09 → ホーリーインデックス と 夢見の書に反映\n2. 初期武器に c00_lock_LOD0 と c10_lock_LOD0 の階層を追加 基準武器内に同じ階層がある。 → 表示切り替えのRelationを作成\n3. 栞とベルト ホーリーインデックスと夢見の書の揺れものJoint追加"
+    },
+    "wp1470 ナルメア変形武器": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2021,
+                12,
+                8
+            ],
+            [
+                2021,
+                12,
+                8
+            ]
+        ],
+        "description": ""
+    },
+    "wp0304 ブラッククラウド": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2021,
+                12,
+                8
+            ],
+            [
+                2021,
+                12,
+                8
+            ]
+        ],
+        "description": ""
+    },
+    "wp1502 クリムゾンフィンガー": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2021,
+                12,
+                8
+            ],
+            [
+                2021,
+                12,
+                8
+            ]
+        ],
+        "description": ""
+    },
+    "wp0305 フライクーゲル": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2021,
+                12,
+                9
+            ],
+            [
+                2021,
+                12,
+                9
+            ]
+        ],
+        "description": ""
+    },
+    "we2110 石油武器銃": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2021,
+                12,
+                9
+            ],
+            [
+                2021,
+                12,
+                9
+            ]
+        ],
+        "description": ""
+    },
+    "wp0405 カドゥケウス": {
+        "checkBox": true,
+        "priority": "7",
+        "expire_date": [
+            [
+                2021,
+                12,
+                9
+            ],
+            [
+                2021,
+                12,
+                9
+            ]
+        ],
+        "description": ""
+    },
+    "wp1503 温羅面金色之装": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2021,
+                12,
+                10
+            ],
+            [
+                2021,
+                12,
+                10
+            ]
+        ],
+        "description": ""
+    },
+    "wp1505 方天画戟": {
+        "checkBox": true,
+        "priority": "7",
+        "expire_date": [
+            [
+                2021,
+                12,
+                22
+            ],
+            [
+                2021,
+                12,
+                22
+            ]
+        ],
+        "description": ""
+    },
+    "wp0303 ティアマトボルトマグナ": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2021,
+                12,
+                22
+            ],
+            [
+                2021,
+                12,
+                22
+            ]
+        ],
+        "description": ""
+    },
+    "wp1804 アーシヴェル": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2021,
+                12,
+                22
+            ],
+            [
+                2021,
+                12,
+                22
+            ]
+        ],
+        "description": ""
+    },
+    "we0102 辺獄ソード": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2021,
+                12,
+                24
+            ],
+            [
+                2022,
+                1,
+                31
+            ]
+        ],
+        "description": ""
+    },
+    "we7200 フラカーン馬 右手武器": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2021,
+                12,
+                24
+            ],
+            [
+                2021,
+                12,
+                24
+            ]
+        ],
+        "description": ""
+    },
+    "we7201 フラカーン 人馬武器 左手": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2021,
+                12,
+                27
+            ],
+            [
+                2021,
+                12,
+                27
+            ]
+        ],
+        "description": ""
+    },
+    "wp1504 アルカブ": {
+        "checkBox": true,
+        "priority": "7",
+        "expire_date": [
+            [
+                2022,
+                1,
+                5
+            ],
+            [
+                2022,
+                1,
+                5
+            ]
+        ],
+        "description": ""
+    },
+    "wp0504 クラリオン": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2022,
+                1,
+                5
+            ],
+            [
+                2022,
+                1,
+                5
+            ]
+        ],
+        "description": ""
+    },
+    "wp1402 丙子椒林剣": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2022,
+                1,
+                7
+            ],
+            [
+                2022,
+                1,
+                7
+            ]
+        ],
+        "description": ""
+    },
+    "wp1101 大地の剣": {
+        "checkBox": false,
+        "priority": "7",
+        "expire_date": [
+            [
+                2022,
+                1,
+                19
+            ],
+            [
+                2022,
+                1,
+                19
+            ]
+        ],
+        "description": ""
+    },
+    "wp1404 清めと祓いの刃": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2022,
+                1,
+                19
+            ],
+            [
+                2022,
+                1,
+                19
+            ]
+        ],
+        "description": "揺れものジョイント追加"
+    },
+    "wp1400 中巻野太刀": {
+        "checkBox": false,
+        "priority": "7",
+        "expire_date": [
+            [
+                2022,
+                1,
+                21
+            ],
+            [
+                2022,
+                1,
+                21
+            ]
+        ],
+        "description": "揺れものジョイント追加"
+    },
+    "wp1102 アスカロン": {
+        "checkBox": false,
+        "priority": "7",
+        "expire_date": [
+            [
+                2022,
+                1,
+                28
+            ],
+            [
+                2022,
+                1,
+                28
+            ]
+        ],
+        "description": ""
+    },
+    "wp1203 ウシュムガル": {
+        "checkBox": true,
+        "priority": "8",
+        "expire_date": [
+            [
+                2022,
+                2,
+                16
+            ],
+            [
+                2022,
+                2,
+                16
+            ]
+        ],
+        "description": ""
+    },
+    "wp1202 クレイヴ・ソリッシュ": {
+        "checkBox": false,
+        "priority": "8",
+        "expire_date": [
+            [
+                2022,
+                2,
+                28
+            ],
+            [
+                2022,
+                2,
+                28
+            ]
+        ],
+        "description": ""
+    },
+    "wp1403 蛍丸": {
+        "checkBox": false,
+        "priority": "8",
+        "expire_date": [
+            [
+                2022,
+                3,
+                2
+            ],
+            [
+                2022,
+                3,
+                2
+            ]
+        ],
+        "description": ""
+    }
+}
