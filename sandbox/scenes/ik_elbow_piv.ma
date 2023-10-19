@@ -1,6 +1,6 @@
 //Maya ASCII 2024 scene
 //Name: ik_elbow_piv.ma
-//Last modified: Fri, Oct 20, 2023 12:22:57 AM
+//Last modified: Fri, Oct 20, 2023 12:30:47 AM
 //Codeset: 932
 requires maya "2024";
 requires "stereoCamera" "10.0";
@@ -14,17 +14,17 @@ fileInfo "product" "Maya 2024";
 fileInfo "version" "2024";
 fileInfo "cutIdentifier" "202304191415-7fa20164c6";
 fileInfo "osv" "Windows 11 Home v2009 (Build: 22621)";
-fileInfo "UUID" "65CC90C0-4DCE-C2A5-2816-B58091BB23EE";
+fileInfo "UUID" "D8A0E86F-45EC-2EBB-5888-6DA1030D104A";
 createNode transform -s -n "persp";
 	rename -uid "222D7613-4EBB-C2E1-713B-868BE73652A0";
 	setAttr ".v" no;
-	setAttr ".t" -type "double3" 125.03274776143505 207.98046373761792 78.923995600125778 ;
-	setAttr ".r" -type "double3" -39.338352729622549 41.000000000004249 -2.1071381394979106e-15 ;
+	setAttr ".t" -type "double3" 102.32204492604372 197.29086300842488 68.470281943597115 ;
+	setAttr ".r" -type "double3" -41.738352729623287 34.200000000004486 -3.8455197478835401e-15 ;
 createNode camera -s -n "perspShape" -p "persp";
 	rename -uid "FB560E6B-471A-7639-6C6F-3AB61892CA51";
 	setAttr -k off ".v" no;
 	setAttr ".fl" 34.999999999999986;
-	setAttr ".coi" 132.13381510425214;
+	setAttr ".coi" 117.39493250822717;
 	setAttr ".imn" -type "string" "persp";
 	setAttr ".den" -type "string" "persp_depth";
 	setAttr ".man" -type "string" "persp_mask";
@@ -60262,6 +60262,24 @@ createNode ikHandle -n "ikHandle1" -p "locator2";
 	setAttr ".v" no;
 	setAttr ".pv" -type "double3" 0 1.2246467991473532e-16 -1 ;
 	setAttr ".roc" yes;
+createNode aimConstraint -n "rot_A_p_aimConstraint1" -p "rot_A_p";
+	rename -uid "6DFAECF4-45C9-D669-F002-C783833BCDB6";
+	addAttr -dcb 0 -ci true -sn "w0" -ln "locator9W0" -dv 1 -at "double";
+	setAttr -k on ".nds";
+	setAttr -k off ".v";
+	setAttr -k off ".tx";
+	setAttr -k off ".ty";
+	setAttr -k off ".tz";
+	setAttr -k off ".rx";
+	setAttr -k off ".ry";
+	setAttr -k off ".rz";
+	setAttr -k off ".sx";
+	setAttr -k off ".sy";
+	setAttr -k off ".sz";
+	setAttr ".erp" yes;
+	setAttr ".a" -type "double3" 0 0 -1 ;
+	setAttr ".u" -type "double3" 0 -1 0 ;
+	setAttr -k on ".w0";
 createNode joint -n "rpik_proxy_ShoulderRoll_L" -p "rpik_proxy_Arm_L";
 	rename -uid "6F470013-48B2-4B54-3254-BAB6B46506AB";
 	setAttr ".uoc" 2;
@@ -81642,10 +81660,23 @@ connectAttr "rpik_proxy_Wrist_L.tx" "effector11.tx";
 connectAttr "rpik_proxy_Wrist_L.ty" "effector11.ty";
 connectAttr "rpik_proxy_Wrist_L.tz" "effector11.tz";
 connectAttr "rpik_proxy_Wrist_L.opm" "effector11.opm";
+connectAttr "rot_A_p_aimConstraint1.crx" "rot_A_p.rx";
+connectAttr "rot_A_p_aimConstraint1.cry" "rot_A_p.ry";
+connectAttr "rot_A_p_aimConstraint1.crz" "rot_A_p.rz";
 connectAttr "scik_proxy_Arm_L.msg" "ikHandle1.hsj";
 connectAttr "|scik_proxy_Shoulder_L|scik_proxy_Arm_L|effector9.hp" "ikHandle1.hee"
 		;
 connectAttr "ikSCsolver.msg" "ikHandle1.hsv";
+connectAttr "rot_A_p.pim" "rot_A_p_aimConstraint1.cpim";
+connectAttr "rot_A_p.t" "rot_A_p_aimConstraint1.ct";
+connectAttr "rot_A_p.rp" "rot_A_p_aimConstraint1.crp";
+connectAttr "rot_A_p.rpt" "rot_A_p_aimConstraint1.crt";
+connectAttr "rot_A_p.ro" "rot_A_p_aimConstraint1.cro";
+connectAttr "locator9.t" "rot_A_p_aimConstraint1.tg[0].tt";
+connectAttr "locator9.rp" "rot_A_p_aimConstraint1.tg[0].trp";
+connectAttr "locator9.rpt" "rot_A_p_aimConstraint1.tg[0].trt";
+connectAttr "locator9.pm" "rot_A_p_aimConstraint1.tg[0].tpm";
+connectAttr "rot_A_p_aimConstraint1.w0" "rot_A_p_aimConstraint1.tg[0].tw";
 connectAttr "rpik_proxy_Arm_L.s" "rpik_proxy_ShoulderRoll_L.is";
 connectAttr "rpik_proxy_Arm_L.msg" "ikHandle3.hsj";
 connectAttr "effector11.hp" "ikHandle3.hee";
