@@ -22,10 +22,6 @@ import pymel.core as pm
 import maya.OpenMaya as OpenMaya
 import maya.api.OpenMaya as OpenMaya2
 
-import tkgTools.tkgRig.scripts.build.commands.common as tkg_common
-reload(tkg_common)
-print('RELOAD', tkg_common)
-
 maya_version = cmds.about(v=1)
 
 dir = '{}'.format(os.path.split(os.path.abspath(__file__))[0])
@@ -49,6 +45,9 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 # ログのファイル出力先を設定
+if not os.path.isdir(logFolder):
+    os.makedirs(logFolder)
+
 fh = logging.FileHandler(logFile)
 logger.addHandler(fh)
 
@@ -61,7 +60,7 @@ logger.addHandler(fh)
 # warnings.filterwarnings('ignore')
 
 class Build(object):
-    def __init__(self, types=None, excactDir=None, dataPath=None):
+    def __init__(self, buildPath=None, excactDir=None):
         """Build Commands
         from tkgTools.tkgRig.scripts.build import rigbuild
         reload(rigbuild)
@@ -71,21 +70,22 @@ class Build(object):
         if not os.path.isdir(logFolder):
             os.makedirs(logFolder)
 
-        list_types=None
-
-        if types:
-            if ',' in types:
-                list_types=types.split(',')
-            elif not ',' in types:
-                list_types=[types]
-
-        self.types=list_types
+        # list_types=None
+        #
+        # if types:
+        #     if ',' in types:
+        #         list_types=types.split(',')
+        #     elif not ',' in types:
+        #         list_types=[types]
+        #
+        # self.types=list_types
         if excactDir == '=/':
             excactDir=None
         self.excactDir=excactDir
         self.error_results=[]
         self.save_file_path_list=[]
-        self.dataPath = dataPath
+        self.dataPath = buildPath.replace('\\', '/')
+        self.buildPath = buildPath.replace('\\', '/')
 
     def main(self):
         now = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -132,23 +132,21 @@ class Build(object):
 
     def build_rigs(self):
         build_file_list=[]
-        for type in self.types:
-            build_path='{0}{1}'.format(typFolder, type)
 
-            logging.info('{}\nBuild Path:{}\n{}'.format('>'*10, build_path, '>'*10))
+        logging.info('{}\nBuild Path:{}\n{}'.format('>'*10, self.buildPath, '>'*10))
 
-            for root, dirs, files in os.walk(build_path):
-                for fname in files:
-                    file_path = os.path.join(root, fname)
-                    search_file = file_path.replace('\\', '/')
-                    if search_file.endswith('.xml'):
-                        if self.excactDir:
-                            # logging.info('Excact Dir:{0}'.format(self.excactDir))
-                            if self.excactDir in search_file:
-                                build_file_list.append(search_file)
-                        else:
+        for root, dirs, files in os.walk(self.buildPath):
+            for fname in files:
+                file_path = os.path.join(root, fname)
+                search_file = file_path.replace('\\', '/')
+                if search_file.endswith('.xml'):
+                    if self.excactDir:
+                        # logging.info('Excact Dir:{0}'.format(self.excactDir))
+                        if self.excactDir in search_file:
                             build_file_list.append(search_file)
-                        # logging.info(self.build_file)
+                    else:
+                        build_file_list.append(search_file)
+                    # logging.info(self.build_file)
 
         list_build_file_list=list(set(build_file_list))
 
@@ -320,7 +318,8 @@ class Build(object):
 
             # char_path=char_path_value.attrib['dir']
             # char_path_slash = char_path.replace('\\', '/')
-            # setup_character_dict[char_path_slash] = {}
+
+            setup_character_dict[dataPath] = {}
 
             for value in char_path_value.iter('character'):
                 charaID=value.attrib['charaID']

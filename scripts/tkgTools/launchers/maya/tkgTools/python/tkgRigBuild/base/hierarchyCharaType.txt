@@ -5,4 +5,5 @@ charaType/020_secondary/_old
 charaType/030_extra/_old
 charaType/040_init/_old
 charaType/050_lock/_old
+charaType/060_user/_old
 charaType/_old

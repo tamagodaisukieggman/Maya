@@ -45,7 +45,8 @@ for /f "usebackq delims=" %%A in ("%filePath%") do (
 copy %basePath%createCharaType.bat %currentDir%\projectName\
 copy %basePath%hierarchyCharaType.txt %currentDir%\projectName\
 copy %basePath%buildCharaType.bat %currentDir%\projectName\charaType\
-call %currentDir%\projectName\createCharaType.bat
+copy %basePath%buildbase.xml %currentDir%\projectName\charaType\
+:: call %currentDir%\projectName\createCharaType.bat
 
 :: 完了メッセージを表示
 echo フォルダおよびファイルの作成が完了しました。

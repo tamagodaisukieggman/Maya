@@ -59,6 +59,7 @@ for /f "usebackq delims=" %%A in ("%filePath%") do (
 )
 
 copy %basePath%buildCharaType.bat %currentDir%charaType\
+copy %basePath%buildbase.xml %currentDir%charaType\
 echo %currentDir%charaType\
 
 :: 完了メッセージを表示
