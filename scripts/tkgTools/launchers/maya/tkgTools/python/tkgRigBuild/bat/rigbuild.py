@@ -60,7 +60,7 @@ logger.addHandler(fh)
 # warnings.filterwarnings('ignore')
 
 class Build(object):
-    def __init__(self, types=None, excactDir=None):
+    def __init__(self, types=None, excactDir=None, dataPath=None):
         """Build Commands
         from tkgTools.tkgRig.scripts.build import rigbuild
         reload(rigbuild)
@@ -84,6 +84,7 @@ class Build(object):
         self.excactDir=excactDir
         self.error_results=[]
         self.save_file_path_list=[]
+        self.dataPath = dataPath
 
     def main(self):
         now = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -159,7 +160,7 @@ class Build(object):
 
         for build_file in list_build_file_list:
             self.build_file=build_file
-            setup_settings = self.parseFile()
+            setup_settings = self.parseFile(self.dataPath)
             try:
                 for setup_dir, setup_characters in setup_settings.items():
                     if not os.path.isdir(setup_dir):
@@ -307,7 +308,7 @@ class Build(object):
 
                     logging.info('{} {}:RESUME Process {}\n\n'.format('>'*10, format_rig_setup_id, '>'*10))
 
-    def parseFile(self):
+    def parseFile(self, dataPath=None):
         setup_character_dict = {}
         tree = ET.parse(self.build_file)
         root = tree.getroot()
@@ -316,16 +317,17 @@ class Build(object):
             character_joints=[]
             savefile_pathes=[]
 
-            char_path=char_path_value.attrib['dir']
-            char_path_slash = char_path.replace('\\', '/')
-            setup_character_dict[char_path_slash] = {}
+            # char_path=char_path_value.attrib['dir']
+            # char_path_slash = char_path.replace('\\', '/')
+            # setup_character_dict[char_path_slash] = {}
 
             for value in char_path_value.iter('character'):
                 charaID=value.attrib['charaID']
                 charaID_slash = charaID.replace('\\', '/')
                 charaIDs.append(charaID_slash)
 
-                joints_path=char_path+value.attrib['basejoint']
+                # joints_path=char_path+value.attrib['basejoint']
+                joints_path=value.attrib['basejoint']
                 joints_path_slash = joints_path.replace('\\', '/')
                 character_joints.append(joints_path_slash)
 
@@ -335,9 +337,9 @@ class Build(object):
                     savefile_path = None
                 savefile_pathes.append(savefile_path)
 
-            setup_character_dict[char_path_slash]['charaID'] = charaIDs
-            setup_character_dict[char_path_slash]['basejoint'] = character_joints
-            setup_character_dict[char_path_slash]['savefilepath'] = savefile_pathes
+            setup_character_dict[dataPath]['charaID'] = charaIDs
+            setup_character_dict[dataPath]['basejoint'] = character_joints
+            setup_character_dict[dataPath]['savefilepath'] = savefile_pathes
 
         return setup_character_dict
 
