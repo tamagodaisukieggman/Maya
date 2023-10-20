@@ -3,6 +3,9 @@
 rem cd /d %~dp0
 set CURRENT_DIR=%~dp0
 
+echo Current Dir: %CURRENT_DIR%
+pause
+
 set SCRIPT_DIR=%CURRENT_DIR:\projects\wizard2=%
 
 ::Maya Settings
