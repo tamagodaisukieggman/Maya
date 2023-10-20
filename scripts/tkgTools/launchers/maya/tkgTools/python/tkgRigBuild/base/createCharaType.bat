@@ -8,6 +8,25 @@ set "filePath=%~dp0hierarchyCharaType.txt"
 echo Current Directory: %currentDir%
 echo File Path: %filePath%
 
+:: 末尾のバックスラッシュを削除
+set backCurrentDir=%currentDir:~0,-1%
+
+:: 上の階層のディレクトリパスを取得
+for %%i in (%backCurrentDir%) do set parentDir=%%~dpi
+
+
+:: 末尾のバックスラッシュを削除
+set parentDir=%parentDir:~0,-1%
+
+:: 上の階層のディレクトリパスを取得
+for %%i in (%parentDir%) do set parentParentDir=%%~dpi
+
+:: 結果を表示
+echo Parent Directory: %parentDir%
+echo Parent Parent Directory: %parentParentDir%
+
+set basePath=%parentParentDir%base\
+
 :: テキストファイルからフォルダ階層を読み取り、フォルダまたはファイルを作成
 for /f "usebackq delims=" %%A in ("%filePath%") do (
     :: Check if the line contains a file identifier (.)
@@ -39,7 +58,8 @@ for /f "usebackq delims=" %%A in ("%filePath%") do (
     )
 )
 
-:: copy %myself% %currentDir%\projectName\
+copy %basePath%buildCharaType.bat %currentDir%charaType\
+echo %currentDir%charaType\
 
 :: 完了メッセージを表示
 echo フォルダおよびファイルの作成が完了しました。

@@ -44,7 +44,7 @@ for /f "usebackq delims=" %%A in ("%filePath%") do (
 
 copy %basePath%createCharaType.bat %currentDir%\projectName\
 copy %basePath%hierarchyCharaType.txt %currentDir%\projectName\
-copy %basePath%buildCharaType.bat %currentDir%\projectName\
+copy %basePath%buildCharaType.bat %currentDir%\projectName\charaType\
 call %currentDir%\projectName\createCharaType.bat
 
 :: 完了メッセージを表示

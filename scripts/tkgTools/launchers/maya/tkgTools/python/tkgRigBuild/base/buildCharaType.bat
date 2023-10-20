@@ -3,7 +3,17 @@
 rem cd /d %~dp0
 set CURRENT_DIR=%~dp0
 
-echo Current Dir: %CURRENT_DIR%
+echo CURRENT_DIR: %CURRENT_DIR%
+
+:: 末尾のバックスラッシュを削除
+set CURRENT_DIR=%CURRENT_DIR:~0,-1%
+
+:: 上の階層のディレクトリパスを取得
+for %%i in (%CURRENT_DIR%) do set PARENT_DIR=%%~dpi
+
+:: 結果を表示
+echo Current Directory: %CURRENT_DIR%
+echo Parent Directory: %PARENT_DIR%
 pause
 
 set SCRIPT_DIR=%CURRENT_DIR:\projects\wizard2=%
@@ -13,6 +23,9 @@ set MAYA_UI_LANGUAGE=en_US
 set MAYA_CMD_FILE_OUTPUT=%SCRIPT_DIR%/maya_cmdFileOutput.log
 set PYTHONPATH=%PYTHONPATH%;%SCRIPT_DIR%;
 rem echo 一時的にPYTHONPATHを指定: %PYTHONPATH%
+
+echo PYTHONPATH: %PYTHONPATH%
+pause
 
 echo -------------Build biped-------------
 

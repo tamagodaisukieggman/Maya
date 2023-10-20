@@ -24,6 +24,7 @@ import maya.api.OpenMaya as OpenMaya2
 
 import tkgTools.tkgRig.scripts.build.commands.common as tkg_common
 reload(tkg_common)
+print('RELOAD', tkg_common)
 
 maya_version = cmds.about(v=1)
 
