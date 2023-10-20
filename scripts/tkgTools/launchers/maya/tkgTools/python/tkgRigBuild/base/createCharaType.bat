@@ -1,8 +1,9 @@
 @echo off
 set "currentDir=%~dp0"
+set "myself=%~f0"
 
 :: テキストファイルのパスを指定
-set "filePath=%~dp0hierarchy.txt"
+set "filePath=%~dp0hierarchyCharaType.txt"
 
 echo Current Directory: %currentDir%
 echo File Path: %filePath%
@@ -38,6 +39,8 @@ for /f "usebackq delims=" %%A in ("%filePath%") do (
     )
 )
 
+:: copy %myself% %currentDir%\projectName\
+
 :: 完了メッセージを表示
 echo フォルダおよびファイルの作成が完了しました。
-pause
+:: pause

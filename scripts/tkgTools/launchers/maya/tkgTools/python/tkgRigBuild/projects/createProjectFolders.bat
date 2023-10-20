@@ -1,11 +1,15 @@
 @echo off
 set "currentDir=%~dp0"
+set "myself=%~f0"
 
 :: テキストファイルのパスを指定
-set "filePath=%~dp0hierarchy.txt"
+set "filePath=%~dp0hierarchyProjectFolders.txt"
 
 echo Current Directory: %currentDir%
 echo File Path: %filePath%
+
+set basePath=%currentDir:projects=base%
+echo Base Path: %basePath%
 
 :: テキストファイルからフォルダ階層を読み取り、フォルダまたはファイルを作成
 for /f "usebackq delims=" %%A in ("%filePath%") do (
@@ -38,6 +42,10 @@ for /f "usebackq delims=" %%A in ("%filePath%") do (
     )
 )
 
+copy %basePath%createCharaType.bat %currentDir%\projectName\
+copy %basePath%hierarchyCharaType.txt %currentDir%\projectName\
+call %currentDir%\projectName\createCharaType.bat
+
 :: 完了メッセージを表示
 echo フォルダおよびファイルの作成が完了しました。
-pause
+:: pause
