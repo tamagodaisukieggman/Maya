@@ -280,7 +280,7 @@ class Build(object):
                 try:
                     if build_file.endswith('.py'):
                         if 2022 <= float(maya_version):
-                            exec("rig_setup_id = '{}';".format(format_rig_setup_id) + open(str(build_file), encoding="utf-8").read(), globals())
+                            exec("rig_setup_id = '{}';build_file = '{}';".format(format_rig_setup_id, str(build_file)) + open(str(build_file), encoding="utf-8").read(), globals())
                         else:
                             # exec(codecs.open(str(build_file), encoding="utf-8").read())
                             execfile(build_file)
