@@ -5,13 +5,14 @@ from imp import reload
 import os
 import traceback
 
-def import_hierarchy(path, namespace="import_hierarchy_tmp_ns"):
+def import_hierarchy(path):
     if not os.path.isfile(path):
         cmds.error('{} is not found.'.format(path))
         print(format_exc)
         return
 
-    cmds.file(path, i=True, namespace=namespace)
+    cmds.file(path, i=True, ignoreVersion=True, mergeNamespacesOnClash=False,
+              options="v=0;", pr=True)
     root_list = cmds.ls(namespace + ":|*")
     root_nodes = []
     for root in root_list:
