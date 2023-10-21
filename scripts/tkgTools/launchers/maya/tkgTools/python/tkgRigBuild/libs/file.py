@@ -5,13 +5,13 @@ from imp import reload
 import os
 import traceback
 
-def import_hierarchy(path):
+def import_hierarchy(path, namespace="imoprt_hierarchy_nss"):
     if not os.path.isfile(path):
         cmds.error('{} is not found.'.format(path))
         print(format_exc)
         return
 
-    cmds.file(path, i=True, ignoreVersion=True, mergeNamespacesOnClash=False,
+    cmds.file(path, i=True, namespace=namespace, ignoreVersion=True, mergeNamespacesOnClash=False,
               options="v=0;", pr=True)
     root_list = cmds.ls(namespace + ":|*")
     root_nodes = []

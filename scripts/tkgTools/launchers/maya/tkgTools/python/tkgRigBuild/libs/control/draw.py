@@ -130,6 +130,8 @@ class Draw(object):
             else:
                 cmds.rename(shp, "{}Shape_{}".format(self.curve, i))
 
+            cmds.setAttr('{}.lineWidth'.format(shp), 2)
+
         if not axis == "y":
             self.set_axis(axis)
 
