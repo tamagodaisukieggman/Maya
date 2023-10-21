@@ -125,12 +125,12 @@ class Draw(object):
 
         curve_shapes = tkgCommon.get_shapes(self.curve)
         for i, shp in enumerate(curve_shapes):
+            cmds.setAttr('{}.lineWidth'.format(shp), 2)
+
             if i == 0:
                 cmds.rename(shp, self.curve + "Shape")
             else:
                 cmds.rename(shp, "{}Shape_{}".format(self.curve, i))
-
-            cmds.setAttr('{}.lineWidth'.format(shp), 2)
 
         if not axis == "y":
             self.set_axis(axis)
