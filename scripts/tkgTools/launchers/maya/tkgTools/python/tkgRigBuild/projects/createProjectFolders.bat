@@ -9,6 +9,8 @@ echo Current Directory: %currentDir%
 echo File Path: %filePath%
 
 set basePath=%currentDir:projects=base%
+set libraryPath=%currentDir:projects=library%
+
 echo Base Path: %basePath%
 
 :: テキストファイルからフォルダ階層を読み取り、フォルダまたはファイルを作成
@@ -47,6 +49,10 @@ copy %basePath%hierarchyCharaType.txt %currentDir%\projectName\
 copy %basePath%buildCharaType.bat %currentDir%\projectName\charaType\
 copy %basePath%buildbase.xml %currentDir%\projectName\charaType\
 :: call %currentDir%\projectName\createCharaType.bat
+
+set "sourcePath=%libraryPath%buildPackage\projectName\charaType"
+set "destPath=%currentDir%\projectName\charaType"
+xcopy "%sourcePath%" "%destPath%" /E /H /R /Y
 
 :: 完了メッセージを表示
 echo フォルダおよびファイルの作成が完了しました。

@@ -18,13 +18,23 @@ set PARENT_DIR=%PARENT_DIR:~0,-1%
 for %%i in (%PARENT_DIR%) do set PARENT_PARENT_DIR=%%~dpi
 
 :: set SCRIPT_DIR=%CURRENT_DIR:\projects\wizard2=%
-set SCRIPT_DIR=%PARENT_PARENT_DIR:\projects=\bat%
+set BAT_SCRIPT_DIR=%PARENT_PARENT_DIR:\projects=\bat%
+set BUILD_SCRIPT_DIR=%PARENT_PARENT_DIR:\projects=%
+
+
+:: 末尾のバックスラッシュを削除
+set _BACK_CURRENT_DIR=%BUILD_SCRIPT_DIR:~0,-1%
+
+:: 上の階層のディレクトリパスを取得
+for %%i in (%_BACK_CURRENT_DIR%) do set BUILD_SCRIPT_DIR=%%~dpi
+
 
 ::Maya Settings
 set MAYA_UI_LANGUAGE=en_US
-set MAYA_CMD_FILE_OUTPUT=%SCRIPT_DIR%/maya_cmdFileOutput.log
-set PYTHONPATH=%PYTHONPATH%;%SCRIPT_DIR%;
-rem echo 一時的にPYTHONPATHを指定: %PYTHONPATH%
+set MAYA_CMD_FILE_OUTPUT=%BAT_SCRIPT_DIR%/maya_cmdFileOutput.log
+set PYTHONPATH=%PYTHONPATH%;%BAT_SCRIPT_DIR%;
+set PYTHONPATH=%PYTHONPATH%;%BUILD_SCRIPT_DIR%;
+echo 一時的にPYTHONPATHを指定: %PYTHONPATH%
 
 for %%i in ("%CD%") do set TYPE=%%~ni
 echo TYPE: %TYPE%
