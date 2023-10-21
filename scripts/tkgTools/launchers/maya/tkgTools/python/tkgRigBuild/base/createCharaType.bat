@@ -26,6 +26,7 @@ echo Parent Directory: %parentDir%
 echo Parent Parent Directory: %parentParentDir%
 
 set basePath=%parentParentDir%base\
+set libraryPath=%basePath:base=library%
 
 :: テキストファイルからフォルダ階層を読み取り、フォルダまたはファイルを作成
 for /f "usebackq delims=" %%A in ("%filePath%") do (
@@ -61,6 +62,10 @@ for /f "usebackq delims=" %%A in ("%filePath%") do (
 copy %basePath%buildCharaType.bat %currentDir%charaType\
 copy %basePath%buildbase.xml %currentDir%charaType\
 echo %currentDir%charaType\
+
+set "sourcePath=%libraryPath%buildPackage\projectName\charaType"
+set "destPath=%currentDir%\charaType"
+xcopy "%sourcePath%" "%destPath%" /E /H /R /Y
 
 :: 完了メッセージを表示
 echo フォルダおよびファイルの作成が完了しました。
