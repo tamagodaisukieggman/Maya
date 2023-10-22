@@ -25,7 +25,8 @@ script_path = '/'.join(userSetup_path.replace('\\', '/').split('/')[0:-1])
 def load_plugins():
     plugins = [
         'fbxmaya',
-        'quatNodes'
+        'quatNodes',
+        '{}/plug-ins/CharcoalEditor/{}/CharcoalEditor2.mll'.format(script_path, maya_version)
     ]
     plugin_results = []
     for plugin in plugins:

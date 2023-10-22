@@ -16,7 +16,10 @@ class Root(tkgModule.RigModule):
                  part=None,
                  guide_list=None,
                  ctrl_scale=None,
+                 global_name='global',
                  global_shape="gnomon",
+                 root_01_name='root_01',
+                 root_02_name='root_02',
                  root_shape="pacman",
                  model_path=None,
                  model_namespace=None,
@@ -34,7 +37,10 @@ class Root(tkgModule.RigModule):
         else:
             self.root_pose = (0,0,0)
 
+        self.global_name = global_name
         self.global_shape = global_shape
+        self.root_01_name = root_01_name
+        self.root_02_name = root_02_name
         self.root_shape = root_shape
 
         self.create_module() # buildPartモジュールで使うとき
@@ -56,10 +62,10 @@ class Root(tkgModule.RigModule):
                                           shape=self.global_shape,
                                           prefix=self.side,
                                           suffix="CTRL",
-                                          name="global",
+                                          name=self.global_name,
                                           axis="y",
                                           group_type=group_type,
-                                          rig_type="global",
+                                          rig_type=self.global_name,
                                           position=self.root_pose,
                                           rotation=self.root_pose,
                                           ctrl_scale=self.ctrl_scale)
@@ -68,10 +74,10 @@ class Root(tkgModule.RigModule):
                                           shape=self.root_shape,
                                           prefix=self.side,
                                           suffix="CTRL",
-                                          name="root_01",
+                                          name=self.root_01_name,
                                           axis="y",
                                           group_type="main",
-                                          rig_type="root_01",
+                                          rig_type=self.root_01_name,
                                           position=self.root_pose,
                                           rotation=self.root_pose,
                                           ctrl_scale=self.ctrl_scale * 0.5)
@@ -80,10 +86,10 @@ class Root(tkgModule.RigModule):
                                           shape=self.root_shape,
                                           prefix=self.side,
                                           suffix="CTRL",
-                                          name="root_02",
+                                          name=self.root_02_name,
                                           axis="y",
                                           group_type="main",
-                                          rig_type="root_02",
+                                          rig_type=self.root_02_name,
                                           position=self.root_pose,
                                           rotation=self.root_pose,
                                           ctrl_scale=self.ctrl_scale * 0.4)
