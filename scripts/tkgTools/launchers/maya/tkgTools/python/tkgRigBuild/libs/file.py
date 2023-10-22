@@ -20,3 +20,15 @@ def import_hierarchy(path, namespace="imoprt_hierarchy_nss"):
     cmds.namespace(moveNamespace=(namespace, ":"), f=True)
     cmds.namespace(removeNamespace=namespace)
     return root_nodes
+
+def reference_model(path, namespace="chr"):
+    if not os.path.isfile(path):
+        cmds.error('{} is not found.'.format(path))
+        print(format_exc)
+        return
+
+    cmds.file(path, r=True, namespace=namespace, ignoreVersion=True, mergeNamespacesOnClash=False,
+              options="v=0;", gl=True)
+    root_nodes = cmds.ls(namespace + ":|*", rn=True, assemblies=True)
+
+    return root_nodes

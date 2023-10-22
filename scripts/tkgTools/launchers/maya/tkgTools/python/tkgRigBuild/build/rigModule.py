@@ -19,9 +19,11 @@ class RigModule(tkgBase.RigBase):
                  guide_list=None,
                  ctrl_scale=None,
                  model_path=None,
+                 model_namespace=None,
                  guide_path=None):
         try:
             super().__init__(model_path=model_path,
+                             model_namespace=model_namespace,
                              guide_path=guide_path)
         except:
             print(traceback.format_exc())
@@ -31,6 +33,7 @@ class RigModule(tkgBase.RigBase):
         self.guide_list = guide_list
         self.ctrl_scale = ctrl_scale
         self.model_path = model_path
+        self.model_namespace = model_namespace
         self.guide_path = guide_path
 
         if not self.side:

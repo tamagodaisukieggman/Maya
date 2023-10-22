@@ -19,12 +19,14 @@ class Root(tkgModule.RigModule):
                  global_shape="gnomon",
                  root_shape="pacman",
                  model_path=None,
+                 model_namespace=None,
                  guide_path=None):
         super(Root, self).__init__(side=side,
                                    part=part,
                                    guide_list=guide_list,
                                    ctrl_scale=ctrl_scale,
                                    model_path=model_path,
+                                   model_namespace=model_namespace,
                                    guide_path=guide_path)
 
         if self.guide_list:

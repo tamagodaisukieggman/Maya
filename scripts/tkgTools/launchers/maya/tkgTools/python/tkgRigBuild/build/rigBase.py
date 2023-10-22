@@ -8,8 +8,10 @@ reload(tkgFile)
 class RigBase(object):
     def __init__(self,
                  model_path=None,
+                 model_namespace=None,
                  guide_path=None):
         self.model_path = model_path
+        self.model_namespace = model_namespace
         self.guide_path = guide_path
 
     def create_module(self):
@@ -26,7 +28,10 @@ class RigBase(object):
         self.skel = self.rig_group(name="SKEL", parent=self.root)
 
     def load_model(self):
-        root_nodes = tkgFile.import_hierarchy(self.model_path)
+        if self.model_namespace:
+            root_nodes = tkgFile.reference_model(self.model_path, self.model_namespace)
+        else:
+            root_nodes = tkgFile.reference_model(self.model_path)
         cmds.parent(root_nodes, self.model)
 
     def load_guide(self):
