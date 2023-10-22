@@ -8,4 +8,4 @@ reload(tkgPart)
 reload(tkgModule)
 rigModule = tkgModule.RigModule()
 
-hip = tkgPart.build_module(module_type="hip", side="Cn", part="hip", guide_list=["proxy_Hip"], offset_hip=-0.5)
+hip = tkgPart.build_module(module_type="hip", side="Cn", part="hip", guide_list=["proxy_Hip"])

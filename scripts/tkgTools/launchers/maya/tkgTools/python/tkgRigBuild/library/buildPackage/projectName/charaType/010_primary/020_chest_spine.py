@@ -17,4 +17,4 @@ spine = tkgPart.build_module(module_type="spine",
                                         "proxy_Spine1",
                                         "proxy_Spine2",
                                         "proxy_Spine3"],
-                            ctrl_scale=1)
+                            ctrl_scale=10)

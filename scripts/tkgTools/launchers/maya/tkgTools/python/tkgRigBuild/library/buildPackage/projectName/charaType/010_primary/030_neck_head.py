@@ -13,10 +13,10 @@ neck = tkgPart.build_module(module_type="neck",
                             part="neck",
                             guide_list=["proxy_Neck",
                                         "proxy_Head"],
-                            ctrl_scale=1)
+                            ctrl_scale=10)
 
 head = tkgPart.build_module(module_type="head",
                             side="Cn",
                             part="head",
                             guide_list=["proxy_Head"],
-                            ctrl_scale=5)
+                            ctrl_scale=10)

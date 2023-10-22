@@ -85,9 +85,10 @@ class Hip(tkgModule.RigModule):
         self.bind_joints = hip_chain.joints
 
         # offset hip joint for better weight mirroring
-        cmds.setAttr(
-            hip_chain.constraints[0] + '.target[0].targetOffsetTranslateY',
-            self.offset_hip)
+        if self.offset_hip:
+            cmds.setAttr(
+                hip_chain.constraints[0] + '.target[0].targetOffsetTranslateY',
+                self.offset_hip)
 
         self.tag_bind_joints(self.bind_joints)
 
