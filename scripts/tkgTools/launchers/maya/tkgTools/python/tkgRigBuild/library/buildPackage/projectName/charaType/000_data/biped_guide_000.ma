@@ -1,27 +1,28 @@
 //Maya ASCII 2022 scene
-//Name: biped_guide_000_.ma
-//Last modified: Sun, Oct 22, 2023 04:00:35 AM
+//Name: biped_guide_000.ma
+//Last modified: Mon, Oct 23, 2023 01:24:07 AM
 //Codeset: 932
 requires maya "2022";
 requires "stereoCamera" "10.0";
 requires -nodeType "aiOptions" -nodeType "aiAOVDriver" -nodeType "aiAOVFilter" "mtoa" "5.0.0.4";
+requires "stereoCamera" "10.0";
 currentUnit -l centimeter -a degree -t film;
 fileInfo "application" "maya";
 fileInfo "product" "Maya 2022";
 fileInfo "version" "2022";
 fileInfo "cutIdentifier" "202205171752-c25c06f306";
 fileInfo "osv" "Windows 10 Home v2009 (Build: 22621)";
-fileInfo "UUID" "03DDE537-46E5-7004-15F7-A1AEFA8D88BE";
+fileInfo "UUID" "46612EF9-4FF2-786B-D22C-1CB43EB34785";
 createNode transform -s -n "persp";
 	rename -uid "EE673E77-451F-5749-9597-459D25D0EDD4";
 	setAttr ".v" no;
-	setAttr ".t" -type "double3" 34.775795200749144 61.225931786983899 44.39777842656661 ;
-	setAttr ".r" -type "double3" -39.338352729603102 32.599999999999923 -3.7753524030112395e-15 ;
+	setAttr ".t" -type "double3" 158.77452320296803 210.30171956113202 202.07661395981111 ;
+	setAttr ".r" -type "double3" -26.138352729603003 30.599999999999966 9.2378278905885924e-16 ;
 createNode camera -s -n "perspShape" -p "persp";
 	rename -uid "105491A8-4FC7-7571-2C1E-DC8530165FBA";
 	setAttr -k off ".v" no;
 	setAttr ".fl" 34.999999999999993;
-	setAttr ".coi" 79.731711259302472;
+	setAttr ".coi" 336.02131618024794;
 	setAttr ".imn" -type "string" "persp";
 	setAttr ".den" -type "string" "persp_depth";
 	setAttr ".man" -type "string" "persp_mask";
@@ -350,6 +351,75 @@ createNode joint -n "proxy_ArmRoll_L" -p "proxy_Arm_L";
 	setAttr ".typ" 18;
 	setAttr ".otp" -type "string" "proxy_ArmRoll";
 	setAttr ".radi" 2;
+createNode transform -n "angleDimension1" -p "proxy_Arm_L";
+	rename -uid "BD6AEF37-4B41-8CF5-0BB1-3782CB178419";
+	setAttr ".t" -type "double3" -11.481999999999998 116.13856781503381 -5.6767534646424469 ;
+	setAttr ".r" -type "double3" 180 0 0 ;
+	setAttr ".s" -type "double3" 1 0.99999999999999978 0.99999999999999978 ;
+createNode angleDimension -n "angleDimensionShape1" -p "angleDimension1";
+	rename -uid "CDCF9585-4BE6-76AC-6AAC-B49F167B7C6F";
+	setAttr -k off ".v";
+createNode transform -n "proxy_Elbow_L_p_match_loc" -p "proxy_Arm_L";
+	rename -uid "F0E80472-4DED-6B04-0579-A7B82750416F";
+	setAttr ".s" -type "double3" 1 0.99999999999999978 0.99999999999999978 ;
+createNode locator -n "proxy_Elbow_L_p_match_locShape" -p "proxy_Elbow_L_p_match_loc";
+	rename -uid "E6803D1D-45FF-1656-9700-6AA919677787";
+	setAttr -k off ".v";
+createNode aimConstraint -n "proxy_Elbow_L_p_match_loc_aimConstraint1" -p "proxy_Elbow_L_p_match_loc";
+	rename -uid "7928973C-4E68-C25C-7645-738BF37BA65F";
+	addAttr -dcb 0 -ci true -sn "w0" -ln "proxy_Elbow_LW0" -dv 1 -at "double";
+	setAttr -k on ".nds";
+	setAttr -k off ".v";
+	setAttr -k off ".tx";
+	setAttr -k off ".ty";
+	setAttr -k off ".tz";
+	setAttr -k off ".rx";
+	setAttr -k off ".ry";
+	setAttr -k off ".rz";
+	setAttr -k off ".sx";
+	setAttr -k off ".sy";
+	setAttr -k off ".sz";
+	setAttr ".erp" yes;
+	setAttr ".a" -type "double3" 0 0 1 ;
+	setAttr ".u" -type "double3" 1 0 0 ;
+	setAttr ".wut" 1;
+	setAttr ".rsrr" -type "double3" 0 89.999999987802525 0 ;
+	setAttr -k on ".w0";
+createNode transform -n "proxy_Elbow_L_match_loc" -p "proxy_Elbow_L_p_match_loc";
+	rename -uid "7AEC3F75-4906-DEF9-0DB8-3E8662F4C7BD";
+	setAttr ".t" -type "double3" 1.9550323457906416e-06 0 50 ;
+	setAttr ".r" -type "double3" 180 0 0 ;
+createNode locator -n "proxy_Elbow_L_match_locShape" -p "proxy_Elbow_L_match_loc";
+	rename -uid "CCA18859-45BA-EC7E-5736-40B0B27E1C12";
+	setAttr -k off ".v";
+createNode transform -n "proxy_Wrist_L_end_match_loc" -p "proxy_Arm_L";
+	rename -uid "AB334339-4F1E-CBAA-ED6E-ED884BD54EAB";
+	setAttr ".t" -type "double3" 41.4 0 8.8817841970012523e-16 ;
+	setAttr -av ".tx";
+	setAttr -av ".ty";
+	setAttr -av ".tz";
+	setAttr ".r" -type "double3" 180 0 0 ;
+	setAttr ".s" -type "double3" 1 0.99999999999999978 0.99999999999999978 ;
+createNode locator -n "proxy_Wrist_L_end_match_locShape" -p "proxy_Wrist_L_end_match_loc";
+	rename -uid "8F7DFC5A-425E-8BF9-D460-FCBF0ACE9FB9";
+	setAttr -k off ".v";
+createNode pointConstraint -n "proxy_Wrist_L_end_match_loc_pointConstraint1" -p "proxy_Wrist_L_end_match_loc";
+	rename -uid "BA5E1BAB-4341-1EAD-0E9D-8BBCF342A979";
+	addAttr -dcb 0 -ci true -k true -sn "w0" -ln "proxy_Wrist_LW0" -dv 1 -min 0 -at "double";
+	setAttr -k on ".nds";
+	setAttr -k off ".v";
+	setAttr -k off ".tx";
+	setAttr -k off ".ty";
+	setAttr -k off ".tz";
+	setAttr -k off ".rx";
+	setAttr -k off ".ry";
+	setAttr -k off ".rz";
+	setAttr -k off ".sx";
+	setAttr -k off ".sy";
+	setAttr -k off ".sz";
+	setAttr ".erp" yes;
+	setAttr ".rst" -type "double3" 52.882 116.13856781503384 -5.6767534646424354 ;
+	setAttr -k on ".w0";
 createNode joint -n "proxy_Shoulder_R" -p "proxy_Spine3";
 	rename -uid "8707CDCC-4F90-11F7-6260-74934AE78B65";
 	setAttr ".wfcc" -type "float3" 1 1 0 ;
@@ -561,6 +631,69 @@ createNode joint -n "proxy_ArmRoll_R" -p "proxy_Arm_R";
 	setAttr ".typ" 18;
 	setAttr ".otp" -type "string" "proxy_ArmRoll";
 	setAttr ".radi" 2;
+createNode transform -n "angleDimension2" -p "proxy_Arm_R";
+	rename -uid "FC0F6CBA-4018-1FE1-1B69-26ACE49FA579";
+	setAttr ".t" -type "double3" 11.482 -116.13856781503384 5.6767534646424407 ;
+createNode angleDimension -n "angleDimensionShape2" -p "angleDimension2";
+	rename -uid "3AEC28FA-4F6E-7897-2564-09B4DBAE67B0";
+	setAttr -k off ".v";
+createNode transform -n "proxy_Elbow_R_p_match_loc" -p "proxy_Arm_R";
+	rename -uid "4D26071D-4E37-5250-880B-1E89D3B0F140";
+createNode locator -n "proxy_Elbow_R_p_match_locShape" -p "proxy_Elbow_R_p_match_loc";
+	rename -uid "D3752641-484A-3228-E57D-249A89AEDA13";
+	setAttr -k off ".v";
+createNode aimConstraint -n "proxy_Elbow_R_p_match_loc_aimConstraint1" -p "proxy_Elbow_R_p_match_loc";
+	rename -uid "4DC0D52F-4A28-422B-34FA-21AD41290D88";
+	addAttr -dcb 0 -ci true -sn "w0" -ln "proxy_Elbow_RW0" -dv 1 -at "double";
+	setAttr -k on ".nds";
+	setAttr -k off ".v";
+	setAttr -k off ".tx";
+	setAttr -k off ".ty";
+	setAttr -k off ".tz";
+	setAttr -k off ".rx";
+	setAttr -k off ".ry";
+	setAttr -k off ".rz";
+	setAttr -k off ".sx";
+	setAttr -k off ".sy";
+	setAttr -k off ".sz";
+	setAttr ".erp" yes;
+	setAttr ".a" -type "double3" 0 0 -1 ;
+	setAttr ".u" -type "double3" -1 0 0 ;
+	setAttr ".wut" 1;
+	setAttr ".rsrr" -type "double3" 0 90 0 ;
+	setAttr -k on ".w0";
+createNode transform -n "proxy_Elbow_R_match_loc" -p "proxy_Elbow_R_p_match_loc";
+	rename -uid "38230954-4BF0-B263-5196-20866340084D";
+	setAttr ".t" -type "double3" -1.9550323457906416e-06 0 -50 ;
+createNode locator -n "proxy_Elbow_R_match_locShape" -p "proxy_Elbow_R_match_loc";
+	rename -uid "486054DD-4808-F10C-D5D8-09942271D8B8";
+	setAttr -k off ".v";
+createNode transform -n "proxy_Wrist_R_end_match_loc" -p "proxy_Arm_R";
+	rename -uid "57D72DE4-4521-C174-002D-879EE9D7443A";
+	setAttr ".t" -type "double3" -41.4 0 0 ;
+	setAttr -av ".tx";
+	setAttr -av ".ty";
+	setAttr -av ".tz";
+createNode locator -n "proxy_Wrist_R_end_match_locShape" -p "proxy_Wrist_R_end_match_loc";
+	rename -uid "41CFB541-43B5-3E7C-7BCC-79A769A547B7";
+	setAttr -k off ".v";
+createNode pointConstraint -n "proxy_Wrist_R_end_match_loc_pointConstraint1" -p "proxy_Wrist_R_end_match_loc";
+	rename -uid "956A3494-4801-9689-B7B6-D898C79648E2";
+	addAttr -dcb 0 -ci true -k true -sn "w0" -ln "proxy_Wrist_RW0" -dv 1 -min 0 -at "double";
+	setAttr -k on ".nds";
+	setAttr -k off ".v";
+	setAttr -k off ".tx";
+	setAttr -k off ".ty";
+	setAttr -k off ".tz";
+	setAttr -k off ".rx";
+	setAttr -k off ".ry";
+	setAttr -k off ".rz";
+	setAttr -k off ".sx";
+	setAttr -k off ".sy";
+	setAttr -k off ".sz";
+	setAttr ".erp" yes;
+	setAttr ".rst" -type "double3" -52.882 116.13856781503384 -5.6767534646424345 ;
+	setAttr -k on ".w0";
 createNode joint -n "proxy_Thigh_L" -p "proxy_Hip";
 	rename -uid "F8D04B0A-47EA-23E9-3055-FD8A4F870BC6";
 	setAttr ".wfcc" -type "float3" 1 1 0 ;
@@ -610,6 +743,76 @@ createNode joint -n "proxy_Toe_L" -p "proxy_Ankle_L";
 	setAttr ".typ" 18;
 	setAttr ".otp" -type "string" "proxy_Toe";
 	setAttr ".radi" 0.655;
+createNode transform -n "angleDimension3" -p "proxy_Thigh_L";
+	rename -uid "A700BEAC-463B-8017-CEFD-CD95A98331F8";
+	setAttr ".t" -type "double3" 73.124984567140189 -9.9090000000000025 2.7151193446158333 ;
+	setAttr ".r" -type "double3" -1.5000000000000013 0 90 ;
+	setAttr ".s" -type "double3" 1 0.99999999999999989 1 ;
+createNode angleDimension -n "angleDimensionShape3" -p "angleDimension3";
+	rename -uid "DE9145CE-4276-D556-A014-C5A56BB24F07";
+	setAttr -k off ".v";
+createNode transform -n "proxy_Knee_L_p_match_loc" -p "proxy_Thigh_L";
+	rename -uid "683C8E8C-458D-09DA-C964-F09FD500EE1E";
+	setAttr ".s" -type "double3" 1 0.99999999999999989 1 ;
+createNode locator -n "proxy_Knee_L_p_match_locShape" -p "proxy_Knee_L_p_match_loc";
+	rename -uid "5AF874DB-4B7D-B2F2-8760-98BA510F6AB6";
+	setAttr -k off ".v";
+createNode aimConstraint -n "proxy_Knee_L_p_match_loc_aimConstraint1" -p "proxy_Knee_L_p_match_loc";
+	rename -uid "803A31ED-4A8B-BF25-140D-31B1C9AB7919";
+	addAttr -dcb 0 -ci true -sn "w0" -ln "proxy_Knee_LW0" -dv 1 -at "double";
+	setAttr -k on ".nds";
+	setAttr -k off ".v";
+	setAttr -k off ".tx";
+	setAttr -k off ".ty";
+	setAttr -k off ".tz";
+	setAttr -k off ".rx";
+	setAttr -k off ".ry";
+	setAttr -k off ".rz";
+	setAttr -k off ".sx";
+	setAttr -k off ".sy";
+	setAttr -k off ".sz";
+	setAttr ".erp" yes;
+	setAttr ".a" -type "double3" 0 0 1 ;
+	setAttr ".u" -type "double3" 1 0 0 ;
+	setAttr ".wut" 1;
+	setAttr ".rsrr" -type "double3" 3.2594438310641875e-13 1.9994662116304203 5.6878615992874052e-15 ;
+	setAttr -k on ".w0";
+createNode transform -n "proxy_Knee_L_match_loc" -p "proxy_Knee_L_p_match_loc";
+	rename -uid "342F0C0E-4AF8-AB35-CA1B-659650D5B9AE";
+	setAttr ".t" -type "double3" -3.0519620272273755 -5.3290705182007514e-15 51.004765934995341 ;
+	setAttr ".r" -type "double3" -3.4994662116304216 0 90 ;
+	setAttr ".s" -type "double3" 1.0000000000000002 1 1 ;
+createNode locator -n "proxy_Knee_L_match_locShape" -p "proxy_Knee_L_match_loc";
+	rename -uid "A7FE33E8-410A-D254-B5A3-A4A4C8C0DB47";
+	setAttr -k off ".v";
+createNode transform -n "proxy_Ankle_L_end_match_loc" -p "proxy_Thigh_L";
+	rename -uid "21DCC378-43DF-FCBC-EC3C-18839FD8A226";
+	setAttr ".t" -type "double3" 62.915497188196099 1.7763568394002505e-15 -2.1340153263914727 ;
+	setAttr -av ".tx";
+	setAttr -av ".ty";
+	setAttr -av ".tz";
+	setAttr ".r" -type "double3" -1.5000000000000013 0 90 ;
+	setAttr ".s" -type "double3" 1 0.99999999999999989 1 ;
+createNode locator -n "proxy_Ankle_L_end_match_locShape" -p "proxy_Ankle_L_end_match_loc";
+	rename -uid "614A5556-414A-777B-8BB0-3199056A36A2";
+	setAttr -k off ".v";
+createNode pointConstraint -n "proxy_Ankle_L_end_match_loc_pointConstraint1" -p "proxy_Ankle_L_end_match_loc";
+	rename -uid "D7383621-4FAB-380F-6F52-7CAA056159FD";
+	addAttr -dcb 0 -ci true -k true -sn "w0" -ln "proxy_Ankle_LW0" -dv 1 -min 0 -at "double";
+	setAttr -k on ".nds";
+	setAttr -k off ".v";
+	setAttr -k off ".tx";
+	setAttr -k off ".ty";
+	setAttr -k off ".tz";
+	setAttr -k off ".rx";
+	setAttr -k off ".ry";
+	setAttr -k off ".rz";
+	setAttr -k off ".sx";
+	setAttr -k off ".sy";
+	setAttr -k off ".sz";
+	setAttr ".erp" yes;
+	setAttr ".rst" -type "double3" 9.9090000000000042 10.332924390227838 -4.580219770296889 ;
+	setAttr -k on ".w0";
 createNode joint -n "proxy_Thigh_R" -p "proxy_Hip";
 	rename -uid "3C684399-43A8-1911-BA13-87ACD8C03196";
 	setAttr ".wfcc" -type "float3" 1 1 0 ;
@@ -655,20 +858,90 @@ createNode joint -n "proxy_Toe_R" -p "proxy_Ankle_R";
 	setAttr ".typ" 18;
 	setAttr ".otp" -type "string" "proxy_Toe";
 	setAttr ".radi" 0.655;
+createNode transform -n "angleDimension4" -p "proxy_Thigh_R";
+	rename -uid "AF9BB2CD-4633-05DC-DC29-B281689378AC";
+	setAttr ".t" -type "double3" -73.124984567143315 9.909 -2.7151193445320172 ;
+	setAttr ".r" -type "double3" 178.50000000006568 0 90 ;
+	setAttr ".s" -type "double3" 1 1 1.0000000000000002 ;
+createNode angleDimension -n "angleDimensionShape4" -p "angleDimension4";
+	rename -uid "B68350A3-44C4-A120-941E-9EA11C186461";
+	setAttr -k off ".v";
+createNode transform -n "proxy_Knee_R_p_match_loc" -p "proxy_Thigh_R";
+	rename -uid "05EE5934-4EF7-9696-43C3-58A7483EF777";
+	setAttr ".s" -type "double3" 1 1 1.0000000000000002 ;
+createNode locator -n "proxy_Knee_R_p_match_locShape" -p "proxy_Knee_R_p_match_loc";
+	rename -uid "939293B6-460D-631B-7983-B093E8351C7F";
+	setAttr -k off ".v";
+createNode aimConstraint -n "proxy_Knee_R_p_match_loc_aimConstraint1" -p "proxy_Knee_R_p_match_loc";
+	rename -uid "99699F05-44CA-BCCE-F4B3-44812A1C77DB";
+	addAttr -dcb 0 -ci true -sn "w0" -ln "proxy_Knee_RW0" -dv 1 -at "double";
+	setAttr -k on ".nds";
+	setAttr -k off ".v";
+	setAttr -k off ".tx";
+	setAttr -k off ".ty";
+	setAttr -k off ".tz";
+	setAttr -k off ".rx";
+	setAttr -k off ".ry";
+	setAttr -k off ".rz";
+	setAttr -k off ".sx";
+	setAttr -k off ".sy";
+	setAttr -k off ".sz";
+	setAttr ".erp" yes;
+	setAttr ".a" -type "double3" 0 0 -1 ;
+	setAttr ".u" -type "double3" 1 0 0 ;
+	setAttr ".wut" 1;
+	setAttr ".rsrr" -type "double3" 3.7602820361986493e-13 -1.9994662116964654 -180 ;
+	setAttr -k on ".w0";
+createNode transform -n "proxy_Knee_R_match_loc" -p "proxy_Knee_R_p_match_loc";
+	rename -uid "B1F3C1F1-44AF-EC93-6E46-889BE18550E3";
+	setAttr ".t" -type "double3" -3.0519620272277024 0 -51.004765934995312 ;
+	setAttr ".r" -type "double3" 176.50053378836921 0 -90 ;
+	setAttr ".s" -type "double3" 1 1.0000000000000002 1 ;
+createNode locator -n "proxy_Knee_R_match_locShape" -p "proxy_Knee_R_match_loc";
+	rename -uid "3E2B8A20-403C-658E-CF89-E697933AEAE7";
+	setAttr -k off ".v";
+createNode transform -n "proxy_Ankle_R_end_match_loc" -p "proxy_Thigh_R";
+	rename -uid "1806A8DC-42E4-29EC-A3AC-FAAEB45250B8";
+	setAttr ".t" -type "double3" -62.915497188193669 7.1054273576010019e-15 2.1340153264635897 ;
+	setAttr -av ".tx";
+	setAttr -av ".ty";
+	setAttr -av ".tz";
+	setAttr ".r" -type "double3" 178.50000000006568 0 90 ;
+	setAttr ".s" -type "double3" 1 1 1.0000000000000002 ;
+createNode locator -n "proxy_Ankle_R_end_match_locShape" -p "proxy_Ankle_R_end_match_loc";
+	rename -uid "DB43D017-4ED2-A4E0-1DB8-82BBF53601E3";
+	setAttr -k off ".v";
+createNode pointConstraint -n "proxy_Ankle_R_end_match_loc_pointConstraint1" -p "proxy_Ankle_R_end_match_loc";
+	rename -uid "2A852DA3-4DF9-74A9-C5C3-C5B4B83C507A";
+	addAttr -dcb 0 -ci true -k true -sn "w0" -ln "proxy_Ankle_RW0" -dv 1 -min 0 -at "double";
+	setAttr -k on ".nds";
+	setAttr -k off ".v";
+	setAttr -k off ".tx";
+	setAttr -k off ".ty";
+	setAttr -k off ".tz";
+	setAttr -k off ".rx";
+	setAttr -k off ".ry";
+	setAttr -k off ".rz";
+	setAttr -k off ".sx";
+	setAttr -k off ".sy";
+	setAttr -k off ".sz";
+	setAttr ".erp" yes;
+	setAttr ".rst" -type "double3" -9.9089999999999936 10.332924390227834 -4.5802197702968925 ;
+	setAttr -k on ".w0";
 createNode lightLinker -s -n "lightLinker1";
-	rename -uid "09BC94D2-4BF4-E2E3-8530-90B27A641F2A";
+	rename -uid "29549DB6-43F8-DF43-AE2A-C19CA9AAAAA8";
 	setAttr -s 2 ".lnk";
 	setAttr -s 2 ".slnk";
 createNode shapeEditorManager -n "shapeEditorManager";
-	rename -uid "246437EF-4EC4-5730-3B35-DE84FC77E71B";
+	rename -uid "EAD88DF1-4FAD-A53E-9609-7BA324032341";
 createNode poseInterpolatorManager -n "poseInterpolatorManager";
-	rename -uid "1A581794-45A8-893E-8889-E2B612C52698";
+	rename -uid "12CB3D83-43FA-A038-19AE-98AC0FD54F0A";
 createNode displayLayerManager -n "layerManager";
-	rename -uid "4D556D44-48A0-F930-1DDF-81BE14257C4F";
+	rename -uid "1254860A-4040-18E6-6C19-7CA9C45B4020";
 createNode displayLayer -n "defaultLayer";
 	rename -uid "FC300D34-4C1E-6846-C5C8-7AB477618C99";
 createNode renderLayerManager -n "renderLayerManager";
-	rename -uid "D01FA106-4987-CE83-21CE-B3918D317FED";
+	rename -uid "7242DD47-4D55-6744-1CD9-7C948AF8BC0B";
 createNode renderLayer -n "defaultRenderLayer";
 	rename -uid "BBE0EA39-45D1-6EA4-A146-7B9B20810D38";
 	setAttr ".g" yes;
@@ -701,7 +974,7 @@ createNode script -n "uiConfigurationScriptNode";
 		+ "            -textures 1\n            -strokes 1\n            -motionTrails 1\n            -clipGhosts 1\n            -greasePencils 1\n            -shadows 0\n            -captureSequenceNumber -1\n            -width 1\n            -height 1\n            -sceneRenderFilter 0\n            $editorName;\n        modelEditor -e -viewSelected 0 $editorName;\n        modelEditor -e \n            -pluginObjects \"gpuCacheDisplayFilter\" 1 \n            $editorName;\n\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\t$panelName = `sceneUIReplacement -getNextPanel \"modelPanel\" (localizedPanelLabel(\"Persp View\")) `;\n\tif (\"\" != $panelName) {\n\t\t$label = `panel -q -label $panelName`;\n\t\tmodelPanel -edit -l (localizedPanelLabel(\"Persp View\")) -mbv $menusOkayInPanels  $panelName;\n\t\t$editorName = $panelName;\n        modelEditor -e \n            -camera \"|persp\" \n            -useInteractiveMode 0\n            -displayLights \"default\" \n            -displayAppearance \"smoothShaded\" \n            -activeOnly 0\n            -ignorePanZoom 0\n"
 		+ "            -wireframeOnShaded 0\n            -headsUpDisplay 1\n            -holdOuts 1\n            -selectionHiliteDisplay 1\n            -useDefaultMaterial 0\n            -bufferMode \"double\" \n            -twoSidedLighting 0\n            -backfaceCulling 0\n            -xray 0\n            -jointXray 0\n            -activeComponentsXray 0\n            -displayTextures 0\n            -smoothWireframe 0\n            -lineWidth 1\n            -textureAnisotropic 0\n            -textureHilight 1\n            -textureSampling 2\n            -textureDisplay \"modulate\" \n            -textureMaxSize 32768\n            -fogging 0\n            -fogSource \"fragment\" \n            -fogMode \"linear\" \n            -fogStart 0\n            -fogEnd 100\n            -fogDensity 0.1\n            -fogColor 0.5 0.5 0.5 1 \n            -depthOfFieldPreview 1\n            -maxConstantTransparency 1\n            -rendererName \"vp2Renderer\" \n            -objectFilterShowInHUD 1\n            -isFiltered 0\n            -colorResolution 256 256 \n            -bumpResolution 512 512 \n"
 		+ "            -textureCompression 0\n            -transparencyAlgorithm \"frontAndBackCull\" \n            -transpInShadows 0\n            -cullingOverride \"none\" \n            -lowQualityLighting 0\n            -maximumNumHardwareLights 1\n            -occlusionCulling 0\n            -shadingModel 0\n            -useBaseRenderer 0\n            -useReducedRenderer 0\n            -smallObjectCulling 0\n            -smallObjectThreshold -1 \n            -interactiveDisableShadows 0\n            -interactiveBackFaceCull 0\n            -sortTransparent 1\n            -controllers 1\n            -nurbsCurves 1\n            -nurbsSurfaces 1\n            -polymeshes 1\n            -subdivSurfaces 1\n            -planes 1\n            -lights 1\n            -cameras 1\n            -controlVertices 1\n            -hulls 1\n            -grid 1\n            -imagePlane 1\n            -joints 1\n            -ikHandles 1\n            -deformers 1\n            -dynamics 1\n            -particleInstancers 1\n            -fluids 1\n            -hairSystems 1\n            -follicles 1\n"
-		+ "            -nCloths 1\n            -nParticles 1\n            -nRigids 1\n            -dynamicConstraints 1\n            -locators 1\n            -manipulators 1\n            -pluginShapes 1\n            -dimensions 1\n            -handles 1\n            -pivots 1\n            -textures 1\n            -strokes 1\n            -motionTrails 1\n            -clipGhosts 1\n            -greasePencils 1\n            -shadows 0\n            -captureSequenceNumber -1\n            -width 1203\n            -height 698\n            -sceneRenderFilter 0\n            $editorName;\n        modelEditor -e -viewSelected 0 $editorName;\n        modelEditor -e \n            -pluginObjects \"gpuCacheDisplayFilter\" 1 \n            $editorName;\n\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\t$panelName = `sceneUIReplacement -getNextPanel \"outlinerPanel\" (localizedPanelLabel(\"ToggledOutliner\")) `;\n\tif (\"\" != $panelName) {\n\t\t$label = `panel -q -label $panelName`;\n\t\toutlinerPanel -edit -l (localizedPanelLabel(\"ToggledOutliner\")) -mbv $menusOkayInPanels  $panelName;\n"
+		+ "            -nCloths 1\n            -nParticles 1\n            -nRigids 1\n            -dynamicConstraints 1\n            -locators 1\n            -manipulators 1\n            -pluginShapes 1\n            -dimensions 1\n            -handles 1\n            -pivots 1\n            -textures 1\n            -strokes 1\n            -motionTrails 1\n            -clipGhosts 1\n            -greasePencils 1\n            -shadows 0\n            -captureSequenceNumber -1\n            -width 1179\n            -height 698\n            -sceneRenderFilter 0\n            $editorName;\n        modelEditor -e -viewSelected 0 $editorName;\n        modelEditor -e \n            -pluginObjects \"gpuCacheDisplayFilter\" 1 \n            $editorName;\n\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\t$panelName = `sceneUIReplacement -getNextPanel \"outlinerPanel\" (localizedPanelLabel(\"ToggledOutliner\")) `;\n\tif (\"\" != $panelName) {\n\t\t$label = `panel -q -label $panelName`;\n\t\toutlinerPanel -edit -l (localizedPanelLabel(\"ToggledOutliner\")) -mbv $menusOkayInPanels  $panelName;\n"
 		+ "\t\t$editorName = $panelName;\n        outlinerEditor -e \n            -docTag \"isolOutln_fromSeln\" \n            -showShapes 0\n            -showAssignedMaterials 0\n            -showTimeEditor 1\n            -showReferenceNodes 1\n            -showReferenceMembers 1\n            -showAttributes 0\n            -showConnected 0\n            -showAnimCurvesOnly 0\n            -showMuteInfo 0\n            -organizeByLayer 1\n            -organizeByClip 1\n            -showAnimLayerWeight 1\n            -autoExpandLayers 1\n            -autoExpand 0\n            -showDagOnly 1\n            -showAssets 1\n            -showContainedOnly 1\n            -showPublishedAsConnected 0\n            -showParentContainers 0\n            -showContainerContents 1\n            -ignoreDagHierarchy 0\n            -expandConnections 0\n            -showUpstreamCurves 1\n            -showUnitlessCurves 1\n            -showCompounds 1\n            -showLeafs 1\n            -showNumericAttrsOnly 0\n            -highlightActive 1\n            -autoSelectNewObjects 0\n"
 		+ "            -doNotSelectNewObjects 0\n            -dropIsParent 1\n            -transmitFilters 0\n            -setFilter \"defaultSetFilter\" \n            -showSetMembers 1\n            -allowMultiSelection 1\n            -alwaysToggleSelect 0\n            -directSelect 0\n            -isSet 0\n            -isSetMember 0\n            -displayMode \"DAG\" \n            -expandObjects 0\n            -setsIgnoreFilters 1\n            -containersIgnoreFilters 0\n            -editAttrName 0\n            -showAttrValues 0\n            -highlightSecondary 0\n            -showUVAttrsOnly 0\n            -showTextureNodesOnly 0\n            -attrAlphaOrder \"default\" \n            -animLayerFilterOptions \"allAffecting\" \n            -sortOrder \"none\" \n            -longNames 0\n            -niceNames 1\n            -showNamespace 1\n            -showPinIcons 0\n            -mapMotionTrails 0\n            -ignoreHiddenAttribute 0\n            -ignoreOutlinerColor 0\n            -renderFilterVisible 0\n            -renderFilterIndex 0\n            -selectionOrder \"chronological\" \n"
 		+ "            -expandAttribute 0\n            $editorName;\n\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\t$panelName = `sceneUIReplacement -getNextPanel \"outlinerPanel\" (localizedPanelLabel(\"Outliner\")) `;\n\tif (\"\" != $panelName) {\n\t\t$label = `panel -q -label $panelName`;\n\t\toutlinerPanel -edit -l (localizedPanelLabel(\"Outliner\")) -mbv $menusOkayInPanels  $panelName;\n\t\t$editorName = $panelName;\n        outlinerEditor -e \n            -showShapes 0\n            -showAssignedMaterials 0\n            -showTimeEditor 1\n            -showReferenceNodes 0\n            -showReferenceMembers 0\n            -showAttributes 0\n            -showConnected 0\n            -showAnimCurvesOnly 0\n            -showMuteInfo 0\n            -organizeByLayer 1\n            -organizeByClip 1\n            -showAnimLayerWeight 1\n            -autoExpandLayers 1\n            -autoExpand 0\n            -showDagOnly 1\n            -showAssets 1\n            -showContainedOnly 1\n            -showPublishedAsConnected 0\n            -showParentContainers 0\n"
@@ -728,14 +1001,218 @@ createNode script -n "uiConfigurationScriptNode";
 		+ "                -useBaseRenderer 0\n                -useReducedRenderer 0\n                -smallObjectCulling 0\n                -smallObjectThreshold -1 \n                -interactiveDisableShadows 0\n                -interactiveBackFaceCull 0\n                -sortTransparent 1\n                -controllers 1\n                -nurbsCurves 1\n                -nurbsSurfaces 1\n                -polymeshes 1\n                -subdivSurfaces 1\n                -planes 1\n                -lights 1\n                -cameras 1\n                -controlVertices 1\n                -hulls 1\n                -grid 1\n                -imagePlane 1\n                -joints 1\n                -ikHandles 1\n                -deformers 1\n                -dynamics 1\n                -particleInstancers 1\n                -fluids 1\n                -hairSystems 1\n                -follicles 1\n                -nCloths 1\n                -nParticles 1\n                -nRigids 1\n                -dynamicConstraints 1\n                -locators 1\n                -manipulators 1\n"
 		+ "                -pluginShapes 1\n                -dimensions 1\n                -handles 1\n                -pivots 1\n                -textures 1\n                -strokes 1\n                -motionTrails 1\n                -clipGhosts 1\n                -greasePencils 1\n                -shadows 0\n                -captureSequenceNumber -1\n                -width 0\n                -height 0\n                -sceneRenderFilter 0\n                -displayMode \"centerEye\" \n                -viewColor 0 0 0 1 \n                -useCustomBackground 1\n                $editorName;\n            stereoCameraView -e -viewSelected 0 $editorName;\n            stereoCameraView -e \n                -pluginObjects \"gpuCacheDisplayFilter\" 1 \n                $editorName; };\n\t\tif (!$useSceneConfig) {\n\t\t\tpanel -e -l $label $panelName;\n\t\t}\n\t}\n\n\n\tif ($useSceneConfig) {\n        string $configName = `getPanel -cwl (localizedPanelLabel(\"Current Layout\"))`;\n        if (\"\" != $configName) {\n\t\t\tpanelConfiguration -edit -label (localizedPanelLabel(\"Current Layout\")) \n"
 		+ "\t\t\t\t-userCreated false\n\t\t\t\t-defaultImage \"vacantCell.xP:/\"\n\t\t\t\t-image \"\"\n\t\t\t\t-sc false\n\t\t\t\t-configString \"global string $gMainPane; paneLayout -e -cn \\\"single\\\" -ps 1 100 100 $gMainPane;\"\n\t\t\t\t-removeAllPanels\n\t\t\t\t-ap false\n\t\t\t\t\t(localizedPanelLabel(\"Persp View\")) \n\t\t\t\t\t\"modelPanel\"\n"
-		+ "\t\t\t\t\t\"$panelName = `modelPanel -unParent -l (localizedPanelLabel(\\\"Persp View\\\")) -mbv $menusOkayInPanels `;\\n$editorName = $panelName;\\nmodelEditor -e \\n    -cam `findStartUpCamera persp` \\n    -useInteractiveMode 0\\n    -displayLights \\\"default\\\" \\n    -displayAppearance \\\"smoothShaded\\\" \\n    -activeOnly 0\\n    -ignorePanZoom 0\\n    -wireframeOnShaded 0\\n    -headsUpDisplay 1\\n    -holdOuts 1\\n    -selectionHiliteDisplay 1\\n    -useDefaultMaterial 0\\n    -bufferMode \\\"double\\\" \\n    -twoSidedLighting 0\\n    -backfaceCulling 0\\n    -xray 0\\n    -jointXray 0\\n    -activeComponentsXray 0\\n    -displayTextures 0\\n    -smoothWireframe 0\\n    -lineWidth 1\\n    -textureAnisotropic 0\\n    -textureHilight 1\\n    -textureSampling 2\\n    -textureDisplay \\\"modulate\\\" \\n    -textureMaxSize 32768\\n    -fogging 0\\n    -fogSource \\\"fragment\\\" \\n    -fogMode \\\"linear\\\" \\n    -fogStart 0\\n    -fogEnd 100\\n    -fogDensity 0.1\\n    -fogColor 0.5 0.5 0.5 1 \\n    -depthOfFieldPreview 1\\n    -maxConstantTransparency 1\\n    -rendererName \\\"vp2Renderer\\\" \\n    -objectFilterShowInHUD 1\\n    -isFiltered 0\\n    -colorResolution 256 256 \\n    -bumpResolution 512 512 \\n    -textureCompression 0\\n    -transparencyAlgorithm \\\"frontAndBackCull\\\" \\n    -transpInShadows 0\\n    -cullingOverride \\\"none\\\" \\n    -lowQualityLighting 0\\n    -maximumNumHardwareLights 1\\n    -occlusionCulling 0\\n    -shadingModel 0\\n    -useBaseRenderer 0\\n    -useReducedRenderer 0\\n    -smallObjectCulling 0\\n    -smallObjectThreshold -1 \\n    -interactiveDisableShadows 0\\n    -interactiveBackFaceCull 0\\n    -sortTransparent 1\\n    -controllers 1\\n    -nurbsCurves 1\\n    -nurbsSurfaces 1\\n    -polymeshes 1\\n    -subdivSurfaces 1\\n    -planes 1\\n    -lights 1\\n    -cameras 1\\n    -controlVertices 1\\n    -hulls 1\\n    -grid 1\\n    -imagePlane 1\\n    -joints 1\\n    -ikHandles 1\\n    -deformers 1\\n    -dynamics 1\\n    -particleInstancers 1\\n    -fluids 1\\n    -hairSystems 1\\n    -follicles 1\\n    -nCloths 1\\n    -nParticles 1\\n    -nRigids 1\\n    -dynamicConstraints 1\\n    -locators 1\\n    -manipulators 1\\n    -pluginShapes 1\\n    -dimensions 1\\n    -handles 1\\n    -pivots 1\\n    -textures 1\\n    -strokes 1\\n    -motionTrails 1\\n    -clipGhosts 1\\n    -greasePencils 1\\n    -shadows 0\\n    -captureSequenceNumber -1\\n    -width 1203\\n    -height 698\\n    -sceneRenderFilter 0\\n    $editorName;\\nmodelEditor -e -viewSelected 0 $editorName;\\nmodelEditor -e \\n    -pluginObjects \\\"gpuCacheDisplayFilter\\\" 1 \\n    $editorName\"\n"
-		+ "\t\t\t\t\t\"modelPanel -edit -l (localizedPanelLabel(\\\"Persp View\\\")) -mbv $menusOkayInPanels  $panelName;\\n$editorName = $panelName;\\nmodelEditor -e \\n    -cam `findStartUpCamera persp` \\n    -useInteractiveMode 0\\n    -displayLights \\\"default\\\" \\n    -displayAppearance \\\"smoothShaded\\\" \\n    -activeOnly 0\\n    -ignorePanZoom 0\\n    -wireframeOnShaded 0\\n    -headsUpDisplay 1\\n    -holdOuts 1\\n    -selectionHiliteDisplay 1\\n    -useDefaultMaterial 0\\n    -bufferMode \\\"double\\\" \\n    -twoSidedLighting 0\\n    -backfaceCulling 0\\n    -xray 0\\n    -jointXray 0\\n    -activeComponentsXray 0\\n    -displayTextures 0\\n    -smoothWireframe 0\\n    -lineWidth 1\\n    -textureAnisotropic 0\\n    -textureHilight 1\\n    -textureSampling 2\\n    -textureDisplay \\\"modulate\\\" \\n    -textureMaxSize 32768\\n    -fogging 0\\n    -fogSource \\\"fragment\\\" \\n    -fogMode \\\"linear\\\" \\n    -fogStart 0\\n    -fogEnd 100\\n    -fogDensity 0.1\\n    -fogColor 0.5 0.5 0.5 1 \\n    -depthOfFieldPreview 1\\n    -maxConstantTransparency 1\\n    -rendererName \\\"vp2Renderer\\\" \\n    -objectFilterShowInHUD 1\\n    -isFiltered 0\\n    -colorResolution 256 256 \\n    -bumpResolution 512 512 \\n    -textureCompression 0\\n    -transparencyAlgorithm \\\"frontAndBackCull\\\" \\n    -transpInShadows 0\\n    -cullingOverride \\\"none\\\" \\n    -lowQualityLighting 0\\n    -maximumNumHardwareLights 1\\n    -occlusionCulling 0\\n    -shadingModel 0\\n    -useBaseRenderer 0\\n    -useReducedRenderer 0\\n    -smallObjectCulling 0\\n    -smallObjectThreshold -1 \\n    -interactiveDisableShadows 0\\n    -interactiveBackFaceCull 0\\n    -sortTransparent 1\\n    -controllers 1\\n    -nurbsCurves 1\\n    -nurbsSurfaces 1\\n    -polymeshes 1\\n    -subdivSurfaces 1\\n    -planes 1\\n    -lights 1\\n    -cameras 1\\n    -controlVertices 1\\n    -hulls 1\\n    -grid 1\\n    -imagePlane 1\\n    -joints 1\\n    -ikHandles 1\\n    -deformers 1\\n    -dynamics 1\\n    -particleInstancers 1\\n    -fluids 1\\n    -hairSystems 1\\n    -follicles 1\\n    -nCloths 1\\n    -nParticles 1\\n    -nRigids 1\\n    -dynamicConstraints 1\\n    -locators 1\\n    -manipulators 1\\n    -pluginShapes 1\\n    -dimensions 1\\n    -handles 1\\n    -pivots 1\\n    -textures 1\\n    -strokes 1\\n    -motionTrails 1\\n    -clipGhosts 1\\n    -greasePencils 1\\n    -shadows 0\\n    -captureSequenceNumber -1\\n    -width 1203\\n    -height 698\\n    -sceneRenderFilter 0\\n    $editorName;\\nmodelEditor -e -viewSelected 0 $editorName;\\nmodelEditor -e \\n    -pluginObjects \\\"gpuCacheDisplayFilter\\\" 1 \\n    $editorName\"\n"
+		+ "\t\t\t\t\t\"$panelName = `modelPanel -unParent -l (localizedPanelLabel(\\\"Persp View\\\")) -mbv $menusOkayInPanels `;\\n$editorName = $panelName;\\nmodelEditor -e \\n    -cam `findStartUpCamera persp` \\n    -useInteractiveMode 0\\n    -displayLights \\\"default\\\" \\n    -displayAppearance \\\"smoothShaded\\\" \\n    -activeOnly 0\\n    -ignorePanZoom 0\\n    -wireframeOnShaded 0\\n    -headsUpDisplay 1\\n    -holdOuts 1\\n    -selectionHiliteDisplay 1\\n    -useDefaultMaterial 0\\n    -bufferMode \\\"double\\\" \\n    -twoSidedLighting 0\\n    -backfaceCulling 0\\n    -xray 0\\n    -jointXray 0\\n    -activeComponentsXray 0\\n    -displayTextures 0\\n    -smoothWireframe 0\\n    -lineWidth 1\\n    -textureAnisotropic 0\\n    -textureHilight 1\\n    -textureSampling 2\\n    -textureDisplay \\\"modulate\\\" \\n    -textureMaxSize 32768\\n    -fogging 0\\n    -fogSource \\\"fragment\\\" \\n    -fogMode \\\"linear\\\" \\n    -fogStart 0\\n    -fogEnd 100\\n    -fogDensity 0.1\\n    -fogColor 0.5 0.5 0.5 1 \\n    -depthOfFieldPreview 1\\n    -maxConstantTransparency 1\\n    -rendererName \\\"vp2Renderer\\\" \\n    -objectFilterShowInHUD 1\\n    -isFiltered 0\\n    -colorResolution 256 256 \\n    -bumpResolution 512 512 \\n    -textureCompression 0\\n    -transparencyAlgorithm \\\"frontAndBackCull\\\" \\n    -transpInShadows 0\\n    -cullingOverride \\\"none\\\" \\n    -lowQualityLighting 0\\n    -maximumNumHardwareLights 1\\n    -occlusionCulling 0\\n    -shadingModel 0\\n    -useBaseRenderer 0\\n    -useReducedRenderer 0\\n    -smallObjectCulling 0\\n    -smallObjectThreshold -1 \\n    -interactiveDisableShadows 0\\n    -interactiveBackFaceCull 0\\n    -sortTransparent 1\\n    -controllers 1\\n    -nurbsCurves 1\\n    -nurbsSurfaces 1\\n    -polymeshes 1\\n    -subdivSurfaces 1\\n    -planes 1\\n    -lights 1\\n    -cameras 1\\n    -controlVertices 1\\n    -hulls 1\\n    -grid 1\\n    -imagePlane 1\\n    -joints 1\\n    -ikHandles 1\\n    -deformers 1\\n    -dynamics 1\\n    -particleInstancers 1\\n    -fluids 1\\n    -hairSystems 1\\n    -follicles 1\\n    -nCloths 1\\n    -nParticles 1\\n    -nRigids 1\\n    -dynamicConstraints 1\\n    -locators 1\\n    -manipulators 1\\n    -pluginShapes 1\\n    -dimensions 1\\n    -handles 1\\n    -pivots 1\\n    -textures 1\\n    -strokes 1\\n    -motionTrails 1\\n    -clipGhosts 1\\n    -greasePencils 1\\n    -shadows 0\\n    -captureSequenceNumber -1\\n    -width 1179\\n    -height 698\\n    -sceneRenderFilter 0\\n    $editorName;\\nmodelEditor -e -viewSelected 0 $editorName;\\nmodelEditor -e \\n    -pluginObjects \\\"gpuCacheDisplayFilter\\\" 1 \\n    $editorName\"\n"
+		+ "\t\t\t\t\t\"modelPanel -edit -l (localizedPanelLabel(\\\"Persp View\\\")) -mbv $menusOkayInPanels  $panelName;\\n$editorName = $panelName;\\nmodelEditor -e \\n    -cam `findStartUpCamera persp` \\n    -useInteractiveMode 0\\n    -displayLights \\\"default\\\" \\n    -displayAppearance \\\"smoothShaded\\\" \\n    -activeOnly 0\\n    -ignorePanZoom 0\\n    -wireframeOnShaded 0\\n    -headsUpDisplay 1\\n    -holdOuts 1\\n    -selectionHiliteDisplay 1\\n    -useDefaultMaterial 0\\n    -bufferMode \\\"double\\\" \\n    -twoSidedLighting 0\\n    -backfaceCulling 0\\n    -xray 0\\n    -jointXray 0\\n    -activeComponentsXray 0\\n    -displayTextures 0\\n    -smoothWireframe 0\\n    -lineWidth 1\\n    -textureAnisotropic 0\\n    -textureHilight 1\\n    -textureSampling 2\\n    -textureDisplay \\\"modulate\\\" \\n    -textureMaxSize 32768\\n    -fogging 0\\n    -fogSource \\\"fragment\\\" \\n    -fogMode \\\"linear\\\" \\n    -fogStart 0\\n    -fogEnd 100\\n    -fogDensity 0.1\\n    -fogColor 0.5 0.5 0.5 1 \\n    -depthOfFieldPreview 1\\n    -maxConstantTransparency 1\\n    -rendererName \\\"vp2Renderer\\\" \\n    -objectFilterShowInHUD 1\\n    -isFiltered 0\\n    -colorResolution 256 256 \\n    -bumpResolution 512 512 \\n    -textureCompression 0\\n    -transparencyAlgorithm \\\"frontAndBackCull\\\" \\n    -transpInShadows 0\\n    -cullingOverride \\\"none\\\" \\n    -lowQualityLighting 0\\n    -maximumNumHardwareLights 1\\n    -occlusionCulling 0\\n    -shadingModel 0\\n    -useBaseRenderer 0\\n    -useReducedRenderer 0\\n    -smallObjectCulling 0\\n    -smallObjectThreshold -1 \\n    -interactiveDisableShadows 0\\n    -interactiveBackFaceCull 0\\n    -sortTransparent 1\\n    -controllers 1\\n    -nurbsCurves 1\\n    -nurbsSurfaces 1\\n    -polymeshes 1\\n    -subdivSurfaces 1\\n    -planes 1\\n    -lights 1\\n    -cameras 1\\n    -controlVertices 1\\n    -hulls 1\\n    -grid 1\\n    -imagePlane 1\\n    -joints 1\\n    -ikHandles 1\\n    -deformers 1\\n    -dynamics 1\\n    -particleInstancers 1\\n    -fluids 1\\n    -hairSystems 1\\n    -follicles 1\\n    -nCloths 1\\n    -nParticles 1\\n    -nRigids 1\\n    -dynamicConstraints 1\\n    -locators 1\\n    -manipulators 1\\n    -pluginShapes 1\\n    -dimensions 1\\n    -handles 1\\n    -pivots 1\\n    -textures 1\\n    -strokes 1\\n    -motionTrails 1\\n    -clipGhosts 1\\n    -greasePencils 1\\n    -shadows 0\\n    -captureSequenceNumber -1\\n    -width 1179\\n    -height 698\\n    -sceneRenderFilter 0\\n    $editorName;\\nmodelEditor -e -viewSelected 0 $editorName;\\nmodelEditor -e \\n    -pluginObjects \\\"gpuCacheDisplayFilter\\\" 1 \\n    $editorName\"\n"
 		+ "\t\t\t\t$configName;\n\n            setNamedPanelLayout (localizedPanelLabel(\"Current Layout\"));\n        }\n\n        panelHistory -e -clear mainPanelHistory;\n        sceneUIReplacement -clear;\n\t}\n\n\ngrid -spacing 5 -size 12 -divisions 5 -displayAxes yes -displayGridLines yes -displayDivisionLines yes -displayPerspectiveLabels no -displayOrthographicLabels no -displayAxesBold yes -perspectiveLabelPosition axis -orthographicLabelPosition edge;\nviewManip -drawCompass 0 -compassAngle 0 -frontParameters \"\" -homeParameters \"\" -selectionLockParameters \"\";\n}\n");
 	setAttr ".st" 3;
 createNode script -n "sceneConfigurationScriptNode";
 	rename -uid "2771DA01-429C-D8A1-7BD8-D88F351BCD69";
 	setAttr ".b" -type "string" "playbackOptions -min 0 -max 120 -ast 0 -aet 200 ";
 	setAttr ".st" 6;
+createNode decomposeMatrix -n "decomposeMatrix1";
+	rename -uid "3FC85F9F-4623-F3D7-B386-A9A4C93954EE";
+createNode decomposeMatrix -n "decomposeMatrix2";
+	rename -uid "442C497A-4847-283B-B1F1-2CB52E81A687";
+createNode decomposeMatrix -n "decomposeMatrix3";
+	rename -uid "8B654499-492C-0C4A-F22D-A6B13E28CD4D";
+createNode plusMinusAverage -n "plusMinusAverage1";
+	rename -uid "AF9BFD98-41DE-1D84-2F92-D5A80316A8A9";
+	setAttr ".op" 2;
+	setAttr -s 2 ".i1[0:1]"  180 180;
+createNode multiplyDivide -n "multiplyDivide1";
+	rename -uid "9A07924C-4AE4-8023-65AE-DF8429AFC467";
+	setAttr ".op" 2;
+	setAttr ".i2" -type "float3" 180 1 1 ;
+createNode multiplyDivide -n "multiplyDivide2";
+	rename -uid "4FF779C4-4257-D656-9F67-6D974892791A";
+createNode unitConversion -n "unitConversion1";
+	rename -uid "90133DF9-4334-F8C8-AE98-8B851ADFA3BA";
+	setAttr ".cf" 57.295779513082323;
+createNode distanceBetween -n "distanceBetween1";
+	rename -uid "594525CB-45D1-11C9-0C3E-5A9745B356CB";
+createNode decomposeMatrix -n "decomposeMatrix4";
+	rename -uid "3250CB2F-4769-C8F3-B806-7DB750585CF8";
+createNode distanceBetween -n "distanceBetween2";
+	rename -uid "ED13E556-4959-3659-4988-EDA05D6A28E3";
+createNode decomposeMatrix -n "decomposeMatrix5";
+	rename -uid "56A3BBB4-4271-B4D1-2E48-73A5DDE66D7C";
+createNode distanceBetween -n "distanceBetween3";
+	rename -uid "2AA61733-40E5-DF22-3D5B-B9ABB5E17462";
+createNode decomposeMatrix -n "decomposeMatrix6";
+	rename -uid "84355379-40AA-5DD0-EEDD-5091BA55273B";
+createNode plusMinusAverage -n "plusMinusAverage2";
+	rename -uid "B74D04BD-4363-8872-2B5E-70847CF0202C";
+	setAttr -s 2 ".i1";
+	setAttr -s 2 ".i1";
+createNode multiplyDivide -n "multiplyDivide3";
+	rename -uid "A44A6277-44E3-B71F-8C11-33B47399572F";
+	setAttr ".op" 2;
+createNode multiplyDivide -n "multiplyDivide4";
+	rename -uid "9F316E00-4534-38E5-567E-E195FE85612A";
+createNode multiplyDivide -n "multiplyDivide5";
+	rename -uid "0D805AEE-4847-26EF-CFF1-28B66DEFCBEB";
+createNode pairBlend -n "pairBlend1";
+	rename -uid "90704F21-444C-CCB8-B2B2-86B4A165E7B4";
+createNode condition -n "condition1";
+	rename -uid "EC097ADD-42EF-B09C-B36C-18A49F799493";
+	setAttr ".op" 2;
+	setAttr ".ct" -type "float3" 1 0 0 ;
+	setAttr ".cf" -type "float3" 0 1 1 ;
+createNode pairBlend -n "pairBlend2";
+	rename -uid "D29CD7D2-4760-E3D8-F225-A89F64B68329";
+createNode decomposeMatrix -n "decomposeMatrix7";
+	rename -uid "61881EE0-45AD-0766-6428-6A86D3301EA2";
+createNode decomposeMatrix -n "decomposeMatrix8";
+	rename -uid "8435D366-4EDB-70F0-0256-879809872A48";
+createNode decomposeMatrix -n "decomposeMatrix9";
+	rename -uid "24C33EAE-43C7-6E0D-D845-32B6623A3050";
+createNode plusMinusAverage -n "plusMinusAverage3";
+	rename -uid "88F4AEB8-4E93-030C-4EBC-14847EADCF58";
+	setAttr ".op" 2;
+	setAttr -s 2 ".i1[0:1]"  180 180;
+createNode multiplyDivide -n "multiplyDivide6";
+	rename -uid "14B98639-479A-0FE9-B78D-9AB4D4CD6F50";
+	setAttr ".op" 2;
+	setAttr ".i2" -type "float3" 180 1 1 ;
+createNode multiplyDivide -n "multiplyDivide7";
+	rename -uid "C8E2B9FC-4C98-F080-71C8-BE87F1A58995";
+createNode unitConversion -n "unitConversion2";
+	rename -uid "09DB7EF4-4B6C-7C20-5B3F-D882FDE2321C";
+	setAttr ".cf" 57.295779513082323;
+createNode distanceBetween -n "distanceBetween4";
+	rename -uid "FA2D317D-4BAD-609B-1681-389F358FC543";
+createNode decomposeMatrix -n "decomposeMatrix10";
+	rename -uid "BC77E07A-40E7-EFC3-B2D2-42AE5EF2E5F6";
+createNode distanceBetween -n "distanceBetween5";
+	rename -uid "ECF80D49-4C83-DE4B-5505-E7966BF8F7F6";
+createNode decomposeMatrix -n "decomposeMatrix11";
+	rename -uid "BA2E1D28-4003-A362-2BD4-9AAD1ADA46FA";
+createNode distanceBetween -n "distanceBetween6";
+	rename -uid "E59513B9-438C-3F3E-90CA-28B3F837DE01";
+createNode decomposeMatrix -n "decomposeMatrix12";
+	rename -uid "32B78F70-4216-9F28-D598-BEA3C7AC7571";
+createNode plusMinusAverage -n "plusMinusAverage4";
+	rename -uid "24ECB7F1-4F26-1BB6-A073-F081D9C528C6";
+	setAttr -s 2 ".i1";
+	setAttr -s 2 ".i1";
+createNode multiplyDivide -n "multiplyDivide8";
+	rename -uid "87D416A6-4DED-7D15-343A-EE901A81C3DE";
+	setAttr ".op" 2;
+createNode multiplyDivide -n "multiplyDivide9";
+	rename -uid "0E2A9D98-4502-3422-2D99-458A9FF36223";
+createNode multiplyDivide -n "multiplyDivide10";
+	rename -uid "A61DA10F-458E-FF5A-68D4-C0A162C68D00";
+createNode pairBlend -n "pairBlend3";
+	rename -uid "F7C2F11F-4295-76DA-589D-6892E8FC8776";
+createNode condition -n "condition2";
+	rename -uid "B2821EC9-42CE-3741-8C68-6E8C149756C8";
+	setAttr ".op" 2;
+	setAttr ".ct" -type "float3" 1 0 0 ;
+	setAttr ".cf" -type "float3" 0 1 1 ;
+createNode pairBlend -n "pairBlend4";
+	rename -uid "BB3EBECA-41FD-DC5E-0EFD-BA894A45CBA8";
+createNode decomposeMatrix -n "decomposeMatrix13";
+	rename -uid "FD313EA6-4757-9485-9988-E5B20C883724";
+createNode decomposeMatrix -n "decomposeMatrix14";
+	rename -uid "59CF0940-436E-3165-3990-84BE2F916219";
+createNode decomposeMatrix -n "decomposeMatrix15";
+	rename -uid "847BA034-45A9-0A13-FBFC-96BF68DA728B";
+createNode plusMinusAverage -n "plusMinusAverage5";
+	rename -uid "53F6F5D6-459B-1F7B-BEB2-E5B34BFF3B7F";
+	setAttr ".op" 2;
+	setAttr -s 2 ".i1[0:1]"  180 176.0010070801;
+createNode multiplyDivide -n "multiplyDivide11";
+	rename -uid "2388C837-48EA-224F-6FA8-A595D328DE16";
+	setAttr ".op" 2;
+	setAttr ".i2" -type "float3" 180 1 1 ;
+createNode multiplyDivide -n "multiplyDivide12";
+	rename -uid "EFE6EEBA-4771-F631-DFD5-D0A562531BD9";
+createNode unitConversion -n "unitConversion3";
+	rename -uid "5BCE8BE1-4FE9-A358-3A75-97A5FBD2CA4D";
+	setAttr ".cf" 57.295779513082323;
+createNode distanceBetween -n "distanceBetween7";
+	rename -uid "9D806EA8-4734-F3E1-FC45-98BF254CF2BB";
+createNode decomposeMatrix -n "decomposeMatrix16";
+	rename -uid "66874DF4-4879-C990-9847-3995AC9C6D1C";
+createNode distanceBetween -n "distanceBetween8";
+	rename -uid "35EF35E6-4EF6-F978-E63E-808F0A867626";
+createNode decomposeMatrix -n "decomposeMatrix17";
+	rename -uid "7A4E5731-4BDE-BAE6-96E3-359E83C0FEC2";
+createNode distanceBetween -n "distanceBetween9";
+	rename -uid "2E740609-4913-5369-FFD9-F494ECBA2E22";
+createNode decomposeMatrix -n "decomposeMatrix18";
+	rename -uid "6CE8B853-4D25-0235-5EDB-BD839157A1C8";
+createNode plusMinusAverage -n "plusMinusAverage6";
+	rename -uid "84FC8505-4B58-B571-D797-37973FBCB9C3";
+	setAttr -s 2 ".i1";
+	setAttr -s 2 ".i1";
+createNode multiplyDivide -n "multiplyDivide13";
+	rename -uid "6D870BCA-45D4-ECA3-EEB5-7FA770C0D6DF";
+	setAttr ".op" 2;
+createNode multiplyDivide -n "multiplyDivide14";
+	rename -uid "F9C46728-4BEB-F682-4472-08800A10E710";
+createNode multiplyDivide -n "multiplyDivide15";
+	rename -uid "5141D8B4-49A2-7292-DC7B-D3991964DE1B";
+createNode pairBlend -n "pairBlend5";
+	rename -uid "F5D895E7-4B46-E951-1AB5-A1A5E2E70477";
+createNode condition -n "condition3";
+	rename -uid "2EDE8BA7-4F96-5B83-DDDF-83869C2EBDC6";
+	setAttr ".op" 2;
+	setAttr ".ct" -type "float3" 1 0 0 ;
+	setAttr ".cf" -type "float3" 0 1 1 ;
+createNode pairBlend -n "pairBlend6";
+	rename -uid "3BC86F47-407B-54CB-E4E0-9D8105ADAFC8";
+createNode decomposeMatrix -n "decomposeMatrix19";
+	rename -uid "8E7D8C70-4D44-0AA8-780E-7ABE60AF7A4F";
+createNode decomposeMatrix -n "decomposeMatrix20";
+	rename -uid "B5231640-4290-F6E7-7B77-7FB6A792EF5A";
+createNode decomposeMatrix -n "decomposeMatrix21";
+	rename -uid "F14A928F-41D3-E8ED-3290-599216C87113";
+createNode plusMinusAverage -n "plusMinusAverage7";
+	rename -uid "CB6B0349-484B-6EE5-A6E6-2BA0C55A3C84";
+	setAttr ".op" 2;
+	setAttr -s 2 ".i1[0:1]"  180 176.0010070801;
+createNode multiplyDivide -n "multiplyDivide16";
+	rename -uid "0E9B7352-4129-27AE-A79B-079A07A01872";
+	setAttr ".op" 2;
+	setAttr ".i2" -type "float3" 180 1 1 ;
+createNode multiplyDivide -n "multiplyDivide17";
+	rename -uid "34DF6DC7-48CA-9AA9-701D-6E9F545A67E2";
+createNode unitConversion -n "unitConversion4";
+	rename -uid "CEAA121A-444C-8C71-72D7-5B831C1ED6AD";
+	setAttr ".cf" 57.295779513082323;
+createNode distanceBetween -n "distanceBetween10";
+	rename -uid "FD8F837E-4D1B-5E9F-35D7-36A8E79FEC07";
+createNode decomposeMatrix -n "decomposeMatrix22";
+	rename -uid "22F4DE45-492A-8C43-CAC4-8DB8EB929DB3";
+createNode distanceBetween -n "distanceBetween11";
+	rename -uid "8A21FB6F-4914-9800-8DCF-AEAB2C597121";
+createNode decomposeMatrix -n "decomposeMatrix23";
+	rename -uid "1AA6706F-48A5-3AF9-F655-61A801B2647C";
+createNode distanceBetween -n "distanceBetween12";
+	rename -uid "8C5A4B1E-4095-42E0-3993-2881B7C47AC7";
+createNode decomposeMatrix -n "decomposeMatrix24";
+	rename -uid "D8D67370-4E20-D247-43F6-A4ADF55EDE95";
+createNode plusMinusAverage -n "plusMinusAverage8";
+	rename -uid "92829803-4785-A5CA-E7BE-37AFAC4AF3A7";
+	setAttr -s 2 ".i1";
+	setAttr -s 2 ".i1";
+createNode multiplyDivide -n "multiplyDivide18";
+	rename -uid "234610EB-4CBA-6713-9DB4-25BAF202E2A7";
+	setAttr ".op" 2;
+createNode multiplyDivide -n "multiplyDivide19";
+	rename -uid "6934DA52-4478-73AA-A0AC-6DA42B310270";
+createNode multiplyDivide -n "multiplyDivide20";
+	rename -uid "50879F49-4062-459A-E373-C885C66ABCDB";
+createNode pairBlend -n "pairBlend7";
+	rename -uid "41C18EC4-4304-0C33-83BB-F9878D51B348";
+createNode condition -n "condition4";
+	rename -uid "1C481514-46FB-7326-D23E-74BDF6A03C14";
+	setAttr ".op" 2;
+	setAttr ".ct" -type "float3" 1 0 0 ;
+	setAttr ".cf" -type "float3" 0 1 1 ;
+createNode pairBlend -n "pairBlend8";
+	rename -uid "9AA0740B-4AF9-CB6C-394A-92AFAF7711FB";
 select -ne :time1;
 	setAttr ".o" 0;
 select -ne :hardwareRenderingGlobals;
@@ -807,6 +1284,54 @@ connectAttr "proxy_Wrist_L.s" "proxy_HandattachOffset_L.is";
 connectAttr "proxy_HandattachOffset_L.s" "proxy_Handattach_L.is";
 connectAttr "proxy_Elbow_L.s" "proxy_WristRoll_L.is";
 connectAttr "proxy_Arm_L.s" "proxy_ArmRoll_L.is";
+connectAttr "decomposeMatrix1.ot" "angleDimensionShape1.sp";
+connectAttr "decomposeMatrix2.ot" "angleDimensionShape1.mp";
+connectAttr "decomposeMatrix3.ot" "angleDimensionShape1.ep";
+connectAttr "pairBlend1.ot" "proxy_Elbow_L_p_match_loc.t";
+connectAttr "pairBlend2.or" "proxy_Elbow_L_p_match_loc.r";
+connectAttr "proxy_Elbow_L_p_match_loc.pim" "proxy_Elbow_L_p_match_loc_aimConstraint1.cpim"
+		;
+connectAttr "proxy_Elbow_L_p_match_loc.t" "proxy_Elbow_L_p_match_loc_aimConstraint1.ct"
+		;
+connectAttr "proxy_Elbow_L_p_match_loc.rp" "proxy_Elbow_L_p_match_loc_aimConstraint1.crp"
+		;
+connectAttr "proxy_Elbow_L_p_match_loc.rpt" "proxy_Elbow_L_p_match_loc_aimConstraint1.crt"
+		;
+connectAttr "proxy_Elbow_L_p_match_loc.ro" "proxy_Elbow_L_p_match_loc_aimConstraint1.cro"
+		;
+connectAttr "proxy_Elbow_L.t" "proxy_Elbow_L_p_match_loc_aimConstraint1.tg[0].tt"
+		;
+connectAttr "proxy_Elbow_L.rp" "proxy_Elbow_L_p_match_loc_aimConstraint1.tg[0].trp"
+		;
+connectAttr "proxy_Elbow_L.rpt" "proxy_Elbow_L_p_match_loc_aimConstraint1.tg[0].trt"
+		;
+connectAttr "proxy_Elbow_L.pm" "proxy_Elbow_L_p_match_loc_aimConstraint1.tg[0].tpm"
+		;
+connectAttr "proxy_Elbow_L_p_match_loc_aimConstraint1.w0" "proxy_Elbow_L_p_match_loc_aimConstraint1.tg[0].tw"
+		;
+connectAttr "proxy_Wrist_L.wm" "proxy_Elbow_L_p_match_loc_aimConstraint1.wum";
+connectAttr "proxy_Wrist_L_end_match_loc_pointConstraint1.ctx" "proxy_Wrist_L_end_match_loc.tx"
+		;
+connectAttr "proxy_Wrist_L_end_match_loc_pointConstraint1.cty" "proxy_Wrist_L_end_match_loc.ty"
+		;
+connectAttr "proxy_Wrist_L_end_match_loc_pointConstraint1.ctz" "proxy_Wrist_L_end_match_loc.tz"
+		;
+connectAttr "proxy_Wrist_L_end_match_loc.pim" "proxy_Wrist_L_end_match_loc_pointConstraint1.cpim"
+		;
+connectAttr "proxy_Wrist_L_end_match_loc.rp" "proxy_Wrist_L_end_match_loc_pointConstraint1.crp"
+		;
+connectAttr "proxy_Wrist_L_end_match_loc.rpt" "proxy_Wrist_L_end_match_loc_pointConstraint1.crt"
+		;
+connectAttr "proxy_Wrist_L.t" "proxy_Wrist_L_end_match_loc_pointConstraint1.tg[0].tt"
+		;
+connectAttr "proxy_Wrist_L.rp" "proxy_Wrist_L_end_match_loc_pointConstraint1.tg[0].trp"
+		;
+connectAttr "proxy_Wrist_L.rpt" "proxy_Wrist_L_end_match_loc_pointConstraint1.tg[0].trt"
+		;
+connectAttr "proxy_Wrist_L.pm" "proxy_Wrist_L_end_match_loc_pointConstraint1.tg[0].tpm"
+		;
+connectAttr "proxy_Wrist_L_end_match_loc_pointConstraint1.w0" "proxy_Wrist_L_end_match_loc_pointConstraint1.tg[0].tw"
+		;
 connectAttr "proxy_Spine3.s" "proxy_Shoulder_R.is";
 connectAttr "proxy_Shoulder_R.s" "proxy_Arm_R.is";
 connectAttr "proxy_Arm_R.s" "proxy_Elbow_R.is";
@@ -830,14 +1355,156 @@ connectAttr "proxy_Wrist_R.s" "proxy_HandattachOffset_R.is";
 connectAttr "proxy_HandattachOffset_R.s" "proxy_Handattach_R.is";
 connectAttr "proxy_Elbow_R.s" "proxy_WristRoll_R.is";
 connectAttr "proxy_Arm_R.s" "proxy_ArmRoll_R.is";
+connectAttr "decomposeMatrix7.ot" "angleDimensionShape2.sp";
+connectAttr "decomposeMatrix8.ot" "angleDimensionShape2.mp";
+connectAttr "decomposeMatrix9.ot" "angleDimensionShape2.ep";
+connectAttr "pairBlend3.ot" "proxy_Elbow_R_p_match_loc.t";
+connectAttr "pairBlend4.or" "proxy_Elbow_R_p_match_loc.r";
+connectAttr "proxy_Elbow_R_p_match_loc.pim" "proxy_Elbow_R_p_match_loc_aimConstraint1.cpim"
+		;
+connectAttr "proxy_Elbow_R_p_match_loc.t" "proxy_Elbow_R_p_match_loc_aimConstraint1.ct"
+		;
+connectAttr "proxy_Elbow_R_p_match_loc.rp" "proxy_Elbow_R_p_match_loc_aimConstraint1.crp"
+		;
+connectAttr "proxy_Elbow_R_p_match_loc.rpt" "proxy_Elbow_R_p_match_loc_aimConstraint1.crt"
+		;
+connectAttr "proxy_Elbow_R_p_match_loc.ro" "proxy_Elbow_R_p_match_loc_aimConstraint1.cro"
+		;
+connectAttr "proxy_Elbow_R.t" "proxy_Elbow_R_p_match_loc_aimConstraint1.tg[0].tt"
+		;
+connectAttr "proxy_Elbow_R.rp" "proxy_Elbow_R_p_match_loc_aimConstraint1.tg[0].trp"
+		;
+connectAttr "proxy_Elbow_R.rpt" "proxy_Elbow_R_p_match_loc_aimConstraint1.tg[0].trt"
+		;
+connectAttr "proxy_Elbow_R.pm" "proxy_Elbow_R_p_match_loc_aimConstraint1.tg[0].tpm"
+		;
+connectAttr "proxy_Elbow_R_p_match_loc_aimConstraint1.w0" "proxy_Elbow_R_p_match_loc_aimConstraint1.tg[0].tw"
+		;
+connectAttr "proxy_Wrist_R.wm" "proxy_Elbow_R_p_match_loc_aimConstraint1.wum";
+connectAttr "proxy_Wrist_R_end_match_loc_pointConstraint1.ctx" "proxy_Wrist_R_end_match_loc.tx"
+		;
+connectAttr "proxy_Wrist_R_end_match_loc_pointConstraint1.cty" "proxy_Wrist_R_end_match_loc.ty"
+		;
+connectAttr "proxy_Wrist_R_end_match_loc_pointConstraint1.ctz" "proxy_Wrist_R_end_match_loc.tz"
+		;
+connectAttr "proxy_Wrist_R_end_match_loc.pim" "proxy_Wrist_R_end_match_loc_pointConstraint1.cpim"
+		;
+connectAttr "proxy_Wrist_R_end_match_loc.rp" "proxy_Wrist_R_end_match_loc_pointConstraint1.crp"
+		;
+connectAttr "proxy_Wrist_R_end_match_loc.rpt" "proxy_Wrist_R_end_match_loc_pointConstraint1.crt"
+		;
+connectAttr "proxy_Wrist_R.t" "proxy_Wrist_R_end_match_loc_pointConstraint1.tg[0].tt"
+		;
+connectAttr "proxy_Wrist_R.rp" "proxy_Wrist_R_end_match_loc_pointConstraint1.tg[0].trp"
+		;
+connectAttr "proxy_Wrist_R.rpt" "proxy_Wrist_R_end_match_loc_pointConstraint1.tg[0].trt"
+		;
+connectAttr "proxy_Wrist_R.pm" "proxy_Wrist_R_end_match_loc_pointConstraint1.tg[0].tpm"
+		;
+connectAttr "proxy_Wrist_R_end_match_loc_pointConstraint1.w0" "proxy_Wrist_R_end_match_loc_pointConstraint1.tg[0].tw"
+		;
 connectAttr "proxy_Hip.s" "proxy_Thigh_L.is";
 connectAttr "proxy_Thigh_L.s" "proxy_Knee_L.is";
 connectAttr "proxy_Knee_L.s" "proxy_Ankle_L.is";
 connectAttr "proxy_Ankle_L.s" "proxy_Toe_L.is";
+connectAttr "decomposeMatrix13.ot" "angleDimensionShape3.sp";
+connectAttr "decomposeMatrix14.ot" "angleDimensionShape3.mp";
+connectAttr "decomposeMatrix15.ot" "angleDimensionShape3.ep";
+connectAttr "pairBlend5.ot" "proxy_Knee_L_p_match_loc.t";
+connectAttr "pairBlend6.or" "proxy_Knee_L_p_match_loc.r";
+connectAttr "proxy_Knee_L_p_match_loc.pim" "proxy_Knee_L_p_match_loc_aimConstraint1.cpim"
+		;
+connectAttr "proxy_Knee_L_p_match_loc.t" "proxy_Knee_L_p_match_loc_aimConstraint1.ct"
+		;
+connectAttr "proxy_Knee_L_p_match_loc.rp" "proxy_Knee_L_p_match_loc_aimConstraint1.crp"
+		;
+connectAttr "proxy_Knee_L_p_match_loc.rpt" "proxy_Knee_L_p_match_loc_aimConstraint1.crt"
+		;
+connectAttr "proxy_Knee_L_p_match_loc.ro" "proxy_Knee_L_p_match_loc_aimConstraint1.cro"
+		;
+connectAttr "proxy_Knee_L.t" "proxy_Knee_L_p_match_loc_aimConstraint1.tg[0].tt";
+connectAttr "proxy_Knee_L.rp" "proxy_Knee_L_p_match_loc_aimConstraint1.tg[0].trp"
+		;
+connectAttr "proxy_Knee_L.rpt" "proxy_Knee_L_p_match_loc_aimConstraint1.tg[0].trt"
+		;
+connectAttr "proxy_Knee_L.pm" "proxy_Knee_L_p_match_loc_aimConstraint1.tg[0].tpm"
+		;
+connectAttr "proxy_Knee_L_p_match_loc_aimConstraint1.w0" "proxy_Knee_L_p_match_loc_aimConstraint1.tg[0].tw"
+		;
+connectAttr "proxy_Ankle_L.wm" "proxy_Knee_L_p_match_loc_aimConstraint1.wum";
+connectAttr "proxy_Ankle_L_end_match_loc_pointConstraint1.ctx" "proxy_Ankle_L_end_match_loc.tx"
+		;
+connectAttr "proxy_Ankle_L_end_match_loc_pointConstraint1.cty" "proxy_Ankle_L_end_match_loc.ty"
+		;
+connectAttr "proxy_Ankle_L_end_match_loc_pointConstraint1.ctz" "proxy_Ankle_L_end_match_loc.tz"
+		;
+connectAttr "proxy_Ankle_L_end_match_loc.pim" "proxy_Ankle_L_end_match_loc_pointConstraint1.cpim"
+		;
+connectAttr "proxy_Ankle_L_end_match_loc.rp" "proxy_Ankle_L_end_match_loc_pointConstraint1.crp"
+		;
+connectAttr "proxy_Ankle_L_end_match_loc.rpt" "proxy_Ankle_L_end_match_loc_pointConstraint1.crt"
+		;
+connectAttr "proxy_Ankle_L.t" "proxy_Ankle_L_end_match_loc_pointConstraint1.tg[0].tt"
+		;
+connectAttr "proxy_Ankle_L.rp" "proxy_Ankle_L_end_match_loc_pointConstraint1.tg[0].trp"
+		;
+connectAttr "proxy_Ankle_L.rpt" "proxy_Ankle_L_end_match_loc_pointConstraint1.tg[0].trt"
+		;
+connectAttr "proxy_Ankle_L.pm" "proxy_Ankle_L_end_match_loc_pointConstraint1.tg[0].tpm"
+		;
+connectAttr "proxy_Ankle_L_end_match_loc_pointConstraint1.w0" "proxy_Ankle_L_end_match_loc_pointConstraint1.tg[0].tw"
+		;
 connectAttr "proxy_Hip.s" "proxy_Thigh_R.is";
 connectAttr "proxy_Thigh_R.s" "proxy_Knee_R.is";
 connectAttr "proxy_Knee_R.s" "proxy_Ankle_R.is";
 connectAttr "proxy_Ankle_R.s" "proxy_Toe_R.is";
+connectAttr "decomposeMatrix19.ot" "angleDimensionShape4.sp";
+connectAttr "decomposeMatrix20.ot" "angleDimensionShape4.mp";
+connectAttr "decomposeMatrix21.ot" "angleDimensionShape4.ep";
+connectAttr "pairBlend7.ot" "proxy_Knee_R_p_match_loc.t";
+connectAttr "pairBlend8.or" "proxy_Knee_R_p_match_loc.r";
+connectAttr "proxy_Knee_R_p_match_loc.pim" "proxy_Knee_R_p_match_loc_aimConstraint1.cpim"
+		;
+connectAttr "proxy_Knee_R_p_match_loc.t" "proxy_Knee_R_p_match_loc_aimConstraint1.ct"
+		;
+connectAttr "proxy_Knee_R_p_match_loc.rp" "proxy_Knee_R_p_match_loc_aimConstraint1.crp"
+		;
+connectAttr "proxy_Knee_R_p_match_loc.rpt" "proxy_Knee_R_p_match_loc_aimConstraint1.crt"
+		;
+connectAttr "proxy_Knee_R_p_match_loc.ro" "proxy_Knee_R_p_match_loc_aimConstraint1.cro"
+		;
+connectAttr "proxy_Knee_R.t" "proxy_Knee_R_p_match_loc_aimConstraint1.tg[0].tt";
+connectAttr "proxy_Knee_R.rp" "proxy_Knee_R_p_match_loc_aimConstraint1.tg[0].trp"
+		;
+connectAttr "proxy_Knee_R.rpt" "proxy_Knee_R_p_match_loc_aimConstraint1.tg[0].trt"
+		;
+connectAttr "proxy_Knee_R.pm" "proxy_Knee_R_p_match_loc_aimConstraint1.tg[0].tpm"
+		;
+connectAttr "proxy_Knee_R_p_match_loc_aimConstraint1.w0" "proxy_Knee_R_p_match_loc_aimConstraint1.tg[0].tw"
+		;
+connectAttr "proxy_Ankle_R.wm" "proxy_Knee_R_p_match_loc_aimConstraint1.wum";
+connectAttr "proxy_Ankle_R_end_match_loc_pointConstraint1.ctx" "proxy_Ankle_R_end_match_loc.tx"
+		;
+connectAttr "proxy_Ankle_R_end_match_loc_pointConstraint1.cty" "proxy_Ankle_R_end_match_loc.ty"
+		;
+connectAttr "proxy_Ankle_R_end_match_loc_pointConstraint1.ctz" "proxy_Ankle_R_end_match_loc.tz"
+		;
+connectAttr "proxy_Ankle_R_end_match_loc.pim" "proxy_Ankle_R_end_match_loc_pointConstraint1.cpim"
+		;
+connectAttr "proxy_Ankle_R_end_match_loc.rp" "proxy_Ankle_R_end_match_loc_pointConstraint1.crp"
+		;
+connectAttr "proxy_Ankle_R_end_match_loc.rpt" "proxy_Ankle_R_end_match_loc_pointConstraint1.crt"
+		;
+connectAttr "proxy_Ankle_R.t" "proxy_Ankle_R_end_match_loc_pointConstraint1.tg[0].tt"
+		;
+connectAttr "proxy_Ankle_R.rp" "proxy_Ankle_R_end_match_loc_pointConstraint1.tg[0].trp"
+		;
+connectAttr "proxy_Ankle_R.rpt" "proxy_Ankle_R_end_match_loc_pointConstraint1.tg[0].trt"
+		;
+connectAttr "proxy_Ankle_R.pm" "proxy_Ankle_R_end_match_loc_pointConstraint1.tg[0].tpm"
+		;
+connectAttr "proxy_Ankle_R_end_match_loc_pointConstraint1.w0" "proxy_Ankle_R_end_match_loc_pointConstraint1.tg[0].tw"
+		;
 relationship "link" ":lightLinker1" ":initialShadingGroup.message" ":defaultLightSet.message";
 relationship "link" ":lightLinker1" ":initialParticleSE.message" ":defaultLightSet.message";
 relationship "shadowLink" ":lightLinker1" ":initialShadingGroup.message" ":defaultLightSet.message";
@@ -848,5 +1515,141 @@ connectAttr ":defaultArnoldDisplayDriver.msg" ":defaultArnoldRenderOptions.drive
 		 -na;
 connectAttr ":defaultArnoldFilter.msg" ":defaultArnoldRenderOptions.filt";
 connectAttr ":defaultArnoldDriver.msg" ":defaultArnoldRenderOptions.drvr";
+connectAttr "proxy_Arm_L.wm" "decomposeMatrix1.imat";
+connectAttr "proxy_Elbow_L.wm" "decomposeMatrix2.imat";
+connectAttr "proxy_Wrist_L.wm" "decomposeMatrix3.imat";
+connectAttr "unitConversion1.o" "plusMinusAverage1.i1[1]";
+connectAttr "plusMinusAverage1.o1" "multiplyDivide1.i1x";
+connectAttr "multiplyDivide1.ox" "multiplyDivide2.i1x";
+connectAttr "angleDimensionShape1.angl" "unitConversion1.i";
+connectAttr "decomposeMatrix4.ot" "distanceBetween1.p1";
+connectAttr "decomposeMatrix5.ot" "distanceBetween1.p2";
+connectAttr "proxy_Arm_L.wm" "decomposeMatrix4.imat";
+connectAttr "decomposeMatrix5.ot" "distanceBetween2.p1";
+connectAttr "decomposeMatrix6.ot" "distanceBetween2.p2";
+connectAttr "proxy_Elbow_L.wm" "decomposeMatrix5.imat";
+connectAttr "decomposeMatrix4.ot" "distanceBetween3.p1";
+connectAttr "decomposeMatrix6.ot" "distanceBetween3.p2";
+connectAttr "proxy_Wrist_L.wm" "decomposeMatrix6.imat";
+connectAttr "distanceBetween1.d" "plusMinusAverage2.i1[0]";
+connectAttr "distanceBetween2.d" "plusMinusAverage2.i1[1]";
+connectAttr "distanceBetween3.d" "multiplyDivide3.i1x";
+connectAttr "distanceBetween1.d" "multiplyDivide3.i1y";
+connectAttr "distanceBetween2.d" "multiplyDivide3.i1z";
+connectAttr "plusMinusAverage2.o1" "multiplyDivide3.i2x";
+connectAttr "distanceBetween3.d" "multiplyDivide3.i2y";
+connectAttr "distanceBetween3.d" "multiplyDivide3.i2z";
+connectAttr "multiplyDivide3.o" "multiplyDivide4.i1";
+connectAttr "multiplyDivide4.ox" "multiplyDivide5.i1y";
+connectAttr "multiplyDivide4.ox" "multiplyDivide5.i1z";
+connectAttr "multiplyDivide4.oy" "multiplyDivide5.i2y";
+connectAttr "multiplyDivide4.oz" "multiplyDivide5.i2z";
+connectAttr "proxy_Wrist_L_end_match_loc.t" "pairBlend1.it2";
+connectAttr "multiplyDivide5.oy" "pairBlend1.w";
+connectAttr "multiplyDivide2.ox" "condition1.ft";
+connectAttr "proxy_Elbow_L_p_match_loc_aimConstraint1.cr" "pairBlend2.ir2";
+connectAttr "condition1.ocr" "pairBlend2.w";
+connectAttr "proxy_Arm_R.wm" "decomposeMatrix7.imat";
+connectAttr "proxy_Elbow_R.wm" "decomposeMatrix8.imat";
+connectAttr "proxy_Wrist_R.wm" "decomposeMatrix9.imat";
+connectAttr "unitConversion2.o" "plusMinusAverage3.i1[1]";
+connectAttr "plusMinusAverage3.o1" "multiplyDivide6.i1x";
+connectAttr "multiplyDivide6.ox" "multiplyDivide7.i1x";
+connectAttr "angleDimensionShape2.angl" "unitConversion2.i";
+connectAttr "decomposeMatrix10.ot" "distanceBetween4.p1";
+connectAttr "decomposeMatrix11.ot" "distanceBetween4.p2";
+connectAttr "proxy_Arm_R.wm" "decomposeMatrix10.imat";
+connectAttr "decomposeMatrix11.ot" "distanceBetween5.p1";
+connectAttr "decomposeMatrix12.ot" "distanceBetween5.p2";
+connectAttr "proxy_Elbow_R.wm" "decomposeMatrix11.imat";
+connectAttr "decomposeMatrix10.ot" "distanceBetween6.p1";
+connectAttr "decomposeMatrix12.ot" "distanceBetween6.p2";
+connectAttr "proxy_Wrist_R.wm" "decomposeMatrix12.imat";
+connectAttr "distanceBetween4.d" "plusMinusAverage4.i1[0]";
+connectAttr "distanceBetween5.d" "plusMinusAverage4.i1[1]";
+connectAttr "distanceBetween6.d" "multiplyDivide8.i1x";
+connectAttr "distanceBetween4.d" "multiplyDivide8.i1y";
+connectAttr "distanceBetween5.d" "multiplyDivide8.i1z";
+connectAttr "plusMinusAverage4.o1" "multiplyDivide8.i2x";
+connectAttr "distanceBetween6.d" "multiplyDivide8.i2y";
+connectAttr "distanceBetween6.d" "multiplyDivide8.i2z";
+connectAttr "multiplyDivide8.o" "multiplyDivide9.i1";
+connectAttr "multiplyDivide9.ox" "multiplyDivide10.i1y";
+connectAttr "multiplyDivide9.ox" "multiplyDivide10.i1z";
+connectAttr "multiplyDivide9.oy" "multiplyDivide10.i2y";
+connectAttr "multiplyDivide9.oz" "multiplyDivide10.i2z";
+connectAttr "proxy_Wrist_R_end_match_loc.t" "pairBlend3.it2";
+connectAttr "multiplyDivide10.oy" "pairBlend3.w";
+connectAttr "multiplyDivide7.ox" "condition2.ft";
+connectAttr "proxy_Elbow_R_p_match_loc_aimConstraint1.cr" "pairBlend4.ir2";
+connectAttr "condition2.ocr" "pairBlend4.w";
+connectAttr "proxy_Thigh_L.wm" "decomposeMatrix13.imat";
+connectAttr "proxy_Knee_L.wm" "decomposeMatrix14.imat";
+connectAttr "proxy_Ankle_L.wm" "decomposeMatrix15.imat";
+connectAttr "unitConversion3.o" "plusMinusAverage5.i1[1]";
+connectAttr "plusMinusAverage5.o1" "multiplyDivide11.i1x";
+connectAttr "multiplyDivide11.ox" "multiplyDivide12.i1x";
+connectAttr "angleDimensionShape3.angl" "unitConversion3.i";
+connectAttr "decomposeMatrix16.ot" "distanceBetween7.p1";
+connectAttr "decomposeMatrix17.ot" "distanceBetween7.p2";
+connectAttr "proxy_Thigh_L.wm" "decomposeMatrix16.imat";
+connectAttr "decomposeMatrix17.ot" "distanceBetween8.p1";
+connectAttr "decomposeMatrix18.ot" "distanceBetween8.p2";
+connectAttr "proxy_Knee_L.wm" "decomposeMatrix17.imat";
+connectAttr "decomposeMatrix16.ot" "distanceBetween9.p1";
+connectAttr "decomposeMatrix18.ot" "distanceBetween9.p2";
+connectAttr "proxy_Ankle_L.wm" "decomposeMatrix18.imat";
+connectAttr "distanceBetween7.d" "plusMinusAverage6.i1[0]";
+connectAttr "distanceBetween8.d" "plusMinusAverage6.i1[1]";
+connectAttr "distanceBetween9.d" "multiplyDivide13.i1x";
+connectAttr "distanceBetween7.d" "multiplyDivide13.i1y";
+connectAttr "distanceBetween8.d" "multiplyDivide13.i1z";
+connectAttr "plusMinusAverage6.o1" "multiplyDivide13.i2x";
+connectAttr "distanceBetween9.d" "multiplyDivide13.i2y";
+connectAttr "distanceBetween9.d" "multiplyDivide13.i2z";
+connectAttr "multiplyDivide13.o" "multiplyDivide14.i1";
+connectAttr "multiplyDivide14.ox" "multiplyDivide15.i1y";
+connectAttr "multiplyDivide14.ox" "multiplyDivide15.i1z";
+connectAttr "multiplyDivide14.oy" "multiplyDivide15.i2y";
+connectAttr "multiplyDivide14.oz" "multiplyDivide15.i2z";
+connectAttr "proxy_Ankle_L_end_match_loc.t" "pairBlend5.it2";
+connectAttr "multiplyDivide15.oy" "pairBlend5.w";
+connectAttr "multiplyDivide12.ox" "condition3.ft";
+connectAttr "proxy_Knee_L_p_match_loc_aimConstraint1.cr" "pairBlend6.ir2";
+connectAttr "condition3.ocr" "pairBlend6.w";
+connectAttr "proxy_Thigh_R.wm" "decomposeMatrix19.imat";
+connectAttr "proxy_Knee_R.wm" "decomposeMatrix20.imat";
+connectAttr "proxy_Ankle_R.wm" "decomposeMatrix21.imat";
+connectAttr "unitConversion4.o" "plusMinusAverage7.i1[1]";
+connectAttr "plusMinusAverage7.o1" "multiplyDivide16.i1x";
+connectAttr "multiplyDivide16.ox" "multiplyDivide17.i1x";
+connectAttr "angleDimensionShape4.angl" "unitConversion4.i";
+connectAttr "decomposeMatrix22.ot" "distanceBetween10.p1";
+connectAttr "decomposeMatrix23.ot" "distanceBetween10.p2";
+connectAttr "proxy_Thigh_R.wm" "decomposeMatrix22.imat";
+connectAttr "decomposeMatrix23.ot" "distanceBetween11.p1";
+connectAttr "decomposeMatrix24.ot" "distanceBetween11.p2";
+connectAttr "proxy_Knee_R.wm" "decomposeMatrix23.imat";
+connectAttr "decomposeMatrix22.ot" "distanceBetween12.p1";
+connectAttr "decomposeMatrix24.ot" "distanceBetween12.p2";
+connectAttr "proxy_Ankle_R.wm" "decomposeMatrix24.imat";
+connectAttr "distanceBetween10.d" "plusMinusAverage8.i1[0]";
+connectAttr "distanceBetween11.d" "plusMinusAverage8.i1[1]";
+connectAttr "distanceBetween12.d" "multiplyDivide18.i1x";
+connectAttr "distanceBetween10.d" "multiplyDivide18.i1y";
+connectAttr "distanceBetween11.d" "multiplyDivide18.i1z";
+connectAttr "plusMinusAverage8.o1" "multiplyDivide18.i2x";
+connectAttr "distanceBetween12.d" "multiplyDivide18.i2y";
+connectAttr "distanceBetween12.d" "multiplyDivide18.i2z";
+connectAttr "multiplyDivide18.o" "multiplyDivide19.i1";
+connectAttr "multiplyDivide19.ox" "multiplyDivide20.i1y";
+connectAttr "multiplyDivide19.ox" "multiplyDivide20.i1z";
+connectAttr "multiplyDivide19.oy" "multiplyDivide20.i2y";
+connectAttr "multiplyDivide19.oz" "multiplyDivide20.i2z";
+connectAttr "proxy_Ankle_R_end_match_loc.t" "pairBlend7.it2";
+connectAttr "multiplyDivide20.oy" "pairBlend7.w";
+connectAttr "multiplyDivide17.ox" "condition4.ft";
+connectAttr "proxy_Knee_R_p_match_loc_aimConstraint1.cr" "pairBlend8.ir2";
+connectAttr "condition4.ocr" "pairBlend8.w";
 connectAttr "defaultRenderLayer.msg" ":defaultRenderingList1.r" -na;
-// End of biped_guide_000_.ma
+// End of biped_guide_000.ma
