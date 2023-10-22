@@ -38,6 +38,7 @@ class Chest(tkgModule.RigModule):
         self.control_rig()
         self.output_rig()
         self.skeleton()
+        self.add_plugs()
 
     def control_rig(self):
         self.chest_01 = tkgCtrl.Control(parent=self.control_grp,
@@ -84,3 +85,51 @@ class Chest(tkgModule.RigModule):
         chest_chain.create_from_transforms(parent=self.skel, pad=False)
         self.bind_joints = chest_chain.joints
         self.tag_bind_joints(self.bind_joints)
+
+    def add_plugs(self):
+        # add skeleton plugs
+        tkgAttr.Attribute(node=self.part_grp, type='plug',
+                         value=['cmds.ls("Cn_spine_??_JNT")[-1]'],
+                         name='skeletonPlugs',
+                         children_name=[self.bind_joints[0]])
+
+        # add delete rig plugs
+        delete_list = ['Cn_chest_02_JNT_parentConstraint1',
+                       'Cn_spine_tip_CTRL_CNST_GRP_parentConstraint1']
+        tkgAttr.Attribute(node=self.part_grp, type='plug',
+                         value=[' '.join(delete_list)], name='deleteRigPlugs',
+                         children_name=['deleteNodes'])
+
+        # add pointConstraint rig plugs
+        tkgAttr.Attribute(node=self.part_grp, type='plug',
+                         value=['cmds.ls("Cn_spine_??_driver_JNT")[-1]'],
+                         name='pocRigPlugs',
+                         children_name=[self.chest_jnt + '_point'])
+
+        # add orientConstraint rig plugs
+        tkgAttr.Attribute(node=self.part_grp, type='plug',
+                         value=[self.chest_02.ctrl],
+                         name='orcRigPlugs',
+                         children_name=[self.chest_jnt + '_orient'])
+
+        # add space plugs
+        target_list = ['CHAR', 'Cn_global_CTRL', 'Cn_root_02_CTRL',
+                       'Cn_spine_03_FK_CTRL', '3']
+        name_list = ['world', 'global', 'root', 'spine', 'default_value']
+        point_names = ['point' + n.title() for n in name_list]
+        orient_names = ['orient' + n.title() for n in name_list]
+
+        tkgAttr.Attribute(node=self.part_grp, type='plug',
+                         value=target_list,
+                         name=self.chest_01.ctrl + '_point',
+                         children_name=point_names)
+
+        tkgAttr.Attribute(node=self.part_grp, type='plug',
+                         value=target_list,
+                         name=self.chest_01.ctrl + '_orient',
+                         children_name=orient_names)
+
+        # add transferAttributes plug
+        tkgAttr.Attribute(node=self.part_grp, type='plug',
+                         value=[self.chest_01.ctrl], name='transferAttributes',
+                         children_name=['Cn_spine_tip_CTRL'])

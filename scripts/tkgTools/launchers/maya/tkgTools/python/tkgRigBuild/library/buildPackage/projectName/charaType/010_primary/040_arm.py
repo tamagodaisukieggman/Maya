@@ -16,7 +16,9 @@ for s in ['Lf', 'Rt']:
 
     arm = tkgPart.build_module(module_type="bipedLimb",
                               side=s, part="arm",
-            guide_list=["proxy_Arm" + fs, "proxy_Elbow" + fs, "proxy_Wrist" + fs])
+            guide_list=["proxy_Arm" + fs, "proxy_Elbow" + fs, "proxy_Wrist" + fs],
+            ctrl_scale=9,
+            pv_guide='proxy_Elbow{}_match_loc'.format(fs))
 
     clavicle = tkgPart.build_module(module_type="clavicle",
                               side=s, part="clavicle",
