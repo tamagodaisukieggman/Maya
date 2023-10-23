@@ -17,10 +17,11 @@ class Fk:
                  offset=None,
                  pad="auto",
                  fk_ctrl_axis='x',
+                 fk_ctrl_edge_axis='-x',
                  ctrl_scale=1,
                  remove_last=True,
                  add_joints=True,
-                 fk_shape="circle",
+                 fk_shape="cube",
                  gimbal_shape="circle",
                  offset_shape="square"):
         self.side = side
@@ -32,6 +33,7 @@ class Fk:
         self.offset = offset
         self.pad = pad
         self.fk_ctrl_axis = fk_ctrl_axis
+        self.fk_ctrl_edge_axis = fk_ctrl_edge_axis
         self.ctrl_scale = ctrl_scale
         self.remove_last = remove_last
         self.add_joints = add_joints
@@ -74,7 +76,8 @@ class Fk:
                                 rig_type=self.side+'_'+self.part+"Fk",
                                 position=pose,
                                 rotation=pose,
-                                ctrl_scale=self.ctrl_scale)
+                                ctrl_scale=self.ctrl_scale,
+                                edge_axis=self.fk_ctrl_edge_axis)
             par = fk.ctrl
             self.fk_ctrls.append(fk)
             self.output_ctrls = self.fk_ctrls

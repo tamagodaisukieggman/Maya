@@ -3,15 +3,14 @@
 import maya.cmds as cmds
 from imp import reload
 
-
 import tkgRigBuild.build.rigModule as tkgModule
 import tkgRigBuild.libs.attribute as tkgAttr
 import tkgRigBuild.build.chain as tkgChain
 import tkgRigBuild.build.fk as tkgFk
-# reload(tkgModule)
-# reload(tkgChain)
+reload(tkgModule)
+reload(tkgAttr)
+reload(tkgChain)
 reload(tkgFk)
-
 
 class Finger(tkgModule.RigModule, tkgFk.Fk):
     def __init__(self,
@@ -19,6 +18,7 @@ class Finger(tkgModule.RigModule, tkgFk.Fk):
                  part=None,
                  guide_list=None,
                  fk_ctrl_axis='x',
+                 fk_ctrl_edge_axis='-x',
                  ctrl_scale=None,
                  model_path=None,
                  guide_path=None,
@@ -37,6 +37,7 @@ class Finger(tkgModule.RigModule, tkgFk.Fk):
         self.gimbal = None
         self.offset = None
         self.fk_ctrl_axis = fk_ctrl_axis
+        self.fk_ctrl_edge_axis = fk_ctrl_edge_axis
 
         if self.pad == 'auto':
             self.pad = len(str(len(self.guide_list))) + 1

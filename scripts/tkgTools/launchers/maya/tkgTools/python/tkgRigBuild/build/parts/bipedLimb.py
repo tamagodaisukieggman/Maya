@@ -22,7 +22,9 @@ class BipedLimb(tkgModule.RigModule, tkgIk.Ik, tkgFk.Fk):
                  part=None,
                  guide_list=None,
                  fk_ctrl_axis='x',
+                 fk_ctrl_edge_axis='-x',
                  ctrl_scale=1,
+                 edge_axis=None,
                  create_ik=True,
                  create_fk=True,
                  stretchy=True,
@@ -42,7 +44,7 @@ class BipedLimb(tkgModule.RigModule, tkgIk.Ik, tkgFk.Fk):
                  gimbal=True,
                  offset=True,
                  pad='auto',
-                 fk_shape='circle',
+                 fk_shape='cube',
                  gimbal_shape='circle',
                  offset_shape='square',
                  model_path=None,
@@ -107,6 +109,7 @@ class BipedLimb(tkgModule.RigModule, tkgIk.Ik, tkgFk.Fk):
         self.gimbal_shape = gimbal_shape
         self.offset_shape = offset_shape
         self.fk_ctrl_axis = fk_ctrl_axis
+        self.fk_ctrl_edge_axis = fk_ctrl_edge_axis
 
         # ik kwargs
         self.sticky = sticky

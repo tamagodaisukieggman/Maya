@@ -27,6 +27,7 @@ class Control(tkgDraw.Draw, tkgGroup.Group):
                 group_type="main",
                 rig_type="primary",
                 ctrl_scale=1,
+                edge_axis=None,
                 position=(0,0,0),
                 rotation=(0,0,0),
                 scale=(1,1,1)):
@@ -48,6 +49,8 @@ class Control(tkgDraw.Draw, tkgGroup.Group):
             self.group_type = group_type
             self.rig_type = rig_type
             self.ctrl_scale = ctrl_scale
+            self.edge_axis = edge_axis
+
             if prefix:
                 self.ctrl_name = "{}_{}_{}".format(self.prefix, self.name, self.suffix)
             else:
@@ -63,6 +66,8 @@ class Control(tkgDraw.Draw, tkgGroup.Group):
                           axis=self.axis,
                           scale=self.ctrl_scale)
         self.ctrl = self.curve
+
+        tkgXform.move_pivot(ctrl=self.ctrl, edge_axis=self.edge_axis)
 
         if isinstance(self.group_type, str):
             self.group_by_list(nodes=self.ctrl,

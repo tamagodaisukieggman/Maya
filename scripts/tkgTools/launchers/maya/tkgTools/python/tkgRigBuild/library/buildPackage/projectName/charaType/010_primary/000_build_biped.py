@@ -14,6 +14,7 @@ data_path = '{}/{}'.format('/'.join(rep_build_file.split('/')[:-2]), '000_data')
 mp = "C:/Users/kesun/Documents/maya/scripts/tkgTools/tkgRig/data/projects/wizard2/data/p2/p2_sotai01.ma"
 gp = "{}/biped_guide_000.ma".format(data_path)
 
+
 tkgPart.build_module(module_type="root", side="Cn", part="root", global_name='global',
                 root_01_name='world',
                 root_02_name='local', model_path=mp, guide_path=gp)
@@ -52,10 +53,15 @@ sides = ['Lf', 'Rt']
 force_sides = ['_L', '_R']
 
 for s, fs in zip(sides, force_sides):
+    if fs == '_L':
+        edge_axis = '-x'
+    else:
+        edge_axis = 'x'
+
     arm = tkgPart.build_module(module_type="bipedLimb",
                               side=s, part="arm",
             guide_list=["proxy_Arm" + fs, "proxy_Elbow" + fs, "proxy_Wrist" + fs],
-            ctrl_scale=9,
+            ctrl_scale=9, fk_ctrl_edge_axis=edge_axis,
             pv_guide='proxy_Elbow{}_match_loc'.format(fs))
 
     clavicle = tkgPart.build_module(module_type="clavicle",
@@ -67,13 +73,18 @@ for s, fs in zip(sides, force_sides):
     hand = tkgPart.build_module(module_type="hand",
                               side=s, part="hand",
             guide_list=["proxy_Wrist" + fs],
-            ctrl_scale=9)
+            ctrl_scale=10)
 
 for s, fs in zip(sides, force_sides):
+    if fs == '_L':
+        edge_axis = '-x'
+    else:
+        edge_axis = 'x'
+
     leg = tkgPart.build_module(module_type="bipedLimb",
                               side=s, part="leg",
             guide_list=["proxy_Thigh" + fs, "proxy_Knee" + fs, "proxy_Ankle" + fs],
-            ctrl_scale=9,
+            ctrl_scale=9, fk_ctrl_edge_axis=edge_axis,
             pv_guide='proxy_Knee{}_match_loc'.format(fs))
 
     endJnt = rigModule.create_endJnt(base='proxy_Toe' + fs, wt=[0,0,5], awt_obj=None)
@@ -83,30 +94,35 @@ for s, fs in zip(sides, force_sides):
             ctrl_scale=9)
 
 for s, fs in zip(sides, force_sides):
+    if fs == '_L':
+        edge_axis = '-x'
+    else:
+        edge_axis = 'x'
+
     pinky = tkgPart.build_module(module_type="finger",
                               side=s, part="pinky",
             guide_list=["proxy_Pinky_01" + fs, "proxy_Pinky_02" + fs, "proxy_Pinky_03" + fs],
-            ctrl_scale=2, remove_last=False)
+            ctrl_scale=2, remove_last=False, fk_ctrl_edge_axis=edge_axis,)
 
     ring = tkgPart.build_module(module_type="finger",
                               side=s, part="ring",
             guide_list=["proxy_Ring_01" + fs, "proxy_Ring_02" + fs, "proxy_Ring_03" + fs],
-            ctrl_scale=2, remove_last=False)
+            ctrl_scale=2, remove_last=False, fk_ctrl_edge_axis=edge_axis,)
 
     middle = tkgPart.build_module(module_type="finger",
                               side=s, part="middle",
             guide_list=["proxy_Middle_01" + fs, "proxy_Middle_02" + fs, "proxy_Middle_03" + fs],
-            ctrl_scale=2, remove_last=False)
+            ctrl_scale=2, remove_last=False, fk_ctrl_edge_axis=edge_axis,)
 
     index = tkgPart.build_module(module_type="finger",
                               side=s, part="index",
             guide_list=["proxy_Index_01" + fs, "proxy_Index_02" + fs, "proxy_Index_03" + fs],
-            ctrl_scale=2, remove_last=False)
+            ctrl_scale=2, remove_last=False, fk_ctrl_edge_axis=edge_axis,)
 
     thumb = tkgPart.build_module(module_type="finger",
                               side=s, part="thumb",
             guide_list=["proxy_Thumb_01" + fs, "proxy_Thumb_02" + fs, "proxy_Thumb_03" + fs],
-            ctrl_scale=2, remove_last=False)
+            ctrl_scale=2, remove_last=False, fk_ctrl_edge_axis=edge_axis,)
 
 import tkgRigBuild.post.finalize as tkgFinalize
 reload(tkgFinalize)
@@ -115,7 +131,9 @@ reload(tkgFinalize)
 # tkgFinalize.add_switch_ctrl()
 # tkgFinalize.add_vis_ctrl()
 # tkgFinalize.assemble_skeleton()
+
 # tkgFinalize.assemble_rig()
+
 # tkgFinalize.add_global_scale()
 # tkgFinalize.add_rig_sets()
 

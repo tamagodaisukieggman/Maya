@@ -74,3 +74,30 @@ def find_position_on_curve(curve, u_value):
     pos = cmds.getAttr(pci + '.position')[0]
     cmds.delete(pci)
     return pos
+
+def move_pivot(ctrl=None, edge_axis='-x'):
+    if edge_axis:
+        bbx = cmds.xform(ctrl, q=True, bb=True)
+
+        pivot_axis = {
+            'x':bbx[3],
+            'y':bbx[4],
+            'z':bbx[5],
+            '-x':bbx[0],
+            '-y':bbx[1],
+            '-z':bbx[2],
+        }
+
+        pivot_value = {
+            'x':[pivot_axis[edge_axis], 0, 0],
+            'y':[0, pivot_axis[edge_axis], 0],
+            'z':[0, 0, pivot_axis[edge_axis]],
+            '-x':[pivot_axis[edge_axis], 0, 0],
+            '-y':[0, pivot_axis[edge_axis], 0],
+            '-z':[0, 0, pivot_axis[edge_axis]],
+        }
+
+        cmds.move(*pivot_value[edge_axis], ctrl+'.scalePivot', ctrl+'.rotatePivot', r=True)
+        rev_xform = [v*-1 for v in pivot_value[edge_axis]]
+        cmds.xform(ctrl, t=rev_xform, ws=True, a=True)
+        cmds.makeIdentity(ctrl, n=False, s=True, r=True, t=True, apply=True, pn=True)
