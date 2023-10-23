@@ -70,10 +70,10 @@ class Hand(tkgModule.RigModule):
                                          rig_type=self.side+'_'+self.part+'_local',
                                          position=self.guide_list[0],
                                          rotation=self.guide_list[0],
-                                         ctrl_scale=self.ctrl_scale)
+                                         ctrl_scale=self.ctrl_scale * 0.75)
 
         self.hand_fk = tkgCtrl.Control(parent=self.control_grp,
-                                      shape='flagHalfCircle',
+                                      shape='cube',
                                       prefix=self.side,
                                       suffix='CTRL',
                                       name=self.part + '_fk',
@@ -82,7 +82,7 @@ class Hand(tkgModule.RigModule):
                                       rig_type=self.side+'_'+self.part+'Fk',
                                       position=self.guide_list[0],
                                       rotation=self.guide_list[0],
-                                      ctrl_scale=self.ctrl_scale)
+                                      ctrl_scale=self.ctrl_scale * 0.65)
 
     def output_rig(self):
         # create ik and fk hand joint

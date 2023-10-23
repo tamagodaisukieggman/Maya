@@ -300,7 +300,7 @@ class Chain:
             t_val += ti
 
     def bend_chain(self, bone, ctrl_scale, spans=16, mirror=False,
-                   global_scale=None, scale_axis='scaleX'):
+                   global_scale=None, mid_ctrl_axis='x', tan_ctrl_axis='x', scale_axis='scaleX'):
         if mirror:
             mirror = -1
         else:
@@ -417,7 +417,7 @@ class Chain:
                                   prefix=None,
                                   suffix='CTRL',
                                   name=bone.replace('JNT', 'bendy'),
-                                  axis='y',
+                                  axis=mid_ctrl_axis,
                                   group_type='main',
                                   rig_type=bone.replace('JNT', 'bendy'),
                                   position=m,
@@ -428,7 +428,7 @@ class Chain:
                                prefix=None,
                                suffix='CTRL',
                                name=bone.replace('JNT', 'start_tangent'),
-                               axis='y',
+                               axis=tan_ctrl_axis,
                                group_type=2,
                                rig_type=bone.replace('JNT', 'start_tangent'),
                                position=b_crv + '.cv[1]',
@@ -439,7 +439,7 @@ class Chain:
                                prefix=None,
                                suffix='CTRL',
                                name=bone.replace('JNT', 'end_tangent'),
-                               axis='y',
+                               axis=tan_ctrl_axis,
                                group_type=2,
                                rig_type=bone.replace('JNT', 'end_tangent'),
                                position=b_crv + '.cv[5]',

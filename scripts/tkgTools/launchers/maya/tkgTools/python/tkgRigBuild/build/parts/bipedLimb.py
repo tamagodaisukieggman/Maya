@@ -9,7 +9,11 @@ import tkgRigBuild.build.chain as tkgChain
 import tkgRigBuild.build.fk as tkgFk
 import tkgRigBuild.build.ik as tkgIk
 import tkgRigBuild.libs.attribute as tkgAttr
+reload(tkgModule)
 reload(tkgChain)
+reload(tkgFk)
+reload(tkgIk)
+reload(tkgAttr)
 
 
 class BipedLimb(tkgModule.RigModule, tkgIk.Ik, tkgFk.Fk):
@@ -17,6 +21,7 @@ class BipedLimb(tkgModule.RigModule, tkgIk.Ik, tkgFk.Fk):
                  side=None,
                  part=None,
                  guide_list=None,
+                 fk_ctrl_axis='x',
                  ctrl_scale=1,
                  create_ik=True,
                  create_fk=True,
@@ -25,7 +30,9 @@ class BipedLimb(tkgModule.RigModule, tkgIk.Ik, tkgFk.Fk):
                  twisty=True,
                  twisty_axis='x',
                  bendy=True,
-                 bendy_axis='scaleX',
+                 bendy_mid_ctrl_axis='x',
+                 bendy_tan_ctrl_axis='y',
+                 bendy_scale_axis='scaleY',
                  segments=4,
                  sticky=None,
                  solver=None,
@@ -90,13 +97,16 @@ class BipedLimb(tkgModule.RigModule, tkgIk.Ik, tkgFk.Fk):
         self.twisty = twisty
         self.twisty_axis = twisty_axis
         self.bendy = bendy
-        self.bendy_axis = bendy_axis
+        self.bendy_mid_ctrl_axis = bendy_mid_ctrl_axis
+        self.bendy_tan_ctrl_axis = bendy_tan_ctrl_axis
+        self.bendy_scale_axis = bendy_scale_axis
         self.segments = segments
 
         # fk shape kwargs
         self.fk_shape = fk_shape
         self.gimbal_shape = gimbal_shape
         self.offset_shape = offset_shape
+        self.fk_ctrl_axis = fk_ctrl_axis
 
         # ik kwargs
         self.sticky = sticky
@@ -243,12 +253,16 @@ class BipedLimb(tkgModule.RigModule, tkgIk.Ik, tkgFk.Fk):
                                                 ctrl_scale=self.ctrl_scale,
                                                 mirror=mirror,
                                                 global_scale=self.global_scale.attr,
-                                                scale_axis=self.bendy_axis)
+                                                mid_ctrl_axis=self.bendy_mid_ctrl_axis,
+                                                tan_ctrl_axis=self.bendy_tan_ctrl_axis,
+                                                scale_axis=self.bendy_scale_axis)
             bend_02 = self.src_chain.bend_chain(bone=self.src_chain.joints[1],
                                                 ctrl_scale=self.ctrl_scale,
                                                 mirror=mirror,
+                                                mid_ctrl_axis=self.bendy_mid_ctrl_axis,
+                                                tan_ctrl_axis=self.bendy_tan_ctrl_axis,
                                                 global_scale=self.global_scale.attr,
-                                                scale_axis=self.bendy_axis)
+                                                scale_axis=self.bendy_scale_axis)
             cmds.parent(bend_01['control'], bend_02['control'],
                         self.control_grp)
             cmds.parent(bend_01['module'], bend_02['module'], self.module_grp)

@@ -18,6 +18,7 @@ class Finger(tkgModule.RigModule, tkgFk.Fk):
                  side=None,
                  part=None,
                  guide_list=None,
+                 fk_ctrl_axis='x',
                  ctrl_scale=None,
                  model_path=None,
                  guide_path=None,
@@ -35,6 +36,7 @@ class Finger(tkgModule.RigModule, tkgFk.Fk):
         self.fk_shape = fk_shape
         self.gimbal = None
         self.offset = None
+        self.fk_ctrl_axis = fk_ctrl_axis
 
         if self.pad == 'auto':
             self.pad = len(str(len(self.guide_list))) + 1

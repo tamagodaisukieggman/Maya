@@ -120,7 +120,7 @@ class Ik:
                                 rotate=False)
 
         self.main_ctrl = tkgCtrl.Control(parent=self.ik_ctrl_grp,
-                                        shape='cube',
+                                        shape='jack',
                                         prefix=self.side,
                                         suffix='CTRL',
                                         name=self.part + '_IK_main',

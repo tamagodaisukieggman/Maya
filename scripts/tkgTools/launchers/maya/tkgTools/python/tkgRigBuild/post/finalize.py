@@ -250,6 +250,12 @@ def add_vis_ctrl():
                             axis='y',
                             group_type=None,
                             rig_type='global')
+
+    bb = tkgCommon.get_bounding_box(['Cn_global_CTRL'])[3:6]
+    cmds.xform(v_ctrl.ctrl, t=[bb[0], 0, 0], ws=True)
+    scale = 10
+    cmds.xform(v_ctrl.ctrl, s=[scale, scale, scale])
+
     attr_util.lock_and_hide(node=v_ctrl.ctrl)
 
     # color control info shapes
@@ -371,6 +377,12 @@ def add_switch_ctrl():
                             axis='y',
                             group_type=None,
                             rig_type='global')
+
+    bb = tkgCommon.get_bounding_box(['Cn_global_CTRL'])[3:6]
+    cmds.xform(s_ctrl.ctrl, t=[bb[0], 0, 0], ws=True)
+    scale = 10
+    cmds.xform(s_ctrl.ctrl, s=[scale, scale, scale])
+
     attr_util.lock_and_hide(node=s_ctrl.ctrl)
 
     # color shapes

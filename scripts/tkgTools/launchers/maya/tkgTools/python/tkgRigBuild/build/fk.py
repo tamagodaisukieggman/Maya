@@ -16,6 +16,7 @@ class Fk:
                  gimbal=None,
                  offset=None,
                  pad="auto",
+                 fk_ctrl_axis='x',
                  ctrl_scale=1,
                  remove_last=True,
                  add_joints=True,
@@ -30,6 +31,7 @@ class Fk:
         self.gimbal = gimbal
         self.offset = offset
         self.pad = pad
+        self.fk_ctrl_axis = fk_ctrl_axis
         self.ctrl_scale = ctrl_scale
         self.remove_last = remove_last
         self.add_joints = add_joints
@@ -67,7 +69,7 @@ class Fk:
                                 prefix=self.side,
                                 suffix="CTRL",
                                 name=self.part + "_" + num + "_fk",
-                                axis="y",
+                                axis=self.fk_ctrl_axis,
                                 group_type="main",
                                 rig_type=self.side+'_'+self.part+"Fk",
                                 position=pose,
@@ -83,7 +85,7 @@ class Fk:
                                      prefix=self.side,
                                      suffix="CTRL",
                                      name=self.part + "_" + num + "_gimbal",
-                                     axis="y",
+                                     axis=self.fk_ctrl_axis,
                                      group_type="main",
                                      rig_type=self.side+'_'+self.part+"FkGimbal",
                                      position=pose,
@@ -99,7 +101,7 @@ class Fk:
                                      prefix=self.side,
                                      suffix="CTRL",
                                      name=self.part + "_" + num + "_offset",
-                                     axis="y",
+                                     axis=self.fk_ctrl_axis,
                                      group_type="main",
                                      rig_type=self.side+'_'+self.part+"FkOffset",
                                      position=pose,
