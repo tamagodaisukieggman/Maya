@@ -196,7 +196,8 @@ class Spline:
         self.spline_chain = tkgChain.Chain(prefix=self.side,
                                           suffix='driver_JNT',
                                           name=self.part)
-        self.spline_chain.create_from_curve(joint_num=self.joint_num,
+        self.spline_chain.create_from_curve(guide_list=self.guide_list,
+                                            joint_num=self.joint_num,
                                             curve=self.crv,
                                             aim_vector=self.aim_vector,
                                             up_vector=self.up_vector,

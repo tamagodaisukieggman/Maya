@@ -68,6 +68,7 @@ class Spine(tkgModule.RigModule, tkgSpline.Spline):
         self.up_vector = up_vector
         self.world_up_vector = world_up_vector
         self.fk_offset = fk_offset
+        self.guide_list = guide_list
         self.pad = len(str(self.joint_num)) + 1
 
         self.create_module()
@@ -90,11 +91,12 @@ class Spine(tkgModule.RigModule, tkgSpline.Spline):
         fk_chain = tkgChain.Chain(prefix=self.side,
                                  suffix='ctrl_JNT',
                                  name=self.part)
-        fk_chain.create_from_curve(joint_num=4, curve=self.crv, stretch=None)
+        fk_chain.create_from_curve(joint_num=self.joint_num, curve=self.crv, stretch=None)
 
         self.fk_ctrl_list = []
         par = None
-        for i, jnt in enumerate(fk_chain.joints[:-1]):
+        # for i, jnt in enumerate(fk_chain.joints[:-1]):
+        for i, jnt in enumerate(self.guide_list):
             name_list = [self.part, str(i + 1).zfill(2), 'FK']
             ctrl_name = '_'.join(name_list)
             if i == 0:
