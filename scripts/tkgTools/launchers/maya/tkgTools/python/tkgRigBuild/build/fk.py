@@ -69,7 +69,7 @@ class Fk:
                                 name=self.part + "_" + num + "_fk",
                                 axis="y",
                                 group_type="main",
-                                rig_type="fk",
+                                rig_type=self.side+'_'+self.part+"Fk",
                                 position=pose,
                                 rotation=pose,
                                 ctrl_scale=self.ctrl_scale)
@@ -85,7 +85,7 @@ class Fk:
                                      name=self.part + "_" + num + "_gimbal",
                                      axis="y",
                                      group_type="main",
-                                     rig_type="gimbal",
+                                     rig_type=self.side+'_'+self.part+"FkGimbal",
                                      position=pose,
                                      rotation=pose,
                                      ctrl_scale=self.ctrl_scale * 0.8)
@@ -101,7 +101,7 @@ class Fk:
                                      name=self.part + "_" + num + "_offset",
                                      axis="y",
                                      group_type="main",
-                                     rig_type="offset",
+                                     rig_type=self.side+'_'+self.part+"FkOffset",
                                      position=pose,
                                      rotation=pose,
                                      ctrl_scale=self.ctrl_scale * 0.55)

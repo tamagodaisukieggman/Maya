@@ -42,7 +42,7 @@ class Head(tkgModule.RigModule):
                                       name=self.part + '_01',
                                       axis='y',
                                       group_type='main',
-                                      rig_type='primary',
+                                      rig_type=self.part + '_01',
                                       position=self.guide_list[0],
                                       rotation=(0, 0, 0),
                                       ctrl_scale=self.ctrl_scale)
@@ -54,7 +54,7 @@ class Head(tkgModule.RigModule):
                                       name=self.part + '_02',
                                       axis='y',
                                       group_type='main',
-                                      rig_type='secondary',
+                                      rig_type=self.part + '_02',
                                       position=self.guide_list[0],
                                       rotation=(0, 0, 0),
                                       ctrl_scale=self.ctrl_scale * 0.95)

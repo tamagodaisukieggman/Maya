@@ -55,6 +55,8 @@ def add_color_attributes():
 
     bb = tkgCommon.get_bounding_box(['Cn_global_CTRL'])[3:6]
     cmds.xform(c_ctrl.ctrl, t=[bb[0], 0, 0], ws=True)
+    scale = 10
+    cmds.xform(c_ctrl.ctrl, s=[scale, scale, scale])
 
     attr_util.lock_and_hide(node=c_ctrl.ctrl)
 
@@ -71,7 +73,7 @@ def add_color_attributes():
     for typ, ctrl_list in type_dict.items():
         tkgAttr.Attribute(node=c_ctrl.ctrl, type='separator', name=typ)
         clr = tkgAttr.Attribute(node=c_ctrl.ctrl, type='double3', value=0,
-                               keyable=True, min=0, name=typ + 'Color',
+                               keyable=True, min=0, max=1, name=typ + 'Color',
                                children_name='RGB')
         for ctrl in ctrl_list:
             for shp in cmds.listRelatives(ctrl, shapes=True, type='nurbsCurve'):

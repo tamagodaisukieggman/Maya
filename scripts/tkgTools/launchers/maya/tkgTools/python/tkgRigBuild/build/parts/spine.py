@@ -113,7 +113,7 @@ class Spine(tkgModule.RigModule, tkgSpline.Spline):
                                      name=ctrl_name,
                                      axis='y',
                                      group_type='main',
-                                     rig_type='fk',
+                                     rig_type='spineFk',
                                      position=jnt,
                                      rotation=jnt,
                                      ctrl_scale=self.ctrl_scale)

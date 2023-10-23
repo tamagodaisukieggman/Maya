@@ -112,7 +112,7 @@ class Ik:
                                         name=self.part + '_IK_base',
                                         axis='y',
                                         group_type='main',
-                                        rig_type='primary',
+                                        rig_type=self.side+'_'+self.part+'IkBase',
                                         position=self.guide_list[0],
                                         ctrl_scale=self.ctrl_scale)
         attr_util.lock_and_hide(node=self.base_ctrl.ctrl,
@@ -126,7 +126,7 @@ class Ik:
                                         name=self.part + '_IK_main',
                                         axis='y',
                                         group_type='main',
-                                        rig_type='primary',
+                                        rig_type=self.side+'_'+self.part+'IkMain',
                                         position=self.guide_list[-1],
                                         ctrl_scale=self.ctrl_scale)
         attr_util.lock_and_hide(node=self.main_ctrl.ctrl,
@@ -141,7 +141,7 @@ class Ik:
                                           name=self.part + '_IK_pv',
                                           axis='y',
                                           group_type='main',
-                                          rig_type='pv',
+                                          rig_type=self.side+'_'+self.part+'IkPv',
                                           position=self.pv_guide,
                                           ctrl_scale=self.ctrl_scale)
             attr_util.lock_and_hide(node=self.pv_ctrl.ctrl, translate=False)

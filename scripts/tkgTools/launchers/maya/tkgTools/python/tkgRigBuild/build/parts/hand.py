@@ -43,7 +43,7 @@ class Hand(tkgModule.RigModule):
                                       name=self.part + '_01',
                                       axis='y',
                                       group_type='main',
-                                      rig_type='primary',
+                                      rig_type=self.side+'_'+self.part+'_01',
                                       position=self.guide_list[0],
                                       rotation=(0, 0, 0),
                                       ctrl_scale=self.ctrl_scale)
@@ -55,7 +55,7 @@ class Hand(tkgModule.RigModule):
                                       name=self.part + '_02',
                                       axis='y',
                                       group_type='main',
-                                      rig_type='secondary',
+                                      rig_type=self.side+'_'+self.part+'_02',
                                       position=self.guide_list[0],
                                       rotation=(0, 0, 0),
                                       ctrl_scale=self.ctrl_scale * 0.85)
@@ -67,7 +67,7 @@ class Hand(tkgModule.RigModule):
                                          name=self.part + '_local',
                                          axis='y',
                                          group_type='main',
-                                         rig_type='secondary',
+                                         rig_type=self.side+'_'+self.part+'_local',
                                          position=self.guide_list[0],
                                          rotation=self.guide_list[0],
                                          ctrl_scale=self.ctrl_scale)
@@ -79,7 +79,7 @@ class Hand(tkgModule.RigModule):
                                       name=self.part + '_fk',
                                       axis='y',
                                       group_type='main',
-                                      rig_type='fk',
+                                      rig_type=self.side+'_'+self.part+'Fk',
                                       position=self.guide_list[0],
                                       rotation=self.guide_list[0],
                                       ctrl_scale=self.ctrl_scale)

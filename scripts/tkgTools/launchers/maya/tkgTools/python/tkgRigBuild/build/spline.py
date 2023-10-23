@@ -85,7 +85,7 @@ class Spline:
                                         name=self.part + '_base',
                                         axis='y',
                                         group_type='main',
-                                        rig_type='primary',
+                                        rig_type=self.part+'IkSplineBase',
                                         position=self.guide_list[0],
                                         rotation=(0, 0, 0),
                                         ctrl_scale=self.ctrl_scale)
@@ -101,7 +101,7 @@ class Spline:
                                        name=self.part + '_tip',
                                        axis='y',
                                        group_type='main',
-                                       rig_type='primary',
+                                       rig_type=self.part+'IkSplineTip',
                                        position=self.guide_list[-1],
                                        rotation=(0, 0, 0),
                                        ctrl_scale=self.ctrl_scale)
@@ -118,7 +118,7 @@ class Spline:
                                              name=self.part + '_base_local',
                                              axis='y',
                                              group_type='main',
-                                             rig_type='secondary',
+                                             rig_type=self.part+'IkSplineBaseLocal',
                                              position=self.guide_list[0],
                                              rotation=self.guide_list[0],
                                              ctrl_scale=self.ctrl_scale)
@@ -134,7 +134,7 @@ class Spline:
                                             name=self.part + '_tip_local',
                                             axis='y',
                                             group_type='main',
-                                            rig_type='secondary',
+                                            rig_type=self.part+'IkSplineTipLocal',
                                             position=self.guide_list[-1],
                                             rotation=self.guide_list[-1],
                                             ctrl_scale=self.ctrl_scale)
@@ -152,7 +152,7 @@ class Spline:
                                            name=self.part + '_mid',
                                            axis='y',
                                            group_type='main',
-                                           rig_type='primary',
+                                           rig_type=self.part+'IkSplineMid',
                                            position=pos,
                                            rotation=(0, 0, 0),
                                            ctrl_scale=self.ctrl_scale)

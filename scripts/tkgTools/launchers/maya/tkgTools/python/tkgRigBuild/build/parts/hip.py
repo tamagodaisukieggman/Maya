@@ -54,7 +54,7 @@ class Hip(tkgModule.RigModule):
                                      name=self.hip_01_name,
                                      axis='y',
                                      group_type='main',
-                                     rig_type='primary',
+                                     rig_type=self.hip_01_name,
                                      position=self.guide_list[0],
                                      rotation=(0, 0, 0),
                                      ctrl_scale=self.ctrl_scale * 0.4)
@@ -66,7 +66,7 @@ class Hip(tkgModule.RigModule):
                                      name=self.hip_02_name,
                                      axis='y',
                                      group_type='main',
-                                     rig_type='secondary',
+                                     rig_type=self.hip_02_name,
                                      position=self.guide_list[0],
                                      rotation=(0, 0, 0),
                                      ctrl_scale=self.ctrl_scale * 0.35)

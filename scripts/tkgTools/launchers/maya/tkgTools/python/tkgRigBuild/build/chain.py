@@ -410,7 +410,7 @@ class Chain:
                                   name=bone.replace('JNT', 'bendy'),
                                   axis='y',
                                   group_type='main',
-                                  rig_type='bendy',
+                                  rig_type=bone.replace('JNT', 'bendy'),
                                   position=m,
                                   rotation=bone,
                                   ctrl_scale=ctrl_scale * 0.8)
@@ -421,7 +421,7 @@ class Chain:
                                name=bone.replace('JNT', 'start_tangent'),
                                axis='y',
                                group_type=2,
-                               rig_type='tangent',
+                               rig_type=bone.replace('JNT', 'start_tangent'),
                                position=b_crv + '.cv[1]',
                                rotation=bone,
                                ctrl_scale=ctrl_scale * 0.6)
@@ -432,7 +432,7 @@ class Chain:
                                name=bone.replace('JNT', 'end_tangent'),
                                axis='y',
                                group_type=2,
-                               rig_type='tangent',
+                               rig_type=bone.replace('JNT', 'end_tangent'),
                                position=b_crv + '.cv[5]',
                                rotation=bone,
                                ctrl_scale=ctrl_scale * 0.6)
