@@ -17,6 +17,8 @@ class Chest(tkgModule.RigModule):
                  side=None,
                  part=None,
                  guide_list=None,
+                 chest_01_name='chest_01',
+                 chest_02_name='chest_02',
                  ctrl_scale=None,
                  ctrl_shape="chest",
                  model_path=None,
@@ -28,6 +30,8 @@ class Chest(tkgModule.RigModule):
                                   model_path=model_path,
                                   guide_path=guide_path)
 
+        self.chest_01_name = chest_01_name
+        self.chest_02_name = chest_02_name
         self.ctrl_shape = ctrl_shape
 
         self.create_module()
@@ -45,7 +49,7 @@ class Chest(tkgModule.RigModule):
                                      shape=self.ctrl_shape,
                                      prefix=self.side,
                                      suffix="CTRL",
-                                     name=self.part + "_01",
+                                     name=self.chest_01_name,
                                      axis="y",
                                      group_type="main",
                                      rig_type="primary",
@@ -57,7 +61,7 @@ class Chest(tkgModule.RigModule):
                                      shape=self.ctrl_shape,
                                      prefix=self.side,
                                      suffix="CTRL",
-                                     name=self.part + "_02",
+                                     name=self.chest_02_name,
                                      axis="y",
                                      group_type="main",
                                      rig_type="primary",

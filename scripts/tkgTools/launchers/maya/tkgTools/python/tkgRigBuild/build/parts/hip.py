@@ -12,7 +12,6 @@ reload(tkgChain)
 reload(tkgCtrl)
 reload(tkgAttr)
 
-
 class Hip(tkgModule.RigModule):
     def __init__(self,
                  side=None,
@@ -22,6 +21,7 @@ class Hip(tkgModule.RigModule):
                  offset_hip=None,
                  hip_01_name='hip_01',
                  hip_02_name='hip_02',
+                 ctrl_shape="hip",
                  model_path=None,
                  guide_path=None):
         super(Hip, self).__init__(side=side, part=part,
@@ -33,6 +33,7 @@ class Hip(tkgModule.RigModule):
         self.offset_hip = offset_hip
         self.hip_01_name = hip_01_name
         self.hip_02_name = hip_02_name
+        self.ctrl_shape = ctrl_shape
 
         self.create_module()
 
@@ -47,7 +48,7 @@ class Hip(tkgModule.RigModule):
     def control_rig(self):
         # create controls
         self.hip_01 = tkgCtrl.Control(parent=self.control_grp,
-                                     shape='hip',
+                                     shape=self.ctrl_shape,
                                      prefix=self.side,
                                      suffix='CTRL',
                                      name=self.hip_01_name,
@@ -59,7 +60,7 @@ class Hip(tkgModule.RigModule):
                                      ctrl_scale=self.ctrl_scale * 0.4)
 
         self.hip_02 = tkgCtrl.Control(parent=self.hip_01.ctrl,
-                                     shape='hip',
+                                     shape=self.ctrl_shape,
                                      prefix=self.side,
                                      suffix='CTRL',
                                      name=self.hip_02_name,
