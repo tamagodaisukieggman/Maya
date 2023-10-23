@@ -26,6 +26,17 @@ def get_control_types():
 
     return type_dict
 
+def get_control_colors():
+    color_dict = {}
+    for x in cmds.ls('*.ctrlDict'):
+        ctrl = tkgCtrl.Control(ctrl=x.split('.')[0])
+        if ctrl.rig_type in color_dict:
+            color_dict[ctrl.rig_type].append(ctrl.ctrl_color)
+        else:
+            color_dict[ctrl.rig_type] = [ctrl.ctrl_color]
+
+    return color_dict
+
 def add_dislpay_type(node, value, name, target):
     dt = tkgAttr.Attribute(node=node, type='enum', value=value,
                           enum_list=['Normal', 'Template', 'Reference'],
@@ -37,6 +48,7 @@ def add_dislpay_type(node, value, name, target):
 def add_color_attributes():
     attr_util = tkgAttr.Attribute(add=False)
     type_dict = get_control_types()
+    color_dict = get_control_colors()
 
     # add control info node
     if cmds.objExists('Cn_global_CTRL'):
@@ -83,30 +95,31 @@ def add_color_attributes():
                 cmds.setAttr(shp + '.overrideRGBColors', 1)
                 cmds.connectAttr(clr.attr, shp + '.overrideColorRGB')
 
-    set_color_defaults(c_ctrl.ctrl)
+    set_color_defaults(c_ctrl.ctrl, color_dict)
 
 
-def set_color_defaults(ctrl_info):
-    color_dict = {'gimbal': (0, 0.45, 0),
-                  'root_01': (0, 1, 0),
-                  'root_02': (0, 1, 0.1),
-                  'global': (1, 0.25, 1),
-                  'pivot': (1, 0.25, 0),
-                  'primary': (1, 1, 0),
-                  'bendy': (1, 0.2, 0.4),
-                  'tangent': (0.85, 0.15, 0),
-                  'offset': (0.75, 0, 0),
-                  'pv': (0, 1, 1),
-                  'fk': (0, 0, 1),
-                  'secondary': (1, 0.2, 0.2),
-                  'l_eye': (0.1, 0.1, 0.7),
-                  'r_eye': (0.7, 0.1, 0.1),
-                  'c_eye': (0.7, 0.7, 0.1)}
+def set_color_defaults(ctrl_info, color_dict):
+    # color_dict = {'gimbal': (0, 0.45, 0),
+    #               'root_01': (0, 1, 0),
+    #               'root_02': (0, 1, 0.1),
+    #               'global': (1, 0.25, 1),
+    #               'pivot': (1, 0.25, 0),
+    #               'primary': (1, 1, 0),
+    #               'bendy': (1, 0.2, 0.4),
+    #               'tangent': (0.85, 0.15, 0),
+    #               'offset': (0.75, 0, 0),
+    #               'pv': (0, 1, 1),
+    #               'fk': (0, 0, 1),
+    #               'secondary': (1, 0.2, 0.2),
+    #               'l_eye': (0.1, 0.1, 0.7),
+    #               'r_eye': (0.7, 0.1, 0.1),
+    #               'c_eye': (0.7, 0.7, 0.1)}
 
-    for typ, val in color_dict.items():
-        color_attr = '{}.{}Color'.format(ctrl_info, typ)
-        if cmds.objExists(color_attr):
-            cmds.setAttr(color_attr, *val)
+    for typ, val_list in color_dict.items():
+        for val in val_list:
+            color_attr = '{}.{}Color'.format(ctrl_info, typ)
+            if cmds.objExists(color_attr):
+                cmds.setAttr(color_attr, *val)
 
 
 def assemble_skeleton():

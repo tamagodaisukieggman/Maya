@@ -16,6 +16,7 @@ class Root(tkgModule.RigModule):
                  part=None,
                  guide_list=None,
                  ctrl_scale=None,
+                 ctrl_color=[0.199, 0.108, 0.315],
                  global_name='global',
                  global_shape="gnomon",
                  root_01_name='root_01',
@@ -38,6 +39,8 @@ class Root(tkgModule.RigModule):
             self.root_pose = self.guide_list[0]
         else:
             self.root_pose = (0,0,0)
+
+        self.ctrl_color = ctrl_color
 
         self.global_name = global_name
         self.global_shape = global_shape
@@ -72,7 +75,8 @@ class Root(tkgModule.RigModule):
                                           rig_type=self.global_name,
                                           position=self.root_pose,
                                           rotation=self.root_pose,
-                                          ctrl_scale=self.ctrl_scale)
+                                          ctrl_scale=self.ctrl_scale,
+                                          ctrl_color=self.ctrl_color)
 
         self.root_01 = tkgCtrl.Control(parent=self.global_ctrl.ctrl,
                                           shape=self.root_shape,
@@ -84,7 +88,8 @@ class Root(tkgModule.RigModule):
                                           rig_type=self.root_01_name,
                                           position=self.root_pose,
                                           rotation=self.root_pose,
-                                          ctrl_scale=self.ctrl_scale * 0.5)
+                                          ctrl_scale=self.ctrl_scale * 0.5,
+                                          ctrl_color=[0.069, 0.377, 0.694])
 
         self.root_02 = tkgCtrl.Control(parent=self.root_01.ctrl,
                                           shape=self.root_shape,
@@ -96,7 +101,8 @@ class Root(tkgModule.RigModule):
                                           rig_type=self.root_02_name,
                                           position=self.root_pose,
                                           rotation=self.root_pose,
-                                          ctrl_scale=self.ctrl_scale * 0.4)
+                                          ctrl_scale=self.ctrl_scale * 0.4,
+                                          ctrl_color=[0.377, 0.069, 0.694])
 
         self.root_move = tkgCtrl.Control(parent=self.control_grp,
                                           shape=self.root_move_shape,
@@ -108,7 +114,8 @@ class Root(tkgModule.RigModule):
                                           rig_type=self.root_move_name,
                                           position=self.root_pose,
                                           rotation=self.root_pose,
-                                          ctrl_scale=self.ctrl_scale)
+                                          ctrl_scale=self.ctrl_scale,
+                                          ctrl_color=[1, 1, 0.24])
 
     def output_rig(self):
         root_jnt_grp = cmds.group(parent=self.module_grp,

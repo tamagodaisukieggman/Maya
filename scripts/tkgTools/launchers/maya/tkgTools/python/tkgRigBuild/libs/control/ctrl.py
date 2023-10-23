@@ -27,6 +27,7 @@ class Control(tkgDraw.Draw, tkgGroup.Group):
                 group_type="main",
                 rig_type="primary",
                 ctrl_scale=1,
+                ctrl_color=[0.2, 0.5, 0.8],
                 edge_axis=None,
                 position=(0,0,0),
                 rotation=(0,0,0),
@@ -49,6 +50,7 @@ class Control(tkgDraw.Draw, tkgGroup.Group):
             self.group_type = group_type
             self.rig_type = rig_type
             self.ctrl_scale = ctrl_scale
+            self.ctrl_color = ctrl_color
             self.edge_axis = edge_axis
 
             if prefix:
@@ -111,6 +113,7 @@ class Control(tkgDraw.Draw, tkgGroup.Group):
         self.group_list = self.control_dict["rig_groups"]
         self.rig_type = self.control_dict["rig_type"]
         self.ctrl_scale = self.control_dict["ctrl_scale"]
+        self.ctrl_color = self.control_dict["ctrl_color"]
         if self.prefix:
             self.ctrl_name = "{}_{}_{}".format(self.prefix, self.name, self.suffix)
 
@@ -129,7 +132,8 @@ class Control(tkgDraw.Draw, tkgGroup.Group):
                              "axis": self.axis,
                              "rig_groups": self.group_list,
                              "rig_type": self.rig_type,
-                             "ctrl_scale": self.ctrl_scale}
+                             "ctrl_scale": self.ctrl_scale,
+                             "ctrl_color": self.ctrl_color}
 
         tag_string = str(self.control_dict)
 

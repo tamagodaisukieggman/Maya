@@ -22,6 +22,7 @@ class Hip(tkgModule.RigModule):
                  hip_01_name='hip_01',
                  hip_02_name='hip_02',
                  ctrl_shape="hip",
+                 ctrl_color=[1, 1, 0.24],
                  model_path=None,
                  guide_path=None):
         super(Hip, self).__init__(side=side, part=part,
@@ -34,6 +35,7 @@ class Hip(tkgModule.RigModule):
         self.hip_01_name = hip_01_name
         self.hip_02_name = hip_02_name
         self.ctrl_shape = ctrl_shape
+        self.ctrl_color = ctrl_color
 
         self.create_module()
 
@@ -57,7 +59,8 @@ class Hip(tkgModule.RigModule):
                                      rig_type=self.hip_01_name,
                                      position=self.guide_list[0],
                                      rotation=(0, 0, 0),
-                                     ctrl_scale=self.ctrl_scale * 0.4)
+                                     ctrl_scale=self.ctrl_scale * 0.4,
+                                     ctrl_color=self.ctrl_color)
 
         self.hip_02 = tkgCtrl.Control(parent=self.hip_01.ctrl,
                                      shape=self.ctrl_shape,
@@ -69,7 +72,8 @@ class Hip(tkgModule.RigModule):
                                      rig_type=self.hip_02_name,
                                      position=self.guide_list[0],
                                      rotation=(0, 0, 0),
-                                     ctrl_scale=self.ctrl_scale * 0.35)
+                                     ctrl_scale=self.ctrl_scale * 0.35,
+                                     ctrl_color=[v*0.35 for v in self.ctrl_color])
 
     def output_rig(self):
         hip_jnt_grp = cmds.group(parent=self.module_grp, empty=True,

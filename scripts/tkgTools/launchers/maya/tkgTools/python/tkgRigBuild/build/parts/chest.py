@@ -21,6 +21,7 @@ class Chest(tkgModule.RigModule):
                  chest_02_name='chest_02',
                  ctrl_scale=None,
                  ctrl_shape="chest",
+                 ctrl_color=[1, 1, 0.24],
                  model_path=None,
                  guide_path=None):
         super(Chest, self).__init__(side=side,
@@ -33,6 +34,7 @@ class Chest(tkgModule.RigModule):
         self.chest_01_name = chest_01_name
         self.chest_02_name = chest_02_name
         self.ctrl_shape = ctrl_shape
+        self.ctrl_color = ctrl_color
 
         self.create_module()
 
@@ -55,7 +57,8 @@ class Chest(tkgModule.RigModule):
                                      rig_type=self.chest_01_name,
                                      position=self.guide_list[0],
                                      rotation=(0,0,0),
-                                     ctrl_scale=self.ctrl_scale * 0.4)
+                                     ctrl_scale=self.ctrl_scale * 0.4,
+                                     ctrl_color=self.ctrl_color)
 
         self.chest_02 = tkgCtrl.Control(parent=self.chest_01.ctrl,
                                      shape=self.ctrl_shape,
@@ -67,7 +70,8 @@ class Chest(tkgModule.RigModule):
                                      rig_type=self.chest_02_name,
                                      position=self.guide_list[0],
                                      rotation=(0,0,0),
-                                     ctrl_scale=self.ctrl_scale * 0.35)
+                                     ctrl_scale=self.ctrl_scale * 0.35,
+                                     ctrl_color=[v*0.35 for v in self.ctrl_color])
 
     def output_rig(self):
         chest_jnt_grp = cmds.group(parent=self.module_grp,

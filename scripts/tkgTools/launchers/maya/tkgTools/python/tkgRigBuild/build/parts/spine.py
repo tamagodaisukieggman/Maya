@@ -23,6 +23,9 @@ class Spine(tkgModule.RigModule, tkgSpline.Spline):
                  part=None,
                  guide_list=None,
                  ctrl_scale=None,
+                 ctrl_color=[0.364, 0.322, 0.555],
+                 fk_ctrl_scale=15,
+                 fk_ctrl_color=[0.652, 0.263, 0.119],
                  joint_num=5,
                  mid_ctrl=True,
                  local_ctrl=False,
@@ -71,6 +74,10 @@ class Spine(tkgModule.RigModule, tkgSpline.Spline):
         self.guide_list = guide_list
         self.pad = len(str(self.joint_num)) + 1
 
+        self.ctrl_color = ctrl_color
+        self.fk_ctrl_scale = fk_ctrl_scale
+        self.fk_ctrl_color = fk_ctrl_color
+
         self.create_module()
 
     def create_module(self):
@@ -116,7 +123,8 @@ class Spine(tkgModule.RigModule, tkgSpline.Spline):
                                      rig_type='spineFk',
                                      position=jnt,
                                      rotation=jnt,
-                                     ctrl_scale=self.ctrl_scale)
+                                     ctrl_scale=self.fk_ctrl_scale,
+                                     ctrl_color=self.fk_ctrl_color)
             self.attr_util.lock_and_hide(node=fk_ctrl.ctrl, translate=False,
                                          rotate=False)
             par = fk_ctrl.ctrl
