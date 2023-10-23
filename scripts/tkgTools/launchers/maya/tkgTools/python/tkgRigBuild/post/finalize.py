@@ -75,6 +75,8 @@ def add_color_attributes():
         clr = tkgAttr.Attribute(node=c_ctrl.ctrl, type='double3', value=0,
                                keyable=True, min=0, max=1, name=typ + 'Color',
                                children_name='RGB')
+
+        ctrl_list.sort()
         for ctrl in ctrl_list:
             for shp in cmds.listRelatives(ctrl, shapes=True, type='nurbsCurve'):
                 cmds.setAttr(shp + '.overrideEnabled', 1)

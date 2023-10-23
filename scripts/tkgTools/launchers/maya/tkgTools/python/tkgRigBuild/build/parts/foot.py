@@ -59,7 +59,7 @@ class Foot(tkgModule.RigModule):
                                         name=self.part + '_01',
                                         axis='y',
                                         group_type='main',
-                                        rig_type='primary',
+                                        rig_type=self.side+'_'+self.part+'Foot' + '_01',
                                         position=self.guide_list[0],
                                         ctrl_scale=self.ctrl_scale)
         self.second_ctrl = tkgCtrl.Control(parent=self.main_ctrl.ctrl,
@@ -69,7 +69,7 @@ class Foot(tkgModule.RigModule):
                                           name=self.part + '_02',
                                           axis='y',
                                           group_type='main',
-                                          rig_type='secondary',
+                                          rig_type=self.side+'_'+self.part+'Foot' + '_02',
                                           position=self.guide_list[0],
                                           ctrl_scale=self.ctrl_scale * 0.85)
 
@@ -81,7 +81,7 @@ class Foot(tkgModule.RigModule):
                                       name=self.part + '_toe_piv',
                                       axis='y',
                                       group_type='main',
-                                      rig_type='pivot',
+                                      rig_type=self.side+'_'+self.part+'_toe_piv',
                                       position=self.toe_piv,
                                       rotation=self.guide_list[-1],
                                       ctrl_scale=self.ctrl_scale * 0.2)
@@ -92,7 +92,7 @@ class Foot(tkgModule.RigModule):
                                        name=self.part + '_heel_piv',
                                        axis='y',
                                        group_type='main',
-                                       rig_type='pivot',
+                                       rig_type=self.side+'_'+self.part+'_heel_piv',
                                        position=self.heel_piv,
                                        ctrl_scale=self.ctrl_scale * 0.2)
         self.in_piv = tkgCtrl.Control(parent=self.heel_piv.ctrl,
@@ -102,7 +102,7 @@ class Foot(tkgModule.RigModule):
                                      name=self.part + '_in_piv',
                                      axis='y',
                                      group_type='main',
-                                     rig_type='pivot',
+                                     rig_type=self.side+'_'+self.part+'_in_piv',
                                      position=self.in_piv,
                                      ctrl_scale=self.ctrl_scale * 0.2)
         self.out_piv = tkgCtrl.Control(parent=self.in_piv.ctrl,
@@ -112,7 +112,7 @@ class Foot(tkgModule.RigModule):
                                       name=self.part + '_out_piv',
                                       axis='y',
                                       group_type='main',
-                                      rig_type='pivot',
+                                      rig_type=self.side+'_'+self.part+'_out_piv',
                                       position=self.out_piv,
                                       ctrl_scale=self.ctrl_scale * 0.2)
 
@@ -124,7 +124,7 @@ class Foot(tkgModule.RigModule):
                                         name=self.part + '_ball',
                                         axis='y',
                                         group_type='main',
-                                        rig_type='primary',
+                                        rig_type=self.side+'_'+self.part+'_ball',
                                         position=self.guide_list[1],
                                         rotation=self.guide_list[1],
                                         ctrl_scale=self.ctrl_scale * 1.45)
@@ -137,7 +137,7 @@ class Foot(tkgModule.RigModule):
                                          name=self.part + '_ankle',
                                          axis='y',
                                          group_type='main',
-                                         rig_type='secondary',
+                                         rig_type=self.side+'_'+self.part+'_ankle',
                                          position=self.guide_list[0],
                                          rotation=self.guide_list[0],
                                          ctrl_scale=self.ctrl_scale)
@@ -150,7 +150,7 @@ class Foot(tkgModule.RigModule):
                                        name=self.part + '_toe',
                                        axis='y',
                                        group_type='main',
-                                       rig_type='secondary',
+                                       rig_type=self.side+'_'+self.part+'_toe',
                                        position=self.guide_list[1],
                                        rotation=self.guide_list[1],
                                        ctrl_scale=self.ctrl_scale)

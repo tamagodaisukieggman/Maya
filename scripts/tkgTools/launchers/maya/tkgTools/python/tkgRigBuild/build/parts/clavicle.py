@@ -73,7 +73,7 @@ class Clavicle(tkgModule.RigModule):
                                         name='clavicle',
                                         axis='y',
                                         group_type='main',
-                                        rig_type='primary',
+                                        rig_type=self.side+'_clavicle',
                                         position=self.guide_list[0],
                                         rotation=rotation,
                                         ctrl_scale=self.ctrl_scale)
