@@ -21,6 +21,8 @@ class Root(tkgModule.RigModule):
                  root_01_name='root_01',
                  root_02_name='root_02',
                  root_shape="pacman",
+                 root_move_name='root_move',
+                 root_move_shape='arrow_one_way_z',
                  model_path=None,
                  model_namespace=None,
                  guide_path=None):
@@ -42,6 +44,8 @@ class Root(tkgModule.RigModule):
         self.root_01_name = root_01_name
         self.root_02_name = root_02_name
         self.root_shape = root_shape
+        self.root_move_name = root_move_name
+        self.root_move_shape = root_move_shape
 
         self.create_module() # buildPartモジュールで使うとき
 
@@ -93,6 +97,18 @@ class Root(tkgModule.RigModule):
                                           position=self.root_pose,
                                           rotation=self.root_pose,
                                           ctrl_scale=self.ctrl_scale * 0.4)
+
+        self.root_move_ctrl = tkgCtrl.Control(parent=self.control_grp,
+                                          shape=self.root_move_shape,
+                                          prefix=self.side,
+                                          suffix="CTRL",
+                                          name=self.root_move_name,
+                                          axis="y",
+                                          group_type="main",
+                                          rig_type=self.root_move_name,
+                                          position=self.root_pose,
+                                          rotation=self.root_pose,
+                                          ctrl_scale=self.ctrl_scale)
 
     def output_rig(self):
         root_jnt_grp = cmds.group(parent=self.module_grp,
