@@ -19,7 +19,9 @@ class Hip(tkgModule.RigModule):
                  part=None,
                  guide_list=None,
                  ctrl_scale=None,
-                 offset_hip=-0.1,
+                 offset_hip=None,
+                 hip_01_name='hip_01',
+                 hip_02_name='hip_02',
                  model_path=None,
                  guide_path=None):
         super(Hip, self).__init__(side=side, part=part,
@@ -29,6 +31,8 @@ class Hip(tkgModule.RigModule):
                                   guide_path=guide_path)
 
         self.offset_hip = offset_hip
+        self.hip_01_name = hip_01_name
+        self.hip_02_name = hip_02_name
 
         self.create_module()
 
@@ -46,7 +50,7 @@ class Hip(tkgModule.RigModule):
                                      shape='hip',
                                      prefix=self.side,
                                      suffix='CTRL',
-                                     name=self.part + '_01',
+                                     name=self.hip_01_name,
                                      axis='y',
                                      group_type='main',
                                      rig_type='primary',
@@ -58,7 +62,7 @@ class Hip(tkgModule.RigModule):
                                      shape='hip',
                                      prefix=self.side,
                                      suffix='CTRL',
-                                     name=self.part + '_02',
+                                     name=self.hip_02_name,
                                      axis='y',
                                      group_type='main',
                                      rig_type='secondary',

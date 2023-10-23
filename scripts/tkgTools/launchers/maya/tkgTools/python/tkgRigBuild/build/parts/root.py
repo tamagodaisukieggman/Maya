@@ -98,7 +98,7 @@ class Root(tkgModule.RigModule):
                                           rotation=self.root_pose,
                                           ctrl_scale=self.ctrl_scale * 0.4)
 
-        self.root_move_ctrl = tkgCtrl.Control(parent=self.control_grp,
+        self.root_move = tkgCtrl.Control(parent=self.control_grp,
                                           shape=self.root_move_shape,
                                           prefix=self.side,
                                           suffix="CTRL",
@@ -114,12 +114,12 @@ class Root(tkgModule.RigModule):
         root_jnt_grp = cmds.group(parent=self.module_grp,
                                   empty=True,
                                   name=self.base_name + "_JNT_GRP")
-        cmds.matchTransform(root_jnt_grp, self.root_02.ctrl)
+        cmds.matchTransform(root_jnt_grp, self.root_move.ctrl)
         self.root_jnt = cmds.joint(root_jnt_grp,
-                                   name=self.root_02.ctrl.replace("CTRL", "JNT"))
+                                   name=self.root_move.ctrl.replace("CTRL", "JNT"))
 
-        cmds.parentConstraint(self.root_02.ctrl, self.root_jnt, mo=True)
-        cmds.scaleConstraint(self.root_02.ctrl, self.root_jnt, mo=True)
+        cmds.parentConstraint(self.root_move.ctrl, self.root_jnt, mo=True)
+        cmds.scaleConstraint(self.root_move.ctrl, self.root_jnt, mo=True)
 
     def skeleton(self):
         self.bind_joints = []
