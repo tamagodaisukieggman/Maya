@@ -28,7 +28,7 @@ class Chain:
         self.name = name
         self.split_jnt_dict = None
 
-    def create_from_curve(self, guide_list=None, joint_num=5, curve=None, aim_vector=(0, 1, 0),
+    def create_from_curve(self, pad=2, guide_list=None, joint_num=5, curve=None, aim_vector=(0, 1, 0),
                           up_vector=(0, 0, 1), world_up_vector=(0, 0, 1),
                           stretch=None):
         if not curve:
@@ -36,7 +36,7 @@ class Chain:
         self.joints = []
 
         # pad = len(str(joint_num)) + 1
-        pad = len(guide_list) + 1
+        # pad = len(guide_list) + 1
         inc = 1.0 / (joint_num - 1)
         par = None
         for i, guide_jnt in enumerate(guide_list):
