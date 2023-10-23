@@ -16,6 +16,7 @@ class Hand(tkgModule.RigModule):
                  part=None,
                  guide_list=None,
                  ctrl_scale=None,
+                 ctrl_color=[0.8, 0.35, 0.72],
                  model_path=None,
                  guide_path=None):
         super(Hand, self).__init__(side=side, part=part,
@@ -23,6 +24,8 @@ class Hand(tkgModule.RigModule):
                                    ctrl_scale=ctrl_scale,
                                    model_path=model_path,
                                    guide_path=guide_path)
+
+        self.ctrl_color = ctrl_color
 
         self.create_module()
 
@@ -46,7 +49,8 @@ class Hand(tkgModule.RigModule):
                                       rig_type=self.side+'_'+self.part+'_01',
                                       position=self.guide_list[0],
                                       rotation=(0, 0, 0),
-                                      ctrl_scale=self.ctrl_scale)
+                                      ctrl_scale=self.ctrl_scale,
+                                      ctrl_color=self.ctrl_color)
 
         self.hand_02 = tkgCtrl.Control(parent=self.hand_01.ctrl,
                                       shape='cube',
@@ -58,7 +62,8 @@ class Hand(tkgModule.RigModule):
                                       rig_type=self.side+'_'+self.part+'_02',
                                       position=self.guide_list[0],
                                       rotation=(0, 0, 0),
-                                      ctrl_scale=self.ctrl_scale * 0.85)
+                                      ctrl_scale=self.ctrl_scale * 0.85,
+                                      ctrl_color=[v*0.85 for v in self.ctrl_color])
 
         self.hand_local = tkgCtrl.Control(parent=self.hand_02.ctrl,
                                          shape='arrowFourWay',
@@ -70,7 +75,8 @@ class Hand(tkgModule.RigModule):
                                          rig_type=self.side+'_'+self.part+'_local',
                                          position=self.guide_list[0],
                                          rotation=self.guide_list[0],
-                                         ctrl_scale=self.ctrl_scale * 0.75)
+                                         ctrl_scale=self.ctrl_scale * 0.75,
+                                         ctrl_color=[v*0.75 for v in self.ctrl_color])
 
         self.hand_fk = tkgCtrl.Control(parent=self.control_grp,
                                       shape='cube',
@@ -82,7 +88,8 @@ class Hand(tkgModule.RigModule):
                                       rig_type=self.side+'_'+self.part+'Fk',
                                       position=self.guide_list[0],
                                       rotation=self.guide_list[0],
-                                      ctrl_scale=self.ctrl_scale * 0.65)
+                                      ctrl_scale=self.ctrl_scale * 0.65,
+                                      ctrl_color=[v*0.65 for v in self.ctrl_color])
 
     def output_rig(self):
         # create ik and fk hand joint

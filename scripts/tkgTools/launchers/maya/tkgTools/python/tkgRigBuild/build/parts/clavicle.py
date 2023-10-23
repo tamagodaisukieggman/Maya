@@ -16,6 +16,7 @@ class Clavicle(tkgModule.RigModule):
                  part=None,
                  guide_list=None,
                  ctrl_scale=None,
+                 ctrl_color=[0.2, 0.65, 0.72],
                  local_orient=False,
                  constrain_skip_axis=['y', 'z'],
                  left_aimVector=(1,0,0),
@@ -48,6 +49,7 @@ class Clavicle(tkgModule.RigModule):
         self.side_list_sorted = self.sort_side_list(self.side_list)
         self.stretchy_axis = stretchy_axis
         self.twisty_axis = twisty_axis
+        self.ctrl_color = ctrl_color
 
         self.create_module()
 
@@ -76,7 +78,8 @@ class Clavicle(tkgModule.RigModule):
                                         rig_type=self.side+'_clavicle',
                                         position=self.guide_list[0],
                                         rotation=rotation,
-                                        ctrl_scale=self.ctrl_scale)
+                                        ctrl_scale=self.ctrl_scale,
+                                        ctrl_color=self.ctrl_color)
 
         attr_util = tkgAttr.Attribute(add=False)
         attr_util.lock_and_hide(node=self.main_ctrl.ctrl,

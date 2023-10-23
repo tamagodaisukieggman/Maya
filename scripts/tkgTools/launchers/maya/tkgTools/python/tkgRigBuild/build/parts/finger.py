@@ -20,6 +20,7 @@ class Finger(tkgModule.RigModule, tkgFk.Fk):
                  fk_ctrl_axis='x',
                  fk_ctrl_edge_axis='-x',
                  ctrl_scale=None,
+                 ctrl_color=[0.2, 0.65, 0.72],
                  model_path=None,
                  guide_path=None,
                  pad='auto',
@@ -38,6 +39,7 @@ class Finger(tkgModule.RigModule, tkgFk.Fk):
         self.offset = None
         self.fk_ctrl_axis = fk_ctrl_axis
         self.fk_ctrl_edge_axis = fk_ctrl_edge_axis
+        self.ctrl_color = ctrl_color
 
         if self.pad == 'auto':
             self.pad = len(str(len(self.guide_list))) + 1

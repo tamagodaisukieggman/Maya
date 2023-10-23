@@ -19,6 +19,7 @@ class Ik:
                  part=None,
                  guide_list=None,
                  ctrl_scale=1,
+                 ctrl_color=[0.8, 0.5, 0.2],
                  sticky=None,
                  solver=None,
                  pv_guide='auto',
@@ -54,6 +55,7 @@ class Ik:
 
         self.guide_list = guide_list
         self.ctrl_scale = ctrl_scale
+        self.ctrl_color = ctrl_color
         self.sticky = sticky
         self.solver = solver
         self.pv_guide = pv_guide
@@ -114,7 +116,8 @@ class Ik:
                                         group_type='main',
                                         rig_type=self.side+'_'+self.part+'IkBase',
                                         position=self.guide_list[0],
-                                        ctrl_scale=self.ctrl_scale)
+                                        ctrl_scale=self.ctrl_scale,
+                                        ctrl_color=self.ctrl_color)
         attr_util.lock_and_hide(node=self.base_ctrl.ctrl,
                                 translate=False,
                                 rotate=False)
@@ -128,7 +131,8 @@ class Ik:
                                         group_type='main',
                                         rig_type=self.side+'_'+self.part+'IkMain',
                                         position=self.guide_list[-1],
-                                        ctrl_scale=self.ctrl_scale)
+                                        ctrl_scale=self.ctrl_scale,
+                                        ctrl_color=self.ctrl_color)
         attr_util.lock_and_hide(node=self.main_ctrl.ctrl,
                                 translate=False,
                                 rotate=False)
@@ -143,7 +147,8 @@ class Ik:
                                           group_type='main',
                                           rig_type=self.side+'_'+self.part+'IkPv',
                                           position=self.pv_guide,
-                                          ctrl_scale=self.ctrl_scale)
+                                          ctrl_scale=self.ctrl_scale,
+                                          ctrl_color=self.ctrl_color)
             attr_util.lock_and_hide(node=self.pv_ctrl.ctrl, translate=False)
 
     def build_ik_chain(self):

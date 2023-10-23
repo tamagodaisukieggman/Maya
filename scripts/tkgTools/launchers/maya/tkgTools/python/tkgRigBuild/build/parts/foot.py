@@ -17,6 +17,7 @@ class Foot(tkgModule.RigModule):
                  part=None,
                  guide_list=None,
                  ctrl_scale=None,
+                 ctrl_color=[0.2, 0.65, 0.72],
                  model_path=None,
                  guide_path=None,
                  in_piv=None,
@@ -33,6 +34,8 @@ class Foot(tkgModule.RigModule):
         self.out_piv = out_piv
         self.heel_piv = heel_piv
         self.toe_piv = toe_piv
+
+        self.ctrl_color = ctrl_color
 
         if not self.toe_piv:
             self.toe_piv = self.guide_list[-1]
@@ -61,7 +64,8 @@ class Foot(tkgModule.RigModule):
                                         group_type='main',
                                         rig_type=self.side+'_'+self.part+'Foot' + '_01',
                                         position=self.guide_list[0],
-                                        ctrl_scale=self.ctrl_scale)
+                                        ctrl_scale=self.ctrl_scale,
+                                        ctrl_color=self.ctrl_color)
         self.second_ctrl = tkgCtrl.Control(parent=self.main_ctrl.ctrl,
                                           shape='cube',
                                           prefix=self.side,
@@ -71,7 +75,8 @@ class Foot(tkgModule.RigModule):
                                           group_type='main',
                                           rig_type=self.side+'_'+self.part+'Foot' + '_02',
                                           position=self.guide_list[0],
-                                          ctrl_scale=self.ctrl_scale * 0.85)
+                                          ctrl_scale=self.ctrl_scale * 0.85,
+                                          ctrl_color=[v*0.85 for v in self.ctrl_color])
 
         # controls for banking and toe/ball/heel roll
         self.toe_piv = tkgCtrl.Control(parent=self.second_ctrl.ctrl,
@@ -84,7 +89,8 @@ class Foot(tkgModule.RigModule):
                                       rig_type=self.side+'_'+self.part+'_toe_piv',
                                       position=self.toe_piv,
                                       rotation=self.guide_list[-1],
-                                      ctrl_scale=self.ctrl_scale * 0.2)
+                                      ctrl_scale=self.ctrl_scale * 0.2,
+                                      ctrl_color=[v*0.2 for v in self.ctrl_color])
         self.heel_piv = tkgCtrl.Control(parent=self.toe_piv.ctrl,
                                        shape='cube',
                                        prefix=self.side,
@@ -94,7 +100,8 @@ class Foot(tkgModule.RigModule):
                                        group_type='main',
                                        rig_type=self.side+'_'+self.part+'_heel_piv',
                                        position=self.heel_piv,
-                                       ctrl_scale=self.ctrl_scale * 0.2)
+                                       ctrl_scale=self.ctrl_scale * 0.2,
+                                       ctrl_color=[v*0.2 for v in self.ctrl_color])
         self.in_piv = tkgCtrl.Control(parent=self.heel_piv.ctrl,
                                      shape='cube',
                                      prefix=self.side,
@@ -104,7 +111,8 @@ class Foot(tkgModule.RigModule):
                                      group_type='main',
                                      rig_type=self.side+'_'+self.part+'_in_piv',
                                      position=self.in_piv,
-                                     ctrl_scale=self.ctrl_scale * 0.2)
+                                     ctrl_scale=self.ctrl_scale * 0.2,
+                                     ctrl_color=[v*0.2 for v in self.ctrl_color])
         self.out_piv = tkgCtrl.Control(parent=self.in_piv.ctrl,
                                       shape='cube',
                                       prefix=self.side,
@@ -114,7 +122,8 @@ class Foot(tkgModule.RigModule):
                                       group_type='main',
                                       rig_type=self.side+'_'+self.part+'_out_piv',
                                       position=self.out_piv,
-                                      ctrl_scale=self.ctrl_scale * 0.2)
+                                      ctrl_scale=self.ctrl_scale * 0.2,
+                                      ctrl_color=[v*0.2 for v in self.ctrl_color])
 
         # control for ball roll
         self.ball_ctrl = tkgCtrl.Control(parent=self.out_piv.ctrl,
@@ -127,7 +136,8 @@ class Foot(tkgModule.RigModule):
                                         rig_type=self.side+'_'+self.part+'_ball',
                                         position=self.guide_list[1],
                                         rotation=self.guide_list[1],
-                                        ctrl_scale=self.ctrl_scale * 1.45)
+                                        ctrl_scale=self.ctrl_scale * 1.45,
+                                        ctrl_color=[v*1.45 for v in self.ctrl_color])
 
         # control for ankle
         self.ankle_ctrl = tkgCtrl.Control(parent=self.ball_ctrl.ctrl,
@@ -140,7 +150,8 @@ class Foot(tkgModule.RigModule):
                                          rig_type=self.side+'_'+self.part+'_ankle',
                                          position=self.guide_list[0],
                                          rotation=self.guide_list[0],
-                                         ctrl_scale=self.ctrl_scale)
+                                         ctrl_scale=self.ctrl_scale,
+                                         ctrl_color=[v*0.1 for v in self.ctrl_color])
 
         # control for toe wiggle
         self.toe_ctrl = tkgCtrl.Control(parent=self.out_piv.ctrl,
@@ -153,7 +164,8 @@ class Foot(tkgModule.RigModule):
                                        rig_type=self.side+'_'+self.part+'_toe',
                                        position=self.guide_list[1],
                                        rotation=self.guide_list[1],
-                                       ctrl_scale=self.ctrl_scale)
+                                       ctrl_scale=self.ctrl_scale,
+                                       ctrl_color=[v*0.1 for v in self.ctrl_color])
 
         ts_list = [self.ball_ctrl, self.toe_ctrl, self.toe_piv, self.heel_piv,
                    self.in_piv, self.out_piv]

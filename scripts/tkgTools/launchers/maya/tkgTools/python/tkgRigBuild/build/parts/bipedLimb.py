@@ -24,6 +24,7 @@ class BipedLimb(tkgModule.RigModule, tkgIk.Ik, tkgFk.Fk):
                  fk_ctrl_axis='x',
                  fk_ctrl_edge_axis='-x',
                  ctrl_scale=1,
+                 ctrl_color=[0.364, 0.322, 0.555],
                  edge_axis=None,
                  create_ik=True,
                  create_fk=True,
@@ -103,6 +104,7 @@ class BipedLimb(tkgModule.RigModule, tkgIk.Ik, tkgFk.Fk):
         self.bendy_tan_ctrl_axis = bendy_tan_ctrl_axis
         self.bendy_scale_axis = bendy_scale_axis
         self.segments = segments
+        self.ctrl_color = ctrl_color
 
         # fk shape kwargs
         self.fk_shape = fk_shape

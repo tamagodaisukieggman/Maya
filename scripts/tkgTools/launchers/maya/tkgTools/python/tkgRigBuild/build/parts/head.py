@@ -15,6 +15,7 @@ class Head(tkgModule.RigModule):
                  part=None,
                  guide_list=None,
                  ctrl_scale=None,
+                 ctrl_color=[0.743, 0.179, 0.041],
                  model_path=None,
                  guide_path=None):
         super(Head, self).__init__(side=side, part=part,
@@ -22,6 +23,8 @@ class Head(tkgModule.RigModule):
                                    ctrl_scale=ctrl_scale,
                                    model_path=model_path,
                                    guide_path=guide_path)
+
+        self.ctrl_color = ctrl_color
 
         self.create_module()
 
@@ -45,7 +48,8 @@ class Head(tkgModule.RigModule):
                                       rig_type=self.part + '_01',
                                       position=self.guide_list[0],
                                       rotation=(0, 0, 0),
-                                      ctrl_scale=self.ctrl_scale)
+                                      ctrl_scale=self.ctrl_scale,
+                                      ctrl_color=self.ctrl_color)
 
         self.head_02 = tkgCtrl.Control(parent=self.head_01.ctrl,
                                       shape='arrowFourWayCurved',
@@ -57,7 +61,8 @@ class Head(tkgModule.RigModule):
                                       rig_type=self.part + '_02',
                                       position=self.guide_list[0],
                                       rotation=(0, 0, 0),
-                                      ctrl_scale=self.ctrl_scale * 0.95)
+                                      ctrl_scale=self.ctrl_scale * 0.95,
+                                      ctrl_color=[v*0.95 for v in self.ctrl_color])
 
     def output_rig(self):
         self.head_jnt = cmds.joint(self.head_01.ctrl,

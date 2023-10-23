@@ -16,6 +16,7 @@ class Neck(tkgModule.RigModule, tkgSpline.Spline):
                  part=None,
                  guide_list=None,
                  ctrl_scale=None,
+                 ctrl_color=[0.112, 0.352, 0.143],
                  joint_num=4,
                  mid_ctrl=True,
                  local_ctrl=False,
@@ -63,6 +64,8 @@ class Neck(tkgModule.RigModule, tkgSpline.Spline):
         self.world_up_vector = world_up_vector
         self.fk_offset = fk_offset
         self.pad = len(str(self.joint_num)) + 1
+
+        self.ctrl_color = ctrl_color
 
         self.create_module()
 

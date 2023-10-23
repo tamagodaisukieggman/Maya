@@ -19,6 +19,7 @@ class Fk:
                  fk_ctrl_axis='x',
                  fk_ctrl_edge_axis='-x',
                  ctrl_scale=1,
+                 ctrl_color=[0.1, 0.4, 0.8],
                  remove_last=True,
                  add_joints=True,
                  fk_shape="cube",
@@ -35,6 +36,7 @@ class Fk:
         self.fk_ctrl_axis = fk_ctrl_axis
         self.fk_ctrl_edge_axis = fk_ctrl_edge_axis
         self.ctrl_scale = ctrl_scale
+        self.ctrl_color = ctrl_color
         self.remove_last = remove_last
         self.add_joints = add_joints
         self.fk_shape = fk_shape
@@ -77,6 +79,7 @@ class Fk:
                                 position=pose,
                                 rotation=pose,
                                 ctrl_scale=self.ctrl_scale,
+                                ctrl_color=self.ctrl_color,
                                 edge_axis=self.fk_ctrl_edge_axis)
             par = fk.ctrl
             self.fk_ctrls.append(fk)
@@ -93,7 +96,8 @@ class Fk:
                                      rig_type=self.side+'_'+self.part+"FkGimbal",
                                      position=pose,
                                      rotation=pose,
-                                     ctrl_scale=self.ctrl_scale * 0.8)
+                                     ctrl_scale=self.ctrl_scale * 0.8,
+                                     ctrl_color=self.ctrl_color)
                 par = gim.ctrl
                 self.gim_ctrls.append(gim)
                 self.output_ctrls = self.gim_ctrls
@@ -109,7 +113,8 @@ class Fk:
                                      rig_type=self.side+'_'+self.part+"FkOffset",
                                      position=pose,
                                      rotation=pose,
-                                     ctrl_scale=self.ctrl_scale * 0.55)
+                                     ctrl_scale=self.ctrl_scale * 0.55,
+                                     ctrl_color=self.ctrl_color)
                 self.off_ctrls.append(off)
                 self.output_ctrls = self.off_ctrls
 
