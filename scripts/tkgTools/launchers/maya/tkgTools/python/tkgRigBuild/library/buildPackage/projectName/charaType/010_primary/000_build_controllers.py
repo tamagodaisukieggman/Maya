@@ -4,8 +4,10 @@ from imp import reload
 
 import tkgRigBuild.build.buildPart as tkgPart
 import tkgRigBuild.build.rigModule as tkgModule
+import tkgRigBuild.post.finalize as tkgFinalize
 reload(tkgPart)
 reload(tkgModule)
+reload(tkgFinalize)
 rigModule = tkgModule.RigModule()
 
 rep_build_file = build_file.replace('\\', '/')
@@ -124,8 +126,6 @@ for s, fs in zip(sides, force_sides):
             guide_list=["proxy_Thumb_01" + fs, "proxy_Thumb_02" + fs, "proxy_Thumb_03" + fs],
             ctrl_scale=2, remove_last=False, fk_ctrl_edge_axis=edge_axis,)
 
-import tkgRigBuild.post.finalize as tkgFinalize
-reload(tkgFinalize)
 
 # tkgFinalize.add_color_attributes()
 # tkgFinalize.add_switch_ctrl()
