@@ -7,8 +7,11 @@ from imp import reload
 import tkgRigBuild.libs.control.ctrl as tkgCtrl
 import tkgRigBuild.libs.attribute as tkgAttr
 import tkgRigBuild.libs.space as tkgSpace
+import tkgRigBuild.libs.common as tkgCommon
+reload(tkgCtrl)
 reload(tkgAttr)
 reload(tkgSpace)
+reload(tkgCommon)
 
 model_grp = 'MODEL'
 
@@ -49,6 +52,10 @@ def add_color_attributes():
                             axis='y',
                             group_type=None,
                             rig_type='global')
+
+    bb = tkgCommon.get_bounding_box(['Cn_global_CTRL'])[3:6]
+    cmds.xform(c_ctrl.ctrl, t=[bb[0], 0, 0], ws=True)
+
     attr_util.lock_and_hide(node=c_ctrl.ctrl)
 
     # color control info shapes
