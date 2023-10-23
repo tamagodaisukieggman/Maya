@@ -91,7 +91,10 @@ class Spine(tkgModule.RigModule, tkgSpline.Spline):
         fk_chain = tkgChain.Chain(prefix=self.side,
                                  suffix='ctrl_JNT',
                                  name=self.part)
-        fk_chain.create_from_curve(joint_num=self.joint_num, curve=self.crv, stretch=None)
+        fk_chain.create_from_curve(guide_list=self.guide_list,
+                                   joint_num=self.joint_num,
+                                   curve=self.crv,
+                                   stretch=None)
 
         self.fk_ctrl_list = []
         par = None

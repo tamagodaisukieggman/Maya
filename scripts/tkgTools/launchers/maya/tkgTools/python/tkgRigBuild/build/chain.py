@@ -28,17 +28,18 @@ class Chain:
         self.name = name
         self.split_jnt_dict = None
 
-    def create_from_curve(self, joint_num=5, curve=None, aim_vector=(0, 1, 0),
+    def create_from_curve(self, guide_list=None, joint_num=5, curve=None, aim_vector=(0, 1, 0),
                           up_vector=(0, 0, 1), world_up_vector=(0, 0, 1),
                           stretch=None):
         if not curve:
             cmds.error('Please provide a curve to build joints along.')
         self.joints = []
 
-        pad = len(str(joint_num)) + 1
+        # pad = len(str(joint_num)) + 1
+        pad = len(guide_list) + 1
         inc = 1.0 / (joint_num - 1)
         par = None
-        for i in range(joint_num):
+        for i, guide_jnt in enumerate(guide_list):
             # name and pad the joints
             name_list = [self.prefix, self.name, str(i + 1).zfill(pad),
                          self.suffix]
@@ -48,8 +49,11 @@ class Chain:
             jnt = cmds.joint(None, name=jnt_name)
 
             # find position on curve to create joints
-            pos = tkgXform.find_position_on_curve(curve, i * inc)
-            cmds.setAttr(jnt + '.translate', *pos)
+            # pos = tkgXform.find_position_on_curve(curve, i * inc)
+            # cmds.setAttr(jnt + '.translate', *pos)
+
+            wt = cmds.xform(guide_jnt, q=True, t=True, ws=True)
+            cmds.xform(jnt, t=wt, ws=True, a=True, p=True)
 
             # aim joint at parent
             if par:
