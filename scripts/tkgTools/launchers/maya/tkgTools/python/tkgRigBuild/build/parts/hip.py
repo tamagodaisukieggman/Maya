@@ -43,7 +43,7 @@ class Hip(tkgModule.RigModule):
         self.control_rig()
         self.output_rig()
         self.skeleton()
-        self.add_plugs()
+        # self.add_plugs()
 
     def control_rig(self):
         # create controls

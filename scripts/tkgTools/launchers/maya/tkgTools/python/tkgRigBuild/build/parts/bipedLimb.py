@@ -127,7 +127,8 @@ class BipedLimb(tkgModule.RigModule, tkgIk.Ik, tkgFk.Fk):
         self.control_rig()
         self.output_rig()
         self.skeleton()
-        self.add_plugs()
+        self.add_switch_plug()
+        # self.add_plugs()
 
     def control_rig(self):
         # fk
@@ -184,24 +185,25 @@ class BipedLimb(tkgModule.RigModule, tkgIk.Ik, tkgFk.Fk):
             cmds.matchTransform(up_twist, self.guide_list[0])
             cmds.matchTransform(lo_twist, self.guide_list[-1])
 
-            rev = cmds.createNode('reverse', name=self.base_name + '_REV')
+            # rev = cmds.createNode('reverse', name=self.base_name + '_REV')
             pac = cmds.parentConstraint(self.fk_ctrls[-1].ctrl,
                                         self.main_ctrl.ctrl,
                                         lo_twist, maintainOffset=True)[0]
             wal = cmds.parentConstraint(pac, query=True, weightAliasList=True)
             cmds.setAttr(pac + '.interpType', 2)
-            cmds.connectAttr(blend_chain.switch.attr, rev + '.inputY')
-            cmds.connectAttr(rev + '.outputY', pac + '.' + wal[1])
+            # cmds.connectAttr(blend_chain.switch.attr, rev + '.inputY')
+            # cmds.connectAttr(rev + '.outputY', pac + '.' + wal[1])
             cmds.connectAttr(blend_chain.switch.attr, pac + '.' + wal[0])
+            cmds.connectAttr(blend_chain.switch.attr, pac + '.' + wal[1])
             cmds.parent(lo_twist, up_twist, self.limb_grp)
             cmds.hide(lo_twist, up_twist)
 
             # vis switch
-            cmds.connectAttr(blend_chain.switch.attr, rev + '.inputZ')
-            cmds.connectAttr(blend_chain.switch.attr,
-                             self.fk_ctrls[0].top + '.visibility')
-            cmds.connectAttr(rev + '.outputZ', self.ik_ctrl_grp + '.visibility')
+            cmds.connectAttr(blend_chain.switch.attr, self.ik_ctrl_grp + '.visibility')
 
+            rev = cmds.createNode('reverse', name=self.base_name + '_REV')
+            cmds.connectAttr(blend_chain.switch.attr, rev + '.inputX')
+            cmds.connectAttr(rev + '.outputX', self.fk_ctrls[0].top + '.visibility')
 
 
         if self.segments:
@@ -267,6 +269,13 @@ class BipedLimb(tkgModule.RigModule, tkgIk.Ik, tkgFk.Fk):
         self.bind_joints = limb_chain.joints
 
         self.tag_bind_joints(self.bind_joints[:-1])
+
+    def add_switch_plug(self):
+        # add switch plug
+        switch_attr = self.side.lower() + self.part.capitalize() + 'IKFK'
+        tkgAttr.Attribute(node=self.part_grp, type='plug',
+                         value=[switch_attr], name='switchRigPlugs',
+                         children_name=['ikFkSwitch'])
 
     def add_plugs(self):
         if self.part == 'leg':
@@ -354,12 +363,6 @@ class BipedLimb(tkgModule.RigModule, tkgIk.Ik, tkgFk.Fk):
                          value=pv_targets,
                          name=self.pv_ctrl.ctrl + '_parent',
                          children_name=pv_names)
-
-        # add switch plug
-        switch_attr = self.side.lower() + self.part.capitalize() + 'IKFK'
-        tkgAttr.Attribute(node=self.part_grp, type='plug',
-                         value=[switch_attr], name='switchRigPlugs',
-                         children_name=['ikFkSwitch'])
 
         # add transferAttributes plug
         tkgAttr.Attribute(node=self.part_grp, type='plug',

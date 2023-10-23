@@ -181,24 +181,33 @@ class Chain:
             if translate:
                 bcn = cmds.createNode('blendColors',
                                       name=bcn_name + 'trans_BCN')
+                rev = cmds.createNode('reverse',
+                                      name=bcn_name + 'trans_RVN')
                 cmds.connectAttr(a + '.t', bcn + '.color1')
                 cmds.connectAttr(b + '.t', bcn + '.color2')
                 cmds.connectAttr(bcn + '.output', self.joints[i] + '.t')
-                cmds.connectAttr(self.switch.attr, bcn + '.blender')
+                cmds.connectAttr(self.switch.attr, rev + '.inputX')
+                cmds.connectAttr(rev + '.outputX', bcn + '.blender')
             if rotate:
                 bcn = cmds.createNode('blendColors',
                                         name=bcn_name + 'rot_BCN')
+                rev = cmds.createNode('reverse',
+                                      name=bcn_name + 'rot_RVN')
                 cmds.connectAttr(a + '.r', bcn + '.color1')
                 cmds.connectAttr(b + '.r', bcn + '.color2')
                 cmds.connectAttr(bcn + '.output', self.joints[i] + '.r')
-                cmds.connectAttr(self.switch.attr, bcn + '.blender')
+                cmds.connectAttr(self.switch.attr, rev + '.inputX')
+                cmds.connectAttr(rev + '.outputX', bcn + '.blender')
             if scale:
                 bcn = cmds.createNode('blendColors',
                                       name=bcn_name + 'scale_BCN')
+                rev = cmds.createNode('reverse',
+                                      name=bcn_name + 'scale_RVN')
                 cmds.connectAttr(a + '.s', bcn + '.color1')
                 cmds.connectAttr(b + '.s', bcn + '.color2')
                 cmds.connectAttr(bcn + '.output', self.joints[i] + '.s')
-                cmds.connectAttr(self.switch.attr, bcn + '.blender')
+                cmds.connectAttr(self.switch.attr, rev + '.inputX')
+                cmds.connectAttr(rev + '.outputX', bcn + '.blender')
 
             i += 1
 

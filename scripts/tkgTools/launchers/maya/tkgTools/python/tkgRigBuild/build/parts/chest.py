@@ -42,7 +42,7 @@ class Chest(tkgModule.RigModule):
         self.control_rig()
         self.output_rig()
         self.skeleton()
-        self.add_plugs()
+        # self.add_plugs()
 
     def control_rig(self):
         self.chest_01 = tkgCtrl.Control(parent=self.control_grp,
