@@ -287,7 +287,7 @@ class BipedLimb(tkgModule.RigModule, tkgIk.Ik, tkgFk.Fk):
                                           parent=self.skel)
         self.bind_joints = limb_chain.joints
 
-        self.tag_bind_joints(self.bind_joints[:-1])
+        self.tag_bind_joints(self.bind_joints[:-1], self.part_grp)
 
     def add_switch_plug(self):
         # add switch plug

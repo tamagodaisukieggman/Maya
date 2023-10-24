@@ -239,7 +239,7 @@ class Spine(tkgModule.RigModule, tkgSpline.Spline):
         spine_chain.create_from_transforms(parent=self.skel)
         self.bind_joints = spine_chain.joints
 
-        self.tag_bind_joints(self.bind_joints[:-1])
+        self.tag_bind_joints(self.bind_joints[:-1], self.part_grp)
 
     def add_plugs(self):
         # add skeleton plugs

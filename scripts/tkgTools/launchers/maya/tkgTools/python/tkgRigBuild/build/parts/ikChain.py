@@ -129,7 +129,7 @@ class IkChain(tkgModule.RigModule, tkgIk.Ik):
                                         parent=self.skel)
 
         self.bind_joints = ik_chain.joints
-        self.tag_bind_joints(self.bind_joints[:-1])
+        self.tag_bind_joints(self.bind_joints[:-1], self.part_grp)
 
     def add_plugs(self):
         tkgAttr.Attribute(node=self.part_grp, type='plug',

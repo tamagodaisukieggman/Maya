@@ -135,3 +135,5 @@ class Root(tkgModule.RigModule):
                              suffix="JNT",
                              name=self.part)
         root_chain.create_from_transforms(parent=self.skel, pad=False)
+
+        self.tag_bind_joints(self.root_jnt, self.part_grp)

@@ -72,7 +72,7 @@ class RigModule(tkgBase.RigBase):
                                                  keyable=True,
                                                  name="globalScale")
 
-    def tag_bind_joints(self, joints):
+    def tag_bind_joints(self, joints, part_grp):
         if not isinstance(joints, list):
             joints = [joints]
         for jnt in joints:
@@ -81,6 +81,13 @@ class RigModule(tkgBase.RigBase):
                              value=True,
                              keyable=False,
                              name="bindJoint")
+
+        tkgAttr.Attribute(node=part_grp,
+                         type="string",
+                         value=','.join(joints),
+                         keyable=False,
+                         name="partJoints",
+                         lock=True)
 
     def sort_side_list(self, side_list):
         """

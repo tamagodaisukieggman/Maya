@@ -92,7 +92,7 @@ class Chest(tkgModule.RigModule):
                              name=self.part)
         chest_chain.create_from_transforms(parent=self.skel, pad=False)
         self.bind_joints = chest_chain.joints
-        self.tag_bind_joints(self.bind_joints)
+        self.tag_bind_joints(self.bind_joints, self.part_grp)
 
     def add_plugs(self):
         # add skeleton plugs

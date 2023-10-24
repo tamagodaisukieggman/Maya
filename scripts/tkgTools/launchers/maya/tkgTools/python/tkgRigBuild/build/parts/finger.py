@@ -77,7 +77,7 @@ class Finger(tkgModule.RigModule, tkgFk.Fk):
         else:
             self.bind_joints = fk_chain.joints
 
-        self.tag_bind_joints(self.bind_joints)
+        self.tag_bind_joints(self.bind_joints, self.part_grp)
 
     def add_plugs(self):
         # add skeleton plugs

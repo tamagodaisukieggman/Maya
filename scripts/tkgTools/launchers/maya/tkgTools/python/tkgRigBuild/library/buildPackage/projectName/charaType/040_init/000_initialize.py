@@ -5,16 +5,26 @@ from imp import reload
 import tkgRigBuild.build.buildPart as tkgPart
 import tkgRigBuild.build.rigModule as tkgModule
 import tkgRigBuild.post.finalize as tkgFinalize
+import tkgRigBuild.libs.attribute as tkgAttr
 reload(tkgPart)
 reload(tkgModule)
 reload(tkgFinalize)
+reload(tkgAttr)
 
-# tkgFinalize.add_color_attributes()
-# tkgFinalize.add_switch_ctrl()
-# tkgFinalize.add_vis_ctrl()
-# tkgFinalize.assemble_skeleton()
-# tkgFinalize.assemble_rig()
-# tkgFinalize.add_global_scale()
-# tkgFinalize.add_rig_sets()
+# ------------------------------------------------
+# hip
+# add skeleton plugs
+tkgAttr.Attribute(node=self.part_grp, type='plug',
+                 value=['Cn_root_JNT'], name='skeletonPlugs',
+                 children_name=[self.bind_joints[0]])
 
-tkgFinalize.finalize_rig()
+# add space plugs
+target_list = ['CHAR', 'Cn_global_CTRL', 'Cn_root_02_CTRL', '2']
+name_list = ['world', 'global', 'root', 'default_value']
+
+tkgAttr.Attribute(node=self.part_grp, type='plug',
+                 value=target_list,
+                 name=self.hip_01.ctrl + '_parent',
+                 children_name=name_list)
+
+# ------------------------------------------------

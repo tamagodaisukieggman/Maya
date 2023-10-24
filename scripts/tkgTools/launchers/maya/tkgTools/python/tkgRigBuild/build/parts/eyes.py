@@ -246,7 +246,7 @@ class Eyes(tkgModule.RigModule):
                               maintainOffset=False)
 
         self.bind_joints = [l_jnt, r_jnt]
-        self.tag_bind_joints(self.bind_joints)
+        self.tag_bind_joints(self.bind_joints, self.part_grp)
 
     def add_plugs(self):
         # add skeleton plugs

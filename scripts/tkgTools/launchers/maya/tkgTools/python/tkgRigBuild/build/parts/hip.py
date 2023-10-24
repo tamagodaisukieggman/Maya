@@ -99,7 +99,7 @@ class Hip(tkgModule.RigModule):
                 hip_chain.constraints[0] + '.target[0].targetOffsetTranslateY',
                 self.offset_hip)
 
-        self.tag_bind_joints(self.bind_joints)
+        self.tag_bind_joints(self.bind_joints, self.part_grp)
 
     def add_plugs(self):
         # add skeleton plugs
