@@ -44,6 +44,10 @@ class Finger(tkgModule.RigModule, tkgFk.Fk):
         if self.pad == 'auto':
             self.pad = len(str(len(self.guide_list))) + 1
 
+        self.part_fk_main_ctrls = []
+        self.part_fk_gimbal_ctrls = []
+        self.part_fk_offset_ctrls = []
+
         self.create_module()
 
     def create_module(self):
@@ -62,6 +66,10 @@ class Finger(tkgModule.RigModule, tkgFk.Fk):
     def output_rig(self):
         self.build_fk_chain()
         cmds.parent(self.fk_joints[0], self.module_grp)
+
+        self.tag_buid_ctrls(self.part+'FkMainCtrls', self.part_fk_main_ctrls, self.part_grp)
+        self.tag_buid_ctrls(self.part+'FkGimbalCtrls', self.part_fk_gimbal_ctrls, self.part_grp)
+        self.tag_buid_ctrls(self.part+'FkOffsetCtrls', self.part_fk_offset_ctrls, self.part_grp)
 
     def skeleton(self):
         fk_chain = tkgChain.Chain(transform_list=self.fk_joints,

@@ -28,6 +28,8 @@ class Chain:
         self.name = name
         self.split_jnt_dict = None
 
+        self.part_bend_ctrls = []
+
     def create_from_curve(self, pad=2, guide_list=None, joint_num=5, curve=None, aim_vector=(0, 1, 0),
                           up_vector=(0, 0, 1), world_up_vector=(0, 0, 1),
                           stretch=None):
@@ -423,6 +425,7 @@ class Chain:
                                   position=m,
                                   rotation=bone,
                                   ctrl_scale=ctrl_scale * 0.8)
+        self.part_bend_ctrls.append(mid_ctrl.ctrl)
         s_tan = tkgCtrl.Control(parent=ctrl_grp,
                                shape='square',
                                prefix=None,
@@ -434,6 +437,7 @@ class Chain:
                                position=b_crv + '.cv[1]',
                                rotation=bone,
                                ctrl_scale=ctrl_scale * 0.6)
+        self.part_bend_ctrls.append(s_tan.ctrl)
         e_tan = tkgCtrl.Control(parent=ctrl_grp,
                                shape='square',
                                prefix=None,
@@ -445,6 +449,7 @@ class Chain:
                                position=b_crv + '.cv[5]',
                                rotation=bone,
                                ctrl_scale=ctrl_scale * 0.6)
+        self.part_bend_ctrls.append(e_tan.ctrl)
 
         # lock and hide attributes on controls
         if scale_axis == 'scaleX':

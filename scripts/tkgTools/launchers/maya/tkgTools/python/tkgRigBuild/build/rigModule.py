@@ -89,6 +89,17 @@ class RigModule(tkgBase.RigBase):
                          name="partJoints",
                          lock=True)
 
+    def tag_buid_ctrls(self, tag_name, ctrls, part_grp):
+        if not isinstance(ctrls, list):
+            ctrls = [ctrls]
+
+        tkgAttr.Attribute(node=part_grp,
+                         type="string",
+                         value=','.join(ctrls),
+                         keyable=False,
+                         name=tag_name,
+                         lock=True)
+
     def sort_side_list(self, side_list):
         """
         Appendix

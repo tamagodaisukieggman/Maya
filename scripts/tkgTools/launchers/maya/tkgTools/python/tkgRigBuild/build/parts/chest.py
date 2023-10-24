@@ -36,6 +36,8 @@ class Chest(tkgModule.RigModule):
         self.ctrl_shape = ctrl_shape
         self.ctrl_color = ctrl_color
 
+        self.part_ctrls = []
+
         self.create_module()
 
     def create_module(self):
@@ -59,6 +61,7 @@ class Chest(tkgModule.RigModule):
                                      rotation=(0,0,0),
                                      ctrl_scale=self.ctrl_scale * 0.4,
                                      ctrl_color=self.ctrl_color)
+        self.part_ctrls.append(self.chest_01.ctrl)
 
         self.chest_02 = tkgCtrl.Control(parent=self.chest_01.ctrl,
                                      shape=self.ctrl_shape,
@@ -72,6 +75,7 @@ class Chest(tkgModule.RigModule):
                                      rotation=(0,0,0),
                                      ctrl_scale=self.ctrl_scale * 0.35,
                                      ctrl_color=[v*0.35 for v in self.ctrl_color])
+        self.part_ctrls.append(self.chest_02.ctrl)
 
     def output_rig(self):
         chest_jnt_grp = cmds.group(parent=self.module_grp,
@@ -83,6 +87,8 @@ class Chest(tkgModule.RigModule):
 
         cmds.parentConstraint(self.chest_02.ctrl, self.chest_jnt, mo=True)
         # cmds.scaleConstraint(self.chest_02.ctrl, self.chest_jnt, mo=True)
+
+        self.tag_buid_ctrls(self.part+'Ctrls', self.part_ctrls, self.part_grp)
 
     def skeleton(self):
         self.bind_joints = []

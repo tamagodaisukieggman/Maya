@@ -26,6 +26,7 @@ class Hand(tkgModule.RigModule):
                                    guide_path=guide_path)
 
         self.ctrl_color = ctrl_color
+        self.part_ctrls = []
 
         self.create_module()
 
@@ -51,6 +52,7 @@ class Hand(tkgModule.RigModule):
                                       rotation=(0, 0, 0),
                                       ctrl_scale=self.ctrl_scale,
                                       ctrl_color=self.ctrl_color)
+        self.part_ctrls.append(self.hand_01.ctrl)
 
         self.hand_02 = tkgCtrl.Control(parent=self.hand_01.ctrl,
                                       shape='cube',
@@ -64,6 +66,7 @@ class Hand(tkgModule.RigModule):
                                       rotation=(0, 0, 0),
                                       ctrl_scale=self.ctrl_scale * 0.85,
                                       ctrl_color=[v*0.85 for v in self.ctrl_color])
+        self.part_ctrls.append(self.hand_02.ctrl)
 
         self.hand_local = tkgCtrl.Control(parent=self.hand_02.ctrl,
                                          shape='arrowFourWay',
@@ -77,6 +80,7 @@ class Hand(tkgModule.RigModule):
                                          rotation=self.guide_list[0],
                                          ctrl_scale=self.ctrl_scale * 0.75,
                                          ctrl_color=[v*0.75 for v in self.ctrl_color])
+        self.part_ctrls.append(self.hand_local.ctrl)
 
         self.hand_fk = tkgCtrl.Control(parent=self.control_grp,
                                       shape='cube',
@@ -90,6 +94,7 @@ class Hand(tkgModule.RigModule):
                                       rotation=self.guide_list[0],
                                       ctrl_scale=self.ctrl_scale * 0.65,
                                       ctrl_color=[v*0.65 for v in self.ctrl_color])
+        self.part_ctrls.append(self.hand_fk.ctrl)
 
     def output_rig(self):
         # create ik and fk hand joint
@@ -125,6 +130,8 @@ class Hand(tkgModule.RigModule):
         cmds.group(ik_jnt, fk_jnt, self.blend_chain.joints[0],
                    parent=self.module_grp, name=self.base_name + '_JNT_GRP')
         cmds.matchTransform(self.base_name + '_JNT_GRP', self.guide_list[0])
+
+        self.tag_buid_ctrls(self.part+'Ctrls', self.part_ctrls, self.part_grp)
 
     def skeleton(self):
         jnt = cmds.joint(self.skel, name=self.base_name + '_JNT')

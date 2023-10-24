@@ -131,6 +131,11 @@ class BipedLimb(tkgModule.RigModule, tkgIk.Ik, tkgFk.Fk):
         if self.pad == 'auto':
             self.pad = len(str(len(self.guide_list))) + 1
 
+        self.part_ik_ctrls = []
+        self.part_fk_main_ctrls = []
+        self.part_fk_gimbal_ctrls = []
+        self.part_fk_offset_ctrls = []
+
         self.create_module()
 
     def create_module(self):
@@ -271,6 +276,11 @@ class BipedLimb(tkgModule.RigModule, tkgIk.Ik, tkgFk.Fk):
             cmds.parent(bend_01['control'], bend_02['control'],
                         self.control_grp)
             cmds.parent(bend_01['module'], bend_02['module'], self.module_grp)
+
+        self.tag_buid_ctrls(self.part+'FkMainCtrls', self.part_fk_main_ctrls, self.part_grp)
+        self.tag_buid_ctrls(self.part+'FkGimbalCtrls', self.part_fk_gimbal_ctrls, self.part_grp)
+        self.tag_buid_ctrls(self.part+'FkOffsetCtrls', self.part_fk_offset_ctrls, self.part_grp)
+        self.tag_buid_ctrls(self.part+'IkCtrls', self.part_ik_ctrls, self.part_grp)
 
     def skeleton(self):
         limb_chain = tkgChain.Chain(transform_list=self.src_joints,

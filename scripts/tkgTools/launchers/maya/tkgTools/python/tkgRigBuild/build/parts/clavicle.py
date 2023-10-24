@@ -51,6 +51,8 @@ class Clavicle(tkgModule.RigModule):
         self.twisty_axis = twisty_axis
         self.ctrl_color = ctrl_color
 
+        self.part_ctrls = []
+
         self.create_module()
 
     def create_module(self):
@@ -80,6 +82,7 @@ class Clavicle(tkgModule.RigModule):
                                         rotation=rotation,
                                         ctrl_scale=self.ctrl_scale,
                                         ctrl_color=self.ctrl_color)
+        self.part_ctrls.append(self.main_ctrl.ctrl)
 
         attr_util = tkgAttr.Attribute(add=False)
         attr_util.lock_and_hide(node=self.main_ctrl.ctrl,
@@ -170,6 +173,8 @@ class Clavicle(tkgModule.RigModule):
                          bta + '.attributesBlender')
         # connect final output
         cmds.connectAttr(bta + '.output', self.clav_chain.joints[0] + '.' + self.stretchy_axis)
+
+        self.tag_buid_ctrls(self.part+'Ctrls', self.part_ctrls, self.part_grp)
 
     def skeleton(self):
         bind_chain = tkgChain.Chain(transform_list=self.clav_chain.joints,

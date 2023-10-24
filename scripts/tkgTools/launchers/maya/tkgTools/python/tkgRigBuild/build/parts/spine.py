@@ -78,6 +78,12 @@ class Spine(tkgModule.RigModule, tkgSpline.Spline):
         self.fk_ctrl_scale = fk_ctrl_scale
         self.fk_ctrl_color = fk_ctrl_color
 
+        self.part_fk_ctrls = []
+
+        self.part_spline_ik_ctrls = []
+        self.part_spline_ik_local_ctrls = []
+        self.part_spline_fk_offset_ctrls = []
+
         self.create_module()
 
     def create_module(self):
@@ -129,6 +135,8 @@ class Spine(tkgModule.RigModule, tkgSpline.Spline):
                                          rotate=False)
             par = fk_ctrl.ctrl
             self.fk_ctrl_list.append(fk_ctrl)
+
+            self.part_fk_ctrls.append(fk_ctrl.ctrl)
 
         # clean up and organize
         cmds.delete(fk_chain.joints[0])
@@ -230,6 +238,12 @@ class Spine(tkgModule.RigModule, tkgSpline.Spline):
                          self.spline_ikh + '.dWorldUpMatrix')
         cmds.connectAttr(tip_jnt + '.worldMatrix[0]',
                          self.spline_ikh + '.dWorldUpMatrixEnd')
+
+        self.tag_buid_ctrls(self.part+'FkCtrls', self.part_fk_ctrls, self.part_grp)
+        self.tag_buid_ctrls(self.part+'IkCtrls', self.part_spline_ik_ctrls, self.part_grp)
+        self.tag_buid_ctrls(self.part+'IkLocalCtrls', self.part_spline_ik_local_ctrls, self.part_grp)
+        self.tag_buid_ctrls(self.part+'FkOffsetCtrls', self.part_spline_fk_offset_ctrls, self.part_grp)
+
 
     def skeleton(self):
         spine_chain = tkgChain.Chain(transform_list=self.spline_joints,

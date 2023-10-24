@@ -71,6 +71,8 @@ class Ik:
             if not isinstance(self.guide_list, list):
                 self.guide_list = [self.guide_list]
 
+        self.part_ik_ctrls = []
+
     def build_ik(self):
         self.build_ik_controls()
         self.build_ik_chain()
@@ -118,6 +120,7 @@ class Ik:
                                         position=self.guide_list[0],
                                         ctrl_scale=self.ctrl_scale,
                                         ctrl_color=self.ctrl_color)
+        self.part_ik_ctrls.append(self.base_ctrl.ctrl)
         attr_util.lock_and_hide(node=self.base_ctrl.ctrl,
                                 translate=False,
                                 rotate=False)
@@ -133,6 +136,7 @@ class Ik:
                                         position=self.guide_list[-1],
                                         ctrl_scale=self.ctrl_scale,
                                         ctrl_color=self.ctrl_color)
+        self.part_ik_ctrls.append(self.main_ctrl.ctrl)
         attr_util.lock_and_hide(node=self.main_ctrl.ctrl,
                                 translate=False,
                                 rotate=False)
@@ -149,6 +153,7 @@ class Ik:
                                           position=self.pv_guide,
                                           ctrl_scale=self.ctrl_scale,
                                           ctrl_color=self.ctrl_color)
+            self.part_ik_ctrls.append(self.pv_ctrl.ctrl)
             attr_util.lock_and_hide(node=self.pv_ctrl.ctrl, translate=False)
 
     def build_ik_chain(self):

@@ -67,6 +67,10 @@ class Neck(tkgModule.RigModule, tkgSpline.Spline):
 
         self.ctrl_color = ctrl_color
 
+        self.part_spline_ik_ctrls = []
+        self.part_spline_ik_local_ctrls = []
+        self.part_spline_fk_offset_ctrls = []
+
         self.create_module()
 
     def create_module(self):
@@ -170,6 +174,10 @@ class Neck(tkgModule.RigModule, tkgSpline.Spline):
         if self.fk_offset:
             cmds.parent(self.fk_offset_list[0].top, self.control_grp)
             cmds.parent(self.offset_grp, self.module_grp)
+
+        self.tag_buid_ctrls(self.part+'IkCtrls', self.part_spline_ik_ctrls, self.part_grp)
+        self.tag_buid_ctrls(self.part+'IkLocalCtrls', self.part_spline_ik_local_ctrls, self.part_grp)
+        self.tag_buid_ctrls(self.part+'FkOffsetCtrls', self.part_spline_fk_offset_ctrls, self.part_grp)
 
     def skeleton(self):
         if self.fk_offset:

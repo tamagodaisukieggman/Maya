@@ -65,6 +65,10 @@ class Spline:
         self.world_up_vector = world_up_vector
         self.fk_offset = fk_offset
 
+        self.part_spline_ik_ctrls = []
+        self.part_spline_ik_local_ctrls = []
+        self.part_spline_fk_offset_ctrls = []
+
         if self.guide_list:
             if not isinstance(self.guide_list, list):
                 self.guide_list = [self.guide_list]
@@ -92,6 +96,7 @@ class Spline:
                                         rotation=(0, 0, 0),
                                         ctrl_scale=self.ctrl_scale,
                                         ctrl_color=self.ctrl_color)
+        self.part_spline_ik_ctrls.append(self.base_ctrl.ctrl)
         self.attr_util.lock_and_hide(node=self.base_ctrl.ctrl, translate=False,
                                      rotate=False)
         self.crv_ctrls.append(self.base_ctrl.top)
@@ -109,6 +114,7 @@ class Spline:
                                        rotation=(0, 0, 0),
                                        ctrl_scale=self.ctrl_scale,
                                        ctrl_color=self.ctrl_color)
+        self.part_spline_ik_ctrls.append(self.tip_ctrl.ctrl)
         self.attr_util.lock_and_hide(node=self.tip_ctrl.ctrl, translate=False,
                                      rotate=False)
         self.crv_ctrls.append(self.tip_ctrl.top)
@@ -127,6 +133,7 @@ class Spline:
                                              rotation=self.guide_list[0],
                                              ctrl_scale=self.ctrl_scale,
                                              ctrl_color=[v*0.5 for v in self.ctrl_color])
+            self.part_spline_ik_local_ctrls.append(self.base_local.ctrl)
             self.attr_util.lock_and_hide(node=self.base_local.ctrl,
                                          translate=False,
                                          rotate=False)
@@ -144,6 +151,7 @@ class Spline:
                                             rotation=self.guide_list[-1],
                                             ctrl_scale=self.ctrl_scale,
                                             ctrl_color=[v*0.5 for v in self.ctrl_color])
+            self.part_spline_ik_local_ctrls.append(self.tip_local.ctrl)
             self.attr_util.lock_and_hide(node=self.tip_local.ctrl,
                                          translate=False,
                                          rotate=False)
@@ -163,6 +171,7 @@ class Spline:
                                            rotation=(0, 0, 0),
                                            ctrl_scale=self.ctrl_scale,
                                            ctrl_color=[v*0.8 for v in self.ctrl_color])
+            self.part_spline_ik_ctrls.append(self.mid_ctrl.ctrl)
             self.attr_util.lock_and_hide(node=self.mid_ctrl.ctrl,
                                          translate=False, rotate=False)
             self.crv_ctrls.append(self.mid_ctrl.top)
@@ -266,6 +275,7 @@ class Spline:
                                          position=(0, 0, 0),
                                          rotation=(0, 0, 0),
                                          ctrl_scale=self.ctrl_scale)
+                self.part_spline_fk_offset_ctrls.append(fk_ctrl.ctrl)
                 self.attr_util.lock_and_hide(node=fk_ctrl.ctrl, translate=False,
                                              rotate=False)
                 self.fk_offset_list.append(fk_ctrl)

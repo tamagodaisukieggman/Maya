@@ -50,6 +50,8 @@ class Root(tkgModule.RigModule):
         self.root_move_name = root_move_name
         self.root_move_shape = root_move_shape
 
+        self.part_ctrls = []
+
         self.create_module() # buildPartモジュールで使うとき
 
     def create_module(self):
@@ -77,6 +79,7 @@ class Root(tkgModule.RigModule):
                                           rotation=self.root_pose,
                                           ctrl_scale=self.ctrl_scale,
                                           ctrl_color=self.ctrl_color)
+        self.part_ctrls.append(self.global_ctrl.ctrl)
 
         self.root_01 = tkgCtrl.Control(parent=self.global_ctrl.ctrl,
                                           shape=self.root_shape,
@@ -90,6 +93,7 @@ class Root(tkgModule.RigModule):
                                           rotation=self.root_pose,
                                           ctrl_scale=self.ctrl_scale * 0.5,
                                           ctrl_color=[0.069, 0.377, 0.694])
+        self.part_ctrls.append(self.root_01.ctrl)
 
         self.root_02 = tkgCtrl.Control(parent=self.root_01.ctrl,
                                           shape=self.root_shape,
@@ -103,6 +107,7 @@ class Root(tkgModule.RigModule):
                                           rotation=self.root_pose,
                                           ctrl_scale=self.ctrl_scale * 0.4,
                                           ctrl_color=[0.377, 0.069, 0.694])
+        self.part_ctrls.append(self.root_02.ctrl)
 
         self.root_move = tkgCtrl.Control(parent=self.control_grp,
                                           shape=self.root_move_shape,
@@ -116,6 +121,7 @@ class Root(tkgModule.RigModule):
                                           rotation=self.root_pose,
                                           ctrl_scale=self.ctrl_scale,
                                           ctrl_color=[1, 1, 0.24])
+        self.part_ctrls.append(self.root_move.ctrl)
 
     def output_rig(self):
         root_jnt_grp = cmds.group(parent=self.module_grp,
@@ -127,6 +133,8 @@ class Root(tkgModule.RigModule):
 
         cmds.parentConstraint(self.root_move.ctrl, self.root_jnt, mo=True)
         cmds.scaleConstraint(self.root_move.ctrl, self.root_jnt, mo=True)
+
+        self.tag_buid_ctrls(self.part+'Ctrls', self.part_ctrls, self.part_grp)
 
     def skeleton(self):
         self.bind_joints = []

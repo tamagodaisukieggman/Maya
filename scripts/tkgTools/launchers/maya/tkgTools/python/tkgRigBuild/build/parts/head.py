@@ -26,6 +26,8 @@ class Head(tkgModule.RigModule):
 
         self.ctrl_color = ctrl_color
 
+        self.part_ctrls = []
+
         self.create_module()
 
     def create_module(self):
@@ -50,6 +52,7 @@ class Head(tkgModule.RigModule):
                                       rotation=(0, 0, 0),
                                       ctrl_scale=self.ctrl_scale,
                                       ctrl_color=self.ctrl_color)
+        self.part_ctrls.append(self.head_01.ctrl)
 
         self.head_02 = tkgCtrl.Control(parent=self.head_01.ctrl,
                                       shape='arrowFourWayCurved',
@@ -63,6 +66,7 @@ class Head(tkgModule.RigModule):
                                       rotation=(0, 0, 0),
                                       ctrl_scale=self.ctrl_scale * 0.95,
                                       ctrl_color=[v*0.95 for v in self.ctrl_color])
+        self.part_ctrls.append(self.head_02.ctrl)
 
     def output_rig(self):
         self.head_jnt = cmds.joint(self.head_01.ctrl,
@@ -77,6 +81,8 @@ class Head(tkgModule.RigModule):
                               maintainOffset=True)
         cmds.scaleConstraint(self.head_02.ctrl, self.head_jnt,
                              maintainOffset=True)
+
+        self.tag_buid_ctrls(self.part+'Ctrls', self.part_ctrls, self.part_grp)
 
     def skeleton(self):
         jnt = cmds.joint(self.skel, name=self.base_name + '_JNT')

@@ -43,6 +43,10 @@ class Fk:
         self.gimbal_shape = gimbal_shape
         self.offset_shape = offset_shape
 
+        self.part_fk_main_ctrls = []
+        self.part_fk_gimbal_ctrls = []
+        self.part_fk_offset_ctrls = []
+
         if self.pad == "auto":
             self.pad = len(str(len(self.guide_list))) + 1
 
@@ -81,6 +85,7 @@ class Fk:
                                 ctrl_scale=self.ctrl_scale,
                                 ctrl_color=self.ctrl_color,
                                 edge_axis=self.fk_ctrl_edge_axis)
+            self.part_fk_main_ctrls.append(fk.ctrl)
             par = fk.ctrl
             self.fk_ctrls.append(fk)
             self.output_ctrls = self.fk_ctrls
@@ -98,6 +103,7 @@ class Fk:
                                      rotation=pose,
                                      ctrl_scale=self.ctrl_scale * 0.8,
                                      ctrl_color=self.ctrl_color)
+                self.part_fk_gimbal_ctrls.append(gim.ctrl)
                 par = gim.ctrl
                 self.gim_ctrls.append(gim)
                 self.output_ctrls = self.gim_ctrls
@@ -115,6 +121,7 @@ class Fk:
                                      rotation=pose,
                                      ctrl_scale=self.ctrl_scale * 0.55,
                                      ctrl_color=self.ctrl_color)
+                self.part_fk_offset_ctrls.append(off.ctrl)
                 self.off_ctrls.append(off)
                 self.output_ctrls = self.off_ctrls
 

@@ -37,6 +37,8 @@ class Hip(tkgModule.RigModule):
         self.ctrl_shape = ctrl_shape
         self.ctrl_color = ctrl_color
 
+        self.part_ctrls = []
+
         self.create_module()
 
     def create_module(self):
@@ -61,6 +63,7 @@ class Hip(tkgModule.RigModule):
                                      rotation=(0, 0, 0),
                                      ctrl_scale=self.ctrl_scale * 0.4,
                                      ctrl_color=self.ctrl_color)
+        self.part_ctrls.append(self.hip_01.ctrl)
 
         self.hip_02 = tkgCtrl.Control(parent=self.hip_01.ctrl,
                                      shape=self.ctrl_shape,
@@ -74,6 +77,7 @@ class Hip(tkgModule.RigModule):
                                      rotation=(0, 0, 0),
                                      ctrl_scale=self.ctrl_scale * 0.35,
                                      ctrl_color=[v*0.35 for v in self.ctrl_color])
+        self.part_ctrls.append(self.hip_02.ctrl)
 
     def output_rig(self):
         hip_jnt_grp = cmds.group(parent=self.module_grp, empty=True,
@@ -83,6 +87,8 @@ class Hip(tkgModule.RigModule):
                                   name=self.hip_02.ctrl.replace('CTRL', 'JNT'))
 
         cmds.parentConstraint(self.hip_02.ctrl, self.hip_jnt, mo=True)
+
+        self.tag_buid_ctrls(self.part+'Ctrls', self.part_ctrls, self.part_grp)
 
     def skeleton(self):
         hip_chain = tkgChain.Chain(transform_list=[self.hip_jnt],
