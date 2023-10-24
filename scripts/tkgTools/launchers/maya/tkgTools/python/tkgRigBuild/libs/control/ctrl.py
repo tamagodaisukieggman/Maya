@@ -10,11 +10,13 @@ import tkgRigBuild.libs.group as tkgGroup
 import tkgRigBuild.libs.common as tkgCommon
 import tkgRigBuild.libs.attribute as tkgAttr
 import tkgRigBuild.libs.transform as tkgXform
+import tkgRigBuild.libs.maths as tkgMath
 reload(tkgDraw)
 reload(tkgGroup)
 reload(tkgCommon)
 reload(tkgAttr)
 reload(tkgXform)
+reload(tkgMath)
 
 class Control(tkgDraw.Draw, tkgGroup.Group):
     def __init__(self, ctrl=None,
@@ -39,6 +41,12 @@ class Control(tkgDraw.Draw, tkgGroup.Group):
         self.position = position
         self.rotation = rotation
         self.scale = scale
+
+        ctrl_color = [tkgMath.round_value(c) for c in ctrl_color]
+        past_one_color_idx = [i for i, v in enumerate(ctrl_color) if 1 < v]
+        if past_one_color_idx:
+            for past_one in past_one_color_idx:
+                ctrl_color[past_one] = 1
 
         self.ctrl = ctrl
         if not self.ctrl:

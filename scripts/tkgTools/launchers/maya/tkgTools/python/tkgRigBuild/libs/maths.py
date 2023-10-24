@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from imp import reload
+import math
 
 import maya.cmds as cmds
 
@@ -32,3 +33,9 @@ def distance_between(point_a=None, point_b=None):
     vector_ab = vector_from_two_points(point_a, point_b)
     distance = vector_length(vector_ab)
     return distance
+
+def truncate(f, n):
+    return math.floor(f * 10 ** n) / 10 ** n
+
+def round_value(value=None, digit=3):
+    return truncate(round(value, digit), digit)
