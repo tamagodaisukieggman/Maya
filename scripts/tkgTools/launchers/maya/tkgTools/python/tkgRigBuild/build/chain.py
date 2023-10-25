@@ -49,13 +49,16 @@ class Chain:
 
             # create joint and parent for next iteration
             jnt = cmds.joint(None, name=jnt_name)
+            cmds.select(cl=True)
 
             # find position on curve to create joints
             # pos = tkgXform.find_position_on_curve(curve, i * inc)
             # cmds.setAttr(jnt + '.translate', *pos)
 
             wt = cmds.xform(guide_jnt, q=True, t=True, ws=True)
+            wr = cmds.xform(guide_jnt, q=True, ro=True, ws=True)
             cmds.xform(jnt, t=wt, ws=True, a=True, p=True)
+            cmds.xform(jnt, ro=wr, ws=True, a=True, p=True)
 
             # aim joint at parent
             if par:
@@ -95,6 +98,7 @@ class Chain:
 
         self.joints = []
         for i, pose in enumerate(pose_dict):
+            cmds.select(cl=True)
             if pad:
                 name_list = [self.prefix, self.name,
                              str(i + 1).zfill(pad), self.suffix]
