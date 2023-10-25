@@ -144,4 +144,4 @@ class Root(tkgModule.RigModule):
                              name=self.part)
         root_chain.create_from_transforms(parent=self.skel, pad=False)
 
-        self.tag_bind_joints(self.root_jnt, self.part_grp)
+        self.tag_bind_joints(root_chain.joints, self.part_grp)
