@@ -302,6 +302,5 @@ class Spline:
                                         startJoint=self.spline_joints[0],
                                         endEffector=self.spline_joints[-1],
                                         createCurve=False,
-                                        freezeJoints=True,
                                         curve=self.crv,
                                         solver='ikSplineSolver')[0]
