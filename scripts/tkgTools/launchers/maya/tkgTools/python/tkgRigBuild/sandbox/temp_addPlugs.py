@@ -35,6 +35,7 @@ for part in cmds.listRelatives('RIG'):
 # -------------------------------
 # Hip
 # -------------------------------
+# *ジョイント階層の指定
 # plugを追加するmodule
 part_grp = 'Cn_hip'
 
@@ -44,6 +45,12 @@ root_jnt = part_ctrls_dict['Cn_root']['partJoints']
 # 子にするジョイントの取得
 jnts = part_ctrls_dict[part_grp]['partJoints']
 
+# 親子関係の情報を設定
+tkgAttr.Attribute(node=part_grp, type='plug',
+                 value=[root_jnt], name='skeletonPlugs',
+                 children_name=[jnts[0]])
+
+# *コントローラの空間の指定
 # spaceを追加するコントローラを取得
 ctrl = [n for n in part_ctrls_dict[part_grp]['hipCtrls'].keys()][0]
 
@@ -66,10 +73,6 @@ tkgAttr.Attribute(node=part_grp, type='plug',
                  name=ctrl + '_parent',
                  children_name=name_list)
 
-# 親子関係の情報を設定
-tkgAttr.Attribute(node=part_grp, type='plug',
-                 value=[root_jnt], name='skeletonPlugs',
-                 children_name=[jnts[0]])
 
 # tkgFinalize.assemble_rig()
 
@@ -77,6 +80,7 @@ tkgAttr.Attribute(node=part_grp, type='plug',
 # -------------------------------
 # Chest
 # -------------------------------
+# *ジョイント階層の指定
 # plugを追加するmodule
 part_grp = 'Cn_chest'
 
@@ -86,6 +90,12 @@ root_jnt = part_ctrls_dict['Cn_spine']['partJoints'][-1]
 # 子にするジョイントの取得
 jnts = part_ctrls_dict[part_grp]['partJoints']
 
+# 親子関係の情報を設定
+tkgAttr.Attribute(node=part_grp, type='plug',
+                 value=[root_jnt], name='skeletonPlugs',
+                 children_name=[jnts[0]])
+
+# *コントローラの空間の指定
 # spaceを追加するコントローラを取得
 ctrl = [n for n in part_ctrls_dict[part_grp]['chestCtrls'].keys()][0]
 
@@ -112,10 +122,6 @@ tkgAttr.Attribute(node=part_grp, type='plug',
                  name=ctrl + '_parent',
                  children_name=name_list)
 
-# 親子関係の情報を設定
-tkgAttr.Attribute(node=part_grp, type='plug',
-                 value=[root_jnt], name='skeletonPlugs',
-                 children_name=[jnts[0]])
 
 # tkgFinalize.assemble_rig()
 
@@ -123,6 +129,7 @@ tkgAttr.Attribute(node=part_grp, type='plug',
 # -------------------------------
 # Spine
 # -------------------------------
+# *ジョイント階層の指定
 # plugを追加するmodule
 part_grp = 'Cn_spine'
 
@@ -132,37 +139,40 @@ root_jnt = part_ctrls_dict['Cn_hip']['partJoints'][-1]
 # 子にするジョイントの取得
 jnts = part_ctrls_dict[part_grp]['partJoints']
 
-base_name = part_grp
+# 親子関係の情報を設定
+tkgAttr.Attribute(node=part_grp, type='plug',
+                 value=[root_jnt], name='skeletonPlugs',
+                 children_name=[jnts[0]])
 
+# *parentConstraintの設定
 # parentConstraintさせるプラグの設定
 driver_list = ['Cn_hip_02_CTRL',
                'Cn_hip_01_CTRL',
                'Cn_chest_02_CTRL']
-driven_list = [base_name + '_base_CTRL_CNST_GRP',
-               base_name + '_01_FK_CTRL_CNST_GRP',
-               base_name + '_tip_CTRL_CNST_GRP']
+driven_list = [part_grp + '_base_CTRL_CNST_GRP',
+               part_grp + '_01_FK_CTRL_CNST_GRP',
+               part_grp + '_tip_CTRL_CNST_GRP']
 tkgAttr.Attribute(node=part_grp, type='plug',
                  value=driver_list, name='pacRigPlugs',
                  children_name=driven_list)
 
+# *非表示の設定
 # 非表示にするオブジェクトの設定
-hide_list = [base_name + '_base_CTRL_CNST_GRP',
-             base_name + '_tip_CTRL_CNST_GRP']
+hide_list = [part_grp + '_base_CTRL_CNST_GRP',
+             part_grp + '_tip_CTRL_CNST_GRP']
 tkgAttr.Attribute(node=part_grp, type='plug',
                  value=[' '.join(hide_list)], name='hideRigPlugs',
                  children_name=['hideNodes'])
 
 
-# 親子関係の情報を設定
-tkgAttr.Attribute(node=part_grp, type='plug',
-                 value=[root_jnt], name='skeletonPlugs',
-                 children_name=[jnts[0]])
+
 
 # tkgFinalize.assemble_rig()
 
 # -------------------------------
 # Neck
 # -------------------------------
+# *ジョイント階層の指定
 # plugを追加するmodule
 part_grp = 'Cn_neck'
 
@@ -172,22 +182,30 @@ root_jnt = part_ctrls_dict['Cn_chest']['partJoints'][-1]
 # 子にするジョイントの取得
 jnts = part_ctrls_dict[part_grp]['partJoints']
 
-# add parentConstraint rig plugs
-driver_list = ['Cn_chest_02_JNT',
-               'Cn_head_02_CTRL']
-driven_list = [self.base_name + '_base_CTRL_CNST_GRP',
-               self.base_name + '_tip_CTRL_CNST_GRP']
-tkgAttr.Attribute(node=self.part_grp, type='plug',
-                 value=driver_list, name='pacRigPlugs',
-                 children_name=driven_list)
-
-# add hide rig plugs
-hide_list = [self.base_name + '_tip_CTRL_CNST_GRP']
-tkgAttr.Attribute(node=self.part_grp, type='plug',
-                 value=[' '.join(hide_list)], name='hideRigPlugs',
-                 children_name=['hideNodes'])
-
 # 親子関係の情報を設定
 tkgAttr.Attribute(node=part_grp, type='plug',
                  value=[root_jnt], name='skeletonPlugs',
                  children_name=[jnts[0]])
+
+# *parentConstraintの設定
+# parentConstraintさせるプラグの設定
+driver_list = ['Cn_chest_02_JNT',
+               'Cn_head_02_CTRL']
+driven_list = [part_grp + '_base_CTRL_CNST_GRP',
+               part_grp + '_tip_CTRL_CNST_GRP']
+tkgAttr.Attribute(node=part_grp, type='plug',
+                 value=driver_list, name='pacRigPlugs',
+                 children_name=driven_list)
+
+# *非表示の設定
+# 非表示にするオブジェクトの設定
+hide_list = [part_grp + '_tip_CTRL_CNST_GRP']
+tkgAttr.Attribute(node=part_grp, type='plug',
+                 value=[' '.join(hide_list)], name='hideRigPlugs',
+                 children_name=['hideNodes'])
+
+
+
+# -------------------------------
+# Head
+# -------------------------------
