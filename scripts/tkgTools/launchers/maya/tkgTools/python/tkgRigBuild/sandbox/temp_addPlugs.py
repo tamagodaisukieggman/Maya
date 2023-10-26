@@ -209,3 +209,72 @@ tkgAttr.Attribute(node=part_grp, type='plug',
 # -------------------------------
 # Head
 # -------------------------------
+# *ジョイント階層の指定
+# plugを追加するmodule
+part_grp = 'Cn_head'
+
+# 親にするジョイントの取得
+root_jnt = part_ctrls_dict['Cn_neck']['partJoints'][-1]
+
+# 子にするジョイントの取得
+jnts = part_ctrls_dict[part_grp]['partJoints']
+
+# 親子関係の情報を設定
+tkgAttr.Attribute(node=part_grp, type='plug',
+                 value=[root_jnt], name='skeletonPlugs',
+                 children_name=[jnts[0]])
+
+# *コントローラの空間の指定
+# spaceを追加するコントローラを取得
+ctrls = [n for n in part_ctrls_dict[part_grp]['headCtrls'].keys()]
+
+# spaceの元になるコントローラの取得
+target_list = []
+root_ctrls = [n for n in part_ctrls_dict['Cn_root']['rootCtrls'].keys()]
+chest_ctrls = [n for n in part_ctrls_dict['Cn_chest']['chestCtrls'].keys()]
+neck_ctrls = [n for n in part_ctrls_dict['Cn_neck']['neckIkCtrls'].keys()][0]
+[target_list.append(n) for n in root_ctrls]
+[target_list.append(n) for n in chest_ctrls]
+[target_list.append(n) for n in [neck_ctrls]]
+
+# spaceの名前を取得する
+name_list = [n.replace('Cn_', '').replace('_CTRL', '').title() for n in target_list]
+point_names = ['point' + n.title() for n in name_list]
+orient_names = ['orient' + n.title() for n in name_list]
+
+# spaceのデフォルトにするインデクス
+default_idx = len(target_list) - 1
+
+# デフォルトのインデクスとdefault_valueを最後に追加
+target_list.append(str(default_idx))
+name_list.append('default_value')
+
+# parentでのspaceを設定する
+tkgAttr.Attribute(node=part_grp, type='plug',
+                 value=target_list,
+                 name=ctrls[0] + '_point',
+                 children_name=point_names)
+
+tkgAttr.Attribute(node=part_grp, type='plug',
+                 value=target_list,
+                 name=ctrls[1] + '_orient',
+                 children_name=orient_names)
+
+# *削除するオブジェクトを指定する
+delete_list = [part_grp + '_01_JNT_pointConstraint1']
+tkgAttr.Attribute(node=part_grp, type='plug',
+                 value=[' '.join(delete_list)], name='deleteRigPlugs',
+                 children_name=['deleteNodes'])
+
+# add transferAttributes plug
+tkgAttr.Attribute(node=part_grp, type='plug',
+                 value=[ctrls[0]], name='transferAttributes',
+                 children_name=['Cn_neck_tip_CTRL'])
+
+# tkgAttr.Attribute(node=part_grp, type='plug',
+#                  value=['cmds.ls("Cn_neck_??_driver_JNT", "Cn_neck_??_fk_offset_CTRL")[-1]'],
+#                  name='pocRigPlugs',
+#                  children_name=[jnts[0]])
+
+
+tkgFinalize.assemble_rig()
