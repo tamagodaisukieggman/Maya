@@ -418,46 +418,46 @@ for s, fs in zip(sides, force_sides):
     # *コントローラの空間の指定
     fk_ctrls = [n for n in part_ctrls_dict[part_grp]['legFkMainCtrls'].keys()]
 
+    # parentConstraint
     driver_list = ['Cn_hip_02_CTRL',
                    'Cn_hip_02_CTRL',
                    'Cn_hip_02_CTRL',
-                   part_grp + '_IK_base_CTRL',
-                   s + '_leg_03_RP_JNT']
+                   part_grp + '_IK_base_CTRL']
     driven_list = [limb_grp,
                    part_grp + '_IK_base_CTRL_CNST_GRP',
                    part_grp + '_01_fk_CTRL_CNST_GRP',
-                   part_grp + '_up_twist_LOC',
-                   s + '_foot_01_CTRL_CNST_GRP']
-    # hide_list = [part_grp + '_IK_main_CTRL_CNST_GRP',
-    #              self.fk_ctrls[-1].top]
+                   part_grp + '_up_twist_LOC']
+
+    tkgAttr.Attribute(node=part_grp, type='plug',
+                     value=driver_list, name='pacRigPlugs',
+                     children_name=driven_list)
+
+    # pointConstraint
+    driver_list = [s + '_leg_03_RP_JNT']
+    driven_list = [s + '_foot_01_CTRL_CNST_GRP']
+
+    tkgAttr.Attribute(node=part_grp, type='plug',
+                     value=driver_list, name='pocRigPlugs',
+                     children_name=driven_list)
+
+    driven_list = [s + '_foot_02_CTRL_CNST_GRP']
+
+    tkgAttr.Attribute(node=part_grp, type='plug',
+                     value=driver_list, name='orcRigPlugs',
+                     children_name=driven_list)
+
+
+    # add pv space plug
     pv_targets = ['CHAR', 'Cn_global_CTRL', 'Cn_world_CTRL', 'Cn_local_CTRL',
                   'Cn_hip_01_CTRL', s + '_leg_IK_base_CTRL',
                   part_grp + '_IK_main_CTRL', '2']
     pv_names = ['CHAR', 'global', 'world', 'local', 'hip', 'leg', 'foot',
                 'default_value']
-    # ik_ctrl = [s + '_foot_01_CTRL']
 
-    # add parentConstraint rig plugs
-    tkgAttr.Attribute(node=part_grp, type='plug',
-                     value=driver_list, name='pacRigPlugs',
-                     children_name=driven_list)
-
-    # add hide rig plugs
-    # tkgAttr.Attribute(node=part_grp, type='plug',
-    #                  value=[' '.join(hide_list)], name='hideRigPlugs',
-    #                  children_name=['hideNodes'])
-
-    # add pv space plug
     tkgAttr.Attribute(node=part_grp, type='plug',
                      value=pv_targets,
                      name=pv_ctrl + '_parent',
                      children_name=pv_names)
-
-    # add transferAttributes plug
-    # tkgAttr.Attribute(node=part_grp, type='plug',
-    #                  value=ik_ctrl, name='transferAttributes',
-    #                  children_name=[ik_main_ctrl])
-
 
 # tkgFinalize.assemble_rig()
 
