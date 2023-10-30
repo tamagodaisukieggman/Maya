@@ -56,7 +56,7 @@ message_selection_warning = (
 
 
 @undoable
-def removeCustomNodes(interactive=False, session=None, meshes=[]):
+def remove_custom_nodes(interactive=False, session=None, meshes=[]):
     """
     Removes custom ngSkinTools2 nodes from the scene or selection.
 
@@ -94,6 +94,6 @@ def removeCustomNodes(interactive=False, session=None, meshes=[]):
 
 
 @undoable
-def removeCustomNodesFromSelection(interactive=False, session=None):
+def remove_custom_nodes_from_selection(interactive=False, session=None):
     selection = cmds.ls(sl=True)
-    removeCustomNodes(interactive=interactive, session=session, meshes=asList(selection))
+    remove_custom_nodes(interactive=interactive, session=session, meshes=asList(selection))

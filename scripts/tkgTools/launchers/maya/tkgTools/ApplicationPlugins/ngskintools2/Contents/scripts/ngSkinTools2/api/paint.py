@@ -357,7 +357,7 @@ class PaintTool(PaintSettingsModel):
     def flood(self, layer, influence=None, influences=None):
         from ngSkinTools2.api import tools
 
-        tools.flood_weights(layer=layer, influence=influence, influences=influences, settings=self.primary_settings)
+        tools.flood_weights(target=layer, influence=influence, influences=influences, settings=self.primary_settings)
 
     @classmethod
     def is_painting(cls):

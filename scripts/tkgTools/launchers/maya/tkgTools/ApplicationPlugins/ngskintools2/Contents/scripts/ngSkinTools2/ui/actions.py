@@ -37,7 +37,7 @@ def build_action_delete_custom_nodes_for_selection(parent, session):
     result = define_action(
         parent,
         "Delete Custom Nodes For Selection",
-        callback=lambda: removeLayerData.removeCustomNodesFromSelection(interactive=True, session=session),
+        callback=lambda: removeLayerData.remove_custom_nodes_from_selection(interactive=True, session=session),
     )
 
     @signal.on(session.events.nodeSelectionChanged)
@@ -87,7 +87,7 @@ class Actions(Object):
         self.toolsUnifyWeights, self.toolsUnifyWeightsOptions = tools.create_action__unify_weights(parent, session)
 
         self.toolsDeleteCustomNodes = define_action(
-            parent, "Delete All Custom Nodes", callback=lambda: removeLayerData.removeCustomNodes(interactive=True, session=session)
+            parent, "Delete All Custom Nodes", callback=lambda: removeLayerData.remove_custom_nodes(interactive=True, session=session)
         )
 
         self.toolsDeleteCustomNodesOnSelection = build_action_delete_custom_nodes_for_selection(parent, session)
