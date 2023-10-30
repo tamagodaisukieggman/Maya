@@ -22,6 +22,8 @@ import pymel.core as pm
 import maya.OpenMaya as OpenMaya
 import maya.api.OpenMaya as OpenMaya2
 
+sys.dont_write_bytecode = True
+
 maya_version = cmds.about(v=1)
 
 dir = '{}'.format(os.path.split(os.path.abspath(__file__))[0])
