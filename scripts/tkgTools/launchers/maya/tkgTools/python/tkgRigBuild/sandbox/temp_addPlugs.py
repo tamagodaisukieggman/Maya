@@ -258,7 +258,7 @@ tkgAttr.Attribute(node=part_grp, type='plug',
 
 tkgAttr.Attribute(node=part_grp, type='plug',
                  value=target_list,
-                 name=ctrls[1] + '_orient',
+                 name=ctrls[0] + '_orient',
                  children_name=orient_names)
 
 # *削除するオブジェクトを指定する
@@ -312,6 +312,63 @@ for s, fs in zip(sides, force_sides):
                      value=driver_list, name='pacRigPlugs',
                      children_name=driven_list)
 
+for s, fs in zip(sides, force_sides):
+    # -------------------------------
+    # Arm
+    # -------------------------------
+    # *ジョイント階層の指定
+    # plugを追加するmodule
+    part_grp = s + '_arm'
+    limb_grp = part_grp + '_RIG_GRP'
+
+    # 親にするジョイントの取得
+    root_jnt = part_ctrls_dict['Cn_chest']['partJoints'][-1]
+
+    # 子にするジョイントの取得
+    jnts = part_ctrls_dict[part_grp]['partJoints']
+    fk_ctrls = [n for n in part_ctrls_dict[part_grp]['armFkMainCtrls'].keys()]
+
+    # 親子関係の情報を設定
+    tkgAttr.Attribute(node=part_grp, type='plug',
+                     value=[root_jnt], name='skeletonPlugs',
+                     children_name=[jnts[0]])
+
+    # *コントローラの空間の指定
+    driver_list = [s + '_clavicle_02_driver_JNT',
+                   s + '_clavicle_02_driver_JNT',
+                   s + '_clavicle_02_driver_JNT',
+                   s + '_hand_01_ik_JNT']
+    driven_list = [limb_grp,
+                   part_grp + '_IK_base_CTRL_CNST_GRP',
+                   part_grp + '_up_twist_LOC',
+                   part_grp + '_IK_main_CTRL_CNST_GRP']
+    hide_list = [part_grp + '_IK_base_CTRL_CNST_GRP',
+                 part_grp + '_IK_main_CTRL_CNST_GRP']
+
+    pv_targets = ['CHAR', 'Cn_global_CTRL', 'Cn_world_CTRL', 'Cn_local_CTRL',
+                  'Cn_chest_02_CTRL', s + '_hand_local_CTRL',
+                  '2']
+    pv_names = ['CHAR', 'global', 'world', 'local', 'chest', 'hand',
+                'default_value']
+    ik_ctrl = [s + '_hand_01_CTRL']
+
+    # add pointConstraint rig plugs
+    tkgAttr.Attribute(node=part_grp, type='plug',
+                     value=[s + '_clavicle_02_driver_JNT'],
+                     name='pocRigPlugs',
+                     children_name=[
+                         s + '_arm_01_fk_CTRL_CNST_GRP'])
+
+    # add space plugs
+    target_list = ['Cn_chest_01_CTRL', 'Cn_chest_02_CTRL',
+                   s + '_clavicle_02_driver_JNT', '0']
+    name_list = ['chest01', 'chest02', 'clavicle', 'default_value']
+    orient_names = ['orient' + n.title() for n in name_list]
+
+    tkgAttr.Attribute(node=part_grp, type='plug',
+                     value=target_list,
+                     name=fk_ctrls[0] + '_orient',
+                     children_name=orient_names)
 
 
 tkgFinalize.assemble_rig()
