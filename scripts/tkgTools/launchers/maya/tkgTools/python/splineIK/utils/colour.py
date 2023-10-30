@@ -17,13 +17,13 @@ COLOURS_FROM_STRING = {
 }
 
 COLOURS_FROM_INT = {
-    v: k for k, v in COLOURS_FROM_STRING.iteritems()
+    v: k for k, v in COLOURS_FROM_STRING.items()
 }
 
 
 def getColourFromString(colour):
-    """ 
-    Takes a string of a colour and returns mayas number setting for nurbs 
+    """
+    Takes a string of a colour and returns mayas number setting for nurbs
     colour changes.
 
     :param str colour:
@@ -31,26 +31,26 @@ def getColourFromString(colour):
     """
     colourFiltered = colour.lower().replace("_"," ")
     colourInt = COLOURS_FROM_STRING.get(colourFiltered)
-    
+
     if not colourInt:
         raise ValueError(
             "getColourFromString: {0} couldn't be converted to a atring!".format(
                 colour
             )
         )
-        
+
     return colourInt
 
 
 def getColourFromInt(colour):
-    """ 
+    """
     Takes a integer and convert it into a the string name of that colour.
 
     :param int colour: The controllers colour to get.
     :raises ValueError: When the colour cannot be converted to an string
     """
     colourString = COLOURS_FROM_INT.get(colour)
-    
+
     if not colourString:
         raise ValueError(
             "getColourFromInt: {0} couldn't be converted to a atring!".format(
