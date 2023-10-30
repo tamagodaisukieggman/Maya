@@ -165,7 +165,16 @@ tkgAttr.Attribute(node=part_grp, type='plug',
                  children_name=['hideNodes'])
 
 
+# add transferAttributes plug
+tkgAttr.Attribute(node=part_grp, type='plug',
+                 value=['Cn_chest_02_CTRL'], name='transferAttributes',
+                 children_name=[part_grp + '_tip_CTRL'])
 
+# delete
+delete_list = [part_grp + '_tip_CTRL_CNST_GRP_parentConstraint1']
+tkgAttr.Attribute(node=part_grp, type='plug',
+                 value=[' '.join(delete_list)], name='deleteRigPlugs',
+                 children_name=['deleteNodes'])
 
 # tkgFinalize.assemble_rig()
 
@@ -432,20 +441,37 @@ for s, fs in zip(sides, force_sides):
                      value=driver_list, name='pacRigPlugs',
                      children_name=driven_list)
 
-    # pointConstraint
-    driver_list = [s + '_leg_03_RP_JNT']
-    driven_list = [s + '_foot_01_CTRL_CNST_GRP']
+    # point and orient Constraint
+    driver_list = [s + '_leg_IK_main_CTRL',
+                   s + '_foot_ankle_CTRL']
+    driven_list = [s + '_foot_01_CTRL_CNST_GRP',
+                   part_grp + '_IKH']
 
     tkgAttr.Attribute(node=part_grp, type='plug',
                      value=driver_list, name='pocRigPlugs',
                      children_name=driven_list)
 
-    driven_list = [s + '_foot_02_CTRL_CNST_GRP']
+    # driver_list = [part_grp + '_03_RP_JNT']
+    # driven_list = [s + '_foot_02_CTRL_CNST_GRP']
+
+    # tkgAttr.Attribute(node=part_grp, type='plug',
+    #                  value=driver_list, name='orcRigPlugs',
+    #                  children_name=driven_list)
+
+    # # parent
+    # driver_list = [s + '_foot_ankle_CTRL']
+    # driven_list = [part_grp + '_IKH']
+
+    # tkgAttr.Attribute(node=part_grp, type='plug',
+    #                  value=driver_list, name='parentNodePlugs',
+    #                  children_name=driven_list)
+
+    # delete
+    delete_list = [part_grp + '_IKH_parentConstraint1']
 
     tkgAttr.Attribute(node=part_grp, type='plug',
-                     value=driver_list, name='orcRigPlugs',
-                     children_name=driven_list)
-
+                     value=[' '.join(delete_list)], name='deleteRigPlugs',
+                     children_name=['deleteNodes'])
 
     # add pv space plug
     pv_targets = ['CHAR', 'Cn_global_CTRL', 'Cn_world_CTRL', 'Cn_local_CTRL',

@@ -160,7 +160,8 @@ def assemble_rig():
         plug_types = ['pacRigPlugs',
                       'pacPocRigPlugs',
                       'pocRigPlugs',
-                      'orcRigPlugs']
+                      'orcRigPlugs',
+                      'parentNodePlugs']
         for pt in plug_types:
             if cmds.objExists(part + '.' + pt):
                 driven_list = cmds.listAttr(part + '.' + pt)
@@ -178,6 +179,8 @@ def assemble_rig():
                             cmds.parentConstraint(driver, driven,
                                                   skipRotate=['x', 'y', 'z'],
                                                   maintainOffset=True)
+                        elif pt == 'parentNodePlugs':
+                            cmds.parent(driven, driver)
                         elif pt == 'pocRigPlugs':
                             if '_point' in driven:
                                 driven = driven.replace('_point', '')
