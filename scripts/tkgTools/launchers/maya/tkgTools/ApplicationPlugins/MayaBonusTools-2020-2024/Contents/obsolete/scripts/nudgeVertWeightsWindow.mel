@@ -1,0 +1,38 @@
+// ===========================================================================
+// Copyright 2022 Autodesk, Inc. All rights reserved.
+//
+// Use of this software is subject to the terms of the Autodesk license
+// agreement provided at the time of installation or download, or which
+// otherwise accompanies this software in either electronic or hard copy form.
+// ===========================================================================
+global proc nudgeVertWeightsWindow (){
+
+	$window = "nudgeVertWeightsWindow";
+
+	if( (`window -exists $window`) == true )	
+	{
+		deleteUI $window;
+	}
+
+	window -title "Nudge Vert Weights" $window;
+	
+	columnLayout;
+
+	floatSliderGrp -label "Nudge Value"
+		-value 0.1
+		-min 0
+		-max 1 
+		-field true
+		nudgeVertWeightsValue;
+
+	rowColumnLayout -numberOfColumns 2
+		-cw 1 100
+		-cw 2 100
+		;
+
+	button -label "Lower" -c "float $value = `floatSliderGrp -q -value nudgeVertWeightsValue`;	nudgeVertWeights ($value * -1);";
+	button -label "Higher" -c "float $value = `floatSliderGrp -q -value nudgeVertWeightsValue`;	nudgeVertWeights ($value);";
+
+	showWindow;
+
+}

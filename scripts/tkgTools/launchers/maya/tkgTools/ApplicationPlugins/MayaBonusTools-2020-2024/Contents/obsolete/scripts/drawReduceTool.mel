@@ -1,0 +1,25 @@
+// ===========================================================================
+// Copyright 2023 Autodesk, Inc. All rights reserved.
+//
+// Use of this software is subject to the terms of the Autodesk license
+// agreement provided at the time of installation or download, or which
+// otherwise accompanies this software in either electronic or hard copy form.
+// ===========================================================================
+// SCRIPT NAME: drawReduceTool.mel v1.4
+// UPDATED: Oct. 15th, 2001.
+// TESTED ON: Maya 4.0
+// DESCRIPTION: The main call to set the current tool to be the context for
+//              the "Draw Reduce Tool", called from the tool's shelf button.
+//
+global proc drawReduceTool()
+{
+   if (!`pluginInfo -q -l "drawReduceTool"`)
+   {
+      error "The \"drawReduceTool\" plugin needs to be loaded!";
+      return;
+   }
+
+   eval ("if (!`contextInfo -ex drawReduceToolContext1`) drawReduceToolContext drawReduceToolContext1");
+   if (`currentCtx` != "drawReduceToolContext1")
+      setToolTo drawReduceToolContext1;
+}

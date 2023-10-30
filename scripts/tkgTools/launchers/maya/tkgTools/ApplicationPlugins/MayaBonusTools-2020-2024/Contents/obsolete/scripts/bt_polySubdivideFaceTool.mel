@@ -1,0 +1,59 @@
+// ===========================================================================
+// Copyright 2022 Autodesk, Inc. All rights reserved.
+//
+// Use of this software is subject to the terms of the Autodesk license
+// agreement provided at the time of installation or download, or which
+// otherwise accompanies this software in either electronic or hard copy form.
+// ===========================================================================
+//
+// international treaties.
+//
+
+// Created by Steven T. L. Roselle 
+// Based on original tool by cpam
+// Last updated:      ( 02/01/12 )
+
+proc bt_polySubdivideFaceToolCtx(){
+
+		
+	scriptCtx
+		-title "Poly Subdivide"
+		-image1 "polySubdFacet.png"
+		-totalSelectionSets 1
+        -setSelectionCount	0
+		
+        -ts ("headsUpMessage -t 4 \"Select one or more faces to subdivide, then hit enter.\"")
+		
+		-expandSelectionList true
+		-finalCommandScript ("polySubdivideFacet $Selection1; headsUpMessage -t 4 \"Select one or more faces to subdivide, then hit enter.\"")
+
+		-setNoSelectionPrompt "Select one or more faces to subdivide, then hit enter."
+		-setAutoComplete false
+		-polymeshFace true
+		-toolCursorType "create"
+		-exitUponCompletion false
+
+		
+		bt_polySubdivideFaceTool;
+	
+}
+
+
+global proc bt_polySubdivideFaceTool(){
+	
+	if (!`contextInfo -exists bt_polySubdivideFaceTool`)
+	{
+	    bt_polySubdivideFaceToolCtx;
+	}
+    setSelectMode components Components; selectType -smp 0 -sme 1 -smf 0 -smu 0 -pv 0 -pe 0 -pf 1 -puv 0;
+	select -cl;
+	setToolTo bt_polySubdivideFaceTool;
+    print ("Select one or more faces to subdivide, then hit enter.\n");
+	
+}
+
+
+/*
+deleteUI bt_polySubdivideFaceTool;
+*/
+

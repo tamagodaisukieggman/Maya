@@ -1,0 +1,26 @@
+// ===========================================================================
+// Copyright 2022 Autodesk, Inc. All rights reserved.
+//
+// Use of this software is subject to the terms of the Autodesk license
+// agreement provided at the time of installation or download, or which
+// otherwise accompanies this software in either electronic or hard copy form.
+// ===========================================================================
+//
+// SCRIPT NAME: drawSplitTool.mel v3.4
+// TESTED ON: Maya 4.0
+// DESCRIPTION: The main call to set the current tool to be the context for
+//              the "Draw Split Tool", called from the tool's shelf button.
+//
+global proc drawSplitTool()
+{
+   if (!`pluginInfo -q -l "drawSplitTool"`)
+   {
+      error "The \"drawSplitTool\" plugin needs to be loaded!";
+      return;
+   }
+
+   eval ("if (!`contextInfo -ex drawSplitToolContext1`) drawSplitToolContext drawSplitToolContext1");
+   if (`currentCtx` != "drawSplitToolContext1")
+      setToolTo drawSplitToolContext1;
+}
+

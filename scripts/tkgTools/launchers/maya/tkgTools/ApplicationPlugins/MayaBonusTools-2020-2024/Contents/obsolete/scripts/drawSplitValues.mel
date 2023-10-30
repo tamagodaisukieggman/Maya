@@ -1,0 +1,42 @@
+// ===========================================================================
+// Copyright 2022 Autodesk, Inc. All rights reserved.
+//
+// Use of this software is subject to the terms of the Autodesk license
+// agreement provided at the time of installation or download, or which
+// otherwise accompanies this software in either electronic or hard copy form.
+// ===========================================================================
+//
+// SCRIPT NAME: drawSplitValues.mel v3.4
+// TESTED ON: Maya 4.0
+// DESCRIPTION: For setting the values of the Options Window of the "Draw
+//              Split Tool" plugin.  Please see the file "readme.txt" or
+//              "drawSplitTool.cpp" for full details.
+//
+global proc drawSplitValues(string $toolName)
+{
+   setParent (`toolPropertyWindow -q -location` + "|QT_drawSplitColumnLayout|QT_drawSplitTabs|QT_drawSplitTab");
+
+   string $icon = "drawSplitIcon.xpm";
+   string $help = "";
+   toolPropertySetCommon $toolName $icon $help;
+
+   frameLayout -e -en true -cl false QT_drawSplitFrame;
+   drawSplitOptionValues($toolName);
+
+   toolPropertySelect QT_drawSplitColumnLayout;
+}
+
+
+global proc drawSplitOptionValues(string $toolName)
+{
+   intSliderGrp -e -value `optionVar -q QT_drawSplitMinSampleSize` QT_drawSplitMinSampleSizeIntSliderGrp;
+   intSliderGrp -e -value `optionVar -q QT_drawSplitMultiSlices` QT_drawSplitMultiSlicesIntSliderGrp;
+   floatSliderGrp -e -value `optionVar -q QT_drawSplitMultiSliceDropoffPower` QT_drawSplitMultiSliceDropoffPowerFloatSliderGrp;
+   intSliderGrp -e -value `optionVar -q QT_drawSplitSubdivisions` QT_drawSplitSubdivisionsIntSliderGrp;
+   checkBox -e -value `optionVar -q QT_drawSplitEdgeSnapping` QT_drawSplitEdgeSnappingCheckBox;
+   radioButtonGrp -e -en `optionVar -q QT_drawSplitEdgeSnapping` -select `optionVar -q QT_drawSplitEdgeSnappingType` QT_drawSplitEdgeSnappingTypeRadioButtonGrp;
+   floatSliderGrp -e -en (`optionVar -q QT_drawSplitEdgeSnapping`&&(`optionVar -q QT_drawSplitEdgeSnappingType`==1)) -value `optionVar -q QT_drawSplitEdgeSnappingOffset` QT_drawSplitEdgeSnappingOffsetFloatSliderGrp;
+   intSliderGrp -e -en (`optionVar -q QT_drawSplitEdgeSnapping`&&(`optionVar -q QT_drawSplitEdgeSnappingType`==2)) -value `optionVar -q QT_drawSplitEdgeSnappingIntervals` QT_drawSplitEdgeSnappingIntervalsIntSliderGrp;
+   radioButtonGrp -e -select (`optionVar -q QT_drawSplitSelectNewVertsUponExit`+1) QT_drawSplitSelectNewVertsUponExitRadioButtonGrp;
+   checkBox -e -value `optionVar -q QT_drawSplitAutoBackfaceCulling` QT_drawSplitAutoBackfaceCullingCheckBox;
+}

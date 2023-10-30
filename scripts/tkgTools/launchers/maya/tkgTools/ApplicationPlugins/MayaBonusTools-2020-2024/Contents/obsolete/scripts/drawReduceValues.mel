@@ -1,0 +1,40 @@
+// ===========================================================================
+// Copyright 2023 Autodesk, Inc. All rights reserved.
+//
+// Use of this software is subject to the terms of the Autodesk license
+// agreement provided at the time of installation or download, or which
+// otherwise accompanies this software in either electronic or hard copy form.
+// ===========================================================================
+//
+// SCRIPT NAME: drawReduceValues.mel v1.4
+// LAST UPDATED: Oct. 15th, 2001.
+// TESTED ON: Maya 4.0
+// DESCRIPTION: For setting the values of the Options Window of the "Draw
+//              Reduce Tool" plugin.  Please see the file "readme.txt" or
+//              "drawReduceTool.cpp" for full details.
+//
+global proc drawReduceValues(string $toolName)
+{
+   setParent (`toolPropertyWindow -q -location` + "|QT_drawReduceColumnLayout|QT_drawReduceTabs|QT_drawReduceTab");
+
+   string $icon = "drawReduceIcon.xpm";
+   string $help = "";
+   toolPropertySetCommon $toolName $icon $help;
+
+   frameLayout -e -en true -cl false QT_drawReduceFrame;
+   drawReduceOptionValues($toolName);
+
+   toolPropertySelect QT_drawReduceColumnLayout;
+}
+
+global proc drawReduceOptionValues(string $toolName)
+{
+   intSliderGrp -e -value `optionVar -q QT_drawReduceMinSampleSize` QT_drawReduceMinSampleSizeIntSliderGrp;
+   radioButtonGrp -e -select `optionVar -q QT_drawReduceReductionType` QT_drawReduceReductionTypeRadioButtonGrp;
+   radioButtonGrp -e -en (`optionVar -q QT_drawReduceReductionType` == 1) -select `optionVar -q QT_drawReduceMergeVerticesAt` QT_drawReduceMergeVerticesAtRadioButtonGrp;
+   radioButtonGrp -e -select (`optionVar -q QT_drawReduceEdgeSnappingWhen`+1) QT_drawReduceEdgeSnappingWhenRadioButtonGrp;
+   radioButtonGrp -e -en `optionVar -q QT_drawReduceEdgeSnappingWhen` -select `optionVar -q QT_drawReduceEdgeSnappingType` QT_drawReduceEdgeSnappingTypeRadioButtonGrp;
+   floatSliderGrp -e -en (`optionVar -q QT_drawReduceEdgeSnappingWhen`&&(`optionVar -q QT_drawReduceEdgeSnappingType`==1)) -value `optionVar -q QT_drawReduceEdgeSnappingOffset` QT_drawReduceEdgeSnappingOffsetFloatSliderGrp;
+   intSliderGrp -e -en (`optionVar -q QT_drawReduceEdgeSnappingWhen`&&(`optionVar -q QT_drawReduceEdgeSnappingType`==2)) -value `optionVar -q QT_drawReduceEdgeSnappingIntervals` QT_drawReduceEdgeSnappingIntervalsIntSliderGrp;
+   checkBox -e -value `optionVar -q QT_drawReduceAutoBackfaceCulling` QT_drawReduceAutoBackfaceCullingCheckBox;
+}

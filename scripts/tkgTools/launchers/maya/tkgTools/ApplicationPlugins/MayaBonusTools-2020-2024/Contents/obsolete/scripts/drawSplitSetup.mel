@@ -1,0 +1,31 @@
+// ===========================================================================
+// Copyright 2022 Autodesk, Inc. All rights reserved.
+//
+// Use of this software is subject to the terms of the Autodesk license
+// agreement provided at the time of installation or download, or which
+// otherwise accompanies this software in either electronic or hard copy form.
+// ===========================================================================
+//
+// international treaties.
+//
+
+//
+// SCRIPT NAME: drawSplitSetup.mel v3.4
+// DESCRIPTION: Setup option vars for tool properties
+
+//
+global proc drawSplitSetup()
+{
+      optionVar -init false -category "Bonus Tools.Draw Split Tool"
+            -iv QT_drawSplitMinSampleSize 25
+            -iv QT_drawSplitMultiSlices 1
+            -fv QT_drawSplitMultiSliceDropoffPower 1
+            -iv QT_drawSplitSubdivisions 1
+            -iv QT_drawSplitEdgeSnapping 0
+            -iv QT_drawSplitEdgeSnappingType 1
+            -fv QT_drawSplitEdgeSnappingOffset 0.5
+            -iv QT_drawSplitEdgeSnappingIntervals 2
+            -iv QT_drawSplitSelectNewVertsUponExit 1
+            -iv QT_drawSplitAutoBackfaceCulling 1
+            ;
+}

@@ -1,0 +1,21 @@
+// ===========================================================================
+// Copyright 2022 Autodesk, Inc. All rights reserved.
+//
+// Use of this software is subject to the terms of the Autodesk license
+// agreement provided at the time of installation or download, or which
+// otherwise accompanies this software in either electronic or hard copy form.
+// ===========================================================================
+//
+// bonusToolsMenuToggle.mel
+
+
+global proc bonusToolsMenuToggle(){
+
+	optionVar -init false -category "Bonus Tools" -iv bonusToolsMenuToggle 0;
+	int $state = `optionVar -query "bonusToolsMenuToggle"`;
+	$state = !($state);
+	optionVar -intValue "bonusToolsMenuToggle" $state;
+
+	bonusToolsMenu;
+
+}

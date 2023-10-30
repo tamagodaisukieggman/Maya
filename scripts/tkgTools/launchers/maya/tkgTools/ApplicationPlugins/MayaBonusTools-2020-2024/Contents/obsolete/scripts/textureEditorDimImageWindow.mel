@@ -1,0 +1,51 @@
+// ===========================================================================
+// Copyright 2022 Autodesk, Inc. All rights reserved.
+//
+// Use of this software is subject to the terms of the Autodesk license
+// agreement provided at the time of installation or download, or which
+// otherwise accompanies this software in either electronic or hard copy form.
+// ===========================================================================
+// 
+// 
+//
+// textureEditorDimImageWindow.mel
+//
+// slider to control the dimming of the texture displayed in the uv texture editor
+
+
+global proc textureEditorDimImage (){
+
+	float $value = `floatSliderGrp -q -v floatSliderDimImageValue`;
+	textureWindow -e -imageBaseColor $value $value $value polyTexturePlacementPanel1; 
+
+}
+
+global proc textureEditorDimImageWindow (){
+
+
+	string $dimImageWindow = "textureEditorDimImageWindow";
+
+	if (`window -exists $dimImageWindow`)
+	{
+		deleteUI $dimImageWindow;
+	}
+
+	float $color = `optionVar -q polyDimImageValue` ;
+
+	window -title "Texture Editor Dim Image Window" $dimImageWindow;
+
+	columnLayout;
+
+	floatSliderGrp 
+		-label "Image Dimming"
+		-field true
+		-minValue 0.0 -maxValue 1.0
+		-fieldMinValue 0.0 -fieldMaxValue 1.0
+		-value $color
+		-changeCommand "textureEditorDimImage"
+		-dragCommand "textureEditorDimImage"
+		floatSliderDimImageValue;
+
+	showWindow $dimImageWindow;
+
+}

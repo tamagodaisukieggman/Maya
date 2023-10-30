@@ -1,0 +1,58 @@
+// ===========================================================================
+// Copyright 2022 Autodesk, Inc. All rights reserved.
+//
+// Use of this software is subject to the terms of the Autodesk license
+// agreement provided at the time of installation or download, or which
+// otherwise accompanies this software in either electronic or hard copy form.
+// ===========================================================================
+//
+// international treaties.
+//
+
+// Created by Steven T. L. Roselle 
+// Based on original tool by cpam
+// Last updated:      ( 02/01/12 )
+
+proc bt_polyPokeFaceToolCtx(){
+
+		
+	scriptCtx
+		-title "Poly Poke Face"
+		-image1 "polyPoke.png"
+		-totalSelectionSets 1
+        -setSelectionCount	0
+		
+        -ts ("headsUpMessage -t 4 \"Select face(s) to poke\"")
+		
+		-expandSelectionList true
+		-finalCommandScript ("headsUpMessage -t 4 \"Select face(s) to poke\"; polyPoke")
+
+		-setNoSelectionPrompt "Select face(s) to poke"
+		-setAutoComplete true
+		-polymeshFace true
+		-toolCursorType "create"
+		-exitUponCompletion false
+
+		
+		bt_polyPokeFaceTool;
+	
+}
+
+
+global proc bt_polyPokeFaceTool(){
+	
+	if (!`contextInfo -exists bt_polyPokeFaceTool`)
+	{
+	    bt_polyPokeFaceToolCtx;
+	}
+    setSelectMode components Components; selectType -smp 0 -sme 1 -smf 0 -smu 0 -pv 0 -pe 0 -pf 1 -puv 0;
+	select -cl;
+	setToolTo bt_polyPokeFaceTool;
+    print "Select face(s) to poke\n";
+}
+
+
+/*
+deleteUI bt_polyPokeFaceTool;
+*/
+

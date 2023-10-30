@@ -1,7 +1,6 @@
 {
     "Multi_File_Browser": {
         "path": [
-            "C:/cygames/wiz2/team/3dcg/chr/ply/costume/arisa01/scenes/p1_c_arisa01.ma",
             "//cydrive01/104_projects/148_wizard2/30_design/02_3DCG/01_キャラ/モデルチェック/キャラ揺れ骨追加確認/01_check/20230920/bob01/scenes/p0_h_bob01_joint.ma",
             "C:/cygames/wiz2/team/3dcg/rig/p2/cmn/scenes/p2_00.ma",
             "C:/cygames/wiz2/team/3dcg/chr/cmn/sotai/sotai01/scenes/p2_sotai01.ma",
@@ -100,7 +99,8 @@
             "//cydrive01/104_projects/148_wizard2/30_design/02_3DCG/01_キャラ/モデルチェック/キャラ揺れ骨追加確認/01_check/20231018/fish01/scenes/pro_g_fish01.ma",
             "C:/cygames/wiz2/team/3dcg/rig/sandbox/olivia_wing2/scenes/olivia_wing2_00.ma",
             "C:/cygames/wiz2/team/3dcg/rig/orivia01/eff/scenes/orivia01_00.ma",
-            "C:/cygames/wiz2/team/3dcg/rig/orivia01/eff/scenes/eff_b_orivia01_01.ma"
+            "C:/cygames/wiz2/team/3dcg/rig/orivia01/eff/scenes/eff_b_orivia01_01.ma",
+            "F:/myTechData/Maya/scripts/tkgTools/launchers/maya/tkgTools/python/tkgRigBuild/library/buildPackage/projectName/charaType/000_data/biped_guide_000.ma"
         ],
         "bookmark": {
             "world": {
@@ -150,6 +150,6 @@
                 ]
             }
         },
-        "curpath": "C:/cygames/wiz2/team/3dcg/rig/orivia01/eff/scenes/eff_b_orivia01_01.ma"
+        "curpath": "F:/myTechData/Maya/scripts/tkgTools/launchers/maya/tkgTools/python/tkgRigBuild/library"
     }
 }
