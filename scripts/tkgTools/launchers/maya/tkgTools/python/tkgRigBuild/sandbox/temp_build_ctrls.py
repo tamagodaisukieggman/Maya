@@ -11,6 +11,9 @@ rigModule = tkgModule.RigModule()
 # rep_build_file = build_file.replace('\\', '/')
 # data_path = '{}/{}'.format('/'.join(rep_build_file.split('/')[:-2]), '000_data')
 
+if cmds.window("nodeEditorPanel1Window", exists=True):
+    cmds.deleteUI("nodeEditorPanel1Window", window=True)
+
 cmds.file(new=True, f=True)
 
 mp = "C:/Users/kesun/Documents/maya/scripts/tkgTools/tkgRig/data/projects/wizard2/data/p2/p2_sotai01.ma"
@@ -75,7 +78,7 @@ for s, fs in zip(sides, force_sides):
     hand = tkgPart.build_module(module_type="hand",
                               side=s, part="hand",
             guide_list=["proxy_Wrist" + fs],
-            ctrl_scale=10)
+            ctrl_scale=6)
 
 for s, fs in zip(sides, force_sides):
     if fs == '_L':
