@@ -42,3 +42,9 @@ try:
     maya.utils.executeDeferred(load_plugins)
 except Exception as e:
     print(traceback.format_exc())
+
+try:
+    import splineIK.install
+    utils.executeDeferred(splineIK.install.shelf)
+except Exception as e:
+    print(traceback.format_exc())
