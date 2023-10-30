@@ -43,8 +43,21 @@ try:
 except Exception as e:
     print(traceback.format_exc())
 
+# -----------------------------------
+#
+# -----------------------------------
 try:
     import splineIK.install
     utils.executeDeferred(splineIK.install.shelf)
+except Exception as e:
+    print(traceback.format_exc())
+
+try:
+    def reorder_attributes_main():
+        from reorder_attributes import install
+        install.execute()
+
+    if not cmds.about(batch=True):
+        cmds.evalDeferred(reorder_attributes_main)
 except Exception as e:
     print(traceback.format_exc())
