@@ -101,9 +101,9 @@ ctrl = [n for n in part_ctrls_dict[part_grp]['chestCtrls'].keys()][0]
 
 # spaceの元になるコントローラの取得
 target_list = []
-hip_ctrl = [n for n in part_ctrls_dict['Cn_hip']['hipCtrls'].keys()][-1]
+hip_ctrls = [n for n in part_ctrls_dict['Cn_hip']['hipCtrls'].keys()]
 root_ctrls = [n for n in part_ctrls_dict['Cn_root']['rootCtrls'].keys()]
-target_list.append(hip_ctrl)
+[target_list.append(n) for n in hip_ctrls]
 [target_list.append(n) for n in root_ctrls]
 
 # spaceの名前を取得する
