@@ -190,7 +190,7 @@ tkgAttr.Attribute(node=part_grp, type='plug',
 # *parentConstraintの設定
 # parentConstraintさせるプラグの設定
 driver_list = ['Cn_chest_02_JNT',
-               'Cn_head_02_CTRL']
+               'Cn_chest_02_JNT']
 driven_list = [part_grp + '_base_CTRL_CNST_GRP',
                part_grp + '_tip_CTRL_CNST_GRP']
 tkgAttr.Attribute(node=part_grp, type='plug',
@@ -199,10 +199,11 @@ tkgAttr.Attribute(node=part_grp, type='plug',
 
 # *非表示の設定
 # 非表示にするオブジェクトの設定
-hide_list = [part_grp + '_tip_CTRL_CNST_GRP']
-tkgAttr.Attribute(node=part_grp, type='plug',
-                 value=[' '.join(hide_list)], name='hideRigPlugs',
-                 children_name=['hideNodes'])
+# 隠す必要ある？
+# hide_list = [part_grp + '_tip_CTRL_CNST_GRP']
+# tkgAttr.Attribute(node=part_grp, type='plug',
+#                  value=[' '.join(hide_list)], name='hideRigPlugs',
+#                  children_name=['hideNodes'])
 
 
 
@@ -239,6 +240,7 @@ neck_ctrls = [n for n in part_ctrls_dict['Cn_neck']['neckIkCtrls'].keys()][0]
 
 # spaceの名前を取得する
 name_list = [n.replace('Cn_', '').replace('_CTRL', '').title() for n in target_list]
+name_list.append('default_value')
 point_names = ['point' + n.title() for n in name_list]
 orient_names = ['orient' + n.title() for n in name_list]
 
@@ -247,7 +249,6 @@ default_idx = len(target_list) - 1
 
 # デフォルトのインデクスとdefault_valueを最後に追加
 target_list.append(str(default_idx))
-name_list.append('default_value')
 
 # parentでのspaceを設定する
 tkgAttr.Attribute(node=part_grp, type='plug',
