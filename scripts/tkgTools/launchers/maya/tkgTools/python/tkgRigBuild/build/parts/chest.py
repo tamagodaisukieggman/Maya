@@ -101,49 +101,45 @@ class Chest(tkgModule.RigModule):
         self.tag_bind_joints(self.bind_joints, self.part_grp)
 
     def add_plugs(self):
-        # add skeleton plugs
-        tkgAttr.Attribute(node=self.part_grp, type='plug',
-                         value=['cmds.ls("Cn_spine_??_JNT")[-1]'],
-                         name='skeletonPlugs',
-                         children_name=[self.bind_joints[0]])
+        part_ctrls_dict = self.ctrl_info_from_module()
+        # *ジョイント階層の指定
+        # plugを追加するmodule
+        part_grp = 'Cn_chest'
 
-        # add delete rig plugs
-        delete_list = ['Cn_chest_02_JNT_parentConstraint1',
-                       'Cn_spine_tip_CTRL_CNST_GRP_parentConstraint1']
-        tkgAttr.Attribute(node=self.part_grp, type='plug',
-                         value=[' '.join(delete_list)], name='deleteRigPlugs',
-                         children_name=['deleteNodes'])
+        # 親にするジョイントの取得
+        root_jnt = part_ctrls_dict['Cn_spine']['partJoints'][-1]
 
-        # add pointConstraint rig plugs
-        tkgAttr.Attribute(node=self.part_grp, type='plug',
-                         value=['cmds.ls("Cn_spine_??_driver_JNT")[-1]'],
-                         name='pocRigPlugs',
-                         children_name=[self.chest_jnt + '_point'])
+        # 子にするジョイントの取得
+        jnts = part_ctrls_dict[part_grp]['partJoints']
 
-        # add orientConstraint rig plugs
-        tkgAttr.Attribute(node=self.part_grp, type='plug',
-                         value=[self.chest_02.ctrl],
-                         name='orcRigPlugs',
-                         children_name=[self.chest_jnt + '_orient'])
+        # 親子関係の情報を設定
+        tkgAttr.Attribute(node=part_grp, type='plug',
+                         value=[root_jnt], name='skeletonPlugs',
+                         children_name=[jnts[0]])
 
-        # add space plugs
-        target_list = ['CHAR', 'Cn_global_CTRL', 'Cn_root_02_CTRL',
-                       'Cn_spine_03_FK_CTRL', '3']
-        name_list = ['world', 'global', 'root', 'spine', 'default_value']
-        point_names = ['point' + n.title() for n in name_list]
-        orient_names = ['orient' + n.title() for n in name_list]
+        # *コントローラの空間の指定
+        # spaceを追加するコントローラを取得
+        ctrl = [n for n in part_ctrls_dict[part_grp]['chestCtrls'].keys()][0]
 
-        tkgAttr.Attribute(node=self.part_grp, type='plug',
+        # spaceの元になるコントローラの取得
+        target_list = []
+        hip_ctrl = [n for n in part_ctrls_dict['Cn_hip']['hipCtrls'].keys()][-1]
+        root_ctrls = [n for n in part_ctrls_dict['Cn_root']['rootCtrls'].keys()]
+        target_list.append(hip_ctrl)
+        [target_list.append(n) for n in root_ctrls]
+
+        # spaceの名前を取得する
+        name_list = [n.replace('Cn_', '').replace('_CTRL', '') for n in target_list]
+
+        # spaceのデフォルトにするインデクス
+        default_idx = 0
+
+        # デフォルトのインデクスとdefault_valueを最後に追加
+        target_list.append(str(default_idx))
+        name_list.append('default_value')
+
+        # parentでのspaceを設定する
+        tkgAttr.Attribute(node=part_grp, type='plug',
                          value=target_list,
-                         name=self.chest_01.ctrl + '_point',
-                         children_name=point_names)
-
-        tkgAttr.Attribute(node=self.part_grp, type='plug',
-                         value=target_list,
-                         name=self.chest_01.ctrl + '_orient',
-                         children_name=orient_names)
-
-        # add transferAttributes plug
-        tkgAttr.Attribute(node=self.part_grp, type='plug',
-                         value=[self.chest_01.ctrl], name='transferAttributes',
-                         children_name=['Cn_spine_tip_CTRL'])
+                         name=ctrl + '_parent',
+                         children_name=name_list)

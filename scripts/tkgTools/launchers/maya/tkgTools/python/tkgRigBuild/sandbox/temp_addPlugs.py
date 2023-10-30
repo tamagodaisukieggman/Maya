@@ -190,7 +190,7 @@ tkgAttr.Attribute(node=part_grp, type='plug',
 # *parentConstraintの設定
 # parentConstraintさせるプラグの設定
 driver_list = ['Cn_chest_02_JNT',
-               'Cn_chest_02_JNT']
+               part_grp + '_base_CTRL']
 driven_list = [part_grp + '_base_CTRL_CNST_GRP',
                part_grp + '_tip_CTRL_CNST_GRP']
 tkgAttr.Attribute(node=part_grp, type='plug',
@@ -205,7 +205,7 @@ tkgAttr.Attribute(node=part_grp, type='plug',
 #                  value=[' '.join(hide_list)], name='hideRigPlugs',
 #                  children_name=['hideNodes'])
 
-
+# tkgFinalize.assemble_rig()
 
 # -------------------------------
 # Head
@@ -233,10 +233,10 @@ ctrls = [n for n in part_ctrls_dict[part_grp]['headCtrls'].keys()]
 target_list = []
 root_ctrls = [n for n in part_ctrls_dict['Cn_root']['rootCtrls'].keys()]
 chest_ctrls = [n for n in part_ctrls_dict['Cn_chest']['chestCtrls'].keys()]
-neck_ctrls = [n for n in part_ctrls_dict['Cn_neck']['neckIkCtrls'].keys()][0]
+neck_ctrls = [n for n in part_ctrls_dict['Cn_neck']['neckIkCtrls'].keys()]
 [target_list.append(n) for n in root_ctrls]
 [target_list.append(n) for n in chest_ctrls]
-[target_list.append(n) for n in [neck_ctrls]]
+[target_list.append(n) for n in neck_ctrls]
 
 # spaceの名前を取得する
 name_list = [n.replace('Cn_', '').replace('_CTRL', '').title() for n in target_list]
@@ -245,7 +245,7 @@ point_names = ['point' + n.title() for n in name_list]
 orient_names = ['orient' + n.title() for n in name_list]
 
 # spaceのデフォルトにするインデクス
-default_idx = len(target_list) - 1
+default_idx = len(target_list) - 2
 
 # デフォルトのインデクスとdefault_valueを最後に追加
 target_list.append(str(default_idx))
@@ -268,14 +268,50 @@ tkgAttr.Attribute(node=part_grp, type='plug',
                  children_name=['deleteNodes'])
 
 # add transferAttributes plug
-tkgAttr.Attribute(node=part_grp, type='plug',
-                 value=[ctrls[0]], name='transferAttributes',
-                 children_name=['Cn_neck_tip_CTRL'])
+# tkgAttr.Attribute(node=part_grp, type='plug',
+#                  value=[ctrls[0]], name='transferAttributes',
+#                  children_name=['Cn_neck_tip_CTRL'])
 
 # tkgAttr.Attribute(node=part_grp, type='plug',
 #                  value=['cmds.ls("Cn_neck_??_driver_JNT", "Cn_neck_??_fk_offset_CTRL")[-1]'],
 #                  name='pocRigPlugs',
 #                  children_name=[jnts[0]])
+
+
+# tkgFinalize.assemble_rig()
+
+sides = ['Lf', 'Rt']
+force_sides = ['_L', '_R']
+
+for s, fs in zip(sides, force_sides):
+    # -------------------------------
+    # Clavicle
+    # -------------------------------
+    # *ジョイント階層の指定
+    # plugを追加するmodule
+    part_grp = s + '_clavicle'
+
+    # 親にするジョイントの取得
+    root_jnt = part_ctrls_dict['Cn_chest']['partJoints'][-1]
+
+    # 子にするジョイントの取得
+    jnts = part_ctrls_dict[part_grp]['partJoints']
+
+    # 親子関係の情報を設定
+    tkgAttr.Attribute(node=part_grp, type='plug',
+                     value=[root_jnt], name='skeletonPlugs',
+                     children_name=[jnts[0]])
+
+    # *parentConstraintの設定
+    # parentConstraintさせるプラグの設定
+    driver_list = [root_jnt,
+                   root_jnt]
+    driven_list = [s + '_clavicle_CTRL_CNST_GRP',
+                   s + '_clavicle_CNST_GRP']
+    tkgAttr.Attribute(node=part_grp, type='plug',
+                     value=driver_list, name='pacRigPlugs',
+                     children_name=driven_list)
+
 
 
 tkgFinalize.assemble_rig()

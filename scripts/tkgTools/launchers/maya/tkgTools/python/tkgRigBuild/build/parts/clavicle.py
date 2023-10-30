@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
-
 import maya.cmds as cmds
 from imp import reload
-
 
 import tkgRigBuild.build.rigModule as tkgModule
 import tkgRigBuild.build.chain as tkgChain
 import tkgRigBuild.libs.control.ctrl as tkgCtrl
 import tkgRigBuild.libs.attribute as tkgAttr
-
+reload(tkgModule)
+reload(tkgChain)
+reload(tkgCtrl)
+reload(tkgAttr)
 
 class Clavicle(tkgModule.RigModule):
     def __init__(self,

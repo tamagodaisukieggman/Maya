@@ -2,6 +2,7 @@
 
 import maya.cmds as cmds
 
+from collections import OrderedDict
 import traceback
 from imp import reload
 
@@ -148,3 +149,26 @@ class RigModule(tkgBase.RigBase):
         cmds.parent(dup, base)
 
         return dup
+
+    def ctrl_info_from_module(self):
+        # モジュールからコントローラの情報を抜き出す
+        part_ctrls_dict = OrderedDict()
+        for part in cmds.listRelatives('RIG'):
+            part_ctrls_dict[part] = OrderedDict()
+
+            part_attrs = cmds.listAttr(part, ud=True)
+
+            for ud_at in part_attrs:
+                if 'Ctrls' in ud_at or 'partJoints' in ud_at:
+                    nodes = cmds.getAttr('{}.{}'.format(part, ud_at)).split(',')
+                    if 'Ctrls' in ud_at:
+                        _nodes = OrderedDict()
+                        for n in nodes:
+                            if cmds.objExists(n + '.ctrlDict'):
+                                _nodes[n] = cmds.getAttr('{}.ctrlDict'.format(n, ))
+
+                        nodes = _nodes
+
+                    part_ctrls_dict[part][ud_at] = nodes
+
+        return part_ctrls_dict
