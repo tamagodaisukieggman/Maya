@@ -1,0 +1,4 @@
+import SkinEditor.ui as SkinEditorUI
+reload(SkinEditorUI)
+sse = SkinEditorUI.EditSkinUI()
+sse.show()
