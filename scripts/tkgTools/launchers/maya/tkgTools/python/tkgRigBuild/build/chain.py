@@ -456,11 +456,11 @@ class Chain:
         self.part_bend_ctrls.append(e_tan.ctrl)
 
         # lock and hide attributes on controls
-        if scale_axis == 'scaleX':
+        if mid_ctrl_axis == 'x':
             lock_axis = 'YZ'
-        elif scale_axis == 'scaleY':
+        elif mid_ctrl_axis == 'y':
             lock_axis = 'XZ'
-        elif scale_axis == 'scaleZ':
+        elif mid_ctrl_axis == 'z':
             lock_axis = 'XY'
 
         attr_util.lock_and_hide(node=mid_ctrl.ctrl,
