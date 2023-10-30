@@ -63,7 +63,7 @@ class Hand(tkgModule.RigModule):
                                       group_type='main',
                                       rig_type=self.side+'_'+self.part+'_02',
                                       position=self.guide_list[0],
-                                      rotation=(0, 0, 0),
+                                      rotation=self.guide_list[0],
                                       ctrl_scale=self.ctrl_scale * 0.85,
                                       ctrl_color=[v*0.85 for v in self.ctrl_color])
         self.part_ctrls.append(self.hand_02.ctrl)
