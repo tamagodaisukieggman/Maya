@@ -1,0 +1,4073 @@
+//***********************************************//
+//                                               //
+//               RePARENT PRO 2.4.6              //
+//      copyright Dmitrii Kolpakov 2021          //
+//                                               //
+//***********************************************//
+
+// + works with equal controls names
+// + add collision mode
+// + matrix constraints instead of maya constraints, no more 180/180/180 twist
+// + rotation order of reparent locators gets from contols rotation order
+// + work correcty in maya 2018+ ( playback cache is turned off during reParent work )
+// + auto load matrixNodes.mll (it is necessary for the reParent work)
+// + auto delete unused reParent nodes
+// + transfer unique attributes and animation to reParent locator
+// + aim mode: control longitudinal axis animation is rotateY on reParent aim locator now
+// + ik mode: added pole vector - follow mode on pole vector
+// + ik mode: added pole vector - pin offset control to pole vector
+// + ik mode: added stretchy mode
+// + ik mode: added offset control
+// + ik mode: added soft ik
+// + ik mode: add control/locator shape
+// + ik mode: show ik pole vector connection line
+// + ik mode: work with straight FK chain
+// + ik mode: ik + manual pivot
+// + ik controls - shape size attribute
+//                 - ik mode: foot roll
+//                 - ik mode: work for any controls amount
+//                 - work much faster (rebuild delete reduntant)
+//                 - work on time range
+//                 - ik spine on nurbs
+
+progressWindow -endProgress;
+optionVar -intValue animBlendingOpt 1;
+//refresh -suspend 0; ogs -reset;
+//delete_unused_nodes;
+
+if (!`pluginInfo -q -l matrixNodes`)
+{
+	loadPlugin matrixNodes;
+}
+
+if ((`window -ex reParent_panel`)==true)
+deleteUI reParent_panel;
+
+window  -toolbox 1 -t "reParent Pro v2.4.6" -wh 140 229 -s 0  -menuBar 1 reParent_panel;
+
+menu   -l "Tools" -to 1 ToolstMenu;
+menuItem  -l "Key Offset +1"  -ann "Offset animation for selected controls" -c offset_animation;
+menuItem -optionBox true -command "offset_animation_options";
+menuItem  -l "select Hierarchy"  -ann "Select hierachy for controls" -c reParent_select_hierarchy;
+
+menu  -l "Help" -to 0 helpMenu;
+menuItem -l "User Manual (ENG)"  -c reParent_manual_ENG;
+menuItem -l "User Manual (RUS)"  -c reParent_manual_RUS;
+menuItem -d 1 separetonMenu;
+menuItem -l "Intro"  -c reParent_intro;
+menuItem -l "Tutorials"  -c reParent_tutorial;
+
+rowColumnLayout;
+rowLayout -nc 2 -cw 140 30;
+rowColumnLayout  -nc 2 -cw 5 30;
+checkBox -onc checkbox_pin_on - ofc checkbox_pin_off -ann "Pin selected controls (delete all animation and constrain to locator)" -label " Pin " -v 0 -h 18  PinCheckBox;
+checkBox -onc checkbox_aim_on - ofc checkbox_aim_off -ann "Make aim effect for selected controls" -label " Aim " -v 0 -h 18  AimCheckBox;
+rowColumnLayout;
+
+setParent..;
+setParent..;
+setParent..;
+
+rowColumnLayout  -nc 1;
+
+checkBox -onc checkbox_global_on - ofc checkbox_global_off -ann "Make global effect for selected controls" -label " make Global " -v 0 -h 18  MakeGlobalCheckBox;
+separator  -h 2 -style "none";
+
+rowColumnLayout -nc 2 -columnWidth 140 70 -columnWidth 2 50;
+checkBox -onc checkbox_IK_on -ofc checkbox_IK_off -ann "rePArent three FK controls to IK mode" -label " IK mode " -v 0 -h 18  IKCheckBox;
+checkBox -onc checkbox_IK_local_on -ofc checkbox_IK_local_off  -ann "rePArent three FK controls to IK mode with parent to the first control" -label " Local " -v 0 -h 18  IKCheckLocalBox;
+setParent..;
+
+rowLayout -nc 1 -cw 30 30 ;
+rowColumnLayout -nc 1 -columnWidth 1 130 ;
+checkBox -onc checkbox_manual_on -ofc checkbox_manual_off -ann "Move reParent locator to set required pivot and press Go" -label " Manual pivot " -v 0 -h 18  ManualCheckBox;
+separator  -h 2 -style "none";
+
+checkBox -onc checkbox_reConstrain_on -ofc checkbox_reConstrain_off -ann "Select controls for reParent then last control for reConstrain" -label " reConstrain " -v 0 -h 18  reConstrainCheckBox;
+separator  -h 3 -style "none";
+
+checkBox -onc checkbox_collision_on -ofc checkbox_collision_off -ann "Select collision mesh first and then controls for reParent" -label " Collision " -v 0 -h 18  CollisionCheckBox;
+separator  -h 3 -style "none";
+
+frameLayout -cc reParent_panel_small -ec reParent_panel_big -collapsable 1 -collapse 1 -l "Advanced";
+checkBox -ann "Each reParent locator will be baked on new animation layer" -label " Bake on anim layer " -v 0 -h 18  onLayerReParentMode;
+checkBox -ann "Keep unbaked keys" -label " Keep unbaked keys " -v 1 -h 18  KeepKeys;
+checkBox -ann "Save control key" -label " Save control keys " -v 0 -h 18  SaveKeys;
+checkBox -ann " Transfer unique control attributes on reParent locator and connect it " -label " Transfer attributes " -v 0 -h 18  TransferAttr;
+checkBox -ann "Delete all redundant keys on rePaent locators" -label " Delete redundant " -v 0 -h 18  DelRed;
+setParent..;
+
+separator    -h 1 -style "none";
+button -l "reParent" -c "reParent_starter" -bgc .8 .8 .8 -w 140 -h 40 reParentButton;
+button  -l "BAKE AND DELETE" -ann "Bake All animation and delete rePaent locators" -c "BakeAndDelete_reParentInit" -bgc .22 .22 .22 -w 140 -h 35 DeleteButton;
+
+rowColumnLayout -rs 1 140  -nc 2 -columnWidth 1 70 -columnWidth 2 50;
+button -l "Go" -c "go_mode_starter" -bgc .8 .8 .8 -w 40 -h 40 ;
+
+button -l "Cancel" -c "go_mode_cancel" -w 60 -h 40 -bgc .22 .22 .22;
+setParent..;
+window -edit -widthHeight 140 250 reParent_panel;
+
+showWindow reParent_panel;
+
+global string $session_selected_controls[];
+global string $session_selected_locators[];
+
+///////////////////////////////////////
+//              reParent             //
+///////////////////////////////////////
+global proc reParent_starter()
+{
+	int $reConstrainButton = `checkBox -q -v reConstrainCheckBox`;
+	int $IKButton = `checkBox -q -v IKCheckBox`;
+	int $PinButton = `checkBox -q -v PinCheckBox`;
+    int $ManualButton = `checkBox -q -v ManualCheckBox`;
+    int $AimButton = `checkBox -q -v AimCheckBox`;
+	int $MakeGlobalButton = `checkBox -q -v MakeGlobalCheckBox`;
+	int $CollisionlButton = `checkBox -q -v CollisionCheckBox`;
+
+    string $SelectedControls[] = `ls -sl`;
+     if (!size($SelectedControls))
+    {confirmDialog -b "Ok" -t "Oooops.." -m "SELECT ANY CONTROL";}
+
+    else
+    {
+    	if ($reConstrainButton+$IKButton+$PinButton+$AimButton>1) {confirmDialog -b "Ok" -t "Oooops.." -m "Select one of mode";}
+    	else
+	    {
+	        int $IKButton = `checkBox -q -v IKCheckBox`;
+        	if ($IKButton == 1)
+        	{
+        	    string $SelectedControls[] = `ls -sl`;
+        	    if (size($SelectedControls)!=3)
+                {
+                    confirmDialog -b "Ok" -t "Oooops.." -m "IK mode works only for three controls";
+                }
+                else {IK_mode_init;}
+             }
+            	if ($reConstrainButton == 0&&$IKButton == 0&&$AimButton == 0&&$IKButton == 0 &&$MakeGlobalButton==0&&$ManualButton==0&&$CollisionlButton == 0) {reParent_init; }
+            	if ($reConstrainButton == 0&&$IKButton == 0&&$AimButton == 0&&$IKButton == 0 &&$MakeGlobalButton==1&&$ManualButton==0&&$CollisionlButton == 0) {reParent_init; }
+            	if ($reConstrainButton == 0&&$IKButton == 0&&$AimButton == 0&&$IKButton == 0 &&$MakeGlobalButton==1&&$ManualButton==1&&$CollisionlButton == 0) {reParent_init; }
+             	if ($reConstrainButton == 0&&$IKButton == 0&&$ManualButton == 1&&$AimButton == 0&&$MakeGlobalButton==0&&$ManualButton==1) {manual_mode_init;}
+            	if ($reConstrainButton == 1&&$IKButton == 0&&$AimButton == 0) {reConstrain_starter;}
+            	if ($reConstrainButton == 0&&$IKButton == 0&&$ManualButton == 0&&$AimButton == 1) {aim_mode_init;}
+            	if ($CollisionlButton == 1) {reParent_collision_init;}
+    	    }
+    }
+
+    delete_unused_nodes;
+    cached_playback_on;
+}
+
+global proc reParent_init()
+{
+    cached_playback_off;
+
+    string $base_names[] = `ls -sl`;
+    string $work_names[] = define_work_names($base_names);
+
+	int $MakeGlobalButton = `checkBox -q -v MakeGlobalCheckBox`;
+    int $ManualButton = `checkBox -q -v ManualCheckBox`;
+	int $SaveKeys = `checkBox -query -v SaveKeys`;
+
+    if($MakeGlobalButton==1&&$ManualButton==1)
+    {reParent_panel_go_to_cancel;}
+
+    create_sets;
+
+    for ($r=0; $r<size($base_names); ++$r )
+    {
+        spaceLocator -n ($work_names[$r]+"_reParent_locator");
+        setAttr ($work_names[$r]+"_reParent_locator.rotateOrder") `getAttr ($base_names[$r]+".rotateOrder")`;
+
+        reParent_locator_size ($base_names[$r], ($work_names[$r]+"_reParent_locator"));
+        reParent_locator_shape ($work_names[$r]+"_reParent_locator");
+
+        addAttr -ln "reParent_controlName" -dt "string" ($work_names[$r]+"_reParent_locator");
+        setAttr -type "string" ($work_names[$r]+"_reParent_locator.reParent_controlName") $base_names[$r];
+
+        addAttr -ln "reParent_Type" -dt "string" ($work_names[$r]+"_reParent_locator");
+        setAttr -type "string"($work_names[$r]+"_reParent_locator.reParent_Type") "Manual";
+
+        addAttr -ln "reParent_ControlKeys" -dt "string" ($work_names[$r]+"_reParent_locator");
+
+        define_control_keys $base_names[$r] ($work_names[$r]+"_reParent_locator");
+        transfer_attributes $work_names[$r] ($work_names[$r]+"_reParent_locator") "base";
+
+        sets -edit -forceElement Last_Session_reParentLocator_set ($work_names[$r]+"_reParent_locator");
+        sets -edit -forceElement All_Session_reParentLocator_set ($work_names[$r]+"_reParent_locator");
+
+        alignObject ($base_names[$r])($work_names[$r]+"_reParent_locator");
+    }
+
+    select -r Last_Session_reParentLocator_set;
+    if($ManualButton==0){reParent;}
+}
+
+
+global proc global_mode_cancel()
+{
+    refresh -suspend 0; ogs -reset;
+
+    reParent_panel_go_to_base;
+    if(`objExists Last_Session_reParentLocator_set`)
+    {select -r Last_Session_reParentLocator_set; delete;}
+
+    if(`objExists Last_Session_reParentLocator_set`)
+    {delete Last_Session_reParentLocator_set;}
+
+    if(`objExists Last_Session_reParentControls_set`)
+    {delete Last_Session_reParentControls_set;}
+
+}
+
+global proc global_mode_go()
+{reParent;}
+
+global proc reParent()
+{
+    cached_playback_off;
+
+    float $startTime = `timerX`;
+    int $currentR =`playbackOptions -q  -min`;
+    int $currentL =`playbackOptions -q -max`;
+
+    int $PinButton = `checkBox -q -v PinCheckBox`;
+	int $DelRedMode = `checkBox -query -v DelRed`;
+	int $onLayerReParentMode = `checkBox -query -v onLayerReParentMode`;
+	int $MakeGlobalButton = `checkBox -q -v MakeGlobalCheckBox`;
+	int $SaveKeys = `checkBox -query -v SaveKeys`;
+
+    select -r Last_Session_reParentControls_set;
+    string $base_names[] = `ls -sl`;
+    string $work_names[] = define_work_names($base_names);
+
+    for ($r=0; $r<size($base_names); ++$r )
+    {
+        mxConstraint "parentConstrain_mo" 1 0 $base_names[$r] ($work_names[$r]+"_reParent_locator");
+    }
+
+    select -r Last_Session_reParentLocator_set;
+    BakeKeysOnLocator;
+
+    for ($r=0; $r<size($base_names); ++$r )
+    {
+        filterCurve ($work_names[$r]+"_reParent_locator");
+        float $curTime = `currentTime -q`;
+
+        if($SaveKeys==1)
+        {
+            currentTime -edit `findKeyframe -timeSlider -which next`;
+        }
+
+    	if (`getAttr -keyable ($base_names[$r]+".tx")`==1&&`getAttr -lock ($base_names[$r]+".tx")`==0&&$MakeGlobalButton==0)
+    	{
+           mxConstraint "pointConstrain_mo" 1 1 ($work_names[$r]+"_reParent_locator") $base_names[$r];
+    	}
+
+    	if (`getAttr -keyable ($base_names[$r]+".rx")`==1&&`getAttr -lock ($base_names[$r]+".rx")`==0&&
+            `getAttr -keyable ($base_names[$r]+".ry")`==1&&`getAttr -lock ($base_names[$r]+".ry")`==0&&
+            `getAttr -keyable ($base_names[$r]+".rz")`==1&&`getAttr -lock ($base_names[$r]+".rz")`==0)
+    	{
+    	    mxConstraint "orientConstrain_mo" 1 1 ($work_names[$r]+"_reParent_locator") $base_names[$r];
+        }
+
+    	if ($MakeGlobalButton==1)
+    	{
+    	    select $base_names[$r] ($work_names[$r]+"_reParent_locator");
+           	pointConstraint -n ($work_names[$r]+"_pointConstraint") -mo -weight 1;
+           	//cutKey -cl -t ":" -f ":" -at "tx" -at "ty" -at "tz" ($work_names[$r]+"_reParent_locator");
+           	//cutKey -cl -t ":" -f ":" -at "rx" -at "ry" -at "rz" $base_names[$r];
+           	setAttr -lock true ($work_names[$r]+"_reParent_locator.tx");
+           	setAttr -lock true ($work_names[$r]+"_reParent_locator.ty");
+           	setAttr -lock true ($work_names[$r]+"_reParent_locator.tz");
+        }
+
+        if($SaveKeys==1)
+        {
+            currentTime $curTime;
+        }
+    }
+
+    if ($DelRedMode == 1)
+    {
+        select -r Last_Session_reParentLocator_set;
+    //    reParentDeleteRedundant;
+    }
+
+    // euler all anim curves
+    select -r Last_Session_reParentLocator_set;
+    filterCurve;
+    reParent_panel_go_to_base;
+    $totalTime = `timerX -startTime $startTime`;
+    print ("Total reParent Time: "+$totalTime+" seconds"+"\n");
+
+    delete_unused_nodes;
+    cached_playback_on;
+}
+
+///////////////////////////////////////
+//            Manual MODE            //
+///////////////////////////////////////
+global proc manual_mode_init()
+{
+    cached_playback_off;
+    reParent_panel_go_to_cancel;
+
+    int $PinButton = `checkBox -q -v PinCheckBox`;
+	int $SaveKeys = `checkBox -query -v SaveKeys`;
+
+    string $base_names[] = `ls -sl`;
+    string $work_names[] = define_work_names($base_names);
+
+    create_sets;
+
+    for ($r=0; $r<size($base_names); ++$r )
+    {
+        spaceLocator -n ($work_names[$r]+"_reParent_locator");
+        setAttr ($work_names[$r]+"_reParent_locator.rotateOrder") `getAttr ($base_names[$r]+".rotateOrder")`;
+
+        reParent_locator_size ($base_names[$r], ($work_names[$r]+"_reParent_locator"));
+        reParent_locator_shape ($work_names[$r]+"_reParent_locator");
+
+        addAttr -ln "reParent_controlName" -dt "string" ($work_names[$r]+"_reParent_locator");
+        setAttr -type "string" ($work_names[$r]+"_reParent_locator.reParent_controlName") $base_names[$r];
+
+        addAttr -ln "reParent_Type" -dt "string" ($work_names[$r]+"_reParent_locator");
+        setAttr -type "string"($work_names[$r]+"_reParent_locator.reParent_Type") "Manual";
+
+        addAttr -ln "reParent_ControlKeys" -dt "string" ($work_names[$r]+"_reParent_locator");
+
+        define_control_keys $base_names[$r] ($work_names[$r]+"_reParent_locator");
+        transfer_attributes $work_names[$r] ($work_names[$r]+"_reParent_locator") "base";
+
+        sets -edit -forceElement Last_Session_reParentLocator_set ($work_names[$r]+"_reParent_locator");
+        sets -edit -forceElement All_Session_reParentLocator_set ($work_names[$r]+"_reParent_locator");
+
+        alignObject $base_names[$r] ($work_names[$r]+"_reParent_locator");
+    }
+    select -r Last_Session_reParentLocator_set;
+}
+
+global proc manual_mode_cancel()
+{
+    refresh -suspend 0; ogs -reset;
+
+    reParent_panel_go_to_base;
+
+    if(`objExists Last_Session_reParentLocator_set`)
+    {select -r Last_Session_reParentLocator_set; delete;}
+
+    if(`objExists Last_Session_reParentLocator_set`)
+    {delete Last_Session_reParentLocator_set;}
+
+    if(`objExists Last_Session_reParentControls_set`)
+    {delete Last_Session_reParentControls_set;}
+}
+
+global proc manual_mode_go()
+{
+    int $PinButton = `checkBox -q -v PinCheckBox`;
+    int $DelRedMode = `checkBox -query -v DelRed`;
+    int $onLayerReParentMode = `checkBox -query -v onLayerReParentMode`;
+    int $SaveKeys = `checkBox -query -v SaveKeys`;
+    int $currentR =`playbackOptions -q  -min`;
+    int $currentL =`playbackOptions -q -max`;
+
+    //timer start
+    float $startTime = `timerX`;
+    string $base_names[] = `sets -q Last_Session_reParentControls_set`;
+    string $work_names[] = define_work_names($base_names);
+
+    for ($r=0; $r<size($base_names); ++$r )
+    {
+        mxConstraint "parentConstrain_mo" 1 0 $base_names[$r] ($work_names[$r]+"_reParent_locator");
+    }
+
+    select -r Last_Session_reParentLocator_set;
+    BakeKeysOnLocator;
+
+    for ($r=0; $r<size($base_names); ++$r )
+    {
+    	if (`getAttr -keyable ($base_names[$r]+".tx")`==1&&`getAttr -lock ($base_names[$r]+".tx")`==0&&`getAttr -keyable ($base_names[$r]+".rx")`==1&&`getAttr -lock ($base_names[$r]+".rx")`==0)
+    	{
+    	   mxConstraint "parentConstrain_mo" 1 1 ($work_names[$r]+"_reParent_locator") $base_names[$r];
+    	}
+    	else
+    	{
+        	if (`getAttr -keyable ($base_names[$r]+".tx")`==1&&`getAttr -lock ($base_names[$r]+".tx")`==0)
+        	{
+        	   mxConstraint "pointConstrain_mo" 1 0 ($work_names[$r]+"_reParent_locator") $base_names[$r];
+        	}
+        	if (`getAttr -keyable ($base_names[$r]+".rx")`==1&&`getAttr -lock ($base_names[$r]+".rx")`==0)
+        	{
+        	   mxConstraint "orientConstrain_mo" 1 0 ($work_names[$r]+"_reParent_locator") $base_names[$r];
+            }
+        }
+        //cutKey -cl -t ":" -f ":" -at "tx" -at "ty" -at "tz" -at "rx" -at "ry" -at "rz" $base_names[$r];
+    }
+
+    if ($DelRedMode == 1)
+    {
+        select -r Last_Session_reParentLocator_set;
+        reParentDeleteRedundant;
+    }
+
+    // euler all anim curves
+    select -r Last_Session_reParentLocator_set;
+    filterCurve;
+
+    //timer stop
+    float $totalTime = `timerX -startTime $startTime`;
+    print ("Total reParent Time: "+$totalTime+" seconds"+"\n");
+    reParent_panel_go_to_base;
+
+    delete_unused_nodes;
+    cached_playback_on;
+}
+
+///////////////////////////////////////
+//              AIM MODE             //
+///////////////////////////////////////
+global proc aim_mode_init()
+{
+    global string $session_selected_locators[];
+    clear $session_selected_locators;
+
+    cached_playback_off;
+    reParent_panel_go_to_cancel;
+
+    int $PinButton = `checkBox -q -v PinCheckBox`;
+	int $SaveKeys = `checkBox -query -v SaveKeys`;
+
+    string $base_names[] = `ls -sl`;
+    string $work_names[] = define_work_names($base_names);
+
+    create_sets;
+
+    for ($r=0; $r<size($base_names); ++$r )
+    {
+        spaceLocator -n ($work_names[$r]+"_reParent_locator");
+        setAttr ($work_names[$r]+"_reParent_locator.rotateOrder") 4;
+
+        alignObject ($base_names[$r], ($work_names[$r]+"_reParent_locator"));
+        reParent_locator_size ($base_names[$r], ($work_names[$r]+"_reParent_locator"));
+        reParent_locator_shape ($work_names[$r]+"_reParent_locator");
+
+        addAttr -ln "reParent_controlName" -dt "string" ($work_names[$r]+"_reParent_locator");
+        setAttr -type "string" ($work_names[$r]+"_reParent_locator.reParent_controlName") $base_names[$r];
+
+        addAttr -ln "reParent_Type" -dt "string" ($work_names[$r]+"_reParent_locator");
+        setAttr -type "string"($work_names[$r]+"_reParent_locator.reParent_Type") "Aim";
+
+        addAttr -ln "reParent_ControlKeys" -dt "string" ($work_names[$r]+"_reParent_locator");
+        define_control_keys $base_names[$r] ($work_names[$r]+"_reParent_locator");
+
+        addAttr -ln "spin" -at double -dv 0 ($work_names[$r]+"_reParent_locator");
+        setAttr -e -k 1 ($work_names[$r]+"_reParent_locator.spin");
+
+        sets -edit -forceElement Aim_Session_reParentLocator_set ($work_names[$r]+"_reParent_locator");
+
+        stringArrayInsertAtIndex(10000, $session_selected_locators, ($work_names[$r]+"_reParent_locator"));
+    }
+
+    select -r Aim_Session_reParentLocator_set;
+}
+
+global proc aim_mode_cancel()
+{
+    refresh -suspend 0; ogs -reset;
+
+    reParent_panel_go_to_base;
+    cached_playback_on;
+
+    if(`objExists Last_Session_reParentLocator_set`)
+    {select -r Last_Session_reParentLocator_set; delete;}
+
+    if(`objExists Last_Session_reParentLocator_set`)
+    {delete Last_Session_reParentLocator_set;}
+
+    if(`objExists Last_Session_reParentControls_set`)
+    {delete Last_Session_reParentControls_set;}
+
+    if(`objExists Aim_Session_reParentLocator_set`)
+    {select -r Aim_Session_reParentLocator_set; delete; }
+
+    if(`objExists Aim_Session_group_name`)
+    {select -r Aim_Session_group_name; delete; }
+
+    if(`objExists Aim_Session_reParentLocator_set`)
+    {delete Aim_Session_reParentLocator_set;}
+}
+
+global proc aim_mode_go()
+{
+    global string $session_selected_locators[];
+
+    //timer start
+    float $startTime = `timerX`;
+
+    cached_playback_off;
+
+    int $PinButton = `checkBox -q -v PinCheckBox`;
+	int $DelRedMode = `checkBox -query -v DelRed`;
+	int $SaveKeys = `checkBox -query -v SaveKeys`;
+    int $onLayerReParentMode = `checkBox -query -v onLayerReParentMode`;
+
+    int $currentR =`playbackOptions -q  -min`;
+    int $currentL =`playbackOptions -q -max`;
+
+    string $base_names[] = `sets -q Last_Session_reParentControls_set`;
+    string $work_names[] = define_work_names($base_names);
+
+    for ($r=0; $r<size($base_names); ++$r )
+    {
+        group -em -n ($work_names[$r]+"_reParent_aim_grp");
+        setAttr ($work_names[$r]+"_reParent_aim_grp.rotateOrder") 4;
+        alignObject ($base_names[$r], ($work_names[$r]+"_reParent_aim_grp"));
+
+        addAttr -ln "reParent_ControlKeys"  -dt "string"  ($work_names[$r]+"_reParent_aim_grp");
+        setAttr -type "string" ($work_names[$r]+"_reParent_aim_grp.reParent_ControlKeys") (`getAttr ($work_names[$r]+"_reParent_locator.reParent_ControlKeys")`);
+
+        spaceLocator -n ($work_names[$r]+"_base_reParent_locator");
+        setAttr ($work_names[$r]+"_base_reParent_locator.rotateOrder") 4;
+        setAttr -l 1 ($work_names[$r]+"_base_reParent_locator.visibility") 0;
+
+        alignObject ($base_names[$r], ($work_names[$r]+"_base_reParent_locator"));
+
+        parent ($work_names[$r]+"_base_reParent_locator") ($work_names[$r]+"_reParent_aim_grp");
+
+        aimConstraint -n ($work_names[$r]+"_temp_ac") -weight 1 -aimVector 0 -1 0 -upVector 1 0 0 -worldUpType "object" -worldUpObject ($work_names[$r]+"_base_reParent_locator") ($work_names[$r]+"_base_reParent_locator") ($work_names[$r]+"_reParent_locator");
+        delete ($work_names[$r]+"_temp_ac");
+
+        aimConstraint -n ($work_names[$r]+"_temp_ac") -weight 1 -aimVector 0 1 0 -upVector 1 0 0 -worldUpType "object" -worldUpObject ($work_names[$r]+"_reParent_locator") ($work_names[$r]+"_reParent_locator") ($work_names[$r]+"_reParent_aim_grp");
+        delete ($work_names[$r]+"_temp_ac");
+
+        mxConstraint "parentConstrain_mo" 1 0 $base_names[$r] ($work_names[$r]+"_reParent_locator");
+        mxConstraint "parentConstrain_mo" 1 0 $base_names[$r] ($work_names[$r]+"_reParent_aim_grp");
+
+        setAttr ($work_names[$r]+"_reParent_aim_grp.it") 0;
+        setAttr ($work_names[$r]+"_reParent_aim_grp.hiddenInOutliner") 1;
+        setAttr ($work_names[$r]+"_reParent_locator.it") 0;
+        parent ($work_names[$r]+"_reParent_aim_grp") ($work_names[$r]+"_reParent_locator");
+
+
+        sets -edit -forceElement Aim_Session_group_name ($work_names[$r]+"_reParent_aim_grp");
+    }
+
+    select -r Aim_Session_reParentLocator_set Aim_Session_group_name;
+    BakeKeysOnLocator;
+
+    for ($r=0; $r<size($base_names); ++$r )
+    {
+        pointConstraint -n ($work_names[$r]+"_base_pointConstraint") -mo -weight 1 $base_names[$r] ($work_names[$r]+"_base_reParent_locator");
+        aimConstraint -n ($work_names[$r]+"_base_aimConstraint") -weight 1 -aimVector 0 1 0 -upVector 1 0 0 -worldUpType "object" -worldUpObject ($work_names[$r]+"_reParent_locator" ) ($work_names[$r]+"_reParent_locator") ($work_names[$r]+"_base_reParent_locator");
+
+        connectAttr -f ($work_names[$r]+"_reParent_locator.rotateY") ($work_names[$r]+"_reParent_aim_grp.rotateY");
+
+        if (check_locked_attr ($base_names[$r], {"rotateX", "rotateY", "rotateZ"})==0)
+    	{
+            mxConstraint "orientConstrain_mo" 1 0 ($work_names[$r]+"_base_reParent_locator") $base_names[$r];
+        }
+
+        aimConstraint -offset 0 0 0 -weight 1 -aimVector 0 -1 0 -upVector 0 0 1 -worldUpType "vector" -worldUpVector 0 1 0 -skip y $base_names[$r] ($work_names[$r]+"_reParent_locator");
+
+        setAttr -lock true -keyable false -channelBox false ($work_names[$r]+"_reParent_locator.rx");
+        setAttr -lock true -keyable false -channelBox false ($work_names[$r]+"_reParent_locator.rz");
+        setAttr -lock true -keyable false -channelBox false ($work_names[$r]+"_reParent_locator.sx");
+        setAttr -lock true -keyable false -channelBox false ($work_names[$r]+"_reParent_locator.sy");
+        setAttr -lock true -keyable false -channelBox false ($work_names[$r]+"_reParent_locator.sz");
+        setAttr -lock true -keyable false -channelBox false ($work_names[$r]+"_reParent_locator.v");
+
+        sets -edit -forceElement Last_Session_reParentLocator_set ($work_names[$r]+"_reParent_locator");
+        sets -edit -forceElement All_Session_reParentLocator_set ($work_names[$r]+"_reParent_locator");
+        sets -edit -forceElement Aim_Session_group_name ($work_names[$r]+"_reParent_aim_grp");
+/*
+
+*/
+    }
+
+    select -r $base_names Last_Session_reParentLocator_set;
+    filterCurve;
+    select -r Last_Session_reParentLocator_set;
+    filterCurve;
+
+    select -r $session_selected_locators;
+
+    //timer stop
+    float $totalTime = `timerX -startTime $startTime`;
+    print ("Total reParent Time: "+$totalTime+" seconds"+"\n");
+
+    reParent_panel_go_to_base;
+
+    delete_unused_nodes;
+    delete Aim_Session_group_name Aim_Session_reParentLocator_set;
+    cached_playback_on;
+}
+
+///////////////////////////////////////
+//            reConstrain            //
+///////////////////////////////////////
+global proc reConstrain_starter()
+{
+    int $ManualButton = `checkBox -q -v ManualCheckBox`;
+    string $SelectedControls[] = `ls -sl`;
+    int $amountCheck = `size($SelectedControls)`;
+    if ($amountCheck>1){reConstrain_init;}
+    else {confirmDialog -b "Ok" -t "Oooops.." -m " FOR reConstrain MODE YOU NEED TO SELECT 2 AND MORE CONTROLS \n             First for reparent and second reConstrain";}
+}
+
+proc reConstrain_init()
+{
+    cached_playback_off;
+
+    int $reConstrainButton = `checkBox -q -v reConstrainCheckBox`;
+    int $ManualButton = `checkBox -q -v ManualCheckBox`;
+    int $PinButton = `checkBox -q -v PinCheckBox`;
+	int $SaveKeys = `checkBox -query -v SaveKeys`;
+
+    string $base_names[] = `ls -sl`;
+    string $work_names[] = define_work_names($base_names);
+    select -d $base_names[0];
+
+    create_sets;
+
+    if(`objExists "reConstrain_reParentControls_set"`)
+    {delete reConstrain_reParentControls_set;}
+
+	sets -name "reConstrain_reParentControls_set" $base_names[0];
+	sets -edit -fe  reParent_sets reConstrain_reParentControls_set ;
+
+    for ($r=1; $r<size($base_names); ++$r )
+    {
+        spaceLocator -n ($work_names[$r]+"_reParent_locator");
+        reParent_locator_size ($base_names[$r], ($work_names[$r]+"_reParent_locator"));
+        reParent_locator_shape ($work_names[$r]+"_reParent_locator");
+
+        setAttr ($work_names[$r]+"_reParent_locator.rotateOrder") `getAttr ($base_names[$r]+".rotateOrder")`;
+
+        addAttr -ln "reParent_controlName" -dt "string" ($work_names[$r]+"_reParent_locator");
+        setAttr -type "string" ($work_names[$r]+"_reParent_locator.reParent_controlName") $base_names[0];
+
+        addAttr -ln "reParent_Type" -dt "string" ($work_names[$r]+"_reParent_locator");
+        setAttr -type "string"($work_names[$r]+"_reParent_locator.reParent_Type") "reConstrain";
+
+        addAttr -ln "reParent_ControlKeys" -dt "string" ($work_names[$r]+"_reParent_locator");
+
+        define_control_keys $base_names[$r] ($work_names[$r]+"_reParent_locator");
+        transfer_attributes $work_names[$r] ($work_names[$r]+"_reParent_locator") "base";
+
+        sets -edit -forceElement Last_Session_reParentLocator_set ($work_names[$r]+"_reParent_locator");
+        sets -edit -forceElement All_Session_reParentLocator_set ($work_names[$r]+"_reParent_locator");
+
+        alignObject ($base_names[$r], ($work_names[$r]+"_reParent_locator"));
+    }
+
+    if($reConstrainButton==1&&$ManualButton==1)
+    {
+        select -r Last_Session_reParentLocator_set;
+        reParent_panel_go_to_cancel;
+    }
+
+   if($reConstrainButton==1&&$ManualButton==0)
+   {
+       reConstrain_mode_go;
+   }
+}
+
+proc reConstrain_mode_cancel()
+{
+    refresh -suspend 0; ogs -reset;
+
+    reParent_panel_go_to_base;
+    cached_playback_on;
+
+    if(`objExists Last_Session_reParentLocator_set`)
+    {delete `sets -q Last_Session_reParentLocator_set`;}
+
+    if(`objExists reConstrain_reParentControls_set`)
+    {delete reConstrain_reParentControls_set;}
+
+    if(`objExists Last_Session_reParentLocator_set`)
+    {delete Last_Session_reParentLocator_set;}
+
+    if(`objExists Last_Session_reParentControls_set`)
+    {delete Last_Session_reParentControls_set;}
+
+    string $SelectedControls[] = `ls -sl`;
+
+    for ($SelCtrl in $SelectedControls)
+    {
+        string $baseControls =  `getAttr ($SelCtrl+".reParent_controlName")`;
+        string $locatorNames[] = define_work_names ({$baseControls});
+        $LocatorName = $locatorNames[0];
+        delete ($LocatorName+"_reParent_grp");
+    }
+}
+
+proc reConstrain_mode_go()
+{
+    cached_playback_off;
+
+	int $SaveKeys = `checkBox -query -v SaveKeys`;
+	int $DelRedMode = `checkBox -query -v DelRed`;
+    int $currentR =`playbackOptions -q  -min`;
+    int $currentL =`playbackOptions -q -max`;
+    int $onLayerReParentMode = `checkBox -query -v onLayerReParentMode`;
+
+    //timer start
+    float $startTime = `timerX`;
+
+    select -r reConstrain_reParentControls_set Last_Session_reParentControls_set;
+
+    string $base_names[] = `ls -sl`;
+    string $work_names[] = define_work_names($base_names);
+
+    for ($r=1; $r<size($base_names); ++$r )
+    {
+        group -em -name ($work_names[$r]+"_reParent_locator_grp");
+        alignObject ($base_names[$r])($work_names[$r]+"_reParent_locator_grp");
+
+        parent ($work_names[$r]+"_reParent_locator") ($work_names[$r]+"_reParent_locator_grp");
+
+        mxConstraint "parentConstrain_mo" 1 0 $base_names[0] ($work_names[$r]+"_reParent_locator_grp");
+        mxConstraint "parentConstrain_mo" 1 0 $base_names[$r] ($work_names[$r]+"_reParent_locator");
+    }
+
+    if(`objExists "reConstrain_reParentControls_set"`)
+    {delete reConstrain_reParentControls_set;}
+
+    select -r Last_Session_reParentLocator_set;
+    BakeKeysOnLocator;
+
+    for ($r=1; $r<size($base_names); ++$r )
+    {
+	    if (`getAttr -keyable ($base_names[$r]+".tx")`==1&&
+	        `getAttr -lock ($base_names[$r]+".tx")`==0&&
+	        `getAttr -keyable ($base_names[$r]+".ty")`==1&&
+	        `getAttr -lock ($base_names[$r]+".ty")`==0&&
+	        `getAttr -keyable ($base_names[$r]+".tz")`==1&&
+	        `getAttr -lock ($base_names[$r]+".tz")`==0&&
+	        `getAttr -keyable ($base_names[$r]+".rx")`==1&&
+	        `getAttr -lock ($base_names[$r]+".rx")`==0&&
+	        `getAttr -keyable ($base_names[$r]+".ry")`==1&&
+	        `getAttr -lock ($base_names[$r]+".ry")`==0&&
+	        `getAttr -keyable ($base_names[$r]+".rz")`==1&&
+	        `getAttr -lock ($base_names[$r]+".rz")`==0)
+    	{
+	        mxConstraint "parentConstrain_mo" 1 1 ($work_names[$r]+"_reParent_locator") $base_names[$r];;
+        }
+        else
+        {
+            if (`getAttr -keyable ($base_names[$r]+".tx")`==1&&
+    	        `getAttr -lock ($base_names[$r]+".tx")`==0&&
+    	        `getAttr -keyable ($base_names[$r]+".ty")`==1&&
+    	        `getAttr -lock ($base_names[$r]+".ty")`==0&&
+    	        `getAttr -keyable ($base_names[$r]+".tz")`==1&&
+    	        `getAttr -lock ($base_names[$r]+".tz")`==0)
+            {
+        	    mxConstraint "pointConstrain_mo" 1 0 ($work_names[$r]+"_reParent_locator") $base_names[$r];
+    	    }
+
+            if (`getAttr -keyable ($base_names[$r]+".rx")`==1&&
+	            `getAttr -lock ($base_names[$r]+".rx")`==0&&
+    	        `getAttr -keyable ($base_names[$r]+".ry")`==1&&
+	            `getAttr -lock ($base_names[$r]+".ry")`==0&&
+	            `getAttr -keyable ($base_names[$r]+".rz")`==1&&
+	            `getAttr -lock ($base_names[$r]+".rz")`==0)
+            {
+        	    mxConstraint "orientConstrain_mo" 1 0 ($work_names[$r]+"_reParent_locator") $base_names[$r];
+    	    }
+    	}
+	    //cutKey -cl -t ":" -f ":" -at "tx" -at "ty" -at "tz" -at "rx" -at "ry" -at "rz" $base_names[$r];
+    }
+
+    if ($DelRedMode == 1)
+    {
+        select -r Last_Session_reParentLocator_set;
+        reParentDeleteRedundant;
+    }
+
+    // euler all anim curves
+    select -r Last_Session_reParentLocator_set;
+    filterCurve;
+
+    //timer stop
+    float $totalTime = `timerX -startTime $startTime`;
+    print ("Total reParent Time: "+$totalTime+" seconds"+"\n");
+
+    reParent_panel_go_to_base;
+
+    delete_unused_nodes;
+    cached_playback_on;
+}
+
+///////////////////////////////////////
+//              IK mode              //
+///////////////////////////////////////
+proc IK_mode_init()
+{
+    global vector $first_vector, $second_vector, $third_vector;
+    vector $first_length;
+    float $PoleVectorMult;
+    global string $session_selected_controls[];
+
+    string $base_names[] = `ls -sl`;
+    $session_selected_controls = $base_names;
+
+    $first_vector  = `xform -q -ws -t $base_names[0]`;
+    $second_vector = `xform -q -ws -t $base_names[1]`;
+    $third_vector  = `xform -q -ws -t $base_names[2]`;
+
+    $second_float_rot = `xform -q -ws -ro $base_names[1]`;
+
+    if(`objExists "*locator_for_pole_vector_placement*"`)
+    {
+        $second_vector = `xform -q -ws -t locator_for_pole_vector_placement`;
+    }
+
+    $first_length = $second_vector - $first_vector;
+    $second_length = $third_vector - $second_vector;
+    $PoleVectorMult = (sqrt( pow(($second_length.x), 2) + pow(($second_length.y), 2) + pow(($second_length.z), 2)))/(sqrt( pow(($first_length.x), 2) + pow(($first_length.y), 2) + pow(($first_length.z), 2)));
+
+    vector $mainVector = (($third_vector - $first_vector)/(1+$PoleVectorMult))+$first_vector;
+    vector $poleVector = ($second_vector - $mainVector);
+    float  $poleVectorLen = sqrt( pow(($poleVector.x), 2) + pow(($poleVector.y), 2) + pow(($poleVector.z), 2) );
+
+    if( $poleVectorLen < 0.0001)
+    {
+        if(`objExists "*locator_for_pole_vector_placement*"`){delete "*locator_for_pole_vector_placement*";}
+		spaceLocator -n "*locator_for_pole_vector_placement";
+		xform -t ($second_vector.x) ($second_vector.y) ($second_vector.z);
+		xform -ro ($second_float_rot[0]) ($second_float_rot[1]) ($second_float_rot[2]);
+        reParent_panel_go_to_cancel;
+        confirmDialog -b "Ok" -t "Oooops.." -m " FK chain is straight, so you need to place pole vector, for correct work ";
+    }
+    else
+    {
+        select -r $base_names;
+        IK_mode_manual_init;
+    }
+}
+
+proc IK_mode_manual_init()
+{
+    int $ManualButton = `checkBox -q -v ManualCheckBox`;
+    int $IKButton = `checkBox -q -v IKCheckBox`;
+	int $SaveKeys = `checkBox -query -v SaveKeys`;
+
+    cached_playback_off;
+
+    global string $session_selected_controls[];
+
+    string $base_names[] = $session_selected_controls;
+    string $work_names[] = define_work_names($base_names);
+    $session_selected_controls = $base_names;
+
+    create_sets;
+
+    if($ManualButton==1&&$IKButton==1)
+    {
+        if(`objExists ($work_names[2]+"_reParent_manual_pivot")`)
+        {
+            IK_mode_go;
+        }
+
+        else
+        {
+            reParent_panel_go_to_cancel;
+
+          //  if(`objExists ($work_names[2]+"_reParent_manual_pivot")`) {delete ($work_names[2]+"_reParent_manual_pivot");}
+
+            spaceLocator -n ($work_names[2]+"_reParent_manual_pivot");
+            reParent_locator_size ($base_names[2], ($work_names[2]+"_reParent_manual_pivot"));
+
+            setAttr ($work_names[2]+"_reParent_manual_pivot.rotateOrder") `getAttr ($base_names[2]+".rotateOrder")`;
+
+            addAttr -ln "reParent_controls_chain" -dt "string" ($work_names[2]+"_reParent_manual_pivot");
+            setAttr -type "string" ($work_names[2]+"_reParent_manual_pivot.reParent_controls_chain") ($base_names[0]+" "+$base_names[1]+" "+$base_names[2]);
+
+            addAttr -ln "reParent_Type" -dt "string" ($work_names[2]+"_reParent_manual_pivot");
+            setAttr -type "string"($work_names[2]+"_reParent_manual_pivot.reParent_Type") "IK_manual";
+
+            addAttr -ln "reParent_controlName" -dt "string" ($work_names[2]+"_reParent_manual_pivot");
+            setAttr -type "string"($work_names[2]+"_reParent_manual_pivot.reParent_controlName") ($work_names[2]+"_reParentIKlocator_base");
+
+            addAttr -ln "reParent_ControlKeys" -dt "string" ($work_names[2]+"_reParent_manual_pivot");
+
+            define_control_keys $base_names[2] ($work_names[2]+"_reParent_manual_pivot");
+            alignObject ($base_names[2])($work_names[2]+"_reParent_manual_pivot");
+
+            select -r ($work_names[2]+"_reParent_manual_pivot");
+        }
+    }
+    if($ManualButton==0&&$IKButton==1)
+    {
+        IK_mode_go;
+    }
+
+}
+
+global proc IK_mode_go_cancel()
+{
+    refresh -suspend 0; ogs -reset;
+
+    if(`objExists "*locator_for_pole_vector_placement*"`) {delete "*locator_for_pole_vector_placement*";}
+    if(`objExists "*_reParent_manual_pivot"`) {delete "*_reParent_manual_pivot";}
+
+    reParent_panel_go_to_base;
+    if(`objExists Last_Session_reParentLocator_set`)
+    {delete `sets -q Last_Session_reParentLocator_set`;}
+
+    if(`objExists Last_Session_reParentLocator_set`)
+    {delete Last_Session_reParentLocator_set;}
+
+    if(`objExists Last_Session_reParentControls_set`)
+    {delete Last_Session_reParentControls_set;}
+}
+
+global proc IK_mode_go()
+{
+    global string $session_selected_controls[], $parent_object[];
+    global vector $FinalPoleVector;
+    float $WorldTr[];
+
+    int $SaveKeys = `checkBox -query -v SaveKeys`;
+    int $ManualButton = `checkBox -q -v ManualCheckBox`;
+
+    cached_playback_off;
+    delete_unused_nodes;
+    reParent_panel_go_to_base;
+    cycleCheck -e off;
+
+    //timer start
+    float $startTime = `timerX`;
+
+    string $base_names[] = $session_selected_controls;
+    string $work_names[] = define_work_names($base_names);
+
+    // create locators for Joints
+    for ($i=0; $i<3; ++$i )
+	{
+		spaceLocator -n ($work_names[$i]+"_reParentIKlocator");
+        setAttr ($work_names[$i]+"_reParentIKlocator.rotateOrder") `getAttr ($base_names[$i]+".rotateOrder")`;
+
+        addAttr -ln "reParent_Type" -dt "string" ($work_names[$i]+"_reParentIKlocator");
+        setAttr -type "string" ($work_names[$i]+"_reParentIKlocator.reParent_Type") "IK";
+
+        addAttr -ln "reParent_controls_chain"  -dt "string"  ($work_names[$i]+"_reParentIKlocator");
+        setAttr -type "string" ($work_names[$i]+"_reParentIKlocator.reParent_controls_chain") ($base_names[0]+" "+$base_names[1]+" "+$base_names[2]);
+
+        addAttr -ln "reParent_ControlKeys"  -dt "string" ($work_names[$i]+"_reParentIKlocator");
+        define_control_keys ($base_names[$i], ($work_names[$i]+"_reParentIKlocator"));
+
+        parentConstraint -w 1 -n ($work_names[$i]+"_reParentIKlocator_pac") $base_names[$i] ($work_names[$i]+"_reParentIKlocator");
+        setAttr ($work_names[$i]+"_reParentIKlocator.rotateOrder") `getAttr ($base_names[$i]+".rotateOrder")`;
+		select -cl;
+	}
+
+	spaceLocator -n ($work_names[1]+"_reParentIK_world_locator"); select -cl;
+
+    // create Joints
+    for ($i=0; $i<3; ++$i )
+    {
+    	$WorldTr = `xform -q -ws -t ($work_names[$i]+"_reParentIKlocator")`;
+    	joint -rad 1 -n ($work_names[$i]+"_reParentIKJoint") -p $WorldTr[0] $WorldTr[1] $WorldTr[2];
+    	//setAttr ($work_names[$i]+"_reParentIKJoint.displayLocalAxis") 1;
+    	if ($i>0)
+    	{
+       		joint -e  -oj yxz -secondaryAxisOrient zup -zso ($work_names[$i-1]+"_reParentIKJoint");
+    	}
+    }
+
+	duplicate -n ($work_names[size($base_names)-1]+"_reParentIKlocator_end") -rr;
+    move -r -ls -wd 0 2 0 ;
+    float $WorldLastTr[] = `xform -q -ws -t ($work_names[size($base_names)-1]+"_reParentIKlocator_end")`;
+    delete ($work_names[size($base_names)-1]+"_reParentIKlocator_end");
+    select -r ($work_names[2]+"_reParentIKJoint");
+	joint -rad 1 -n ($work_names[size($base_names)-1]+"_reParentIKlocator_end") -p $WorldLastTr[0] $WorldLastTr[1] $WorldLastTr[2];
+    joint -e  -oj yxz -secondaryAxisOrient zup -zso ($work_names[2]+"_reParentIKJoint");
+    delete ($work_names[size($base_names)-1]+"_reParentIKlocator_end");
+
+    //constrain joints
+    for ($i=0; $i<=(`size($base_names)`-1); $i++)
+	{
+        pointConstraint -n "temp_jo_pc" -w 1 ($work_names[$i]+"_reParentIKlocator") ($work_names[$i]+"_reParentIKJoint");
+	}
+
+    //right joint orient
+    for ($i=0; $i<(`size($base_names)`-1); $i++)
+	{
+        spaceLocator -n ($work_names[$i+1]+"_reParent_jo_locator");
+        parent ($work_names[$i+1]+"_reParent_jo_locator") ($work_names[$i+1]+"_reParentIKJoint");
+        xform -t 0 -5 0 ($work_names[$i+1]+"_reParent_jo_locator");
+        parent -world ($work_names[$i+1]+"_reParent_jo_locator");
+	}
+
+    for ($i=0; $i<(`size($base_names)`-1); $i++)
+	{
+        aimConstraint -n "temp_jo_ac" -offset 0 0 0 -weight 1 -aimVector 0 1 0 -upVector 1 0 0 -worldUpType "object" -worldUpObject ($work_names[$i+1]+"_reParent_jo_locator") ($work_names[$i+1]+"_reParentIKlocator")  ($work_names[$i]+"_reParentIKJoint");
+    }
+
+    delete "*temp_jo_pc*" "*temp_jo_ac*" "*_reParent_jo_locator*";
+
+    //freeze jponts
+    for ($i=0; $i<(`size($base_names)`); $i++)
+	{
+        makeIdentity -apply true -t 1 -r 1 -s 1 -n 0 -pn 1 ($work_names[$i]+"_reParentIKJoint");
+    }
+
+    duplicate -rc -n ($work_names[0]+"_reParentIKJoint_soft") ($work_names[0]+"_reParentIKJoint");
+    rename ($work_names[1]+"_reParentIKJoint1") ($work_names[1]+"_reParentIKJoint_soft");
+    rename ($work_names[2]+"_reParentIKJoint1") ($work_names[2]+"_reParentIKJoint_soft");
+
+    connectAttr -f ($work_names[0]+"_reParentIKJoint.translate") ($work_names[0]+"_reParentIKJoint_soft.translate");
+    connectAttr -f ($work_names[0]+"_reParentIKJoint.rotate") ($work_names[0]+"_reParentIKJoint_soft.rotate");
+    connectAttr -f ($work_names[1]+"_reParentIKJoint.rotate") ($work_names[1]+"_reParentIKJoint_soft.rotate");
+    connectAttr -f ($work_names[2]+"_reParentIKJoint.rotate") ($work_names[2]+"_reParentIKJoint_soft.rotate");
+
+    spaceLocator -n ($work_names[1]+"_reParentIKPole");
+
+    //size
+    float $JointLentgts = `getAttr ($work_names[1]+"_reParentIKJoint.translateY")`;
+
+    setAttr ($work_names[0]+"_reParentIKlocator.localScaleX") ($JointLentgts/7);
+    setAttr ($work_names[0]+"_reParentIKlocator.localScaleY") ($JointLentgts/7);
+    setAttr ($work_names[0]+"_reParentIKlocator.localScaleZ") ($JointLentgts/7);
+
+    setAttr ($work_names[2]+"_reParentIKlocator.localScaleX") ($JointLentgts/5);
+    setAttr ($work_names[2]+"_reParentIKlocator.localScaleY") ($JointLentgts/5);
+    setAttr ($work_names[2]+"_reParentIKlocator.localScaleZ") ($JointLentgts/5);
+
+    setAttr ($work_names[1]+"_reParentIKPole.localScaleX") ($JointLentgts/10);
+    setAttr ($work_names[1]+"_reParentIKPole.localScaleY") ($JointLentgts/10);
+    setAttr ($work_names[1]+"_reParentIKPole.localScaleZ") ($JointLentgts/10);
+
+    reParent_locator_shape ($work_names[0]+"_reParentIKlocator");
+    reParent_locator_shape ($work_names[2]+"_reParentIKlocator");
+    reParent_locator_shape ($work_names[1]+"_reParentIKPole");
+
+    if(`objExists ($work_names[2]+"_reParent_manual_pivot")`)
+    {
+        setAttr ($work_names[2]+"_reParent_manual_pivot.localScaleX") ($JointLentgts/5);
+        setAttr ($work_names[2]+"_reParent_manual_pivot.localScaleY") ($JointLentgts/5);
+        setAttr ($work_names[2]+"_reParent_manual_pivot.localScaleZ") ($JointLentgts/5);
+        reParent_locator_shape ($work_names[2]+"_reParent_manual_pivot");
+        parentConstraint -n ($work_names[2]+"_reParentIKlocator_mp_pac") -mo -w 1 $base_names[2] ($work_names[2]+"_reParent_manual_pivot");
+    }
+
+    //add attributes for ik controls
+    addAttr -ln "reParent_controls_chain"  -dt "string"  ($work_names[1]+"_reParentIKPole");
+    setAttr -type "string" ($work_names[1] +"_reParentIKPole.reParent_controls_chain") ($base_names[0]+" "+$base_names[1]+" "+$base_names[2]);
+
+    addAttr -ln "reParent_ControlKeys"  -dt "string" ($work_names[1]+"_reParentIKPole");
+    setAttr -type "string" ($work_names[1]+"_reParentIKPole.reParent_ControlKeys")  (`getAttr ($work_names[2]+"_reParentIKlocator.reParent_ControlKeys")`);
+
+    addAttr -ln "reParent_Type" -dt "string" ($work_names[1]+"_reParentIKPole");
+    setAttr -type "string" ($work_names[1]+"_reParentIKPole.reParent_Type") "IK";
+
+    //pole vector
+    addAttr -ln "Connection_line_vis"  -at double -min 0 -max 1 -dv 1 ($work_names[1]+"_reParentIKPole");
+    setAttr -e -keyable true ($work_names[1]+"_reParentIKPole.Connection_line_vis");
+
+    addAttr -ln "Follow"  -at double -min 0 -max 1  -dv 0 ($work_names[1]+"_reParentIKPole");
+    setAttr -e -keyable true ($work_names[1]+"_reParentIKPole.Follow");
+
+    addAttr -ln "Pin"  -at double -min 0 -max 1  -dv 0 ($work_names[1]+"_reParentIKPole");
+    setAttr -e-keyable true ($work_names[1]+"_reParentIKPole.Pin");
+
+    //ik control
+    addAttr -ln "Offset_Control" -at "enum" -en "hide:show" -dv 1 ($work_names[2]+"_reParentIKlocator");
+    setAttr -e -keyable true ($work_names[2]+"_reParentIKlocator.Offset_Control");
+
+    addAttr -ln "Stretchy"  -at double -min 0 -max 1  -dv 0 ($work_names[2]+"_reParentIKlocator");
+    setAttr -e -keyable true ($work_names[2]+"_reParentIKlocator.Stretchy");
+
+    addAttr -ln "Soft_IK"  -at double -min 0 -max 1 -dv 0 ($work_names[2]+"_reParentIKlocator");
+    setAttr -e -keyable true ($work_names[2]+"_reParentIKlocator.Soft_IK");
+
+    transfer_attributes $work_names[2] ($work_names[2]+"_reParentIKlocator") "base";
+
+    //setup pole vector
+    if(`objExists "locator_for_pole_vector_placement"`)
+    {
+        $FinalPoleVector = `xform -q -ws -t "locator_for_pole_vector_placement"`;
+    }
+    else
+    {
+        float $PoleVectorLengths =  (getAttr ($work_names[1]+"_reParentIKJoint.translateY")) + (getAttr ($work_names[2]+"_reParentIKJoint.translateY"));
+        float $PoleVectorMult =  (getAttr ($work_names[2]+"_reParentIKJoint.translateY")) / (getAttr ($work_names[1]+"_reParentIKJoint.translateY"));
+
+        vector $firstRePArentIK_locator_vector = `xform -q -ws -t ($work_names[0]+"_reParentIKlocator")`;
+        vector $secondRePArentIK_locator_vector = `xform -q -ws -t ($work_names[1]+"_reParentIKlocator")`;
+        vector $thindRePArentIK_locator_vector = `xform -q -ws -t ($work_names[2]+"_reParentIKlocator")`;
+
+        vector $mainVector = (($thindRePArentIK_locator_vector - $firstRePArentIK_locator_vector)/(1+$PoleVectorMult))+$firstRePArentIK_locator_vector;
+        vector $poleVector = ($secondRePArentIK_locator_vector - $mainVector);
+
+        float $poleVectorLen = sqrt( pow(($poleVector.x), 2) + pow(($poleVector.y), 2) + pow(($poleVector.z), 2) );
+
+        vector $poleNorm = <<(($poleVector.x)/$poleVectorLen), (($poleVector.y)/$poleVectorLen), (($poleVector.z)/$poleVectorLen)>>;
+        $FinalPoleVector = ($poleNorm*($PoleVectorLengths)+$mainVector);
+    }
+
+    //micro rotate
+    if(`objExists "locator_for_pole_vector_placement"`)
+    {
+        duplicate -rr -n ($work_names[1]+"_reParentIKPole_micro") ($work_names[1]+"_reParentIKPole");
+        parent ($work_names[1]+"_reParentIKPole_micro") ($work_names[0]+"_reParentIKJoint");
+        string $micro_rotate_ac[] = `aimConstraint -weight 1 -aimVector 1 0 0 -upVector 0 1 0 -mo -worldUpType "object" -worldUpObject ($work_names[2]+"_reParentIKlocator") ($work_names[1]+"_reParentIKPole_micro") ($work_names[1]+"_reParentIKJoint")`;
+        move -r -os -wd 0.01 0 0 ;
+        delete $micro_rotate_ac;
+        delete "locator_for_pole_vector_placement*";
+    }
+
+    parent ($work_names[1]+"_reParentIKPole") ($work_names[1]+"_reParentIKlocator");
+    xform -t 0 0 0 ($work_names[1]+"_reParentIKPole");
+    xform -ro 0 0 0 ($work_names[1]+"_reParentIKPole");
+    duplicate -n ($work_names[1]+"_reParentIKoffset") ($work_names[1]+"_reParentIKPole");
+    xform -ws -t ($FinalPoleVector.x)($FinalPoleVector.y)($FinalPoleVector.z) ($work_names[1]+"_reParentIKPole");
+
+    //constrain ik system to base controls
+    parentConstraint -n ($work_names[1]+"_reParentIKoffset_pac") -w 1 -mo ($work_names[1]+"_reParentIKlocator") ($work_names[1]+"_reParentIKoffset");
+
+    spaceLocator -n ($work_names[0]+"_reParentIKoffset");
+    parent ($work_names[0]+"_reParentIKoffset") ($work_names[0]+"_reParentIKlocator");
+    xform -t 0 0 0 ($work_names[0]+"_reParentIKoffset");
+    xform -ro 0 0 0 ($work_names[0]+"_reParentIKoffset");
+    parent  ($work_names[0]+"_reParentIKoffset") ($work_names[0]+"_reParentIKJoint");
+
+    parentConstraint -n ($work_names[0]+"_reParentIKoffset_pac") -w 1 -mo ($work_names[0]+"_reParentIKlocator") ($work_names[0]+"_reParentIKoffset");
+
+    parent -w ($work_names[1]+"_reParentIKPole");
+    parentConstraint -n ($work_names[1]+"_reParentIKPole_pac") -w 1 -mo ($work_names[1]+"_reParentIKlocator") ($work_names[1]+"_reParentIKPole");
+
+    ikHandle  -n ($work_names[1]+"_reParent_ikHandle") -solver "ikRPsolver" -sj ($work_names[0]+"_reParentIKJoint") -ee ($work_names[2]+"_reParentIKJoint") -p 1 -w 1;
+    poleVectorConstraint -n ($work_names[1]+"_pvc") ($work_names[1]+"_reParentIKPole") ($work_names[1]+"_reParent_ikHandle");
+
+    parentConstraint -n ($work_names[0]+"_reParentIKJoint_pac") -w 1 -mo ($work_names[0]+"_reParentIKlocator") ($work_names[0]+"_reParentIKJoint");
+    parentConstraint -n ($work_names[1]+"_reParent_ikHandle_pac") -w 1 -mo ($work_names[2]+"_reParentIKlocator") ($work_names[1]+"_reParent_ikHandle");
+
+    //setup offset control
+        spaceLocator -n ($work_names[1]+"_reParentIK_offset");
+        setAttr ($work_names[1]+"_reParentIK_offset.localScaleX") ($JointLentgts/4);
+        setAttr ($work_names[1]+"_reParentIK_offset.localScaleY") ($JointLentgts/4);
+        setAttr ($work_names[1]+"_reParentIK_offset.localScaleZ") ($JointLentgts/4);
+        reParent_locator_shape ($work_names[1]+"_reParentIK_offset");
+
+        setAttr ($work_names[1]+"_reParentIK_offset.control_shape") 1;
+        setAttr ($work_names[1]+"_reParentIK_offsetShape.overrideColor") 17;
+        setAttr ($work_names[1]+"_reParentIK_offsetSphereShape.overrideColor") 17;
+        setAttr ($work_names[1]+"_reParentIK_offsetCubeShape.overrideColor") 17;
+
+    //add attributes for offset control
+        addAttr -ln "reParent_Type" -dt "string" ($work_names[1]+"_reParentIK_offset");
+        setAttr -type "string" ($work_names[1]+"_reParentIK_offset.reParent_Type") "IK";
+
+        addAttr -ln "reParent_controls_chain"  -dt "string"  ($work_names[1]+"_reParentIK_offset");
+        setAttr -type "string" ($work_names[1]+"_reParentIK_offset.reParent_controls_chain") ($base_names[0]+" "+$base_names[1]+" "+$base_names[2]);
+
+        addAttr -ln "reParent_ControlKeys"  -dt "string" ($work_names[1]+"_reParentIK_offset");
+        setAttr -type "string" ($work_names[1]+"_reParentIK_offset.reParent_ControlKeys")  (`getAttr ($work_names[2]+"_reParentIKlocator.reParent_ControlKeys")`);
+
+    group -em -n ($work_names[1]+"_reParentIK_offset_grp");
+    parent ($work_names[1]+"_reParentIK_offset") ($work_names[1]+"_reParentIK_offset_grp");
+    parent ($work_names[1]+"_reParentIK_offset_grp") ($work_names[1]+"_reParentIKJoint_soft");
+
+    xform -t 0 0 0  ($work_names[1]+"_reParentIK_offset_grp");
+    xform -ro 0 -90 -180  ($work_names[1]+"_reParentIK_offset_grp");
+
+    parent ($work_names[1]+"_reParentIKoffset") ($work_names[1]+"_reParentIK_offset_grp");
+
+    //align offset control group
+    string $temp_offset_grp_ac[] =  `aimConstraint -weight 1 -aimVector 0 0 1 -upVector 0 -1 0 -worldUpType "object" -worldUpObject ($work_names[2]+"_reParentIKlocator") ($work_names[1]+"_reParentIKPole") ($work_names[1]+"_reParentIK_offset_grp")`;
+    delete $temp_offset_grp_ac;
+
+    //connect rotation offset grp
+    string $offset_uc = `shadingNode -n ($work_names[1]+"_reParentIK_offset_uc") -asUtility unitConversion`;
+    setAttr($offset_uc+".conversionFactor") 28.648;
+    connectAttr -f ($work_names[1]+"_reParentIKJoint_soft.rotateZ") ($offset_uc+".input");
+
+    string $offset_pma = `shadingNode -n ($work_names[1]+"_reParentIK_offset_pma") -asUtility plusMinusAverage`;
+    setAttr ($offset_pma+".operation") 2;
+    setAttr ($offset_pma+".input1D[0]") `getAttr($work_names[1]+"_reParentIK_offset_grp.rotateZ")`;
+    connectAttr -f ($offset_uc+".output") ($offset_pma+".input1D[1]");
+
+    connectAttr -f ($offset_pma+".output1D") ($work_names[1]+"_reParentIK_offset_grp.rotateZ");
+    setAttr ($work_names[1]+"_reParentIK_offset_grp.rotateY") -90;
+
+    //create reParentIK group
+    group -em -n ($work_names[0]+"_reParentIK_grp");
+    parent
+    ($work_names[0]+"_reParentIKlocator")
+    ($work_names[1]+"_reParentIKlocator")
+    ($work_names[2]+"_reParentIKlocator")
+    ($work_names[0]+"_reParentIKJoint")
+    ($work_names[0]+"_reParentIKJoint_soft")
+    ($work_names[1]+"_reParent_ikHandle")
+    ($work_names[1]+"_reParentIKPole")
+    ($work_names[1]+"_reParentIK_world_locator")
+    ($work_names[0]+"_reParentIK_grp");
+
+    if(`objExists ($work_names[2]+"_reParent_manual_pivot")`)
+    {
+        parent ($work_names[2]+"_reParent_manual_pivot") ($work_names[0]+"_reParentIK_grp");
+    }
+
+    //add controls to sets
+    sets -edit -forceElement All_Session_reParentLocator_set  ($work_names[0]+"_reParentIKlocator");
+    sets -edit -forceElement Last_Session_reParentLocator_set ($work_names[0]+"_reParentIKlocator");
+
+    sets -edit -forceElement All_Session_reParentLocator_set  ($work_names[1]+"_reParentIK_offset");
+    sets -edit -forceElement Last_Session_reParentLocator_set ($work_names[1]+"_reParentIK_offset");
+
+    sets -edit -forceElement All_Session_reParentLocator_set  ($work_names[2]+"_reParentIKlocator");
+    sets -edit -forceElement Last_Session_reParentLocator_set ($work_names[2]+"_reParentIKlocator");
+
+    sets -edit -forceElement All_Session_reParentLocator_set  ($work_names[1]+"_reParentIKPole");
+    sets -edit -forceElement Last_Session_reParentLocator_set ($work_names[1]+"_reParentIKPole");
+
+    if(`objExists ($work_names[2]+"_reParent_manual_pivot")`)
+    {
+        sets -edit -forceElement All_Session_reParentLocator_set  ($work_names[2]+"_reParent_manual_pivot");
+        sets -edit -forceElement Last_Session_reParentLocator_set ($work_names[2]+"_reParent_manual_pivot");
+    }
+
+    //world - local mode
+    int $MakeGlobalButton = `checkBox -q -v MakeGlobalCheckBox`;
+    int $local_mode = `checkBox -q -v IKCheckLocalBox`;
+    $parent_object = `listRelatives -f -p $base_names[0]`;
+
+    //global
+    if ($local_mode==0&&$parent_object[0]!="")
+    {
+        group -n ($work_names[0]+"_reParentIK_parent_grp") ($work_names[0]+"_reParentIKlocator");
+        parentConstraint -n ($work_names[0]+"_reParentIK_parent_grp_pac") -w 1 -mo $parent_object[0] ($work_names[0]+"_reParentIK_parent_grp");
+    }
+
+    //local + object up exist
+    if ($local_mode==1&&$parent_object[0]!="")
+    {
+        if($MakeGlobalButton == 1)
+        {
+            float $pos[] = `xform -q -t -ws $base_names[0]`;
+            move -rpr $pos[0] $pos[1] $pos[2] ($work_names[0]+"_reParentIK_grp.scalePivot") ($work_names[0]+"_reParentIK_grp.rotatePivot");
+            parentConstraint -n ($work_names[0]+"_reParentIK_parent_grp_pac") -skipRotate x -skipRotate y -skipRotate z -w 1 -mo $parent_object[0] ($work_names[0]+"_reParentIK_grp");;
+        }
+        else
+        {
+            parentConstraint -n ($work_names[0]+"_reParentIK_parent_grp_pac") -w 1 -mo $parent_object[0] ($work_names[0]+"_reParentIK_grp");;
+        }
+    }
+
+    //local + object up not exist
+    if ($local_mode==1&&$parent_object[0]=="")
+    {
+        group -n ($work_names[0]+"_reParentIK_parent_grp") ($work_names[2]+"_reParentIKlocator") ($work_names[1]+"_reParentIK_world_locator");
+        parentConstraint -n ($work_names[0]+"_reParentIK_parent_grp_pac") -w 1 -mo ($work_names[0]+"_reParentIKlocator") ($work_names[0]+"_reParentIK_parent_grp");
+    }
+
+    //bake animation on locator
+    int $currentR =`playbackOptions -q -min`;
+    int $currentL =`playbackOptions -q -max`;
+    int $onLayerReParentMode = `checkBox -query -v onLayerReParentMode`;
+
+    select -r
+    ($work_names[0]+"_reParentIKoffset")
+    ($work_names[0]+"_reParentIKlocator")
+    ($work_names[1]+"_reParentIKPole")
+    ($work_names[1]+"_reParentIKoffset")
+    ($work_names[2]+"_reParentIKlocator");
+    if(`objExists ($work_names[2]+"_reParent_manual_pivot")`)
+    {select -add ($work_names[2]+"_reParent_manual_pivot");}
+
+    refresh -suspend 1;
+    bakeResults
+    -t ($currentL+":"+$currentR)
+    -simulation 1
+    -sampleBy 1
+    -disableImplicitControl 1
+    -preserveOutsideKeys 1
+    -sparseAnimCurveBake 0
+    -removeBakedAttributeFromLayer 0
+    -removeBakedAnimFromLayer 0
+    -bakeOnOverrideLayer $onLayerReParentMode
+    -minimizeRotation 1
+    -controlPoints 0
+    -shape 0
+    -at "tx"
+    -at "ty"
+    -at "tz"
+    -at "rx"
+    -at "ry"
+    -at "rz";
+    refresh -suspend 0; ogs -reset;
+
+    //delete work constrains
+    delete ($work_names[0]+"_reParentIKoffset_pac") ($work_names[0]+"_reParentIKlocator_pac") ($work_names[1]+"_reParentIKPole_pac") ($work_names[1]+"_reParentIKoffset_pac") ($work_names[2]+"_reParentIKlocator_pac");
+    if(`objExists ($work_names[2]+"_reParent_manual_pivot")`){ delete ($work_names[2]+"_reParentIKlocator_mp_pac*");}
+
+    filterCurve;
+
+    //cutKey -cl -t ":" -f ":" -at "tx" -at "ty" -at "tz" -at "rx" -at "ry" -at "rz" $base_names[0];
+    //cutKey -cl -t ":" -f ":" -at "tx" -at "ty" -at "tz" -at "rx" -at "ry" -at "rz" $base_names[1];
+    //cutKey -cl -t ":" -f ":" -at "tx" -at "ty" -at "tz" -at "rx" -at "ry" -at "rz" $base_names[2];
+    cutKey -cl -t ":" -f ":" -at "rx" -at "ry" -at "rz" ($work_names[1]+"_reParentIKPole");
+
+    if($SaveKeys==1)
+    {
+        RestoreControlKeysOnLocator ({($work_names[2]+"_reParentIKlocator")});
+        RestoreControlKeysOnLocator ({($work_names[1]+"_reParentIKPole")});
+    }
+
+    select -r ($work_names[2]+"_reParentIKlocator");
+    filterCurve;
+
+    //visibility
+    setAttr ($work_names[0]+"_reParentIKJoint.drawStyle") 2;
+    setAttr ($work_names[1]+"_reParentIKJoint.drawStyle") 2;
+    setAttr ($work_names[2]+"_reParentIKJoint.drawStyle") 2;
+    setAttr ($work_names[0]+"_reParentIKJoint.v") 0;
+
+    setAttr ($work_names[0]+"_reParentIKJoint_soft.drawStyle") 2;
+    setAttr ($work_names[1]+"_reParentIKJoint_soft.drawStyle") 2;
+    setAttr ($work_names[2]+"_reParentIKJoint_soft.drawStyle") 2;
+
+    setAttr -l true ($work_names[1]+"_reParentIKlocator.visibility") 0;
+    setAttr -l true ($work_names[0]+"_reParentIKoffset.visibility") 0;
+    setAttr -l true ($work_names[1]+"_reParentIKoffset.visibility") 0;
+    setAttr -l true ($work_names[1]+"_reParent_ikHandle.visibility") 0;
+    setAttr -l true ($work_names[1]+"_reParentIK_world_locator.visibility") 0;
+
+    if ($parent_object[0]=="")
+    {
+        select -r ($work_names[0]+"_reParentIKlocator");
+        setAttr ($work_names[0]+"_reParentIKlocator.control_shape") 2;
+    }
+    else
+    {
+        setAttr -l true ($work_names[0]+"_reParentIKlocator.visibility") 0;
+    }
+
+    //create aim locators
+    for ($i=0; $i<(`size($base_names)`); $i++)
+	{
+    	spaceLocator -n ($work_names[$i]+"_reParentIKlocator_for_aim");
+    	parent ($work_names[$i]+"_reParentIKlocator_for_aim") ($work_names[$i]+"_reParentIKJoint_soft");
+        xform -t 0 0 0 ($work_names[$i]+"_reParentIKlocator_for_aim");
+        xform -ro 0 0 0 ($work_names[$i]+"_reParentIKlocator_for_aim");
+        setAttr -l true ($work_names[$i]+"_reParentIKlocator_for_aimShape.visibility") 0;
+    }
+
+    parent ($work_names[1]+"_reParentIKlocator_for_aim") ($work_names[1]+"_reParentIK_offset");
+    xform -t 2 0 0 ($work_names[1]+"_reParentIKlocator_for_aim");
+    xform -ro 0 0 0 ($work_names[1]+"_reParentIKlocator_for_aim");
+
+    //copy offset animation on offset control
+    cutKey -t ":" -f ":" -at "tx" -at "ty" -at "tz" ($work_names[1]+"_reParentIKoffset");
+    pasteKey -at "tx" -at "ty" -at "tz" ($work_names[1]+"_reParentIK_offset");
+    cutKey -t ":" -f ":" -at "rx" -at "ry" -at "rz" ($work_names[1]+"_reParentIKoffset");
+    xform -t 0 0 0 ($work_names[1]+"_reParentIKoffset");
+    xform -ro 0 0 0 ($work_names[1]+"_reParentIKoffset");
+    parentConstraint -w 1 -mo ($work_names[1]+"_reParentIK_offset") ($work_names[1]+"_reParentIKoffset");
+
+    //connect pin
+    pointConstraint -n ($work_names[1]+"_reParentIK_offset_grp_poc") ($work_names[1]+"_reParentIKPole") ($work_names[1]+"_reParentIK_offset_grp");
+    pointConstraint -n ($work_names[1]+"_reParentIK_offset_grp_poc") ($work_names[1]+"_reParentIKJoint_soft") ($work_names[1]+"_reParentIK_offset_grp");
+    connectAttr -f ($work_names[1]+"_reParentIKPole.Pin") (($work_names[1]+"_reParentIK_offset_grp_poc.")+($work_names[1]+"_reParentIKPoleW0"));
+    string $pole_pin_rev = `shadingNode -n ($work_names[1]+"_reParentIKPole_pin_rev") -asUtility reverse`;
+    connectAttr -f ($work_names[1]+"_reParentIKPole.Pin") ($pole_pin_rev+".inputX");
+    connectAttr -f ($pole_pin_rev+".outputX") (($work_names[1]+"_reParentIK_offset_grp_poc.")+($work_names[1]+"_reParentIKJoint_softW1"));
+    connectAttr -f ($work_names[2]+"_reParentIKlocator.Offset_Control") ($work_names[1]+"_reParentIK_offset.v");
+
+    setAttr -lock true -keyable false -channelBox false ($work_names[1]+"_reParentIK_offset.rx");
+    setAttr -lock true -keyable false -channelBox false ($work_names[1]+"_reParentIK_offset.ry");
+    setAttr -lock true -keyable false -channelBox false ($work_names[1]+"_reParentIK_offset.rz");
+    setAttr -lock true -keyable false -channelBox false ($work_names[1]+"_reParentIK_offset.sx");
+    setAttr -lock true -keyable false -channelBox false ($work_names[1]+"_reParentIK_offset.sy");
+    setAttr -lock true -keyable false -channelBox false ($work_names[1]+"_reParentIK_offset.sz");
+    setAttr -lock true -keyable false -channelBox false ($work_names[1]+"_reParentIK_offset.v");
+
+    //connect follow
+    group -em -n ($work_names[1]+"_reParentIK_follow_grp");
+    parent ($work_names[1]+"_reParentIK_follow_grp") ($work_names[0]+"_reParentIK_grp");
+    parent ($work_names[1]+"_reParentIKPole") ($work_names[1]+"_reParentIK_follow_grp");
+
+    parentConstraint -n ($work_names[1]+"_reParentIK_offset_grp_pac") ($work_names[1]+"_reParentIK_world_locator") ($work_names[1]+"_reParentIK_follow_grp");
+    parentConstraint -mo ($work_names[2]+"_reParentIKlocator") ($work_names[1]+"_reParentIK_follow_grp");
+    connectAttr -f ($work_names[1]+"_reParentIKPole.Follow") (($work_names[1]+"_reParentIK_offset_grp_pac.")+($work_names[2]+"_reParentIKlocatorW1"));
+    string $pole_follow_rev = `shadingNode -n ($work_names[1]+"_reParentIKPole_follow_rev") -asUtility reverse`;
+    connectAttr -f ($work_names[1]+"_reParentIKPole.Follow") ($pole_follow_rev+".inputX");
+    connectAttr -f ($pole_follow_rev+".outputX") (($work_names[1]+"_reParentIK_offset_grp_pac.")+($work_names[1]+"_reParentIK_world_locatorW0"));
+
+    //find joints lenght and create distance node
+    string $stretchy_distance = `shadingNode -n ($work_names[2]+"_reParentIK_stretchy_distance") -asUtility distanceBetween`;
+    connectAttr -f ($base_names[0]+".worldMatrix[0]") ($stretchy_distance+".inMatrix1");
+    connectAttr -f ($base_names[1]+".worldMatrix[0]") ($stretchy_distance+".inMatrix2");
+    float $joint_leghth_1 = `getAttr ($stretchy_distance+".distance")`;
+    connectAttr -f ($base_names[2]+".worldMatrix[0]") ($stretchy_distance+".inMatrix1");
+    float $joint_leghth_2 = `getAttr ($stretchy_distance+".distance")`;
+    float $joint_leghth_sum = $joint_leghth_1 + $joint_leghth_2;
+
+    connectAttr -f ($work_names[0]+"_reParentIKlocator.worldMatrix[0]") ($stretchy_distance+".inMatrix1");
+    connectAttr -f ($work_names[2]+"_reParentIKlocator.worldMatrix[0]") ($stretchy_distance+".inMatrix2");
+
+    //connect soft_ik
+    string $soft_IK_pma = `shadingNode -n ($work_names[2]+"_reParentIK_soft_IK_pma") -asUtility  plusMinusAverage`;
+    setAttr ($soft_IK_pma+".operation") 2;
+    setAttr ($soft_IK_pma+".input1D[0]") $joint_leghth_sum;
+    connectAttr -f ($work_names[2]+"_reParentIKlocator.Soft_IK") ($soft_IK_pma+".input1D[1]");
+
+    string $first_soft_IK_condition = `shadingNode -n ($work_names[2]+"_reParentIK_soft_IK_first_condition") -asUtility condition`;
+    setAttr ($first_soft_IK_condition+".operation") 2;
+    connectAttr -f ($stretchy_distance+".distance") ($first_soft_IK_condition+".firstTerm");
+    connectAttr -f ($soft_IK_pma+".output1D") ($first_soft_IK_condition+".secondTerm");
+    connectAttr -f ($stretchy_distance+".distance") ($first_soft_IK_condition+".colorIfFalseR");
+
+    string $second_soft_IK_condition = `shadingNode -n ($work_names[2]+"_reParentIK_soft_IK_second_condition") -asUtility condition`;
+    setAttr ($second_soft_IK_condition+".operation") 2;
+    setAttr ($second_soft_IK_condition+".colorIfFalseR") $joint_leghth_sum;
+    connectAttr -f ($work_names[2]+"_reParentIKlocator.Soft_IK") ($second_soft_IK_condition+".firstTerm");
+
+    string $soft_IK_pma_second = `shadingNode -n ($work_names[2]+"_reParentIK_soft_IK_second_pma") -asUtility plusMinusAverage`;
+    setAttr ($soft_IK_pma_second+".operation") 2;
+    connectAttr -f ($soft_IK_pma+".output1D") ($soft_IK_pma_second+".input1D[1]");
+    connectAttr -f ($stretchy_distance+".distance") ($soft_IK_pma_second+".input1D[0]");
+
+    string $soft_first_mult = `shadingNode -n ($work_names[2]+"_reParentIK_soft_first_mult") -asUtility multiplyDivide`;
+    setAttr ($soft_first_mult+".operation") 2;
+    connectAttr -f ($soft_IK_pma_second+".output1D") ($soft_first_mult+".input1X");
+
+    string $soft_non_zero = `shadingNode -n ($work_names[2]+"_reParentIK_soft_non_zero") -asUtility remapValue`;
+    connectAttr -f ($work_names[2]+"_reParentIKlocator.Soft_IK")  ($soft_non_zero+".inputValue");
+    connectAttr -f ($soft_non_zero+".outValue") ($soft_first_mult+".input2X");
+
+    string $soft_second_mult = `shadingNode -n ($work_names[2]+"_reParentIK_soft_second_mult") -asUtility multiplyDivide`;
+    setAttr ($soft_second_mult+".input1X") -1;
+    connectAttr -f ($soft_first_mult+".outputX") ($soft_second_mult+".input2X");
+
+    string $soft_third_mult = `shadingNode -n ($work_names[2]+"_reParentIK_soft_third_mult") -asUtility multiplyDivide`;
+    setAttr ($soft_third_mult+".operation") 3;
+    setAttr ($soft_third_mult+".input1X") `exp(1)`;
+    connectAttr -f ($soft_second_mult+".outputX") ($soft_third_mult+".input2X");
+
+    string $soft_fourth_mult = `shadingNode -n ($work_names[2]+"_reParentIK_soft_fourth_mult") -asUtility multiplyDivide`;
+    connectAttr -f ($work_names[2]+"_reParentIKlocator.Soft_IK") ($soft_fourth_mult+".input1X");
+    connectAttr -f ($soft_third_mult+".outputX") ($soft_fourth_mult+".input2X");
+
+    string $soft_IK_third_pma = `shadingNode -n ($work_names[2]+"_reParentIK_soft_IK_third_pma") -asUtility  plusMinusAverage`;
+    setAttr ($soft_IK_third_pma+".operation") 2;
+    setAttr ($soft_IK_third_pma+".input1D[0]") $joint_leghth_sum;
+    connectAttr -f ($soft_fourth_mult+".outputX") ($soft_IK_third_pma+".input1D[1]");
+    connectAttr -f ($soft_IK_third_pma+".output1D") ($second_soft_IK_condition+".colorIfTrueR");
+    connectAttr -f ($second_soft_IK_condition+".outColorR") ($first_soft_IK_condition+".colorIfTrueR");
+
+    string $soft_joints_scale_mult = `shadingNode -n ($work_names[2]+"_reParentIK_soft_joints_scale_mult") -asUtility multiplyDivide`;
+    setAttr ($soft_joints_scale_mult+".operation") 2;
+    connectAttr -f ($first_soft_IK_condition+".outColorR") ($soft_joints_scale_mult+".input2X");
+    connectAttr -f ($stretchy_distance+".distance") ($soft_joints_scale_mult+".input1X");
+
+    connectAttr -f ($soft_joints_scale_mult+".outputX") ($work_names[0]+"_reParentIKJoint.scaleY");
+    connectAttr -f ($soft_joints_scale_mult+".outputX") ($work_names[1]+"_reParentIKJoint.scaleY");
+
+    //connect stretchy
+    string $stretchy_blend = `shadingNode -n ($work_names[2]+"_reParentIK_stretchy_blend") -asUtility blendColors`;
+    setAttr ($stretchy_blend+".color2") -type double3 1 1 1 ;
+    connectAttr -f ($work_names[2]+"_reParentIKlocator.Stretchy") ($stretchy_blend+".blender");
+    connectAttr -f ($soft_joints_scale_mult+".outputX") ($stretchy_blend+".color1R");
+    connectAttr -f ($stretchy_blend+".outputR") ($work_names[0]+"_reParentIKJoint_soft.scaleY");
+    connectAttr -f ($stretchy_blend+".outputR") ($work_names[1]+"_reParentIKJoint_soft.scaleY");
+
+    string $offset_grp_dMatrix = `shadingNode -n ($work_names[1]+"_reParentIK_offset_grp_dMatrix") -asUtility decomposeMatrix`;
+    connectAttr -f ($work_names[1]+"_reParentIK_offset_grp.parentInverseMatrix[0]") ($offset_grp_dMatrix+".inputMatrix");
+    connectAttr -f ($offset_grp_dMatrix+".outputScale") ($work_names[1]+"_reParentIK_offset_grp.scale");
+
+    //constrain control to ik system
+    //constrain first control
+    aimConstraint -n ($work_names[0]+"_reParentIKlocator_for_aim_aic") -mo -weight 1 -aimVector 0 1 0 -upVector 0 0 1 -worldUpType "object" -worldUpObject ($work_names[1]+"_reParentIKlocator_for_aim") ($work_names[1]+"_reParentIK_offset") ($work_names[0]+"_reParentIKlocator_for_aim");
+    mxConstraint "pointConstrain_mo" 1 0 ($work_names[0]+"_reParentIKoffset") $base_names[0];;
+    mxConstraint "orientConstrain_mo" 1 0 ($work_names[0]+"_reParentIKlocator_for_aim") $base_names[0];
+
+    //constrain second control
+    aimConstraint -n ($work_names[2]+"_reParentIKlocator_for_aim_aic") -mo -weight 1 -aimVector 0 -1 0 -upVector 0 0 1 -worldUpType "object" -worldUpObject ($work_names[1]+"_reParentIKlocator_for_aim") ($work_names[1]+"_reParentIK_offset") ($work_names[2]+"_reParentIKlocator_for_aim");
+    mxConstraint "pointConstrain_mo" 1 0 ($work_names[1]+"_reParentIKoffset") $base_names[1];
+    mxConstraint "orientConstrain_mo" 1 0 ($work_names[2]+"_reParentIKlocator_for_aim") $base_names[1];
+
+    //constrain third control
+    mxConstraint "pointConstrain_mo" 1 0 ($work_names[2]+"_reParentIKJoint_soft") $base_names[2];
+    mxConstraint "orientConstrain_mo" 1 0 ($work_names[2]+"_reParentIKlocator")   $base_names[2];
+
+    //     IK mode Design   ///
+    setAttr ($work_names[2]+"_reParentIKlocatorShape.overrideColor") 17;
+    setAttr ($work_names[2]+"_reParentIKlocatorSphereShape.overrideColor") 17;
+    setAttr ($work_names[2]+"_reParentIKlocatorCubeShape.overrideColor") 17;
+    setAttr ($work_names[2]+"_reParentIKlocator.control_shape") 2;
+
+    setAttr ($work_names[1]+"_reParentIKPoleShape.overrideColor") 13;
+    setAttr ($work_names[1]+"_reParentIKPoleSphereShape.overrideColor") 13;
+    setAttr ($work_names[1]+"_reParentIKPoleCubeShape.overrideColor") 13;
+
+    setAttr ($work_names[1]+"_reParentIK_offset.control_shape") 1;
+
+    //lock and hide
+    setAttr -lock 1 -keyable 0 ($work_names[1]+"_reParentIKPole.rx");
+    setAttr -lock 1 -keyable 0 ($work_names[1]+"_reParentIKPole.ry");
+    setAttr -lock 1 -keyable 0 ($work_names[1]+"_reParentIKPole.rz");
+    setAttr -lock 1 -keyable 0 ($work_names[1]+"_reParentIKPole.sx");
+    setAttr -lock 1 -keyable 0 ($work_names[1]+"_reParentIKPole.sy");
+    setAttr -lock 1 -keyable 0 ($work_names[1]+"_reParentIKPole.sz");
+    setAttr -lock 1 -keyable 0 ($work_names[1]+"_reParentIKPole.v");
+
+    setAttr -lock 1 -keyable 0 ($work_names[2]+"_reParentIKlocator.sx");
+    setAttr -lock 1 -keyable 0 ($work_names[2]+"_reParentIKlocator.sy");
+    setAttr -lock 1 -keyable 0 ($work_names[2]+"_reParentIKlocator.sz");
+    setAttr -lock 1 -keyable 0 ($work_names[2]+"_reParentIKlocator.v");
+
+    //create connection line
+    curve -n ($work_names[1]+"_reParentIKPole_line") -d 1 -p 0 0 0 -p 0 0 0 -k 0 -k 1 ;
+    string $shapeName[] = `listRelatives ($work_names[1]+"_reParentIKPole_line")`;
+    rename  $shapeName[0] ($work_names[1]+"_reParentIKPole_lineShape");
+    setAttr ($work_names[1]+"_reParentIKPole_line.overrideEnabled") 1;
+    setAttr ($work_names[1]+"_reParentIKPole_line.overrideColor") 3;
+    select -r ($work_names[1]+"_reParentIKPole_line.cv[0]");
+    cluster -n ($work_names[1]+"_reParentIKPole_line_end") -envelope 1;
+    select -r ($work_names[1]+"_reParentIKPole_line.cv[1]");
+    cluster -n ($work_names[1]+"_reParentIKPole_line_start") -envelope 1;
+    setAttr($work_names[1]+"_reParentIKPole_line.overrideDisplayType") 1;
+
+    parent ($work_names[1]+"_reParentIKPole_line_endHandle") ($work_names[1]+"_reParentIKPole") ;
+    xform -t 0 0 0 ($work_names[1]+"_reParentIKPole_line_endHandle");
+
+    parent ($work_names[1]+"_reParentIKPole_line_startHandle") ($work_names[1]+"_reParentIK_offset") ;
+    xform -t 0 0 0 ($work_names[1]+"_reParentIKPole_line_startHandle");
+
+    setAttr -l true ($work_names[1]+"_reParentIKPole_line_endHandle.visibility") 0;
+    setAttr -l true ($work_names[1]+"_reParentIKPole_line_startHandle.visibility") 0;
+
+    parent ($work_names[1]+"_reParentIKPole_line") ($work_names[0]+"_reParentIK_grp");
+    connectAttr -f ($work_names[1]+"_reParentIKPole.Connection_line_vis") ($work_names[1]+"_reParentIKPole_lineShape.visibility");
+    setAttr ($work_names[1]+"_reParentIKPole.control_shape") 1;
+
+    setAttr ($work_names[1]+"_reParentIKPole_line.inheritsTransform") 0;
+
+    //end of IK mode
+    setAttr ($soft_non_zero+".outputMin") 0.0001;
+
+    if ($ManualButton==1)
+    {
+        transfer_attributes ($work_names[2]+"_reParentIKlocator") ($work_names[2]+"_reParent_manual_pivot") "forced";
+
+        rename ($work_names[2]+"_reParentIKlocator") ($work_names[2]+"_reParentIKlocator_base");
+        rename ($work_names[2]+"_reParent_manual_pivot") ($work_names[2]+"_reParentIKlocator");
+
+        mxConstraint "parentConstrain_mo" 1 0 ($work_names[2]+"_reParentIKlocator") ($work_names[2]+"_reParentIKlocator_base");
+
+        setAttr -l false ($work_names[2]+"_reParentIKlocator_base.visibility");
+        setAttr -l true ($work_names[2]+"_reParentIKlocator_base.visibility") 0;
+
+        setAttr ($work_names[2]+"_reParentIKlocator.control_shape") 2;
+        setAttr ($work_names[2]+"_reParentIKlocator.control_shape") 2;
+
+        setAttr -l true -keyable false -channelBox false ($work_names[2]+"_reParentIKlocator.visibility") 1;
+        setAttr ($work_names[2]+"_reParentIKlocatorShape.overrideColor") 17;
+        setAttr ($work_names[2]+"_reParentIKlocatorSphereShape.overrideColor") 17;
+        setAttr ($work_names[2]+"_reParentIKlocatorCubeShape.overrideColor") 17;
+    }
+
+    select -r ($work_names[2]+"_reParentIKlocator");
+
+    //timer stop
+    float $totalTime = `timerX -startTime $startTime`;
+    print ("Total reParent Time: "+$totalTime+" seconds"+"\n");
+
+    cycleCheck -e on;
+    cached_playback_on;
+}
+
+proc create_sets()
+{
+	int $reConstrainButton = `checkBox -q -v reConstrainCheckBox`;
+	int $IKButton = `checkBox -q -v IKCheckBox`;
+	int $PinButton = `checkBox -q -v PinCheckBox`;
+    int $ManualButton = `checkBox -q -v ManualCheckBox`;
+    int $AimButton = `checkBox -q -v AimCheckBox`;
+
+    string $SelectedControls[] = `ls -sl`;
+
+    if(!`objExists "reParent_sets"`)
+    {
+        sets -em -name "reParent_sets";
+    }
+
+    if(`objExists "All_Sessions_reParentControls_set"`)
+    {
+        sets -edit -forceElement All_Sessions_reParentControls_set $SelectedControls;
+        sets -edit -fe  reParent_sets All_Sessions_reParentControls_set ;
+    }
+    else
+    {
+    	sets -name "All_Sessions_reParentControls_set";
+    	sets -edit -fe  reParent_sets All_Sessions_reParentControls_set ;
+    }
+
+
+    if(`objExists "Last_Session_reParentControls_set"`)
+    {
+       	delete Last_Session_reParentControls_set;
+       	sets -name "Last_Session_reParentControls_set";
+        sets -edit -forceElement Last_Session_reParentControls_set $SelectedControls;
+        sets -edit -fe  reParent_sets Last_Session_reParentControls_set ;
+    }
+    else
+    {
+    	sets -name "Last_Session_reParentControls_set";
+    	sets -edit -fe reParent_sets Last_Session_reParentControls_set ;
+    }
+
+    select -cl;
+
+    if(`objExists "Last_Session_reParentLocator_set"`)
+    {
+    	delete Last_Session_reParentLocator_set;
+    	sets -name "Last_Session_reParentLocator_set";
+    	sets -edit -fe  reParent_sets Last_Session_reParentLocator_set ;
+    }
+    else
+    {
+        sets -name "Last_Session_reParentLocator_set";
+        sets -edit -fe reParent_sets Last_Session_reParentLocator_set ;
+    }
+
+    if(!`objExists "All_Session_reParentLocator_set"`)
+    {
+        sets -em -name "All_Session_reParentLocator_set";
+        sets -edit -fe  reParent_sets All_Session_reParentLocator_set ;
+    }
+
+    if ($AimButton==1)
+    {
+        if(!`objExists "Aim_Session_reParentLocator_set"`)
+        {
+            sets -em -name "Aim_Session_reParentLocator_set";
+            sets -edit -fe  reParent_sets Aim_Session_reParentLocator_set ;
+        }
+
+        if(!`objExists "Aim_Session_group_name"`)
+        {
+            sets -em -name "Aim_Session_group_name";
+            sets -edit -fe  reParent_sets Aim_Session_group_name ;
+        }
+
+    }
+}
+
+proc reParent_select_hierarchy()
+{
+		string $ArraySecondGuys[];
+		string $parentArray[];
+		string $nodesArray[];
+		string $Chain[];
+		string $lastElement;
+		string $allSceneNurbes[];
+		string $currentShapeType;
+		string $CtrlByHierarchy[];
+		string $TypeOfObject;
+		int $ClearElemwnts;
+		clear ($allSceneNurbes);
+
+		// find type of selection
+		string $currentCtrls[] = `ls -sl`;
+		select -r $currentCtrls[0];
+		pickWalk -d down;
+		string $currentShape[] = `ls -sl`;
+		$currentShapeType = `objectType $currentShape[0]`;
+
+		select -r $currentCtrls; select -hi;
+		$currentCtrls = `ls -sl`;
+
+		if( `objExists "*Root_M"`||`objExists "*:Root_M"`||`objExists "*DeformationSystem"`||`objExists "*:DeformationSystem"`||`objExists "*MotionSystem"`||`objExists "*:MotionSystem"`||`objExists "*FitSkeleton"`||`objExists "*:FitSkeleton"`)
+        {$currentShapeType = "nurbsCurve";}
+
+		$allSceneNurbes = `listTransforms ("-type "+$currentShapeType)`;
+
+		string $Stuff[] = stringArrayRemove($allSceneNurbes, $currentCtrls);
+		$CtrlByHierarchy = stringArrayRemove($Stuff, $currentCtrls);
+		select -r $CtrlByHierarchy;
+}
+
+proc BakeAndDelete_reParentInit()
+{
+    if(!`objExists "reParent_sets"`)
+    {
+        confirmDialog -b "Ok" -t "Oooops.." -m "    There is nothing to remove    ";
+    }
+    else
+    {
+        if(`objExists "DeleteSelection_set"`) {delete DeleteSelection_set;}
+        if(`objExists "DeleteLocatorsSelection_set"`) {delete DeleteLocatorsSelection_set;}
+        if(`objExists "DeleteGroupSelection_set"`) {delete DeleteGroupSelection_set;}
+
+        sets -em -name "DeleteSelection_set";
+        sets -em -name "DeleteLocatorsSelection_set";
+        sets -em -name "DeleteGroupSelection_set";
+        sets -edit -fe  reParent_sets DeleteSelection_set;
+        sets -edit -fe  reParent_sets DeleteLocatorsSelection_set;
+        sets -edit -fe  reParent_sets DeleteGroupSelection_set;
+
+        string $SelectedControls[] = `ls -sl`;
+
+        if (`size($SelectedControls)` == 0)
+        {   // empty selection - BAKE ALL
+
+            string $SelectedControls[] = `sets -q All_Sessions_reParentControls_set`;
+            sets -edit -forceElement DeleteSelection_set $SelectedControls;
+
+            string $SelectedLocators[] = `sets -q All_Session_reParentLocator_set`;
+            sets -edit -forceElement DeleteLocatorsSelection_set $SelectedLocators;
+
+            BakeAndDelete_reParent;
+
+            if(`objExists "All_Session_reParentLocator_set"`) {select -r All_Session_reParentLocator_set; delete;}
+            if(`objExists "reParent_sets"`) {delete reParent_sets;}
+            if(`objExists "All_Sessions_reParentControls_set"`) {delete All_Sessions_reParentControls_set;}
+            if(`objExists "Last_Session_reParentControls_set"`) {delete Last_Session_reParentControls_set;}
+            if(`objExists "Aim_Session_reParentLocator_set"`) {delete Aim_Session_reParentLocator_set;}
+
+            if(`objExists "DeleteLocatorsSelection_set"`) {delete DeleteLocatorsSelection_set;}
+            if(`objExists "DeleteSelection_set"`) {delete DeleteSelection_set;}
+
+            if(`objExists "*_reParent_locator_grp"`)   {delete "*_reParent_locator_grp";}
+            if(`objExists "*:*_reParent_locator_grp"`)   {delete "*:*ReParent_locator_grp";}
+            if(`objExists "*_reParentIK_grp"`)   {delete "*_reParentIK_grp";}
+            if(`objExists "*:*_reParentIK_grp"`) {delete "*:*_reParentIK_grp";}
+            if(`objExists "*_reParent_grp"`)     {delete "*_reParent_grp";}
+            if(`objExists "*:*_reParent_grp"`)   {delete "*:*_reParent_grp";}
+            if(`objExists "*_reParent_aim_grp"`)     {delete "*_reParent_aim_grp";}
+            if(`objExists "*:*_reParent_aim_grp"`)   {delete "*:*_reParent_aim_grp";}
+        }
+
+        else
+        {   // many objects
+
+            string $SelectedControls[] = `ls -sl`;
+            string $EachControl = "Crystal_draft_rig:cloak_C1_fk0_ctl";
+
+            // reParent locator ---> Base Controls
+
+            for ($SelCtrl in $SelectedControls)
+            {
+                //locator ---> Delete Set
+                string $LocOrNot = `sets -im All_Session_reParentLocator_set $SelCtrl`;
+
+                if ($LocOrNot==1)
+                {
+                    string $baseControls;
+
+                    if (`getAttr ($SelCtrl+".reParent_Type")` == "IK"||`getAttr ($SelCtrl+".reParent_Type")` == "IK_manual")
+                    {
+                        $baseControls =  `getAttr ($SelCtrl+".reParent_controls_chain")`;
+                    }
+                    else
+                    {
+                        $baseControls =  `getAttr ($SelCtrl+".reParent_controlName")`;
+                    }
+
+                    string $arrayControls[] = stringToStringArray($baseControls, " ");
+
+                    for ($EachControl in $arrayControls)
+                    {
+                        string $locatorNames[] = define_work_names ({$EachControl});
+                        $LocatorName = $locatorNames[0];
+
+                        if(`objExists $EachControl`)
+                        {sets -edit -forceElement DeleteSelection_set $EachControl;}
+
+                        if(`objExists ($SelCtrl+"_grp")`)
+                        {sets -edit -forceElement DeleteGroupSelection_set ($SelCtrl+"_grp");}
+                        if(`objExists ($LocatorName+"_reParent_aim_grp")`)
+                        {sets -edit -forceElement DeleteGroupSelection_set ($LocatorName+"_reParent_aim_grp");}
+                        if(`objExists ($LocatorName+"_reParentIK_grp")`)
+                        {sets -edit -forceElement DeleteGroupSelection_set ($LocatorName+"_reParentIK_grp");}
+                        if(`objExists ($LocatorName+"_reParent_grp")`)
+                        {sets -edit -forceElement DeleteGroupSelection_set ($LocatorName+"_reParent_grp");}
+                    }
+                    sets -edit -forceElement DeleteLocatorsSelection_set $SelCtrl;
+                }
+
+                //Control ---> Delete Set
+                global string $LocatorName;
+                if(!`objExists ($SelCtrl+"_reParent_locator")`)
+                {
+                    string $locatorNames[] = define_work_names ({$SelCtrl});
+                    $LocatorName = $locatorNames[0];
+                }
+                else
+                {
+                    $LocatorName = $SelCtrl;
+                }
+
+                string $ContOrNot = `sets -im All_Sessions_reParentControls_set $SelCtrl`;
+                if ($ContOrNot==1)
+                {
+                    sets -edit -forceElement DeleteSelection_set $SelCtrl;
+                    if(`objExists ($LocatorName+"_reParent_locator_grp")`)
+                    {sets -edit -forceElement DeleteGroupSelection_set ($LocatorName+"_reParent_locator_grp");}
+                    if(`objExists ($LocatorName+"_reParent_locator")`)
+                    {sets -edit -forceElement DeleteLocatorsSelection_set ($LocatorName+"_reParent_locator");}
+                    if(`objExists ($LocatorName+"_reParent_aim_grp")`)
+                    {sets -edit -forceElement DeleteLocatorsSelection_set ($LocatorName+"_reParent_aim_grp");}
+                }
+            }
+            BakeAndDelete_reParent;
+        }
+    }
+    delete_unused_nodes;
+}
+
+proc BakeAndDelete_reParent()
+{
+	int $SaveKeys = `checkBox -query -v SaveKeys`;
+ 	int $DelRedMode = `checkBox -query -v DelRed`;
+    int $KeepKeys = `checkBox -query -v KeepKeys`;
+	int $onLayerReParentMode = `checkBox -query -v onLayerReParentMode`;
+
+    if(`objExists "DeleteGroupSelection_set"`) {select -r DeleteGroupSelection_set;}
+    string $SelectedGroups[] = `ls -sl`;
+
+    if(`objExists "DeleteSelection_set"`) {select -r DeleteSelection_set;}
+    string $SelectedControls[] = `ls -sl`;
+
+    if(`objExists "DeleteLocatorsSelection_set"`) {select -r DeleteLocatorsSelection_set;}
+    string $SelectedLocators[] = `ls -sl`;
+
+    int $currentL =`playbackOptions -q -ast`;
+    int $currentR =`playbackOptions -q -aet`;
+
+    int $currentL_region =`playbackOptions -q -min`;
+    int $currentR_region =`playbackOptions -q -max`;
+
+    int $currentLKeep, $currentRKeep, $currentL_int, $currentR_int;
+
+    if (size($SelectedControls)!=0)
+    {
+
+        refresh -suspend 1;
+        bakeResults
+        -t ($currentL_region+":"+$currentR_region)
+        -simulation 1
+        -sampleBy 1
+        -disableImplicitControl 1
+        -preserveOutsideKeys $KeepKeys
+        -sparseAnimCurveBake 0
+        -removeBakedAttributeFromLayer 0
+        -removeBakedAnimFromLayer 0
+        -bakeOnOverrideLayer 0
+        -minimizeRotation 1
+        -controlPoints 0
+        -shape 0
+        -at "tx"
+        -at "ty"
+        -at "tz"
+        -at "rx"
+        -at "ry"
+        -at "rz"
+        $SelectedControls;
+        refresh -suspend 0; ogs -reset;
+
+        if ($DelRedMode == 1&&$SaveKeys==0)
+        {
+            reParentDeleteRedundant;
+        }
+
+        if($SaveKeys==1)
+        {
+            RestoreLocatorKeysOnControl;
+        }
+
+        filterCurve;
+
+        if(`objExists "DeleteLocatorsSelection_set"`) {select -r DeleteLocatorsSelection_set; if(size(`sets -q DeleteLocatorsSelection_set`)!=0) {delete;}}
+        if(`objExists "DeleteGroupSelection_set"`) {select -r DeleteGroupSelection_set; if(size(`sets -q DeleteGroupSelection_set`)!=0) {delete;}}
+        if(`objExists "DeleteLocatorsSelection_set"`) {delete DeleteLocatorsSelection_set;}
+        if(`objExists "DeleteSelection_set"`) {delete DeleteSelection_set;}
+    }
+
+    if (size($SelectedControls)==0&&size($SelectedGroups)==0)
+    {
+        string $BakeOrNot = `confirmDialog -title "Oooops.." -message "                Selected control wasn't reParented \n Do you want to BAKE AND DELETE ALL reParent locators?"
+         -button "  BAKE AND DELETE ALL  "
+         -button "No"
+         -defaultButton "  BAKE AND DELETE ALL  "
+         -cancelButton "No" -dismissString "No"`;
+
+         if( $BakeOrNot == "  BAKE AND DELETE ALL  ")
+         {
+             select -cl;
+             BakeAndDelete_reParentInit;
+             if(`objExists "DeleteLocatorsSelection_set"`) {select -r DeleteLocatorsSelection_set; if(size(`sets -q DeleteGroupSelection_set`)!=0) {delete;}}
+             if(`objExists "DeleteGroupSelection_set"`) {select -r DeleteGroupSelection_set; if(size(`sets -q DeleteGroupSelection_set`)!=0) {delete;}}
+             if(`objExists "DeleteLocatorsSelection_set"`) {delete DeleteLocatorsSelection_set;}
+             if(`objExists "DeleteSelection_set"`) {delete DeleteSelection_set;}
+         }
+         else
+         {
+             if(`objExists "DeleteLocatorsSelection_set"`) {delete DeleteLocatorsSelection_set;}
+             if(`objExists "DeleteGroupSelection_set"`) {delete DeleteGroupSelection_set;}
+             if(`objExists "DeleteLocatorsSelection_set"`) {delete DeleteLocatorsSelection_set;}
+             if(`objExists "DeleteSelection_set"`) {delete DeleteSelection_set;}
+         }
+	}
+
+    if (size($SelectedControls)==0&&size($SelectedGroups)!=0)
+    {
+         if(`objExists "DeleteLocatorsSelection_set"`) {select -r DeleteLocatorsSelection_set; if(size(`sets -q DeleteLocatorsSelection_set`)!=0) {delete;}}
+         if(`objExists "DeleteGroupSelection_set"`) {select -r DeleteGroupSelection_set; if(size(`sets -q DeleteGroupSelection_set`)!=0) {delete;}}
+         if(`objExists "DeleteLocatorsSelection_set"`) {delete DeleteLocatorsSelection_set;}
+         if(`objExists "DeleteSelection_set"`) {delete DeleteSelection_set;}
+    }
+
+
+    //delete
+    for($selControl in $SelectedControls)
+    {
+        //reParent attributes
+        string $attrs[] = `listAttr $selControl`;
+        for ($attr in $attrs)
+        {
+            if (`gmatch $attr "*reParent*"`==1)
+            {
+                catchQuiet (`deleteAttr -attribute $attr $selControl`);
+            }
+        }
+
+        //reParent constrains
+        string $nodes[] = `listRelatives -children -type "parentConstraint" -type "pointConstraint" -type "orientConstraint" -type "aimConstraint" $selControl`;
+        for ($node in $nodes)
+        {
+            if (`gmatch $node "*reParent*"`==1)
+            {
+                catchQuiet (`delete $node`);
+            }
+        }
+    }
+
+    delete_unused_nodes;
+}
+
+global proc BakeKeysOnLocator()
+{
+	int $onLayerReParentMode = `checkBox -query -v onLayerReParentMode`;
+	int $PinButton = `checkBox -q -v PinCheckBox`;
+	int $MakeGlobalButton = `checkBox -q -v MakeGlobalCheckBox`;
+    int $ManualButton = `checkBox -q -v ManualCheckBox`;
+	int $SaveKeys = `checkBox -query -v SaveKeys`;
+	int $KeepKeys = `checkBox -query -v KeepKeys`;
+	int $currentLKeep, $currentRKeep, $currentL_int, $currentR_int;
+
+    int $currentL =`playbackOptions -q -ast`;
+    int $currentR =`playbackOptions -q -aet`;
+    int $currentL_region =`playbackOptions -q -min`;
+    int $currentR_region =`playbackOptions -q -max`;
+
+    string $SelectedLocators[] = `ls -sl`;
+
+    if ($KeepKeys==1&&$PinButton==0)
+    {
+        for ($Sel in $SelectedLocators)
+        {
+            string $baseControls =  `getAttr ($Sel+".reParent_ControlKeys")`;
+            string $arrayControls[] = stringToStringArray($baseControls, " ");
+
+            if (size($arrayControls)>1)
+            {
+                int $currentL_int = $arrayControls[0];
+                int $currentR_int = $arrayControls[size($arrayControls)-1];
+
+                if ($currentL_int<$currentL){$currentLKeep=$currentL_int;} else{$currentLKeep=$currentL;}
+                if ($currentR_int>$currentR){$currentRKeep=$currentR_int;} else{$currentRKeep=$currentR;}
+            }
+            else
+            {
+                $currentLKeep=$currentL;
+                $currentRKeep=$currentR;
+            }
+
+            refresh -suspend 1;
+            bakeResults
+            -t ($currentL_region+":"+$currentR_region)
+            -simulation 1
+            -sampleBy 1
+            -disableImplicitControl 1
+            -preserveOutsideKeys 1
+            -sparseAnimCurveBake 0
+            -removeBakedAttributeFromLayer 0
+            -removeBakedAnimFromLayer 0
+            -bakeOnOverrideLayer $onLayerReParentMode
+            -minimizeRotation 1
+            -controlPoints 0
+            -shape 0
+            -at "tx"
+            -at "ty"
+            -at "tz"
+            -at "rx"
+            -at "ry"
+            -at "rz"
+            -at "Spin"
+            $Sel;
+            filterCurve;
+            refresh -suspend 0; ogs -reset;
+        }
+    }
+    else
+    {
+        if ($PinButton == 0)
+        {
+            refresh -suspend 1;
+            bakeResults
+            -t ($currentL_region+":"+$currentR_region)
+            -simulation 1
+            -sampleBy 1
+            -disableImplicitControl 1
+            -preserveOutsideKeys 1
+            -sparseAnimCurveBake 0
+            -removeBakedAttributeFromLayer 0
+            -removeBakedAnimFromLayer 0
+            -bakeOnOverrideLayer $onLayerReParentMode
+            -minimizeRotation 1
+            -controlPoints 0
+            -shape 0
+            -at "tx"
+            -at "ty"
+            -at "tz"
+            -at "rx"
+            -at "ry"
+            -at "rz"
+            -at "Spin";
+            filterCurve;
+            refresh -suspend 0; ogs -reset;
+        }
+    }
+
+    if($SaveKeys==1)
+    {
+        for ($Sel in $SelectedLocators)
+        {
+            RestoreControlKeysOnLocator ({$Sel});
+
+            //Define Blocking Step Mode
+            string $baseControls =  `getAttr ($Sel+".reParent_controlName")`;
+            string $arrayControls[] = stringToStringArray($baseControls, " ");
+            string $alltangents[] = `keyTangent  -q -outTangentType  $arrayControls[0]`;
+            string $alltangents_removeDuplicates[] = stringArrayRemoveDuplicates($alltangents);
+
+            if (size($alltangents_removeDuplicates)==1&&$alltangents_removeDuplicates[0]=="step")
+        	{
+                select -r $Sel;
+                selectKey -r -k;
+                keyTangent -ott step;
+            }
+        }
+    }
+
+    if(`objExists "TempParentConst*"`) {delete "TempParentConst*";}
+    if(`objExists "TempAimConst*"`) {delete "TempAimConst*";}
+
+    for ($sel in $SelectedLocators)
+    {
+        if(`objExists ($sel+"_com_pointConstraint*")`) {delete ($sel+"_com_pointConstraint*");}
+        if(`objExists ($sel+"_com_orientConstraint*")`) {delete ($sel+"_com_orientConstraint*");}
+        string $list_all_connections[] = `listRelatives -type "parentConstraint" $sel`;
+        if (size($list_all_connections)!=0){delete $list_all_connections;}
+    }
+
+    delete_unused_nodes;
+}
+
+proc reParentDeleteRedundant()
+{
+    $SelectedControls = `ls -sl`;
+    selectKey -r -k;
+    string $selectedCurves[] = `keyframe -selected -q -name`;
+
+    for ($currentAnimCurve in $selectedCurves)
+    {
+    	float $allKeys[] = `keyframe  -q -timeChange $currentAnimCurve`;
+        $valArray = `keyframe -q -valueChange $currentAnimCurve`;
+        $keysSize = `size($allKeys)`;
+
+        for ($s=1; $s<$keysSize-1; ++$s )
+        {if ($valArray[$s] == $valArray[$s-1]&&$valArray[$s] == $valArray[$s+1]) {cutKey -time $allKeys[$s] -clear $currentAnimCurve;}}
+    }
+}
+
+proc string[] define_work_names (string $base_names[])
+{
+	//define real names
+    string $clean_names[];
+    string $clean_names_namespace[];
+    string $current_namespace[];
+    string $current_path[];
+    string $add_namespace[];
+    string $clean_name;
+
+    for ($sel in $base_names)
+    {
+        clear $current_path $clean_names_namespace $add_namespace;
+
+        tokenize $sel "|" $current_path;
+        for ($element in $current_path)
+        {
+            tokenize $element ":" $current_namespace;
+            stringArrayInsertAtIndex( 10000, $clean_names_namespace, $current_namespace[size($current_namespace)-1] );
+        }
+        tokenize $current_path[0] ":" $add_namespace;
+        stringArrayRemoveAtIndex((size($add_namespace)-1), $add_namespace);
+        string $first_name = stringArrayToString($add_namespace, "_");
+        stringArrayInsertAtIndex( 0, $clean_names_namespace, $first_name );
+        if ($clean_names_namespace[0] == "")
+        {
+              stringArrayRemoveAtIndex(0, $clean_names_namespace);
+        }
+        $clean_name = stringArrayToString($clean_names_namespace, "_");
+        stringArrayInsertAtIndex( 10000, $clean_names, $clean_name);
+    }
+    return $clean_names;
+}
+
+proc define_control_keys(string $object, string $locator)
+{
+    string $allKeysAllCurvesString[];
+    string $allKeysAllCurvesStringClean[];
+    clear  $allKeysAllCurvesStringClean;
+
+    float $all_keys_float[] = `keyframe -q -timeChange $object`;
+    string $all_keys_string = floatArrayToString($all_keys_float, " ");
+
+    $array = stringToStringArray($all_keys_string, " ");
+    $allKeysAllCurvesString = stringArrayRemoveDuplicates($array);
+
+    //sorting
+ 	for ($timeKey in $allKeysAllCurvesString)
+ 	{
+ 	    setKeyframe -time $timeKey ($locator+".ghosting");
+ 	}
+
+    float $all_keys_sorted_float[] = `keyframe -q -timeChange ($locator+".ghosting")`;
+    string $all_keys_sorted_string = floatArrayToString($all_keys_sorted_float, " ");
+    string $all_keys_sorted_string_array[] = stringToStringArray($all_keys_sorted_string, " ");
+
+    //to x.xx
+    for ($timeKey in $all_keys_sorted_string_array)
+    {
+        string $parts[];
+        tokenize $timeKey "." $parts;
+        if (`size($parts)`>1)
+        {
+            string $cleanPArt = startString($parts[1], 2);
+            string $cleanNumber = ($parts[0]+"."+$cleanPArt);
+            stringArrayInsertAtIndex( 10000, $allKeysAllCurvesStringClean, $cleanNumber );
+        }
+        else{stringArrayInsertAtIndex( 10000, $allKeysAllCurvesStringClean, $timeKey );}
+    }
+
+    $allKeysAllCurvesStringClean = stringArrayRemoveDuplicates($allKeysAllCurvesStringClean);
+    $allKeysAllCurvesStringCleanString = stringArrayToString($allKeysAllCurvesStringClean, " ");
+
+    setAttr -type "string" ($locator+".reParent_ControlKeys") $allKeysAllCurvesStringCleanString;
+    cutKey -cl -t ":" -f ":" -at "ghosting" $locator;
+}
+
+proc RestoreControlKeysOnLocator(string $SelectedControls[])
+{
+    for ($SelCtrl in $SelectedControls)
+    {
+        global string $LocatorName;
+        if(!`objExists ($SelCtrl+"_reParent_locator")`)
+        {
+            string $locatorNames[] = define_work_names ({$SelCtrl});
+            $LocatorName = $locatorNames[0];
+        }
+        else
+        {
+            $LocatorName = $SelCtrl;
+        }
+
+        select -r $SelCtrl;
+        selectKey -r -k;
+        string $selectedCurves[] = `keyframe -selected -q -name`;
+
+        string $allKeysAllCurvesStringCleanString =  `getAttr ($LocatorName+".reParent_ControlKeys")`;
+        string $allKeysAllCurvesStringClean[] = stringToStringArray($allKeysAllCurvesStringCleanString, " ");
+
+        for ($timeKey in $allKeysAllCurvesStringClean)
+        {setKeyframe -insert -time $timeKey $selectedCurves;}
+
+        select -r $SelCtrl;
+        selectKey -r -k;
+        $selectedCurves = `keyframe -selected -q -name`;
+
+        for ($unselectCurve in $selectedCurves)
+        {
+             for ($unselectCurveKey in $allKeysAllCurvesStringClean)
+             {
+                  float $timeFloat = $unselectCurveKey;
+                  selectKey -rm -k -t $timeFloat $unselectCurve;
+             }
+        }
+
+        if (size($allKeysAllCurvesStringCleanString)>0)
+            {
+                cutKey -animation keys -clear;
+            }
+    }
+}
+
+proc RestoreLocatorKeysOnControl()
+{
+    string $SelectedControls[]=`sets -q DeleteLocatorsSelection_set`;
+    string $baseControls;
+
+    for ($SelCtrl in $SelectedControls)
+    {
+        if(`getAttr ($SelCtrl+".reParent_Type")` == "IK")
+        {
+            $baseControls =  `getAttr ($SelCtrl+".reParent_controls_chain")`;
+        }
+        else
+        {
+            $baseControls =  `getAttr ($SelCtrl+".reParent_controlName")`;
+        }
+
+        string $arrayControls[] = stringToStringArray($baseControls, " ");
+
+        for ($baseControl in $arrayControls)
+        {
+            select -r $baseControl;
+            selectKey -r -k;
+            string $selectedCurves[] = `keyframe -selected -q -name`;
+
+            string $allKeysAllCurvesStringCleanString =  `getAttr ($SelCtrl+".reParent_ControlKeys")`;
+            string $allKeysAllCurvesStringClean[] = stringToStringArray($allKeysAllCurvesStringCleanString, " ");
+
+            for ($timeKey in $allKeysAllCurvesStringClean)
+            {setKeyframe -insert -time $timeKey $selectedCurves;}
+
+            select -r $baseControl;
+            selectKey -r -k;
+            $selectedCurves = `keyframe -selected -q -name`;
+
+            for ($unselectCurve in $selectedCurves)
+            {
+                 for ($unselectCurveKey in $allKeysAllCurvesStringClean)
+                 {
+                      float $timeFloat = $unselectCurveKey;
+                      selectKey -rm -k -t $timeFloat $unselectCurve;
+                 }
+            }
+
+            if (size($allKeysAllCurvesStringCleanString)>0)
+            {
+                cutKey -animation keys -clear;
+            }
+        }
+    }
+}
+
+proc checkbox_pin_on()
+{
+    checkBox -e -en 0 AimCheckBox;
+    checkBox -e -en 0 MakeGlobalCheckBox;
+    checkBox -e -en 0 IKCheckBox;
+    checkBox -e -en 0 IKCheckLocalBox;
+    checkBox -e -en 0 ManualCheckBox;
+    checkBox -e -en 0 reConstrainCheckBox;
+    checkBox -e -en 0 onLayerReParentMode;
+    checkBox -e -en 0 KeepKeys;
+    checkBox -e -en 0 SaveKeys;
+    checkBox -e -en 0 CollisionCheckBox;
+}
+
+proc checkbox_pin_off()
+{
+    checkBox -e -en 1 AimCheckBox;
+    checkBox -e -en 1 MakeGlobalCheckBox;
+    checkBox -e -en 1 IKCheckBox;
+    checkBox -e -en 1 IKCheckLocalBox;
+    checkBox -e -en 1 ManualCheckBox;
+    checkBox -e -en 1 reConstrainCheckBox;
+    checkBox -e -en 1 onLayerReParentMode;
+    checkBox -e -en 1 KeepKeys;
+    checkBox -e -en 1 SaveKeys;
+    checkBox -e -en 1 CollisionCheckBox;
+}
+
+proc checkbox_aim_on()
+{
+    checkBox -e -en 0 PinCheckBox;
+    checkBox -e -en 0 MakeGlobalCheckBox;
+    checkBox -e -en 0 IKCheckBox;
+    checkBox -e -en 0 IKCheckLocalBox;
+    checkBox -e -en 0 ManualCheckBox;
+    checkBox -e -en 0 reConstrainCheckBox;
+    checkBox -e -en 0 CollisionCheckBox;
+}
+
+proc checkbox_aim_off()
+{
+    checkBox -e -en 1 PinCheckBox;
+    checkBox -e -en 1 MakeGlobalCheckBox;
+    checkBox -e -en 1 IKCheckBox;
+    checkBox -e -en 1 IKCheckLocalBox;
+    checkBox -e -en 1 ManualCheckBox;
+    checkBox -e -en 1 reConstrainCheckBox;
+    checkBox -e -en 1 CollisionCheckBox;
+}
+
+proc checkbox_global_on()
+{
+    if (`checkBox -q -v IKCheckLocalBox`==0)
+    {
+        checkBox -e -en 0 PinCheckBox;
+        checkBox -e -en 0 AimCheckBox;
+        checkBox -e -en 0 IKCheckBox;
+        checkBox -e -en 0 IKCheckLocalBox;
+        checkBox -e -en 0 reConstrainCheckBox;
+        checkBox -e -en 0 CollisionCheckBox;
+        checkBox -e -v 0 reConstrainCheckBox;
+    }
+
+}
+
+proc checkbox_global_off()
+{
+    if (`checkBox -q -v ManualCheckBox`==0)
+    {
+        checkBox -e -en 1 PinCheckBox;
+        checkBox -e -en 1 AimCheckBox;
+        checkBox -e -en 1 IKCheckBox;
+        checkBox -e -en 1 IKCheckLocalBox;
+        checkBox -e -en 1 reConstrainCheckBox;
+        checkBox -e -en 1 CollisionCheckBox;
+    }
+    else
+    {
+        checkbox_manual_on;
+    }
+
+    if (`checkBox -q -v IKCheckLocalBox`==1)
+    {
+        checkbox_IK_local_on;
+    }
+}
+
+proc checkbox_IK_on()
+{
+    checkBox -e -en 0 PinCheckBox;
+    checkBox -e -en 0 AimCheckBox;
+    checkBox -e -en 0 MakeGlobalCheckBox;
+    checkBox -e -v 0 MakeGlobalCheckBox;
+
+    checkBox -e -en 1 ManualCheckBox;
+    checkBox -e -en 0 reConstrainCheckBox;
+    checkBox -e -en 0 CollisionCheckBox;
+}
+
+proc checkbox_IK_off()
+{
+    if (`checkBox -q -v ManualCheckBox`==0)
+    {
+        checkBox -e -en 1 PinCheckBox;
+        checkBox -e -en 1 AimCheckBox;
+        checkBox -e -en 1 MakeGlobalCheckBox;
+        checkBox -e -en 1 ManualCheckBox;
+        checkBox -e -en 1 reConstrainCheckBox;
+        checkBox -e -v  0 IKCheckLocalBox;
+        checkBox -e -en 1 CollisionCheckBox;
+    }
+    else
+    {
+        checkbox_manual_on;
+        checkBox -e -v 0 IKCheckLocalBox;
+    }
+}
+
+proc checkbox_IK_local_on()
+{
+    checkBox -e -en 0 PinCheckBox;
+    checkBox -e -en 0 AimCheckBox;
+    checkBox -e -en 1 MakeGlobalCheckBox;
+    checkBox -e -en 1 -v 1 IKCheckBox;
+    checkBox -e -en 1 ManualCheckBox;
+    checkBox -e -en 0 reConstrainCheckBox;
+    checkBox -e -en 0 CollisionCheckBox;
+}
+
+proc checkbox_IK_local_off()
+{
+    checkBox -e -en 0 MakeGlobalCheckBox;
+    checkBox -e -v 0 MakeGlobalCheckBox;
+}
+
+proc checkbox_manual_on()
+{
+    //work
+    checkBox -e -en 1 IKCheckBox;
+    checkBox -e -en 1 IKCheckLocalBox;
+    checkBox -e -en 1 MakeGlobalCheckBox;
+    checkBox -e -en 1 reConstrainCheckBox;
+
+    //not work
+    checkBox -e -en 0 PinCheckBox;
+    checkBox -e -en 0 AimCheckBox;
+    checkBox -e -en 0 CollisionCheckBox;
+
+    //work with IK
+    if (`checkBox -q -v IKCheckBox`==1)
+    {
+        checkBox -e -en 0 reConstrainCheckBox;
+
+        if (`checkBox -q -v IKCheckLocalBox`==0)
+        {
+            checkBox -e -en 0 MakeGlobalCheckBox;
+            checkBox -e -v 0 MakeGlobalCheckBox;
+        }
+    }
+
+
+    if (`checkBox -q -v reConstrainCheckBox`==1)
+    {
+        checkBox -e -en 0 MakeGlobalCheckBox;
+        checkBox -e -en 0 IKCheckBox;
+        checkBox -e -en 0 IKCheckLocalBox;
+    }
+
+    if (`checkBox -q -v MakeGlobalCheckBox`==1)
+    {
+        if (`checkBox -q -v IKCheckLocalBox`==1)
+        {
+            checkBox -e -en 0 reConstrainCheckBox;
+        }
+        else
+        {
+            checkBox -e -en 0 reConstrainCheckBox;
+            checkBox -e -en 0 IKCheckBox;
+            checkBox -e -en 0 IKCheckLocalBox;
+        }
+    }
+
+    if (`checkBox -q -v IKCheckBox`==1)
+    {
+        checkBox -e -en 0 reConstrainCheckBox;
+        //checkBox -e -en 0 MakeGlobalCheckBox;
+    }
+}
+
+proc checkbox_manual_off()
+{
+    if (`checkBox -q -v reConstrainCheckBox`==1)
+    {
+        checkbox_reConstrain_on;
+        checkBox -e -v 0 MakeGlobalCheckBox;
+        checkBox -e -en 0 IKCheckBox;
+    }
+
+    if (`checkBox -q -v MakeGlobalCheckBox`==1)
+    {
+        checkbox_global_on;
+        checkBox -e -v 0 reConstrainCheckBox;
+      //  checkBox -e -en 0 IKCheckBox;
+    }
+
+    if (`checkBox -q -v IKCheckLocalBox`==1)
+    {
+          checkbox_IK_local_on;
+//        checkBox -e -v 0 MakeGlobalCheckBox;
+//        checkBox -e -v 0 reConstrainCheckBox;
+    }
+
+    if (`checkBox -q -v MakeGlobalCheckBox`==0&&`checkBox -q -v reConstrainCheckBox`==0&&`checkBox -q -v IKCheckBox`==0)
+    {
+        checkBox -e -en 1 PinCheckBox;
+        checkBox -e -en 1 AimCheckBox;
+        checkBox -e -en 1 IKCheckBox;
+        checkBox -e -en 1 IKCheckLocalBox;
+        checkBox -e -en 1 CollisionCheckBox;
+        checkBox -e -en 1 reConstrainCheckBox;
+        checkBox -e -en 1 MakeGlobalCheckBox;
+    }
+}
+
+proc checkbox_reConstrain_on()
+{
+    checkBox -e -en 0 PinCheckBox;
+    checkBox -e -en 0 AimCheckBox;
+    checkBox -e -en 0 IKCheckBox;
+    checkBox -e -en 0 IKCheckLocalBox;
+    checkBox -e -en 0 MakeGlobalCheckBox;
+    checkBox -e -en 0 CollisionCheckBox;
+    checkBox -e -v 0 MakeGlobalCheckBox;
+}
+
+proc checkbox_reConstrain_off()
+{
+    if (`checkBox -q -v ManualCheckBox`==0)
+    {
+        checkBox -e -en 1 PinCheckBox;
+        checkBox -e -en 1 AimCheckBox;
+        checkBox -e -en 1 IKCheckBox;
+        checkBox -e -en 1 IKCheckLocalBox;
+        checkBox -e -en 1 MakeGlobalCheckBox;
+        checkBox -e -en 1 CollisionCheckBox;
+    }
+    else
+    {
+        checkbox_manual_on;
+    }
+}
+
+proc checkbox_collision_on()
+{
+    checkBox -e -en 0 PinCheckBox;
+    checkBox -e -en 0 AimCheckBox;
+    checkBox -e -en 0 IKCheckBox;
+    checkBox -e -en 0 IKCheckLocalBox;
+    checkBox -e -en 0 MakeGlobalCheckBox;
+    checkBox -e -en 0 ManualCheckBox;
+    checkBox -e -en 0 reConstrainCheckBox;
+}
+
+proc checkbox_collision_off()
+{
+    checkBox -e -en 1 PinCheckBox;
+    checkBox -e -en 1 AimCheckBox;
+    checkBox -e -en 1 IKCheckBox;
+    checkBox -e -en 1 IKCheckLocalBox;
+    checkBox -e -en 1 MakeGlobalCheckBox;
+    checkBox -e -en 1 ManualCheckBox;
+    checkBox -e -en 1 reConstrainCheckBox;
+}
+
+proc int check_locked_attr (string $check_control, string $check_attributes[])
+{
+    int $counter = 0;
+
+    for($attr in $check_attributes)
+    {
+        int $count = `getAttr -l ($check_control+"."+$attr)`;
+        $counter = $counter + $count;
+    }
+
+    return $counter;
+}
+
+proc alignObject (string $first, string $second)
+{
+    mxConstraint "pointConstrain" 0 0 $first $second;
+    mxConstraint "orientConstrain" 0 0 $first $second;
+}
+
+proc cached_playback_off()
+{
+    $mayaVersion = (int) startString(`about -v`,4);
+    if ($mayaVersion>2018)
+    {
+        global int $baseCachedPlayback;
+        int $getCachedPlayback = `evaluator -q -name "cache"`;
+        $baseCachedPlayback  = $getCachedPlayback;
+        evaluator -en 0 -name "cache";
+    }
+}
+
+proc cached_playback_on()
+{
+    global int $baseCachedPlayback;
+    $mayaVersion = (int) startString(`about -v`,4);
+    if ($mayaVersion>2018)
+    {
+        evaluator -en $baseCachedPlayback -name "cache";
+    }
+}
+
+proc delete_unused_nodes()
+{
+    string $current_path[];
+    string $get_nodes_for_check[];
+    string $list_connections[];
+    string $base_node_name;
+
+    //delete unused reParent orient Constrain nodes
+    $get_nodes_for_check = `ls "*_com_orientConstraint*"`;
+    for ($check_node_connections in $get_nodes_for_check)
+    {
+        $list_connections = `listConnections ($check_node_connections+".constraintRotateX") ($check_node_connections+".constraintRotateY") ($check_node_connections+".constraintRotateZ")`;
+        if ($list_connections[0]=="")
+        {
+            if(`objExists $check_node_connections`) {delete $check_node_connections;}
+        }
+    }
+
+    //delete unused reParent point Constrain nodes
+    $get_nodes_for_check = `ls "*_com_pointConstraint*"`;
+    for ($check_node_connections in $get_nodes_for_check)
+    {
+        $list_connections = `listConnections ($check_node_connections+".constraintTranslateX") ($check_node_connections+".constraintTranslateY") ($check_node_connections+".constraintTranslateZ")`;
+        if ($list_connections[0]=="")
+        {
+            if(`objExists $check_node_connections`) {delete $check_node_connections;}
+        }
+    }
+
+    //delete unused reParent parent Constrain nodes
+    $get_nodes_for_check = `ls "*_com_parentConstraint*"`;
+    for ($check_node_connections in $get_nodes_for_check)
+    {
+        $list_connections = `listConnections ($check_node_connections+".constraintTranslateX")
+                                             ($check_node_connections+".constraintTranslateY")
+                                             ($check_node_connections+".constraintTranslateZ")
+                                             ($check_node_connections+".constraintRotateX")
+                                             ($check_node_connections+".constraintRotateY")
+                                             ($check_node_connections+".constraintRotateZ")`;
+        if ($list_connections[0]=="")
+        {
+            if(`objExists $check_node_connections`) {delete $check_node_connections;}
+        }
+    }
+
+    //delete unused reParent IK nodes
+    $get_nodes_for_check = `ls "*_reParentIK_stretchy_blend*"`;
+
+    for ($check_node_connections in $get_nodes_for_check)
+    {
+        $list_connections = `listConnections ($check_node_connections+".outputR")`;
+        if ($list_connections[0]=="")
+        {
+            if(`objExists $check_node_connections`) {delete $check_node_connections;}
+        }
+    }
+
+    //delete lost nodes
+    $get_nodes_for_check = `ls -type "decomposeMatrix" "*_com_*" "*_to_obj_*" "*_cfw_*" `;
+    for ($check_node_connections in $get_nodes_for_check)
+    {
+        string $list_connections[] = `listConnections ($check_node_connections+".outputTranslate")
+                                                      ($check_node_connections+".outputRotate")
+                                                      ($check_node_connections+".outputScale")`;
+
+        if ($list_connections[0]=="")
+        {
+            if(`objExists $check_node_connections`) {delete $check_node_connections;}
+        }
+    }
+
+    $get_nodes_for_check = `ls -type "inverseMatrix" "*_com_*"`;
+    for ($check_node_connections in $get_nodes_for_check)
+    {
+        $list_connections = `listConnections ($check_node_connections+".outputMatrix")`;
+        if ($list_connections[0]=="")
+        {
+            if(`objExists $check_node_connections`) {delete $check_node_connections;}
+        }
+    }
+
+    $get_nodes_for_check = `ls -type "composeMatrix" "*_com_*" "*_cfw_*"`;
+    for ($check_node_connections in $get_nodes_for_check)
+    {
+        $list_connections = `listConnections ($check_node_connections+".outputMatrix")`;
+        if ($list_connections[0]=="")
+        {
+            if(`objExists $check_node_connections`) {delete $check_node_connections;}
+        }
+    }
+
+    $get_nodes_for_check = `ls -type "multMatrix" "*_com_*" "*_cfw_*"`;
+    for ($check_node_connections in $get_nodes_for_check)
+    {
+        $list_connections = `listConnections ($check_node_connections+".matrixSum")`;
+        if ($list_connections[0]=="")
+        {
+            if(`objExists $check_node_connections`) {delete $check_node_connections;}
+        }
+    }
+
+    $get_nodes_for_check = `ls -type "plusMinusAverage" "*_com_*" "*reParentIK_soft*"  "*cfw_distance*"`;
+    for ($check_node_connections in $get_nodes_for_check)
+    {
+        $list_connections = `listConnections ($check_node_connections+".output1D") ($check_node_connections+".output3D")`;
+
+        if ($list_connections[0]=="")
+        {
+            if(`objExists $check_node_connections`) {delete $check_node_connections;}
+        }
+    }
+
+    $get_nodes_for_check = `ls -type "multiplyDivide" "*reParentIK_soft*" "*_cfw_*"`;
+    for ($check_node_connections in $get_nodes_for_check)
+    {
+        $list_connections = `listConnections ($check_node_connections+".outputX")`;
+        if ($list_connections[0]=="")
+        {
+            if(`objExists $check_node_connections`) {delete $check_node_connections;}
+        }
+    }
+
+    $get_nodes_for_check = `ls -type "condition" "*reParentIK_soft*"`;
+    for ($check_node_connections in $get_nodes_for_check)
+    {
+        $list_connections = `listConnections ($check_node_connections+".outColorR")`;
+        if ($list_connections[0]=="")
+        {
+            if(`objExists $check_node_connections`) {delete $check_node_connections;}
+        }
+    }
+
+    $get_nodes_for_check = `ls -type "remapValue" "*reParentIK_soft*" "*_cfw_*"`;
+    for ($check_node_connections in $get_nodes_for_check)
+    {
+        $list_connections = `listConnections ($check_node_connections+".outValue")`;
+        if ($list_connections[0]=="")
+        {
+            if(`objExists $check_node_connections`) {delete $check_node_connections;}
+        }
+    }
+
+    $get_nodes_for_check = `ls -type "distanceBetween" "*_cfw_*"`;
+    for ($check_node_connections in $get_nodes_for_check)
+    {
+        $list_connections = `listConnections ($check_node_connections+".distance")`;
+        if ($list_connections[0]=="")
+        {
+            if(`objExists $check_node_connections`) {delete $check_node_connections;}
+        }
+    }
+
+    $get_nodes_for_check = `ls -type "angleBetween" "*_com_*" "*_cfw_*"`;
+    for ($check_node_connections in $get_nodes_for_check)
+    {
+        $list_connections = `listConnections ($check_node_connections+".euler")`;
+        if ($list_connections[0]=="")
+        {
+            if(`objExists $check_node_connections`) {delete $check_node_connections;}
+        }
+    }
+}
+
+proc transfer_attributes (string $control, string $locator, string $option)
+{
+    int $tranferAttribute = `checkBox -query -v TransferAttr`;
+    string $transferOrNot;
+
+    if ($tranferAttribute==1||$option=="forced")
+    {
+        string $unique_attributes[] = stringArrayRemove({ "translateX", "translateY", "translateZ", "rotateX", "rotateY", "rotateZ", "scaleX", "scaleY", "scaleZ", "visibility", "radius", "control_shape", "_transfered_", "blendParent1", "blendParent2", "blendParent3", "blendParent4" }, `listAttr -u -c -k $control`);
+
+        if (size($unique_attributes)!=0)
+        {
+            if ($option!="forced")
+            {
+                $transferOrNot = `confirmDialog  -title "Well.." -ma "center" -message ("Selected control: \n\n"+$control+"  -  has unique attributes \n\nDo you want to transfer attributes and animation to reParent locator?\nDon't worry, it's safe for the rig, and animation will be the same after bake\n")
+                -button " Yeah, do it "
+                -button "No"
+                -defaultButton "No"
+                -cancelButton "No" -dismissString "No"`;
+            }
+            else
+            {
+               $transferOrNot = " Yeah, do it ";
+            }
+
+            if($transferOrNot == " Yeah, do it ")
+            {
+                if ($option!="forced")
+                {
+                    addAttr -ln "_transfered_" -at "enum" -en "attributes" $locator;
+                    setAttr -e -l 1 -channelBox true ($locator+"._transfered_");
+                }
+                for ($attr in $unique_attributes)
+                {
+                    if(`addAttr -q -at ($control+"."+$attr)`=="enum")
+                    {
+                        addAttr -ln $attr -at (`addAttr -q -at ($control+"."+$attr)`) -en (`addAttr -q -en ($control+"."+$attr)`) $locator;
+                    }
+                    else
+                    {
+                        addAttr -ln $attr -at (`addAttr -q -at ($control+"."+$attr)`) $locator;
+
+                        float $min_value = `addAttr -q -at -min ($control+"."+$attr)`;
+                        if($min_value!="")
+                        {
+                            addAttr -e -min $min_value ($locator+"."+$attr);
+                        }
+
+                        float $max_value = `addAttr -q -at -max ($control+"."+$attr)`;
+                        if($max_value!="")
+                        {
+                            addAttr -e -max $max_value ($locator+"."+$attr);
+                        }
+                    }
+
+                    int $displayable = `addAttr -q -keyable ($locator+"."+$attr)`;
+
+                    if(`addAttr -q -keyable ($locator+"."+$attr)`=="0")
+                    {
+                        setAttr -e -keyable 0 -cb 1 ($locator+"."+$attr);
+                    }
+                    else
+                    {
+                        setAttr -e -keyable 1 ($locator+"."+$attr);
+                    }
+
+                    string $get_attr_connection[] = `listConnections -d off -s on ($control+"."+$attr)`;
+                    string $get_animation_curve[] = `ls -typ "animCurveTL" -typ "animCurveTU" -typ "animCurveTA" -typ "animCurveTT" $get_attr_connection[0]`;
+
+                    if (size($get_animation_curve)!=0)
+                    {
+                        connectAttr -f ($get_animation_curve[0]+".output") ($locator+"."+$attr);
+                        connectAttr -f ($locator+"."+$attr) ($control+"."+$attr);
+                    }
+                    else
+                    {
+                        setAttr ($locator+"."+$attr) `getAttr ($control+"."+$attr)`;
+                        connectAttr -f ($locator+"."+$attr) ($control+"."+$attr);
+                    }
+                }
+            }
+        }
+    }
+}
+
+//Locator Size
+global proc reParent_locator_size (string $base_name, string $work_name)
+{
+    // Clean Joints
+    if (`objectType $base_name`=="joint" && !`objExists ($base_name+"Shape")` && !`objExists ($base_name+"Shape1")`)
+    {
+
+            vector $firstPos;
+            vector $secondPos;
+            vector $firstVect;
+            float $firstLen;
+            string $UpHierarchyObject[];
+
+            select -r $base_name;
+            pickWalk -d down;
+            $UpHierarchyObject = `ls -sl`;
+
+            if ($base_name!=$UpHierarchyObject[0])
+                {
+                    $firstPos = `xform -q -t -ws $base_name`;
+                    $secondPos = `xform -q -t -ws $UpHierarchyObject[0]`;
+                    $firstVect = ($secondPos - $firstPos);
+                    $firstLen = sqrt( pow(($firstVect.x), 2) + pow(($firstVect.y), 2) + pow(($firstVect.z), 2) );
+                    setAttr ($work_name+".localScaleX") ($firstLen*0.5);
+                    setAttr ($work_name+".localScaleY") ($firstLen*0.5);
+                    setAttr ($work_name+".localScaleZ") ($firstLen*0.5);
+                }
+            else
+                {
+                    select -r $base_name;
+                    pickWalk -d up ;
+
+                    $UpHierarchyObject = `ls -sl`;
+                    if ($base_name!=$UpHierarchyObject[0])
+                        {
+                            $firstPos = `xform -q -t -ws $base_name`;
+                            $secondPos = `xform -q -t -ws $UpHierarchyObject[0]`;
+                            $firstVect = ($secondPos - $firstPos);
+                            $firstLen = sqrt( pow(($firstVect.x), 2) + pow(($firstVect.y), 2) + pow(($firstVect.z), 2) );
+                            setAttr ($work_name+".localScaleX") ($firstLen*0.5);
+                            setAttr ($work_name+".localScaleY") ($firstLen*0.5);
+                            setAttr ($work_name+".localScaleZ") ($firstLen*0.5);
+                        }
+                }
+    }
+
+    // Joint with Shapes
+    if (`objectType $base_name`=="joint" && `objExists ($base_name+"Shape")`)
+    {
+        $base_name=($base_name+"Shape");
+
+        float $bbox[] = `exactWorldBoundingBox $base_name`;
+	    float $locatorSizeX = $bbox[3] - $bbox[0];
+        float $locatorSizeY = $bbox[4] - $bbox[1];
+        float $locatorSizeZ = $bbox[5] - $bbox[2];
+        float $locatorSize = (($locatorSizeX+$locatorSizeY+$locatorSizeZ)/3);
+
+        setAttr ($work_name+".localScaleX") ($locatorSize/1);
+        setAttr ($work_name+".localScaleY") ($locatorSize/1);
+        setAttr ($work_name+".localScaleZ") ($locatorSize/1);
+    }
+
+    // transform (curve control)
+    if (`objectType $base_name`=="transform")
+    {
+        duplicate -rr -n ($work_name+"bb") $base_name;
+        string $children_shape[] = `listRelatives -s -c -f ($work_name+"bb")`;
+        string $children_obj[] = `listRelatives -c -f ($work_name+"bb")`;
+        string $children_for_delete[] = stringArrayRemoveExact($children_shape, $children_obj);
+        if (size ($children_for_delete)!=0)
+        {
+            delete $children_for_delete;
+        }
+        float $bbox[] = `exactWorldBoundingBox ($work_name+"bb")`;
+	    float $locatorSizeX = $bbox[3] - $bbox[0];
+        float $locatorSizeY = $bbox[4] - $bbox[1];
+        float $locatorSizeZ = $bbox[5] - $bbox[2];
+        float $locatorSize = (($locatorSizeX+$locatorSizeY+$locatorSizeZ)/3);
+        delete ($work_name+"bb");
+
+        if (`objExists "*ctlArmUpGimbalLf"`||`objExists "*:*ctlArmUpGimbalLf"`)
+        {
+            setAttr ($work_name+".localScaleX") 0.6;
+            setAttr ($work_name+".localScaleY") 0.6;
+            setAttr ($work_name+".localScaleZ") 0.6;
+        }
+        else
+        {
+            setAttr ($work_name+".localScaleX") ($locatorSize/1.8);
+            setAttr ($work_name+".localScaleY") ($locatorSize/1.8);
+            setAttr ($work_name+".localScaleZ") ($locatorSize/1.8);
+        }
+    }
+    select -r $work_name;
+}
+
+proc reParent_locator_shape (string $locator)
+{
+    //sphere
+    curve -n ($locator+"_temp_shape_sphere") -d 1 -p 0 1 0 -p -0.382683 0.92388 0 -p -0.707107 0.707107 0 -p -0.92388 0.382683 0 -p -1 0 0 -p -0.92388 -0.382683 0 -p -0.707107 -0.707107 0 -p -0.382683 -0.92388 0 -p 0 -1 0 -p 0.382683 -0.92388 0 -p 0.707107 -0.707107 0 -p 0.92388 -0.382683 0 -p 1 0 0 -p 0.92388 0.382683 0 -p 0.707107 0.707107 0 -p 0.382683 0.92388 0 -p 0 1 0 -p 0 0.92388 0.382683 -p 0 0.707107 0.707107 -p 0 0.382683 0.92388 -p 0 0 1 -p 0 -0.382683 0.92388 -p 0 -0.707107 0.707107 -p 0 -0.92388 0.382683 -p 0 -1 0 -p 0 -0.92388 -0.382683 -p 0 -0.707107 -0.707107 -p 0 -0.382683 -0.92388 -p 0 0 -1 -p 0 0.382683 -0.92388 -p 0 0.707107 -0.707107 -p 0 0.92388 -0.382683 -p 0 1 0 -p -0.382683 0.92388 0 -p -0.707107 0.707107 0 -p -0.92388 0.382683 0 -p -1 0 0 -p -0.92388 0 0.382683 -p -0.707107 0 0.707107 -p -0.382683 0 0.92388 -p 0 0 1 -p 0.382683 0 0.92388 -p 0.707107 0 0.707107 -p 0.92388 0 0.382683 -p 1 0 0 -p 0.92388 0 -0.382683 -p 0.707107 0 -0.707107 -p 0.382683 0 -0.92388 -p 0 0 -1 -p -0.382683 0 -0.92388 -p -0.707107 0 -0.707107 -p -0.92388 0 -0.382683 -p -1 0 0 -k 0 -k 1 -k 2 -k 3 -k 4 -k 5 -k 6 -k 7 -k 8 -k 9 -k 10 -k 11 -k 12 -k 13 -k 14 -k 15 -k 16 -k 17 -k 18 -k 19 -k 20 -k 21 -k 22 -k 23 -k 24 -k 25 -k 26 -k 27 -k 28 -k 29 -k 30 -k 31 -k 32 -k 33 -k 34 -k 35 -k 36 -k 37 -k 38 -k 39 -k 40 -k 41 -k 42 -k 43 -k 44 -k 45 -k 46 -k 47 -k 48 -k 49 -k 50 -k 51 -k 52 ;
+    string $locator_shapes[] = `listRelatives $locator`;
+    setAttr ($locator+"_temp_shape_sphere.scaleX") ((`getAttr ($locator_shapes[0]+".localScaleX")`)*0.6);
+    setAttr ($locator+"_temp_shape_sphere.scaleY") ((`getAttr ($locator_shapes[0]+".localScaleX")`)*0.6);
+    setAttr ($locator+"_temp_shape_sphere.scaleZ") ((`getAttr ($locator_shapes[0]+".localScaleX")`)*0.6);
+
+    makeIdentity -apply true -t 1 -r 1 -s 1 -n 0 -pn 1 ($locator+"_temp_shape_sphere");
+
+    parent ($locator+"_temp_shape_sphere") $locator;
+    xform -t 0 0 0 ($locator+"_temp_shape_sphere");
+    rename `listRelatives ($locator+"_temp_shape_sphere")` ($locator+"SphereShape");
+    parent -s -r `listRelatives ($locator+"_temp_shape_sphere")` $locator;
+    delete ($locator+"_temp_shape_sphere");
+    setAttr ($locator+"SphereShape.overrideEnabled") 1;
+    setAttr ($locator+"SphereShape.overrideColor") 14;
+
+    //cube
+    curve -n ($locator+"_temp_shape_cube") -d 1 -p 0.5 0.5 -0.5 -p 0.5 0.5 0.5 -p 0.5 -0.5 0.5 -p 0.5 -0.5 -0.5 -p 0.5 0.5 -0.5 -p -0.5 0.5 -0.5 -p -0.5 -0.5 -0.5 -p -0.5 -0.5 0.5 -p -0.5 0.5 0.5 -p 0.5 0.5 0.5 -p 0.5 -0.5 0.5 -p -0.5 -0.5 0.5 -p -0.5 -0.5 -0.5 -p 0.5 -0.5 -0.5 -p 0.5 0.5 -0.5 -p -0.5 0.5 -0.5 -p -0.5 0.5 0.5 -p 0.5 0.5 0.5 -p 0.5 0.5 -0.5 -k 0 -k 0.1 -k 0.2 -k 0.3 -k 0.4 -k 0.5 -k 0.6 -k 0.7 -k 0.8 -k 0.9 -k 1 -k 1.1 -k 1.2 -k 1.3 -k 1.4 -k 1.5 -k 1.6 -k 1.7 -k 1.8;
+    setAttr ($locator+"_temp_shape_cube.scaleX") ((`getAttr ($locator_shapes[0]+".localScaleX")`)*1.2);
+    setAttr ($locator+"_temp_shape_cube.scaleY") ((`getAttr ($locator_shapes[0]+".localScaleX")`)*1.2);
+    setAttr ($locator+"_temp_shape_cube.scaleZ") ((`getAttr ($locator_shapes[0]+".localScaleX")`)*1.2);
+
+    makeIdentity -apply true -t 1 -r 1 -s 1 -n 0 -pn 1 ($locator+"_temp_shape_cube");
+
+    parent ($locator+"_temp_shape_cube") $locator;
+    xform -t 0 0 0 ($locator+"_temp_shape_cube");
+    rename `listRelatives ($locator+"_temp_shape_cube")` ($locator+"CubeShape");
+    parent -s -r `listRelatives ($locator+"_temp_shape_cube")` $locator;
+    delete ($locator+"_temp_shape_cube");
+    setAttr ($locator+"CubeShape.overrideEnabled") 1;
+    setAttr ($locator+"CubeShape.overrideColor") 14;
+
+    //set locator shape color
+    setAttr ($locator+"Shape.overrideEnabled") 1;
+    setAttr ($locator+"Shape.overrideColor") 14;
+
+    //create and connect attribuse
+    addAttr -ln "control_shape"  -at "enum" -en "locator:sphere:cube" $locator;
+    setAttr -e -channelBox true ($locator+".control_shape");
+
+    addAttr -ln "control_size"  -at double -min 0.01 -dv 1 $locator;
+    setAttr -e-keyable false -channelBox true ($locator+".control_size");
+
+    //visibility
+    shadingNode -n ($locator+"_locator_shape_condition") -asUtility condition;
+    shadingNode -n ($locator+"_sphere_shape_condition") -asUtility condition;
+    shadingNode -n ($locator+"_cube_shape_condition") -asUtility condition;
+
+    setAttr ($locator+"_locator_shape_condition.secondTerm") 0;
+    setAttr ($locator+"_sphere_shape_condition.secondTerm") 1;
+    setAttr ($locator+"_cube_shape_condition.secondTerm") 2;
+
+    setAttr ($locator+"_locator_shape_condition.colorIfTrueR") 1;
+    setAttr ($locator+"_locator_shape_condition.colorIfFalseR") 0;
+    setAttr ($locator+"_sphere_shape_condition.colorIfTrueR") 1;
+    setAttr ($locator+"_sphere_shape_condition.colorIfFalseR") 0;
+    setAttr ($locator+"_cube_shape_condition.colorIfTrueR") 1;
+    setAttr ($locator+"_cube_shape_condition.colorIfFalseR") 0;
+
+    connectAttr -f ($locator+".control_shape") ($locator+"_locator_shape_condition.firstTerm");
+    connectAttr -f ($locator+".control_shape") ($locator+"_sphere_shape_condition.firstTerm");
+    connectAttr -f ($locator+".control_shape") ($locator+"_cube_shape_condition.firstTerm");
+
+    connectAttr -f ($locator+"_locator_shape_condition.outColorR") ($locator+"Shape.visibility");
+    connectAttr -f ($locator+"_sphere_shape_condition.outColorR") ($locator+"SphereShape.visibility");
+    connectAttr -f ($locator+"_cube_shape_condition.outColorR") ($locator+"CubeShape.visibility");
+
+    setAttr ($locator+".control_shape") 1;
+    setAttr ($locator+".control_shape") 0;
+
+    //size
+    connectAttr -f ($locator+".control_size") ($locator+".scaleX");
+    connectAttr -f ($locator+".control_size") ($locator+".scaleY");
+    connectAttr -f ($locator+".control_size") ($locator+".scaleZ");
+
+    setAttr -lock true -keyable false -channelBox false ($locator+".sx");
+    setAttr -lock true -keyable false -channelBox false ($locator+".sy");
+    setAttr -lock true -keyable false -channelBox false ($locator+".sz");
+}
+
+proc show_axis()
+{
+    string $joints_name[] = `ls -sl`;
+    for($sel in $joints_name)
+    {
+        setAttr ($sel+".displayLocalAxis") 1;
+    }
+}
+
+proc segmentScaleCompensate_toggle()
+{
+    string $joints_name[] = `ls -sl`;
+
+    float $base_sc_value = `getAttr ($joints_name[0]+".segmentScaleCompensate")`;
+
+    for ($sel in $joints_name)
+    {
+        float $current_sc_value = `getAttr -l ($sel+".segmentScaleCompensate")`;
+        if ($current_sc_value == 0)
+        {
+            if($base_sc_value == 0)
+            {
+                setAttr ($sel+".segmentScaleCompensate") 1;
+                print "\n -- segmentScaleCompensate ON --\n";
+            }
+            else
+            {
+                setAttr ($sel+".segmentScaleCompensate") 0;
+                print "\n -- segmentScaleCompensate OFF --\n";
+            }
+        }
+    }
+}
+
+global proc reParent_collision_init()
+{
+    string $Collsion_objects[] = `ls -sl`;
+
+    string $check_mesh_shape[] = `listRelatives -s -c -f $Collsion_objects[0]`;
+    string $currentShapeType = `objectType $check_mesh_shape[0]`;
+
+    if($currentShapeType == "mesh")
+    {
+        for ($c=1; $c<=(size($Collsion_objects)-1); ++$c )
+        {
+            if ( !catchQuiet (getAttr ($Collsion_objects[$c]+".reParent_controlName")) )
+            {
+                select -r $Collsion_objects[0] $Collsion_objects[$c];
+                reParent_collision;
+            }
+            else
+            {
+                select -r $Collsion_objects[$c];
+                reParent_init;
+                string $SelectedNewControl[] = `ls -sl`;
+                select -r $Collsion_objects[0] $SelectedNewControl[0];
+                reParent_collision;
+            }
+        }
+    }
+    else
+    {
+        confirmDialog -b "Ok" -t "Oooops.." -m "  SELECT MESH GEOMETRY FIRST  ";
+    }
+}
+
+proc reParent_collision()
+{
+    string $connect_control;
+    string $base_names[] = `ls -sl`;
+    string $work_names[] = define_work_names($base_names);
+
+    //define real names
+    string $geo = $work_names[0];
+    string $ctrl = $work_names[1];
+
+    string $base_geo = $base_names[0];
+    string $base_ctrl = $base_names[1];
+
+
+    if (`getAttr ($ctrl+".reParent_Type")`=="IK")
+    {
+        $connect_control = $ctrl;
+    }
+    else
+    {
+        $connect_control = `getAttr ($ctrl+".reParent_controlName")`;
+    }
+
+    //add collision attributes
+    if ( catchQuiet (`getAttr ($base_ctrl+".Collision_translate_effect")`)==1)
+    {
+        addAttr -ln "Collision_translate_effect"  -at double -min 0 -max 1  -dv 1 ($base_ctrl);
+        setAttr -e-keyable true ($base_ctrl+".Collision_translate_effect");
+    }
+
+    if ( catchQuiet (`getAttr ($base_ctrl+".Collision_rotate_effect")`)==1)
+    {
+        addAttr -ln "Collision_rotate_effect"  -at double -min 0 -max 1  -dv 0 ($base_ctrl);
+        setAttr -e-keyable true ($base_ctrl+".Collision_rotate_effect");
+    }
+
+    if ( catchQuiet (`getAttr ($base_ctrl+".Collision_geometry_offset")`)==1)
+    {
+        addAttr -ln "Collision_geometry_offset" -at double -dv 0 ($base_ctrl);
+        setAttr -e-keyable true ($base_ctrl+".Collision_geometry_offset");
+    }
+
+    //create and connection nodes
+    createNode closestPointOnMesh -n ($ctrl+"_cfw_cpom");
+    connectAttr -f ($base_geo+".outMesh") ($ctrl+"_cfw_cpom.inMesh");
+    connectAttr -f ($base_geo+".worldMatrix[0]") ($ctrl+"_cfw_cpom.inputMatrix");
+
+    shadingNode -n ($ctrl+"_cfw_dMatrix") -asUtility decomposeMatrix;
+    connectAttr -f ($base_ctrl+".worldMatrix[0]") ($ctrl+"_cfw_dMatrix.inputMatrix");
+    connectAttr -f ($ctrl+"_cfw_dMatrix.outputTranslate") ($ctrl+"_cfw_cpom.inPosition");
+
+    shadingNode -n ($ctrl+"_cfw_angleBetween") -asUtility angleBetween;
+    connectAttr -f ($ctrl+"_cfw_cpom.normal") ($ctrl+"_cfw_angleBetween.vector2");
+
+    shadingNode -n ($ctrl+"_cfw_pos_cMatrix") -asUtility composeMatrix;
+    connectAttr -f ($ctrl+"_cfw_angleBetween.euler") ($ctrl+"_cfw_pos_cMatrix.inputRotate");
+    connectAttr -f ($ctrl+"_cfw_cpom.position") ($ctrl+"_cfw_pos_cMatrix.inputTranslate");
+
+    shadingNode -n ($ctrl+"_cfw_offset_cMatrix") -asUtility composeMatrix;
+    connectAttr -f ($base_ctrl+".Collision_geometry_offset") ($ctrl+"_cfw_offset_cMatrix.inputTranslateY");
+
+    shadingNode -n ($ctrl+"_cfw_offset_mMatrix") -asUtility multMatrix;
+    connectAttr -f ($ctrl+"_cfw_offset_cMatrix.outputMatrix") ($ctrl+"_cfw_offset_mMatrix.matrixIn[0]");
+    connectAttr -f ($ctrl+"_cfw_pos_cMatrix.outputMatrix") ($ctrl+"_cfw_offset_mMatrix.matrixIn[1]");
+
+    shadingNode -n ($ctrl+"_cfw_offset_dMatrix") -asUtility decomposeMatrix;
+    connectAttr -f ($ctrl+"_cfw_offset_mMatrix.matrixSum") ($ctrl+"_cfw_offset_dMatrix.inputMatrix");
+
+    shadingNode -n ($ctrl+"_cfw_underground_distance") -asUtility distanceBetween;
+    connectAttr -f ($ctrl+"_cfw_dMatrix.outputTranslate") ($ctrl+"_cfw_underground_distance.point1");
+    connectAttr -f ($ctrl+"_cfw_cpom.position")($ctrl+"_cfw_underground_distance.point2");
+
+    shadingNode -n ($ctrl+"_cfw_underground_mult") -asUtility multiplyDivide;
+    connectAttr -f ($ctrl+"_cfw_underground_distance.distance") ($ctrl+"_cfw_underground_mult.input1Y");
+    setAttr ($ctrl+"_cfw_underground_mult.input2Y") -2;
+
+    shadingNode -n ($ctrl+"_cfw_underground_cMatrix") -asUtility composeMatrix;
+    connectAttr -f ($ctrl+"_cfw_underground_mult.outputX") ($ctrl+"_cfw_underground_cMatrix.inputTranslateX");
+    connectAttr -f ($ctrl+"_cfw_underground_mult.outputY") ($ctrl+"_cfw_underground_cMatrix.inputTranslateY");
+    connectAttr -f ($ctrl+"_cfw_underground_mult.outputZ") ($ctrl+"_cfw_underground_cMatrix.inputTranslateZ");
+
+    shadingNode -n ($ctrl+"_cfw_underground_mMatrix") -asUtility multMatrix;
+    connectAttr -f ($ctrl+"_cfw_underground_cMatrix.outputMatrix") ($ctrl+"_cfw_underground_mMatrix.matrixIn[0]");
+    connectAttr -f ($ctrl+"_cfw_pos_cMatrix.outputMatrix") ($ctrl+"_cfw_underground_mMatrix.matrixIn[1]");
+
+    shadingNode -n ($ctrl+"_cfw_underground_dMatrix") -asUtility decomposeMatrix;
+    connectAttr -f ($ctrl+"_cfw_underground_mMatrix.matrixSum") ($ctrl+"_cfw_underground_dMatrix.inputMatrix");
+
+    shadingNode -n ($ctrl+"_cfw_inner_distance") -asUtility distanceBetween;
+    connectAttr -f ($ctrl+"_cfw_cpom.position") ($ctrl+"_cfw_inner_distance.point1");
+    connectAttr -f ($ctrl+"_cfw_underground_dMatrix.outputTranslate") ($ctrl+"_cfw_inner_distance.point2");
+
+    shadingNode -n ($ctrl+"_cfw_outer_distance") -asUtility distanceBetween;
+    connectAttr -f ($ctrl+"_cfw_underground_dMatrix.outputTranslate") ($ctrl+"_cfw_outer_distance.point1");
+    connectAttr -f ($ctrl+"_cfw_dMatrix.outputTranslate") ($ctrl+"_cfw_outer_distance.point2");
+
+    shadingNode -n ($ctrl+"_cfw_distance_pma") -asUtility plusMinusAverage;
+    setAttr ($ctrl+"_cfw_distance_pma.operation") 2;
+    connectAttr -f ($ctrl+"_cfw_inner_distance.distance") ($ctrl+"_cfw_distance_pma.input1D[1]");
+    connectAttr -f ($ctrl+"_cfw_outer_distance.distance") ($ctrl+"_cfw_distance_pma.input1D[0]");
+
+    shadingNode -n ($ctrl+"_cfw_rv_tr_Blend") -asUtility remapValue;
+    connectAttr -f ($ctrl+"_cfw_distance_pma.output1D") ($ctrl+"_cfw_rv_tr_Blend.inputValue");
+    connectAttr -f ($base_ctrl+".Collision_geometry_offset")  ($ctrl+"_cfw_rv_tr_Blend.inputMin");
+    setAttr ($ctrl+"_cfw_rv_tr_Blend.outputMin") 0;
+    setAttr ($ctrl+"_cfw_rv_tr_Blend.outputMax") 1;
+    shadingNode -n ($ctrl+"_cfw_rv_tr_Blend_offset") -asUtility plusMinusAverage;
+    setAttr ($ctrl+"_cfw_rv_tr_Blend_offset.operation") 2;
+    connectAttr -f ($base_ctrl+".Collision_geometry_offset") ($ctrl+"_cfw_rv_tr_Blend_offset.input1D[0]");
+    setAttr ($ctrl+"_cfw_rv_tr_Blend_offset.input1D[1]") 0.001;
+    connectAttr -f ($ctrl+"_cfw_rv_tr_Blend_offset.output1D") ($ctrl+"_cfw_rv_tr_Blend.inputMax");
+
+    shadingNode -n ($ctrl+"_cfw_rv_rt_Blend") -asUtility remapValue;
+    connectAttr -f ($ctrl+"_cfw_distance_pma.output1D") ($ctrl+"_cfw_rv_rt_Blend.inputValue");
+    connectAttr -f ($base_ctrl+".Collision_geometry_offset")  ($ctrl+"_cfw_rv_rt_Blend.inputMin");
+    setAttr ($ctrl+"_cfw_rv_rt_Blend.outputMin") 0;
+    setAttr ($ctrl+"_cfw_rv_rt_Blend.outputMax") 1;
+    shadingNode -n ($ctrl+"_cfw_rv_rt_Blend_offset") -asUtility plusMinusAverage;
+    setAttr ($ctrl+"_cfw_rv_rt_Blend_offset.operation") 2;
+    connectAttr -f ($base_ctrl+".Collision_geometry_offset") ($ctrl+"_cfw_rv_rt_Blend_offset.input1D[0]");
+    setAttr ($ctrl+"_cfw_rv_rt_Blend_offset.input1D[1]") 1;
+    connectAttr -f ($ctrl+"_cfw_rv_rt_Blend_offset.output1D") ($ctrl+"_cfw_rv_rt_Blend.inputMax");
+
+    createNode pairBlend -n ($ctrl+"_cfw_tr_Blend");
+    connectAttr -f ($ctrl+"_cfw_rv_tr_Blend.outValue") ($ctrl+"_cfw_tr_Blend.weight");
+    connectAttr -f ($ctrl+"_cfw_dMatrix.outputTranslate") ($ctrl+"_cfw_tr_Blend.inTranslate1");
+    connectAttr -f ($ctrl+"_cfw_offset_dMatrix.outputTranslate") ($ctrl+"_cfw_tr_Blend.inTranslate2");
+
+    createNode pairBlend -n ($ctrl+"_cfw_rt_Blend");
+    connectAttr -f ($ctrl+"_cfw_rv_rt_Blend.outValue") ($ctrl+"_cfw_rt_Blend.weight");
+    connectAttr -f ($ctrl+"_cfw_dMatrix.outputRotate") ($ctrl+"_cfw_rt_Blend.inRotate1");
+    connectAttr -f ($ctrl+"_cfw_offset_dMatrix.outputRotate") ($ctrl+"_cfw_rt_Blend.inRotate2");
+
+    //rotate effect
+    shadingNode -n ($ctrl+"_cfw_rotate_effect_mult") -asUtility multiplyDivide;
+    connectAttr -f ($ctrl+"_cfw_rv_rt_Blend.outValue") ($ctrl+"_cfw_rotate_effect_mult.input1X");
+    connectAttr -f ($ctrl+"_cfw_rotate_effect_mult.outputX") ($ctrl+"_cfw_rt_Blend.weight");
+    connectAttr -f ($base_ctrl+".Collision_rotate_effect") ($ctrl+"_cfw_rotate_effect_mult.input2X");
+    connectAttr -f ($base_ctrl+".Collision_rotate_effect") ($ctrl+"_cfw_rotate_effect_mult.input2Y");
+    connectAttr -f ($base_ctrl+".Collision_rotate_effect") ($ctrl+"_cfw_rotate_effect_mult.input2Z");
+
+    //translate effect
+    shadingNode -n ($ctrl+"_cfw_translate_effect_mult") -asUtility multiplyDivide;
+    connectAttr -f ($ctrl+"_cfw_rv_tr_Blend.outValue") ($ctrl+"_cfw_translate_effect_mult.input1X");
+    connectAttr -f ($ctrl+"_cfw_translate_effect_mult.outputX") ($ctrl+"_cfw_tr_Blend.weight");
+    connectAttr -f ($base_ctrl+".Collision_translate_effect") ($ctrl+"_cfw_translate_effect_mult.input2X");
+    connectAttr -f ($base_ctrl+".Collision_translate_effect") ($ctrl+"_cfw_translate_effect_mult.input2Y");
+    connectAttr -f ($base_ctrl+".Collision_translate_effect") ($ctrl+"_cfw_translate_effect_mult.input2Z");
+
+    //constrain control to collision locator
+    //define offset
+    shadingNode -n ($ctrl+"_cfw_temp_offset_mMatrix") -asUtility multMatrix;
+    connectAttr -f ($connect_control+".worldMatrix[0]") ($ctrl+"_cfw_temp_offset_mMatrix.matrixIn[0]");
+    connectAttr -f ($base_ctrl+".worldInverseMatrix[0]") ($ctrl+"_cfw_temp_offset_mMatrix.matrixIn[1]");
+    $com_offset = `getAttr ($ctrl+"_cfw_temp_offset_mMatrix.matrixSum")`;
+    delete ($ctrl+"_cfw_temp_offset_mMatrix");
+
+    //connect nodes
+    shadingNode -n ($ctrl+"_cfw_to_obj_cMatrix") -asUtility composeMatrix;
+    connectAttr -f ($ctrl+"_cfw_tr_Blend.outTranslate") ($ctrl+"_cfw_to_obj_cMatrix.inputTranslate");
+    connectAttr -f ($ctrl+"_cfw_rt_Blend.outRotate") ($ctrl+"_cfw_to_obj_cMatrix.inputRotate");
+
+    shadingNode -n ($ctrl+"_cfw_to_obj_mMatrix") -asUtility multMatrix;
+    setAttr ($ctrl+"_cfw_to_obj_mMatrix.matrixIn[0]") -type "matrix"
+    $com_offset[0] $com_offset[1] $com_offset[2] $com_offset[3] $com_offset[4] $com_offset[5] $com_offset[6] $com_offset[7]
+    $com_offset[8] $com_offset[9] $com_offset[10] $com_offset[11] $com_offset[12] $com_offset[13] $com_offset[14] $com_offset[15];
+    connectAttr -f ($ctrl+"_cfw_to_obj_cMatrix.outputMatrix")($ctrl+"_cfw_to_obj_mMatrix.matrixIn[1]");
+    connectAttr -f ($connect_control+".parentInverseMatrix[0]") ($ctrl+"_cfw_to_obj_mMatrix.matrixIn[2]");
+
+    shadingNode -n ($ctrl+"_to_obj_dMatrix") -asUtility decomposeMatrix;
+    connectAttr -f ($ctrl+"_cfw_to_obj_mMatrix.matrixSum") ($ctrl+"_to_obj_dMatrix.inputMatrix");
+
+    string $pac_name = `createNode parentConstraint -n ($ctrl+"_com_parentConstraint")`;
+    connectAttr -f ($ctrl+"_to_obj_dMatrix.outputTranslate") ($pac_name+".target[0].targetTranslate");
+    connectAttr -f ($ctrl+"_to_obj_dMatrix.outputRotate")    ($pac_name+".target[0].targetRotate");
+    parent $pac_name $connect_control;
+
+   //connect orient constrain to child
+    string $pairBlend_name = `createNode pairBlend -n ($ctrl+"_com_orient_pairBlend")`;
+
+    connectAttr -f ($pac_name+".constraintTranslateX") ($pairBlend_name+".inTranslateX2");
+    connectAttr -f ($pac_name+".constraintTranslateY") ($pairBlend_name+".inTranslateY2");
+    connectAttr -f ($pac_name+".constraintTranslateZ") ($pairBlend_name+".inTranslateZ2");
+
+    connectAttr -f ($pac_name+".constraintRotateX") ($pairBlend_name+".inRotateX2");
+    connectAttr -f ($pac_name+".constraintRotateY") ($pairBlend_name+".inRotateY2");
+    connectAttr -f ($pac_name+".constraintRotateZ") ($pairBlend_name+".inRotateZ2");
+
+    if (`attributeExists "reParent_blendParent" $connect_control`==0)
+    {
+        addAttr -ln "reParent_blendParent"  -at double  -min 0 -max 1 -dv 1 $connect_control;
+        setAttr -e-keyable true ($connect_control+".reParent_blendParent");
+    }
+
+    connectAttr -f ($connect_control+".reParent_blendParent") ($pairBlend_name+".weight");
+
+   //connect translate
+    $check_char_set = `listConnections -p 1 -t "character" ($connect_control+".translateX")`;
+    if (size($check_char_set)!=0){connectAttr -f ($pairBlend_name+".outTranslateX") $check_char_set[size($check_char_set)-1];}
+    else
+    {
+        if(`getAttr -l ($connect_control+".translateX")`!=1)
+        {
+            string $anim_curve[] = `listConnections -p 1 ($connect_control+".translateX")`;
+            if( $anim_curve[0] != "")
+            {
+                connectAttr -f $anim_curve[0] ($pairBlend_name+".inTranslateX1");
+                connectAttr -f ($pairBlend_name+".outTranslateX") ($connect_control+".translateX");
+            }
+            else
+            {
+                connectAttr -f ($pac_name+".constraintTranslateX") ($connect_control+".translateX");
+            }
+        }
+    }
+
+    $check_char_set = `listConnections -p 1  -t "character" ($connect_control+".translateY")`;
+    if ( size($check_char_set)!=0){connectAttr -f ($pairBlend_name+".outTranslateY") $check_char_set[size($check_char_set)-1];}
+    else
+    {
+            string $anim_curve[] = `listConnections -p 1 ($connect_control+".translateY")`;
+            if( $anim_curve[0] != "")
+            {
+                connectAttr -f $anim_curve[0] ($pairBlend_name+".inTranslateY1");
+                connectAttr -f ($pairBlend_name+".outTranslateY") ($connect_control+".translateY");
+            }
+            else
+            {
+                connectAttr -f ($pac_name+".constraintTranslateY") ($connect_control+".translateY");
+            }
+    }
+
+    $check_char_set = `listConnections -p 1  -t "character" ($connect_control+".translateZ")`;
+    if ( size($check_char_set)!=0){connectAttr -f ($pairBlend_name+".outTranslateZ") $check_char_set[size($check_char_set)-1];}
+    else
+    {
+            string $anim_curve[] = `listConnections -p 1 ($connect_control+".translateZ")`;
+            if( $anim_curve[0] != "")
+            {
+                connectAttr -f $anim_curve[0] ($pairBlend_name+".inTranslateZ1");
+                connectAttr -f ($pairBlend_name+".outTranslateZ") ($connect_control+".translateZ");
+            }
+            else
+            {
+                connectAttr -f ($pac_name+".constraintTranslateZ") ($connect_control+".translateZ");
+            }
+    }
+
+    //connect orient
+    $check_char_set = `listConnections -p 1 -t "character" ($connect_control+".rotateX")`;
+    if (size($check_char_set)!=0){connectAttr -f ($pairBlend_name+".outRotateX") $check_char_set[size($check_char_set)-1];}
+    else
+    {
+        if(`getAttr -l ($connect_control+".rotateX")`!=1)
+        {
+            string $anim_curve[] = `listConnections -p 1 ($connect_control+".rotateX")`;
+            if( $anim_curve[0] != "")
+            {
+                connectAttr -f $anim_curve[0] ($pairBlend_name+".inRotateX1");
+                connectAttr -f ($pairBlend_name+".outRotateX") ($connect_control+".rotateX");
+            }
+            else
+            {
+                connectAttr -f ($pac_name+".constraintRotateX") ($connect_control+".rotateX");
+            }
+        }
+    }
+
+    $check_char_set = `listConnections -p 1  -t "character" ($connect_control+".rotateY")`;
+    if (size($check_char_set)!=0){connectAttr -f ($pairBlend_name+".outRotateY") $check_char_set[size($check_char_set)-1];}
+    else
+    {
+            string $anim_curve[] = `listConnections -p 1 ($connect_control+".rotateY")`;
+            if( $anim_curve[0] != "")
+            {
+                connectAttr -f $anim_curve[0] ($pairBlend_name+".inRotateY1");
+                connectAttr -f ($pairBlend_name+".outRotateY") ($connect_control+".rotateY");
+            }
+            else
+            {
+                connectAttr -f ($pac_name+".constraintRotateY") ($connect_control+".rotateY");
+            }
+    }
+
+    $check_char_set = `listConnections -p 1  -t "character" ($connect_control+".rotateZ")`;
+    if ( size($check_char_set)!=0){connectAttr -f ($pairBlend_name+".outRotateZ") $check_char_set[size($check_char_set)-1];}
+    else
+    {
+            string $anim_curve[] = `listConnections -p 1 ($connect_control+".rotateZ")`;
+            if( $anim_curve[0] != "")
+            {
+                connectAttr -f $anim_curve[0] ($pairBlend_name+".inRotateZ1");
+                connectAttr -f ($pairBlend_name+".outRotateZ") ($connect_control+".rotateZ");
+            }
+            else
+            {
+                connectAttr -f ($pac_name+".constraintRotateZ") ($connect_control+".rotateZ");
+            }
+    }
+
+    connectAttr -f ($connect_control+".rotateOrder") ($ctrl+"_to_obj_dMatrix.inputRotateOrder");
+    select -r $base_ctrl;
+
+    print "\nit's alive!\n";
+}
+
+
+proc offset_animation()
+{
+    string $SelectedControls[] = `ls -sl`;
+    int $amountOfAllObjs = `size($SelectedControls)`;
+
+    for ($r=0; $r<$amountOfAllObjs; ++$r )
+    {
+        selectKey -r -k $SelectedControls[$r];
+        keyframe -animation keys -option over -relative -timeChange ($r+1);
+    }
+}
+
+proc offset_animation_options()
+{
+    if ((`window -ex offset_animation_options`)==true)
+    deleteUI offset_animation_options;
+    string $window = `window -toolbox 1 -t "Offset Animation" -wh 140 48 -s 0 offset_animation_options`;
+    rowColumnLayout;
+    rowLayout -nc 2 -cw 30 30 ;
+    setParent..;
+    columnLayout -adj 1;
+    rowColumnLayout -nc 2;
+    floatField -v 0.1 -w 50 -precision 2 OffsetFrames;
+    button -l "Offset" -command "offset_animation_options_go" -bgc .8 .8 .8 -w 80 -h 35;
+    setParent..;
+    showWindow offset_animation_options;
+    window -edit -widthHeight 137 45 offset_animation_options;
+}
+
+proc offset_animation_options_go()
+{
+	float $OffsetFrames = `floatField -q -v OffsetFrames`;
+
+    string $SelectedControls[] = `ls -sl`;
+    int $amountOfAllObjs = `size($SelectedControls)`;
+
+    for ($r=0; $r<$amountOfAllObjs; ++$r )
+    {
+        selectKey -r -k $SelectedControls[$r];
+        keyframe -animation keys -option over -relative -timeChange (($r+1)*$OffsetFrames);
+    }
+}
+
+proc reParent_tutorial()
+{launch -web "https://www.youtube.com/playlist?list=PLjwRnk_BSpcA2X_zgGGvqq29KrA7DD1IV";}
+
+proc reParent_intro()
+{launch -web "https://www.youtube.com/watch?v=pFD0H5cQq3s";}
+
+proc reParent_manual_ENG()
+{launch -web "https://docs.google.com/document/d/18lo4223RTf3OeSbD9zOzRLMoBxXMbIF-G8hzFJ7omek/edit";}
+
+proc reParent_manual_RUS()
+{launch -web "https://docs.google.com/document/d/1eMQW4nVOig-oLXRpxmTtfIa7w6VxfjnwxoU6Z2IU1FA/edit";}
+
+global proc reParent_panel_big()
+{
+    if (`window -q -h reParent_panel` == 250)
+    {window -edit -h 348 reParent_panel;}
+    if (`window -q -h reParent_panel` == 258)
+    {window -edit -h 356 reParent_panel;}
+}
+
+global proc reParent_panel_small()
+{
+    if (`window -q -h reParent_panel` == 348)
+    {window -edit -h 250 reParent_panel;}
+    if (`window -q -h reParent_panel` == 356)
+    {window -edit -h 258 reParent_panel;}
+}
+
+global proc reParent_panel_go_to_base()
+{
+    if (`window -q -h reParent_panel` == 258)
+    {window -edit -h 250 reParent_panel;}
+    if (`window -q -h reParent_panel` == 356)
+    {window -edit -h 348 reParent_panel;}
+    button -e -w 140 -h 35 -vis 1 DeleteButton;
+    button  -edit -en 1 reParentButton;
+}
+
+global proc reParent_panel_go_to_cancel()
+{
+    if (`window -q -h reParent_panel` == 250)
+    {window -edit -h 258 reParent_panel;}
+    if (`window -q -h reParent_panel` == 348)
+    {window -edit -h 356 reParent_panel;}
+    button -e -w 140 -h 1 -vis 0 DeleteButton;
+    button  -edit -en 0 reParentButton;
+}
+
+proc go_mode_starter()
+{
+    global string $session_selected_controls[];
+    int $ManualButton = `checkBox -q -v ManualCheckBox`;
+    int $AimButton = `checkBox -q -v AimCheckBox`;
+    int $GlobalButton = `checkBox -q -v MakeGlobalCheckBox`;
+    int $reConstrainButton = `checkBox -q -v reConstrainCheckBox`;
+    int $IKButton = `checkBox -q -v IKCheckBox`;
+
+    if(`objExists Last_Session_reParentLocator_set`)
+
+    if ($ManualButton==1&&$AimButton==0&&$GlobalButton==0&&$reConstrainButton==0&&$IKButton==0){manual_mode_go;}
+    if ($ManualButton==0&&$AimButton==1&&$GlobalButton==0&&$IKButton==0){aim_mode_go;}
+    if ($AimButton==0&&$GlobalButton==1&&$IKButton==0){reParent;}
+    if ($reConstrainButton==1&&$ManualButton==1&&$IKButton==0){reConstrain_mode_go;}
+    if ($IKButton==1){select -r $session_selected_controls; IK_mode_manual_init;}
+}
+
+proc go_mode_cancel()
+{
+    int $ManualButton = `checkBox -q -v ManualCheckBox`;
+    int $AimButton = `checkBox -q -v AimCheckBox`;
+    int $GlobalButton = `checkBox -q -v MakeGlobalCheckBox`;
+    int $reConstrainButton = `checkBox -q -v reConstrainCheckBox`;
+    int $IKButton = `checkBox -q -v IKCheckBox`;
+
+    refresh -suspend 0; ogs -reset;
+
+    reParent_panel_go_to_base;
+
+    if ($ManualButton==1&&$AimButton==0&&$GlobalButton==0&&$reConstrainButton==0){manual_mode_cancel;}
+    if ($ManualButton==0&&$AimButton==1&&$GlobalButton==0){aim_mode_cancel;}
+    if ($ManualButton==0&&$AimButton==0&&$GlobalButton==1){global_mode_cancel;}
+    if ($reConstrainButton==1){reConstrain_mode_cancel;}
+    if ($ManualButton==1&&$GlobalButton==1){global_mode_cancel;}
+    if ($IKButton==1){IK_mode_go_cancel;}
+}
+
+proc mxConstraint (string $type, int $options, int $control, string $parent_obj, string $child_obj)
+{
+/*
+    string $type = "parentConstrain_mo";
+    int $options = 1;
+    int $control =  1;
+    string $parent_obj = "locator1";
+    string $child_obj = "pSphere2";
+*/
+    string $constrain_name[];
+    string $pairBlend_name;
+
+    delete_unused_nodes;
+
+    //option: 0-align, 1-base
+    string $check_char_set[];
+    string $work_names[] = define_work_names({$parent_obj, $child_obj});
+
+    string $parent_node = $work_names[0];
+    string $child_node = $work_names[1];
+
+    if (`attributeExists "reParent_blend" $child_obj`==0)
+    {
+        addAttr -ln "reParent_blend"  -at double  -min 0 -max 1 -dv 1 $child_obj;
+        setAttr -e-keyable true ($child_obj+".reParent_blend");
+    }
+
+    $pairBlend_name = `createNode pairBlend -n ($child_node+"_com_pairBlend")`;
+    connectAttr -f ($child_obj+".reParent_blend") ($pairBlend_name+".weight");
+
+    //point constrain
+    if ($type == "pointConstrain")
+    {
+        $constrain_name = `pointConstraint -w 1 -n ($child_node+"_com_pointConstraint") -skip x -skip y -skip z $parent_obj $child_obj`;
+
+        //connect translates
+            connectAttr -f ($constrain_name[0]+".constraintTranslateX") ($pairBlend_name+".inTranslateX2");
+            connectAttr -f ($constrain_name[0]+".constraintTranslateY") ($pairBlend_name+".inTranslateY2");
+            connectAttr -f ($constrain_name[0]+".constraintTranslateZ") ($pairBlend_name+".inTranslateZ2");
+
+            $check_char_set = `listConnections -p 1 -t "character" ($child_obj+".translateX")`;
+            if (size($check_char_set)!=0){connectAttr -f ($pairBlend_name+".outTranslateX") $check_char_set[size($check_char_set)-1];}
+            else
+            {
+                if(`getAttr -l ($child_obj+".translateX")`!=1)
+                {
+                    string $anim_curve[] = `listConnections -p 1 ($child_obj+".translateX")`;
+                    if( $anim_curve[0] != "")
+                    {
+                        connectAttr -f $anim_curve[0] ($pairBlend_name+".inTranslateX1");
+                        connectAttr -f ($pairBlend_name+".outTranslateX") ($child_obj+".translateX");
+                    }
+                    else
+                    {
+                        connectAttr -f ($constrain_name[0]+".constraintTranslateX") ($child_obj+".translateX");
+                    }
+                }
+            }
+
+            $check_char_set = `listConnections -p 1  -t "character" ($child_obj+".translateY")`;
+            if ( size($check_char_set)!=0){connectAttr -f ($pairBlend_name+".outTranslateY") $check_char_set[size($check_char_set)-1];}
+            else
+            {
+                if(`getAttr -l ($child_obj+".translateY")`!=1)
+                {
+                    string $anim_curve[] = `listConnections -p 1 ($child_obj+".translateY")`;
+                    if( $anim_curve[0] != "")
+                    {
+                        connectAttr -f $anim_curve[0] ($pairBlend_name+".inTranslateY1");
+                        connectAttr -f ($pairBlend_name+".outTranslateY") ($child_obj+".translateY");
+                    }
+                    else
+                    {
+                        connectAttr -f ($constrain_name[0]+".constraintTranslateY") ($child_obj+".translateY");
+                    }
+                }
+            }
+
+            $check_char_set = `listConnections -p 1  -t "character" ($child_obj+".translateZ")`;
+            if ( size($check_char_set)!=0){connectAttr -f ($pairBlend_name+".outTranslateZ") $check_char_set[size($check_char_set)-1];}
+            else
+            {
+                if(`getAttr -l ($child_obj+".translateZ")`!=1)
+                {
+                    string $anim_curve[] = `listConnections -p 1 ($child_obj+".translateZ")`;
+                    if( $anim_curve[0] != "")
+                    {
+                        connectAttr -f $anim_curve[0] ($pairBlend_name+".inTranslateZ1");
+                        connectAttr -f ($pairBlend_name+".outTranslateZ") ($child_obj+".translateZ");
+                    }
+                    else
+                    {
+                        connectAttr -f ($constrain_name[0]+".constraintTranslateZ") ($child_obj+".translateZ");
+                    }
+                }
+            }
+
+        setAttr  ($child_node+"_com_pointConstraint.enableRestPosition") 0;
+        if ($options==0)
+        {
+            delete $constrain_name[0];
+            if (`attributeExists "reParent_blend" $child_obj`==1)
+            {
+                deleteAttr -attribute "reParent_blend" $child_obj;
+            }
+        }
+    }
+
+    if ($type == "pointConstrain_mo")
+    {
+
+        $constrain_name = `pointConstraint -w 1 -n ($child_node+"_com_pointConstraint") -skip x -skip y -skip z -mo $parent_obj $child_obj`;
+
+        //connect translates
+            connectAttr -f ($constrain_name[0]+".constraintTranslateX") ($pairBlend_name+".inTranslateX2");
+            connectAttr -f ($constrain_name[0]+".constraintTranslateY") ($pairBlend_name+".inTranslateY2");
+            connectAttr -f ($constrain_name[0]+".constraintTranslateZ") ($pairBlend_name+".inTranslateZ2");
+
+            $check_char_set = `listConnections -p 1 -t "character" ($child_obj+".translateX")`;
+            if (size($check_char_set)!=0){connectAttr -f ($pairBlend_name+".outTranslateX") $check_char_set[size($check_char_set)-1];}
+            else
+            {
+                if(`getAttr -l ($child_obj+".translateX")`!=1)
+                {
+                    string $anim_curve[] = `listConnections -p 1 ($child_obj+".translateX")`;
+                    if( $anim_curve[0] != "")
+                    {
+                        connectAttr -f $anim_curve[0] ($pairBlend_name+".inTranslateX1");
+                        connectAttr -f ($pairBlend_name+".outTranslateX") ($child_obj+".translateX");
+                    }
+                    else
+                    {
+                        connectAttr -f ($constrain_name[0]+".constraintTranslateX") ($child_obj+".translateX");
+                    }
+                }
+            }
+
+            $check_char_set = `listConnections -p 1  -t "character" ($child_obj+".translateY")`;
+            if ( size($check_char_set)!=0){connectAttr -f ($pairBlend_name+".outTranslateY") $check_char_set[size($check_char_set)-1];}
+            else
+            {
+                if(`getAttr -l ($child_obj+".translateY")`!=1)
+                {
+                    string $anim_curve[] = `listConnections -p 1 ($child_obj+".translateY")`;
+                    if( $anim_curve[0] != "")
+                    {
+                        connectAttr -f $anim_curve[0] ($pairBlend_name+".inTranslateY1");
+                        connectAttr -f ($pairBlend_name+".outTranslateY") ($child_obj+".translateY");
+                    }
+                    else
+                    {
+                        connectAttr -f ($constrain_name[0]+".constraintTranslateY") ($child_obj+".translateY");
+                    }
+                }
+            }
+
+            $check_char_set = `listConnections -p 1  -t "character" ($child_obj+".translateZ")`;
+            if ( size($check_char_set)!=0){connectAttr -f ($pairBlend_name+".outTranslateZ") $check_char_set[size($check_char_set)-1];}
+            else
+            {
+                if(`getAttr -l ($child_obj+".translateZ")`!=1)
+                {
+                    string $anim_curve[] = `listConnections -p 1 ($child_obj+".translateZ")`;
+                    if( $anim_curve[0] != "")
+                    {
+                        connectAttr -f $anim_curve[0] ($pairBlend_name+".inTranslateZ1");
+                        connectAttr -f ($pairBlend_name+".outTranslateZ") ($child_obj+".translateZ");
+                    }
+                    else
+                    {
+                        connectAttr -f ($constrain_name[0]+".constraintTranslateZ") ($child_obj+".translateZ");
+                    }
+                }
+            }
+
+        setAttr  ($child_node+"_com_pointConstraint.enableRestPosition") 0;
+        if ($options==0)
+        {
+            delete $constrain_name[0];
+            if (`attributeExists "reParent_blend" $child_obj`==1)
+            {
+                deleteAttr -attribute "reParent_blend" $child_obj;
+            }
+        }
+    }
+
+    //parent constrain
+    if ($type == "parentConstrain")
+    {
+        $constrain_name = `parentConstraint -w 1 -n ($child_node+"_com_parentConstraint") -skipTranslate x -skipTranslate y -skipTranslate z -skipRotate x -skipRotate y -skipRotate z $parent_obj $child_obj`;
+        if ($control==1)
+        {
+            disconnectAttr ($parent_obj+".scale") ($constrain_name[0]+".target[0].targetScale");
+        }
+
+        //connect translates
+            connectAttr -f ($constrain_name[0]+".constraintTranslateX") ($pairBlend_name+".inTranslateX2");
+            connectAttr -f ($constrain_name[0]+".constraintTranslateY") ($pairBlend_name+".inTranslateY2");
+            connectAttr -f ($constrain_name[0]+".constraintTranslateZ") ($pairBlend_name+".inTranslateZ2");
+
+            $check_char_set = `listConnections -p 1 -t "character" ($child_obj+".translateX")`;
+            if (size($check_char_set)!=0){connectAttr -f ($pairBlend_name+".outTranslateX") $check_char_set[size($check_char_set)-1];}
+            else
+            {
+                if(`getAttr -l ($child_obj+".translateX")`!=1)
+                {
+                    string $anim_curve[] = `listConnections -p 1 ($child_obj+".translateX")`;
+                    if( $anim_curve[0] != "")
+                    {
+                        connectAttr -f $anim_curve[0] ($pairBlend_name+".inTranslateX1");
+                        connectAttr -f ($pairBlend_name+".outTranslateX") ($child_obj+".translateX");
+                    }
+                    else
+                    {
+                        connectAttr -f ($constrain_name[0]+".constraintTranslateX") ($child_obj+".translateX");
+                    }
+                }
+            }
+
+            $check_char_set = `listConnections -p 1  -t "character" ($child_obj+".translateY")`;
+            if ( size($check_char_set)!=0){connectAttr -f ($pairBlend_name+".outTranslateY") $check_char_set[size($check_char_set)-1];}
+            else
+            {
+                if(`getAttr -l ($child_obj+".translateY")`!=1)
+                {
+                    string $anim_curve[] = `listConnections -p 1 ($child_obj+".translateY")`;
+                    if( $anim_curve[0] != "")
+                    {
+                        connectAttr -f $anim_curve[0] ($pairBlend_name+".inTranslateY1");
+                        connectAttr -f ($pairBlend_name+".outTranslateY") ($child_obj+".translateY");
+                    }
+                    else
+                    {
+                        connectAttr -f ($constrain_name[0]+".constraintTranslateY") ($child_obj+".translateY");
+                    }
+                }
+            }
+
+            $check_char_set = `listConnections -p 1  -t "character" ($child_obj+".translateZ")`;
+            if ( size($check_char_set)!=0){connectAttr -f ($pairBlend_name+".outTranslateZ") $check_char_set[size($check_char_set)-1];}
+            else
+            {
+                if(`getAttr -l ($child_obj+".translateZ")`!=1)
+                {
+                    string $anim_curve[] = `listConnections -p 1 ($child_obj+".translateZ")`;
+                    if( $anim_curve[0] != "")
+                    {
+                        connectAttr -f $anim_curve[0] ($pairBlend_name+".inTranslateZ1");
+                        connectAttr -f ($pairBlend_name+".outTranslateZ") ($child_obj+".translateZ");
+                    }
+                    else
+                    {
+                        connectAttr -f ($constrain_name[0]+".constraintTranslateZ") ($child_obj+".translateZ");
+                    }
+                }
+            }
+
+        setAttr  ($child_node+"_com_parentConstraint.enableRestPosition") 0;
+        if ($options==0)
+        {
+            delete $constrain_name[0];
+            if (`attributeExists "reParent_blend" $child_obj`==1)
+            {
+                deleteAttr -attribute "reParent_blend" $child_obj;
+            }
+        }
+    }
+
+    if ($type == "parentConstrain_mo")
+    {
+        float $custom_control_size;
+
+        if (`attributeExists "control_size" $parent_obj`)
+        {
+            $custom_control_size = getAttr ($parent_obj+".control_size");
+            setAttr ($parent_obj+".control_size") 1;
+        }
+
+        $constrain_name = `parentConstraint -w 1 -n ($child_node+"_com_parentConstraint") -mo -skipTranslate x -skipTranslate y -skipTranslate z -skipRotate x -skipRotate y -skipRotate z $parent_obj $child_obj`;
+        if ($control==1)
+        {
+            disconnectAttr ($parent_obj+".scale") ($constrain_name[0]+".target[0].targetScale");
+        }
+
+        if (`attributeExists "control_size" $parent_obj`)
+        {
+            setAttr ($parent_obj+".control_size") $custom_control_size;
+        }
+
+        //connect translates
+            connectAttr -f ($constrain_name[0]+".constraintTranslateX") ($pairBlend_name+".inTranslateX2");
+            connectAttr -f ($constrain_name[0]+".constraintTranslateY") ($pairBlend_name+".inTranslateY2");
+            connectAttr -f ($constrain_name[0]+".constraintTranslateZ") ($pairBlend_name+".inTranslateZ2");
+
+            $check_char_set = `listConnections -p 1 -t "character" ($child_obj+".translateX")`;
+            if (size($check_char_set)!=0){connectAttr -f ($pairBlend_name+".outTranslateX") $check_char_set[size($check_char_set)-1];}
+            else
+            {
+                if(`getAttr -l ($child_obj+".translateX")`!=1)
+                {
+                    string $anim_curve[] = `listConnections -p 1 ($child_obj+".translateX")`;
+                    if( $anim_curve[0] != "")
+                    {
+                        connectAttr -f $anim_curve[0] ($pairBlend_name+".inTranslateX1");
+                        connectAttr -f ($pairBlend_name+".outTranslateX") ($child_obj+".translateX");
+                    }
+                    else
+                    {
+                        connectAttr -f ($constrain_name[0]+".constraintTranslateX") ($child_obj+".translateX");
+                    }
+                }
+            }
+
+            $check_char_set = `listConnections -p 1  -t "character" ($child_obj+".translateY")`;
+            if ( size($check_char_set)!=0){connectAttr -f ($pairBlend_name+".outTranslateY") $check_char_set[size($check_char_set)-1];}
+            else
+            {
+                if(`getAttr -l ($child_obj+".translateY")`!=1)
+                {
+                    string $anim_curve[] = `listConnections -p 1 ($child_obj+".translateY")`;
+                    if( $anim_curve[0] != "")
+                    {
+                        connectAttr -f $anim_curve[0] ($pairBlend_name+".inTranslateY1");
+                        connectAttr -f ($pairBlend_name+".outTranslateY") ($child_obj+".translateY");
+                    }
+                    else
+                    {
+                        connectAttr -f ($constrain_name[0]+".constraintTranslateY") ($child_obj+".translateY");
+                    }
+                }
+            }
+
+            $check_char_set = `listConnections -p 1  -t "character" ($child_obj+".translateZ")`;
+            if ( size($check_char_set)!=0){connectAttr -f ($pairBlend_name+".outTranslateZ") $check_char_set[size($check_char_set)-1];}
+            else
+            {
+                if(`getAttr -l ($child_obj+".translateZ")`!=1)
+                {
+                    string $anim_curve[] = `listConnections -p 1 ($child_obj+".translateZ")`;
+                    if( $anim_curve[0] != "")
+                    {
+                        connectAttr -f $anim_curve[0] ($pairBlend_name+".inTranslateZ1");
+                        connectAttr -f ($pairBlend_name+".outTranslateZ") ($child_obj+".translateZ");
+                    }
+                    else
+                    {
+                        connectAttr -f ($constrain_name[0]+".constraintTranslateZ") ($child_obj+".translateZ");
+                    }
+                }
+            }
+
+        setAttr  ($child_node+"_com_parentConstraint.enableRestPosition") 0;
+        if ($options==0)
+        {
+            delete $constrain_name[0];
+            if (`attributeExists "reParent_blend" $child_obj`==1)
+            {
+                deleteAttr -attribute "reParent_blend" $child_obj;
+            }
+        }
+    }
+
+    //orient constrain
+    if ($type == "parentConstrain_mo"||$type == "parentConstrain"||$type == "orientConstrain_mo"||$type == "orientConstrain")
+    {
+        //define offset
+        shadingNode -n ($child_node+"_com_tr_offset_mMatrix") -asUtility multMatrix;
+        connectAttr -f ($child_obj+".worldMatrix[0]") ($child_node+"_com_tr_offset_mMatrix.matrixIn[0]");
+        connectAttr -f ($parent_obj+".worldInverseMatrix[0]") ($child_node+"_com_tr_offset_mMatrix.matrixIn[1]");
+        shadingNode -n ($child_node+"_com_tr_offset_dMatrix") -asUtility decomposeMatrix;
+        connectAttr -f ($child_node+"_com_tr_offset_mMatrix.matrixSum") ($child_node+"_com_tr_offset_dMatrix.inputMatrix");
+
+        float $com_parent_offset[] = `getAttr ($child_node+"_com_tr_offset_mMatrix.matrixSum")`;
+        delete ($child_node+"_com_tr_offset_mMatrix");
+
+        //add attributes
+        if (`attributeExists ($child_node+"_reParent_pim") $parent_obj`==0)
+        {
+            addAttr -ln ($child_node+"_reParent_pim")  -at fltMatrix $parent_obj;
+        }
+
+        if (`attributeExists ($child_node+"_reParent_ro") $parent_obj`==0)
+        {
+            addAttr -ln ($child_node+"_reParent_ro") -at long  -dv 0 $parent_obj;
+        }
+
+        string $com_rt_dm = `shadingNode -n ($child_node+"_to_"+$parent_node+"_com_rt_dm") -asUtility decomposeMatrix`;
+        string $com_rt_mm = `shadingNode -n ($child_node+"_to_"+$parent_node+"_com_rt_mm") -asUtility multMatrix`;
+
+        connectAttr -f ($parent_obj+".worldMatrix[0]") ($com_rt_mm+".matrixIn[1]");
+        connectAttr -force ($com_rt_mm+".matrixSum") ($com_rt_dm+".inputMatrix");
+
+        if (catchQuiet (`connectAttr -f ($parent_obj+"."+$child_node+"_reParent_ro") ($com_rt_dm+".inputRotateOrder")`) )
+        {
+           connectAttr -f ($parent_obj+"."+$child_node+"_reParent_ro") ($com_rt_dm+".inputRotateOrder");
+        }
+
+        if (catchQuiet (`connectAttr -f ($child_obj+".rotateOrder") ($parent_obj+"."+$child_node+"_reParent_ro")`) )
+        {
+           connectAttr -f ($child_obj+".rotateOrder") ($parent_obj+"."+$child_node+"_reParent_ro");
+        }
+
+        $currentShapeType = `objectType $child_obj`;
+        if ($currentShapeType != "joint")
+        {   // objects
+            if (catchQuiet (`connectAttr -f ($parent_obj+"."+$child_node+"_reParent_pim") ($com_rt_mm+".matrixIn[2]")`) )
+            {
+               connectAttr -f ($parent_obj+"."+$child_node+"_reParent_pim") ($com_rt_mm+".matrixIn[2]");
+            }
+
+            if (catchQuiet (`connectAttr -f ($child_obj+".parentInverseMatrix[0]") ($parent_obj+"."+$child_node+"_reParent_pim")`) )
+            {
+               connectAttr -f ($child_obj+".parentInverseMatrix[0]") ($parent_obj+"."+$child_node+"_reParent_pim");
+            }
+
+            setAttr ($com_rt_dm+".isHistoricallyInteresting") 0;
+            setAttr ($com_rt_mm+".isHistoricallyInteresting") 0;
+        }
+        else
+        {   // joints
+            if (`attributeExists ($child_node+"_reParent_pm") $parent_obj`==0)
+            {
+                addAttr -ln ($child_node+"_reParent_pm") -at fltMatrix $parent_obj;
+
+                addAttr -ln ($child_node+"_reParent_jo")  -at double3  $parent_obj;
+                addAttr -ln ($child_node+"_reParent_joX")  -at doubleAngle -p ($child_node+"_reParent_jo") $parent_obj;
+                addAttr -ln ($child_node+"_reParent_joY")  -at doubleAngle -p ($child_node+"_reParent_jo") $parent_obj;
+                addAttr -ln ($child_node+"_reParent_joZ")  -at doubleAngle -p ($child_node+"_reParent_jo") $parent_obj;
+
+                addAttr -ln ($child_node+"_reParent_jis")  -at double3  $parent_obj;
+                addAttr -ln ($child_node+"_reParent_jisX")  -at double -p ($child_node+"_reParent_jis") $parent_obj;
+                addAttr -ln ($child_node+"_reParent_jisY")  -at double -p ($child_node+"_reParent_jis") $parent_obj;
+                addAttr -ln ($child_node+"_reParent_jisZ")  -at double -p ($child_node+"_reParent_jis") $parent_obj;
+            }
+
+            connectAttr -f ($child_obj+".jointOrient")     ($parent_obj+"."+$child_node+"_reParent_jo");
+            connectAttr -f ($child_obj+".parentMatrix[0]") ($parent_obj+"."+$child_node+"_reParent_pm");
+            connectAttr -f ($child_obj+".inverseScale")    ($parent_obj+"."+$child_node+"_reParent_jis");
+
+            string $com_rt_jo_cm  = `shadingNode -n ($child_node+"_to_"+$parent_node+"_com_rt_jo_cm") -asUtility composeMatrix`;
+            connectAttr -f ($parent_obj+"."+$child_node+"_reParent_jo") ($com_rt_jo_cm+".inputRotate");
+
+            string $com_rt_jis_cm  = `shadingNode -n ($child_node+"_to_"+$parent_node+"_com_rt_jis_cm") -asUtility composeMatrix`;
+            connectAttr -f ($parent_obj+"."+$child_node+"_reParent_jis") ($com_rt_jis_cm+".inputScale");
+
+            string $com_rt_jis_im  = `shadingNode -n ($child_node+"_to_"+$parent_node+"_com_rt_jis_im") -asUtility inverseMatrix`;
+            connectAttr -f ($com_rt_jis_cm+".outputMatrix") ($com_rt_jis_im+".inputMatrix");
+
+            string $com_rt_jm  = `shadingNode -n ($child_node+"_to_"+$parent_node+"_com_rt_jmm") -asUtility multMatrix`;
+            connectAttr -f ($com_rt_jo_cm+".outputMatrix") ($com_rt_jm+".matrixIn[0]");
+            connectAttr -f ($com_rt_jis_im+".outputMatrix") ($com_rt_jm+".matrixIn[1]");
+            connectAttr -f ($parent_obj+"."+$child_node+"_reParent_pm") ($com_rt_jm+".matrixIn[2]");
+
+            string $com_rt_im  = `shadingNode -n ($child_node+"_to_"+$parent_node+"_com_rt_im") -asUtility inverseMatrix`;
+            connectAttr -f ($com_rt_jm+".matrixSum") ($com_rt_im+".inputMatrix");
+            connectAttr -f ($com_rt_im+".outputMatrix") ($com_rt_mm+".matrixIn[2]");
+
+            setAttr ($com_rt_jo_cm+".isHistoricallyInteresting") 0;
+            setAttr ($com_rt_jm+".isHistoricallyInteresting") 0;
+            setAttr ($com_rt_im+".isHistoricallyInteresting") 0;
+        }
+
+       //connect orient constrain to child
+        string $orientConstrain_name = `createNode orientConstraint -n ($child_node+"_com_orientConstraint")`;
+        connectAttr -f ($com_rt_dm+".outputRotate") ($orientConstrain_name+".target[0].targetRotate");
+
+        connectAttr -f ($orientConstrain_name+".constraintRotateX") ($pairBlend_name+".inRotateX2");
+        connectAttr -f ($orientConstrain_name+".constraintRotateY") ($pairBlend_name+".inRotateY2");
+        connectAttr -f ($orientConstrain_name+".constraintRotateZ") ($pairBlend_name+".inRotateZ2");
+
+        $check_char_set = `listConnections -p 1 -t "character" ($child_obj+".rotateX")`;
+        if (size($check_char_set)!=0){connectAttr -f ($pairBlend_name+".outRotateX") $check_char_set[size($check_char_set)-1];}
+        else
+        {
+            if(`getAttr -l ($child_obj+".rotateX")`!=1)
+            {
+                string $anim_curve[] = `listConnections -p 1 ($child_obj+".rotateX")`;
+                if( $anim_curve[0] != "")
+                {
+                    connectAttr -f $anim_curve[0] ($pairBlend_name+".inRotateX1");
+                    connectAttr -f ($pairBlend_name+".outRotateX") ($child_obj+".rotateX");
+                }
+                else
+                {
+                    connectAttr -f ($orientConstrain_name+".constraintRotateX") ($child_obj+".rotateX");
+                }
+            }
+        }
+
+        $check_char_set = `listConnections -p 1  -t "character" ($child_obj+".rotateY")`;
+        if ( size($check_char_set)!=0){connectAttr -f ($pairBlend_name+".outRotateY") $check_char_set[size($check_char_set)-1];}
+        else
+        {
+            if(`getAttr -l ($child_obj+".rotateY")`!=1)
+            {
+                string $anim_curve[] = `listConnections -p 1 ($child_obj+".rotateY")`;
+                if( $anim_curve[0] != "")
+                {
+                    connectAttr -f $anim_curve[0] ($pairBlend_name+".inRotateY1");
+                    connectAttr -f ($pairBlend_name+".outRotateY") ($child_obj+".rotateY");
+                }
+                else
+                {
+                    connectAttr -f ($orientConstrain_name+".constraintRotateY") ($child_obj+".rotateY");
+                }
+            }
+        }
+
+        $check_char_set = `listConnections -p 1  -t "character" ($child_obj+".rotateZ")`;
+        if ( size($check_char_set)!=0){connectAttr -f ($pairBlend_name+".outRotateZ") $check_char_set[size($check_char_set)-1];}
+        else
+        {
+            if(`getAttr -l ($child_obj+".rotateZ")`!=1)
+            {
+                string $anim_curve[] = `listConnections -p 1 ($child_obj+".rotateZ")`;
+                if( $anim_curve[0] != "")
+                {
+                    connectAttr -f $anim_curve[0] ($pairBlend_name+".inRotateZ1");
+                    connectAttr -f ($pairBlend_name+".outRotateZ") ($child_obj+".rotateZ");
+                }
+                else
+                {
+                    connectAttr -f ($orientConstrain_name+".constraintRotateZ") ($child_obj+".rotateZ");
+                }
+            }
+        }
+
+        //add offset
+        if ($type == "parentConstrain_mo"||$type == "orientConstrain_mo")
+        {
+            setAttr ($com_rt_mm+".matrixIn[0]") -type "matrix"
+            $com_parent_offset[0] $com_parent_offset[1] $com_parent_offset[2] $com_parent_offset[3] $com_parent_offset[4] $com_parent_offset[5] $com_parent_offset[6] $com_parent_offset[7]
+            $com_parent_offset[8] $com_parent_offset[9] $com_parent_offset[10] $com_parent_offset[11] $com_parent_offset[12] $com_parent_offset[13] $com_parent_offset[14] $com_parent_offset[15];
+        }
+
+        parent $orientConstrain_name ($child_obj);
+        if ($options==0)
+        {
+            delete $orientConstrain_name;
+            if (`attributeExists "reParent_blend" $child_obj`==1)
+            {
+                deleteAttr -attribute "reParent_blend" $child_obj;
+            }
+        }
+    }
+
+    if (`attributeExists "reParent_blend" $parent_obj`==1)
+    {
+        if(size(`listConnections -d 1 ($parent_obj+".reParent_blend")`)==0)
+        {
+            deleteAttr -attribute "reParent_blend" $parent_obj;
+        }
+    }
+
+}

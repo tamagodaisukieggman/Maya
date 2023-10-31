@@ -1,0 +1,28 @@
+reParent End User License Agreement (EULA)
+
+This is a legal agreement between you and Dmitrii Kolpakov covering your use of reParent (the "Software").
+
+1) Software is owned by Dmitrii Kolpakov and is protected by copyright laws
+   and international treaty provisions. Therefore, you must treat the Software like any other
+   copyrighted material.
+
+2) You may not distribute, rent, sub-license or otherwise make available to others the Software
+   or documentation or copies thereof, except as expressly permitted in this License without prior
+   written consent from Dmitrii Kolpakov. In the case of an authorized transfer, the
+   transferee must agree to be bound by the terms and conditions of this License Agreement.
+
+3) You may not modify, de-compile, disassemble or reverse engineer the Software.
+
+4) Software warranty: The licensee assumes the entire risk as to the quality and performance of the software.
+
+5) Software license can be used only for one person. If you buy single freelance license - you can
+use software on all of your work machines. If you buy Single seat studio licence you
+can be used only for one workplace. 
+
+
+Copyright (C) 2018 by Dmitrii Kolpakov, Krasnodar, Russia.
+
+Email: dmetren@gmail.com
+
+All rights reserved. 
+
