@@ -29,7 +29,7 @@ class IkChain(tkgModule.RigModule, tkgIk.Ik):
     sel = cmds.ls(os=True) # select 3 joints(start, middle, end)
     try:
         tkgIkChain.IkChain(
-                        side=None,
+                        side='A',
                          part=None,
                          guide_list=sel,
                          ctrl_scale=3,
@@ -41,15 +41,18 @@ class IkChain(tkgModule.RigModule, tkgIk.Ik):
                          slide_pv=None,
                          stretchy=True,
                          stretchy_axis='scaleX',
-                         twisty=None,
+                         soft_ik=True,
+                         twisty=True,
                          twisty_axis='x',
-                         bendy=None,
+                         bendy=True,
                          bendy_axis='scaleX',
                          segments=None,
                          model_path=None,
                          guide_path=None)
     except:
         print(traceback.format_exc())
+
+    # tkgFinalize.add_color_attributes()
     """
     def __init__(self,
                  side=None,

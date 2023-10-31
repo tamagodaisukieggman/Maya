@@ -153,7 +153,9 @@ def assemble_rig():
                     if pt == 'hideRigPlugs':
                         cmds.hide(node_list.split(' '))
                     elif pt == 'deleteRigPlugs':
-                        cmds.delete(node_list.split(' '))
+                        for node in node_list.split(' '):
+                            if cmds.objExists(node):
+                                cmds.delete(node)
                     else:
                         cmds.warning(pt, ' plug type not found, skipping...')
 
