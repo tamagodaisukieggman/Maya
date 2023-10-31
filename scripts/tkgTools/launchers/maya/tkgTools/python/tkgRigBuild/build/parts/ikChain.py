@@ -16,6 +16,7 @@ class IkChain(tkgModule.RigModule, tkgIk.Ik):
                  part=None,
                  guide_list=None,
                  ctrl_scale=1,
+                 ctrl_color=[0.8, 0.5, 0.2],
                  sticky=None,
                  solver=None,
                  pv_guide='auto',
@@ -40,6 +41,7 @@ class IkChain(tkgModule.RigModule, tkgIk.Ik):
         self.solver = solver
         self.pv_guide = pv_guide
         self.offset_pv = offset_pv
+        self.ctrl_color = ctrl_color
         self.slide_pv = slide_pv
         self.stretchy = stretchy
         self.stretchy_axis = stretchy_axis

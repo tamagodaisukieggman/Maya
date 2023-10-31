@@ -13,6 +13,38 @@ reload(tkgFk)
 reload(tkgAttr)
 
 class FkChain(tkgModule.RigModule, tkgFk.Fk):
+    """
+    # -*- coding: utf-8 -*-
+
+    # Build Command
+    import maya.cmds as cmds
+    from imp import reload
+
+    import tkgRigBuild.build.parts.fkChain as tkgFkChain
+    reload(tkgFkChain)
+
+    import traceback
+
+    sel = cmds.ls(os=True, dag=True)
+    try:
+        tkgFkChain.FkChain(
+                        side=None,
+                         part=None,
+                         guide_list=sel,
+                         gimbal=True,
+                         offset=True,
+                         pad="auto",
+                         ctrl_scale=3,
+                         remove_last=True,
+                         fk_shape="cube",
+                         gimbal_shape="circle",
+                         offset_shape="square",
+                         model_path=None,
+                         guide_path=None)
+    except:
+        print(traceback.format_exc())
+
+    """
     def __init__(self,
                  side=None,
                  part=None,
@@ -20,7 +52,10 @@ class FkChain(tkgModule.RigModule, tkgFk.Fk):
                  gimbal=True,
                  offset=True,
                  pad="auto",
+                 fk_ctrl_axis='x',
+                 fk_ctrl_edge_axis='-x',
                  ctrl_scale=1,
+                 ctrl_color=[0.1, 0.4, 0.8],
                  remove_last=True,
                  fk_shape="circle",
                  gimbal_shape="circle",
@@ -38,10 +73,17 @@ class FkChain(tkgModule.RigModule, tkgFk.Fk):
         self.gimbal = gimbal
         self.offset = offset
         self.pad = pad
+        self.fk_ctrl_axis = fk_ctrl_axis
+        self.fk_ctrl_edge_axis = fk_ctrl_edge_axis
+        self.ctrl_color = ctrl_color
         self.remove_last = remove_last
         self.fk_shape = fk_shape
         self.gimbal_shape = gimbal_shape
         self.offset_shape = offset_shape
+
+        self.part_fk_main_ctrls = []
+        self.part_fk_gimbal_ctrls = []
+        self.part_fk_offset_ctrls = []
 
         if self.pad == "auto":
             self.pad = len(str(len(self.guide_list))) + 1
