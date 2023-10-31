@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
+import maya.cmds as cmds
+import maya.api.OpenMaya as om2
 
 from collections import OrderedDict
-
-import maya.cmds as cmds
 from imp import reload
-
 
 def match_pose(node, position=None, rotation=None, scale=None):
     if isinstance(position, list) or isinstance(position, tuple):
@@ -101,3 +100,46 @@ def move_pivot(ctrl=None, edge_axis='-x'):
         rev_xform = [v*-1 for v in pivot_value[edge_axis]]
         cmds.xform(ctrl, t=rev_xform, ws=True, a=True)
         cmds.makeIdentity(ctrl, n=False, s=True, r=True, t=True, apply=True, pn=True)
+
+def m_obj(obj):
+    selection_list = om2.MSelectionList()
+    selection_list.add(obj)
+    return selection_list.getDependNode(0)
+
+def m_dag(obj):
+    selection_list = om2.MSelectionList()
+    selection_list.add(obj)
+    return selection_list.getDagPath(0)
+
+def m_dependency(obj):
+    m_dependency_node = om2.MFnDependencyNode(m_obj(obj))
+    return m_dependency_node
+
+def fn_transform(obj):
+    dag = m_dag(obj)
+    fn_trans = om2.MFnTransform(dag)
+    return fn_trans
+
+def fn_transform_pos(obj):
+    fn_trans = fn_transform(obj)
+    return fn_trans.translation(om2.MSpace.kWorld)
+
+def get_distance(objA, objB):
+    posA = fn_transform_pos(objA)
+    posB = fn_transform_pos(objB)
+    return om2.MPoint(posA).distanceTo(om2.MPoint(posB))
+
+def fn_addNumAttr(obj=None, longName=None, shortName=None, minValue=None, maxValue=None, defaultValue=None, numericData=om2.MFnNumericData.kFloat):
+    m_object = m_obj(obj)
+    m_dependency_node = om2.MFnDependencyNode(m_object)
+
+    num_att_fn = om2.MFnNumericAttribute(m_object)
+    attr = num_att_fn.create(longName, shortName, numericData, defaultValue) # float
+    num_att_fn.keyable=True
+
+    if maxValue != None:
+        num_att_fn.setMax(maxValue)
+    if minValue != None:
+        num_att_fn.setMin(minValue)
+
+    m_dependency_node.addAttribute(attr)

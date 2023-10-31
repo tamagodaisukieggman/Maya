@@ -7,11 +7,12 @@ import tkgRigBuild.libs.attribute as tkgAttr
 import tkgRigBuild.build.chain as tkgChain
 import tkgRigBuild.libs.control.ctrl as tkgCtrl
 import tkgRigBuild.build.guide as tkgGuide
+import tkgRigBuild.libs.transform as tkgXform
 reload(tkgAttr)
 reload(tkgChain)
 reload(tkgCtrl)
 reload(tkgGuide)
-
+reload(tkgXform)
 
 class Ik:
     def __init__(self,
@@ -241,3 +242,135 @@ class Ik:
             # connect stretch output to ik joints (except the last one)
             for jnt in self.ik_joints[:-1]:
                 cmds.connectAttr(bta + '.output', jnt + '.' + self.stretchy_axis)
+
+def get_ikHandle_joints_distance(setHandle):
+    endEffector = cmds.ikHandle(setHandle, q=1, endEffector=1)
+    jointList = cmds.ikHandle(setHandle, q=1, jointList=1)
+
+    sel = cmds.ls(os=1)
+    cmds.select(endEffector)
+    endJoint=cmds.pickWalk(d='up')
+    endJoint=cmds.pickWalk(d='down')[0]
+    cmds.select(sel)
+
+    jointList.append(endJoint)
+
+    length = 0.0
+    i = 0
+    for jnt in jointList:
+        if i == 0:
+            pass
+        else:
+            length += tkgXform.get_distance(jointList[i-1], jnt)
+        i += 1
+
+    return length, jointList
+
+def create_softik_locators(start=None, end=None, startMatchFlag=None, endMatchFlag=None):
+    startloc = '{0}_softik_st_loc'.format(start)
+    endloc = '{0}_softik_ed_loc'.format(end)
+    lenloc = '{0}_softik_len_loc'.format(end)
+
+    cmds.spaceLocator(n=startloc)
+    cmds.spaceLocator(n=endloc)
+
+    cmds.matchTransform(startloc, start, **startMatchFlag)
+    cmds.matchTransform(endloc, end, **endMatchFlag)
+
+    dup_len_loc = cmds.duplicate(endloc, n=lenloc)
+
+    cmds.parent(endloc, startloc)
+    cmds.parent(dup_len_loc, startloc)
+
+    return startloc, endloc, dup_len_loc
+
+
+def create_softik(ik_ctrl=None, ikhandle=None):
+    """
+    create_softik(ik_ctrl='A_default_IK_main_CTRL', ikhandle='A_default_IKH')
+    """
+    listAttrs = cmds.listAttr(ik_ctrl, ud=1)
+    if not 'softIk' in listAttrs:
+        tkgXform.fn_addNumAttr(ik_ctrl, 'softIk', 'sfi', 0, 10, 0)
+
+    listAttrs = cmds.listAttr(ik_ctrl, ud=1)
+    if not 'softIkIntencity' in listAttrs:
+        tkgXform.fn_addNumAttr(ik_ctrl, 'softIkIntencity', 'sfic', 0, 1, 0.1)
+
+    distance, jointList = get_ikHandle_joints_distance(ikhandle)
+
+    startloc, endloc, dup_len_loc = create_softik_locators(start=jointList[0],
+                                                           end=jointList[-1],
+                                                           startMatchFlag={'pos':True, 'rot':True},
+                                                           endMatchFlag={'pos':True, 'rot':True})
+
+
+    # constraint
+    cmds.aimConstraint(ik_ctrl, startloc, weight=1, upVector=(0, 1, 0), worldUpType="vector", aimVector=(1, 0, 0), worldUpVector=(0, 1, 0))
+    cmds.pointConstraint(jointList[0], startloc)
+
+    cmds.pointConstraint(ik_ctrl, dup_len_loc)
+
+    cmds.pointConstraint(endloc, ikhandle)
+
+
+    # create nodes
+
+    e = 2.718281828459045235360287471352
+
+    sub_len_pma = cmds.createNode('plusMinusAverage', n='{0}_softik_{1}'.format(jointList[-1], 'sub_len_pma'))
+    cmds.setAttr('{0}.operation'.format(sub_len_pma), 2)
+    cmds.setAttr('{0}.input1D[0]'.format(sub_len_pma), distance)
+    cmds.connectAttr('{0}.softIk'.format(ik_ctrl), '{0}.input1D[1]'.format(sub_len_pma), f=1)
+
+    sub_dif_pma = cmds.createNode('plusMinusAverage', n='{0}_softik_{1}'.format(jointList[-1], 'sub_dif_pma'))
+    cmds.setAttr('{0}.operation'.format(sub_dif_pma), 2)
+    cmds.connectAttr('{0}.tx'.format(dup_len_loc[0]), '{0}.input1D[0]'.format(sub_dif_pma), f=1)
+    cmds.connectAttr('{0}.output1D'.format(sub_len_pma), '{0}.input1D[2]'.format(sub_dif_pma), f=1)
+
+    neg_mdl = cmds.createNode('multDoubleLinear', n='{0}_softik_{1}'.format(jointList[-1], 'neg_mdl'))
+    cmds.setAttr('{0}.input2'.format(neg_mdl), -1)
+    cmds.connectAttr('{0}.output1D'.format(sub_dif_pma), '{0}.input1'.format(neg_mdl), f=1)
+
+    dif_mdl = cmds.createNode('multDoubleLinear', n='{0}_softik_{1}'.format(jointList[-1], 'dif_mdl'))
+    cmds.setAttr('{0}.input2'.format(dif_mdl), 0.1)
+    cmds.connectAttr('{0}.output'.format(neg_mdl), '{0}.input1'.format(dif_mdl), f=1)
+    cmds.connectAttr('{0}.softIkIntencity'.format(ik_ctrl), '{0}.input2'.format(dif_mdl), f=1)
+
+    npr_md = cmds.createNode('multiplyDivide', n='{0}_softik_{1}'.format(jointList[-1], 'npr_md'))
+    cmds.setAttr('{0}.operation'.format(npr_md), 3)
+    cmds.setAttr('{0}.input1X'.format(npr_md), e)
+    cmds.connectAttr('{0}.output'.format(dif_mdl), '{0}.input2X'.format(npr_md), f=1)
+
+    calc_pma = cmds.createNode('plusMinusAverage', n='{0}_softik_{1}'.format(jointList[-1], 'calc_pma'))
+    cmds.setAttr('{0}.operation'.format(calc_pma), 2)
+    cmds.setAttr('{0}.input1D[0]'.format(calc_pma), 1)
+    cmds.connectAttr('{0}.outputX'.format(npr_md), '{0}.input1D[1]'.format(calc_pma), f=1)
+
+    calc_mdl = cmds.createNode('multDoubleLinear', n='{0}_softik_{1}'.format(jointList[-1], 'calc_mdl'))
+    cmds.connectAttr('{0}.softIk'.format(ik_ctrl), '{0}.input1'.format(calc_mdl), f=1)
+    cmds.connectAttr('{0}.output1D'.format(calc_pma), '{0}.input2'.format(calc_mdl), f=1)
+
+    calc_adl = cmds.createNode('addDoubleLinear', n='{0}_softik_{1}'.format(jointList[-1], 'calc_adl'))
+    cmds.connectAttr('{0}.output1D'.format(sub_len_pma), '{0}.input1'.format(calc_adl), f=1)
+    cmds.connectAttr('{0}.output'.format(calc_mdl), '{0}.input2'.format(calc_adl), f=1)
+
+    flw_ikh_pos_cdn = cmds.createNode('condition', n='{0}_softik_{1}'.format(jointList[-1], 'flw_ikh_pos_cdn'))
+    cmds.connectAttr('{0}.softIk'.format(ik_ctrl), '{0}.firstTerm'.format(flw_ikh_pos_cdn), f=1)
+    cmds.connectAttr('{0}.tx'.format(dup_len_loc[0]), '{0}.colorIfTrueR'.format(flw_ikh_pos_cdn), f=1)
+    cmds.connectAttr('{0}.output'.format(calc_adl), '{0}.colorIfFalseR'.format(flw_ikh_pos_cdn), f=1)
+
+
+    effect_cdn = cmds.createNode('condition', n='{0}_softik_{1}'.format(jointList[-1], 'effect_cdn'))
+    cmds.setAttr('{0}.operation'.format(effect_cdn), 2)
+
+    cmds.connectAttr('{0}.translateX'.format(dup_len_loc[0]), '{0}.colorIfFalseR'.format(effect_cdn), f=1)
+    cmds.connectAttr('{0}.translateX'.format(dup_len_loc[0]), '{0}.firstTerm'.format(effect_cdn), f=1)
+
+    cmds.connectAttr('{0}.output1D'.format(sub_len_pma), '{0}.secondTerm'.format(effect_cdn), f=1)
+    cmds.connectAttr('{0}.outColorR'.format(flw_ikh_pos_cdn), '{0}.colorIfTrueR'.format(effect_cdn), f=1)
+
+    cmds.connectAttr('{0}.outColorR'.format(effect_cdn), '{0}.translateX'.format(endloc), f=1)
+
+    cmds.connectAttr('{0}.ty'.format(dup_len_loc[0]), '{0}.ty'.format(endloc), f=1)
+    cmds.connectAttr('{0}.tz'.format(dup_len_loc[0]), '{0}.tz'.format(endloc), f=1)
