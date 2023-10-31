@@ -30,6 +30,7 @@ class BipedLimb(tkgModule.RigModule, tkgIk.Ik, tkgFk.Fk):
                  create_fk=True,
                  stretchy=True,
                  stretchy_axis='scaleX',
+                 soft_ik=None,
                  twisty=True,
                  twisty_axis='x',
                  bendy=True,
@@ -97,6 +98,8 @@ class BipedLimb(tkgModule.RigModule, tkgIk.Ik, tkgFk.Fk):
         self.create_fk = create_fk
         self.stretchy = stretchy
         self.stretchy_axis = stretchy_axis
+        self.soft_ik = soft_ik
+        self.for_softik_pac = None
         self.twisty = twisty
         self.twisty_axis = twisty_axis
         self.bendy = bendy
@@ -181,6 +184,8 @@ class BipedLimb(tkgModule.RigModule, tkgIk.Ik, tkgFk.Fk):
             self.build_ik_chain()
             self.build_ikh(scale_attr=self.global_scale)
             cmds.parent(self.ikh, self.ik_joints[0], self.limb_grp)
+            if self.soft_ik:
+                cmds.parent(self.soft_ik_loc, self.limb_grp)
             self.src_chain = self.ik_chain
             self.src_joints = self.ik_joints
             up_twist = self.base_ctrl.ctrl

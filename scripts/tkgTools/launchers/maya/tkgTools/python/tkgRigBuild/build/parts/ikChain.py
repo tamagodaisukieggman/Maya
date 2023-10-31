@@ -64,6 +64,7 @@ class IkChain(tkgModule.RigModule, tkgIk.Ik):
                  slide_pv=None,
                  stretchy=True,
                  stretchy_axis='scaleX',
+                 soft_ik=None,
                  twisty=None,
                  twisty_axis='x',
                  bendy=None,
@@ -90,6 +91,8 @@ class IkChain(tkgModule.RigModule, tkgIk.Ik):
         self.bendy = bendy
         self.bendy_axis = bendy_axis
         self.segments = segments
+
+        self.soft_ik = soft_ik
 
         if self.twisty or self.bendy and not self.segments:
             self.segments = 4
@@ -161,6 +164,8 @@ class IkChain(tkgModule.RigModule, tkgIk.Ik):
 
         self.build_ikh(scale_attr=self.global_scale)
         cmds.parent(self.ikh, self.ik_joints[0], self.module_grp)
+        if self.soft_ik:
+            cmds.parent(self.soft_ik_loc, self.module_grp)
 
     def skeleton(self):
         ik_chain = tkgChain.Chain(transform_list=self.src_joints,

@@ -27,7 +27,8 @@ class Ik:
                  offset_pv=0,
                  slide_pv=None,
                  stretchy=None,
-                 stretchy_axis="scaleX"):
+                 stretchy_axis="scaleX",
+                 soft_ik=None):
         u"""
         import maya.cmds as cmds
 
@@ -64,6 +65,9 @@ class Ik:
         self.slide_pv = slide_pv
         self.stretchy = stretchy
         self.stretchy_axis = stretchy_axis
+
+        self.soft_ik = soft_ik
+        self.for_softik_pac = None
 
         self.check_solvers()
         self.check_pv_guide()
@@ -175,7 +179,7 @@ class Ik:
         if constrain:
             cmds.parentConstraint(self.base_ctrl.ctrl, self.ik_joints[0],
                                   maintainOffset=True)
-            cmds.parentConstraint(self.main_ctrl.ctrl, self.ikh,
+            self.for_softik_pac = cmds.parentConstraint(self.main_ctrl.ctrl, self.ikh,
                                   maintainOffset=True)
 
         if self.pv_guide:
@@ -242,6 +246,14 @@ class Ik:
             # connect stretch output to ik joints (except the last one)
             for jnt in self.ik_joints[:-1]:
                 cmds.connectAttr(bta + '.output', jnt + '.' + self.stretchy_axis)
+
+        if self.soft_ik:
+            self.build_softik()
+
+    def build_softik(self):
+        if self.for_softik_pac:
+            cmds.delete(self.for_softik_pac[0])
+        self.soft_ik_loc = create_softik(ik_ctrl=self.main_ctrl.ctrl, ikhandle=self.ikh)
 
 def get_ikHandle_joints_distance(setHandle):
     endEffector = cmds.ikHandle(setHandle, q=1, endEffector=1)
@@ -374,3 +386,5 @@ def create_softik(ik_ctrl=None, ikhandle=None):
 
     cmds.connectAttr('{0}.ty'.format(dup_len_loc[0]), '{0}.ty'.format(endloc), f=1)
     cmds.connectAttr('{0}.tz'.format(dup_len_loc[0]), '{0}.tz'.format(endloc), f=1)
+
+    return startloc

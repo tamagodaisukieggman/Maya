@@ -67,7 +67,7 @@ for s, fs in zip(sides, force_sides):
                               side=s, part="arm",
             guide_list=["proxy_Arm" + fs, "proxy_Elbow" + fs, "proxy_Wrist" + fs],
             ctrl_scale=9, fk_ctrl_edge_axis=edge_axis,
-            pv_guide='proxy_Elbow{}_match_loc'.format(fs))
+            pv_guide='proxy_Elbow{}_match_loc'.format(fs), soft_ik=True)
 
     clavicle = tkgPart.build_module(module_type="clavicle",
                               side=s, part="clavicle",
@@ -90,7 +90,7 @@ for s, fs in zip(sides, force_sides):
                               side=s, part="leg",
             guide_list=["proxy_Thigh" + fs, "proxy_Knee" + fs, "proxy_Ankle" + fs],
             ctrl_scale=9, fk_ctrl_edge_axis=edge_axis,
-            pv_guide='proxy_Knee{}_match_loc'.format(fs))
+            pv_guide='proxy_Knee{}_match_loc'.format(fs), soft_ik=True)
 
     endJnt = rigModule.create_endJnt(base='proxy_Toe' + fs, wt=[0,0,5], awt_obj=None)
     foot = tkgPart.build_module(module_type="foot",
