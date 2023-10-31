@@ -15,13 +15,13 @@ reload(tkgAttr)
 class FkChain(tkgModule.RigModule, tkgFk.Fk):
     """
     # -*- coding: utf-8 -*-
-
-    # Build Command
     import maya.cmds as cmds
     from imp import reload
 
     import tkgRigBuild.build.parts.fkChain as tkgFkChain
+    import tkgRigBuild.post.finalize as tkgFinalize
     reload(tkgFkChain)
+    reload(tkgFinalize)
 
     import traceback
 
@@ -35,6 +35,7 @@ class FkChain(tkgModule.RigModule, tkgFk.Fk):
                          offset=True,
                          pad="auto",
                          ctrl_scale=3,
+                         ctrl_color=[0.8, 0.8, 0],
                          remove_last=True,
                          fk_shape="cube",
                          gimbal_shape="circle",
@@ -44,6 +45,7 @@ class FkChain(tkgModule.RigModule, tkgFk.Fk):
     except:
         print(traceback.format_exc())
 
+    tkgFinalize.add_color_attributes()
     """
     def __init__(self,
                  side=None,

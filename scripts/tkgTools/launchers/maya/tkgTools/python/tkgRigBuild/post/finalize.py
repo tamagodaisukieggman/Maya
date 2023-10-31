@@ -65,10 +65,11 @@ def add_color_attributes():
                             group_type=None,
                             rig_type='global')
 
-    bb = tkgCommon.get_bounding_box(['Cn_global_CTRL'])[3:6]
-    cmds.xform(c_ctrl.ctrl, t=[bb[0], 0, 0], ws=True)
-    scale = 10
-    cmds.xform(c_ctrl.ctrl, s=[scale, scale, scale])
+    if cmds.objExists('Cn_global_CTRL'):
+        bb = tkgCommon.get_bounding_box(['Cn_global_CTRL'])[3:6]
+        cmds.xform(c_ctrl.ctrl, t=[bb[0], 0, 0], ws=True)
+        scale = 10
+        cmds.xform(c_ctrl.ctrl, s=[scale, scale, scale])
 
     attr_util.lock_and_hide(node=c_ctrl.ctrl)
 

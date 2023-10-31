@@ -7,10 +7,50 @@ import tkgRigBuild.build.rigModule as tkgModule
 import tkgRigBuild.libs.attribute as tkgAttr
 import tkgRigBuild.build.chain as tkgChain
 import tkgRigBuild.build.ik as tkgIk
+reload(tkgModule)
+reload(tkgAttr)
 reload(tkgChain)
+reload(tkgIk)
 
 
 class IkChain(tkgModule.RigModule, tkgIk.Ik):
+    """
+    # -*- coding: utf-8 -*-
+    import maya.cmds as cmds
+    from imp import reload
+
+    import tkgRigBuild.build.parts.ikChain as tkgIkChain
+    import tkgRigBuild.post.finalize as tkgFinalize
+    reload(tkgIkChain)
+    reload(tkgFinalize)
+
+    import traceback
+
+    sel = cmds.ls(os=True) # select 3 joints(start, middle, end)
+    try:
+        tkgIkChain.IkChain(
+                        side=None,
+                         part=None,
+                         guide_list=sel,
+                         ctrl_scale=3,
+                         ctrl_color=[0.8, 0.5, 0.2],
+                         sticky=None,
+                         solver=None,
+                         pv_guide='auto',
+                         offset_pv=0,
+                         slide_pv=None,
+                         stretchy=True,
+                         stretchy_axis='scaleX',
+                         twisty=None,
+                         twisty_axis='x',
+                         bendy=None,
+                         bendy_axis='scaleX',
+                         segments=None,
+                         model_path=None,
+                         guide_path=None)
+    except:
+        print(traceback.format_exc())
+    """
     def __init__(self,
                  side=None,
                  part=None,
@@ -53,6 +93,8 @@ class IkChain(tkgModule.RigModule, tkgIk.Ik):
 
         if self.twisty or self.bendy and not self.segments:
             self.segments = 4
+
+        self.part_ik_ctrls = []
 
         self.create_module()
 

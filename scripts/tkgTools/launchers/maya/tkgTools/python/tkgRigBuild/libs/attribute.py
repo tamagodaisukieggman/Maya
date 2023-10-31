@@ -104,24 +104,27 @@ class Attribute:
             self.value = cmds.getAttr(self.attr)
 
     def add_string(self):
-        cmds.addAttr(self.node, longName=self.name, dataType='string')
+        if not cmds.objExists(self.node + '.' + self.name):
+            cmds.addAttr(self.node, longName=self.name, dataType='string')
         cmds.setAttr(self.attr, self.value, type='string')
 
     def add_bool(self):
-        cmds.addAttr(self.node,
-                     attributeType='bool',
-                     defaultValue=self.value,
-                     keyable=self.keyable,
-                     longName=self.name)
+        if not cmds.objExists(self.node + '.' + self.name):
+            cmds.addAttr(self.node,
+                         attributeType='bool',
+                         defaultValue=self.value,
+                         keyable=self.keyable,
+                         longName=self.name)
 
     def add_double(self):
-        cmds.addAttr(self.node,
-                     attributeType='double',
-                     hasMinValue=self.hasMinValue,
-                     hasMaxValue=self.hasMaxValue,
-                     defaultValue=self.value,
-                     keyable=self.keyable,
-                     longName=self.name)
+        if not cmds.objExists(self.node + '.' + self.name):
+            cmds.addAttr(self.node,
+                         attributeType='double',
+                         hasMinValue=self.hasMinValue,
+                         hasMaxValue=self.hasMaxValue,
+                         defaultValue=self.value,
+                         keyable=self.keyable,
+                         longName=self.name)
 
         if self.hasMinValue:
             cmds.addAttr(self.attr, edit=True, min=self.min)
@@ -129,23 +132,25 @@ class Attribute:
             cmds.addAttr(self.attr, edit=True, max=self.max)
 
     def add_double3(self):
-        cmds.addAttr(self.node,
-                     attributeType='double3',
-                     hasMinValue=self.hasMinValue,
-                     hasMaxValue=self.hasMaxValue,
-                     keyable=self.keyable,
-                     longName=self.name)
+        if not cmds.objExists(self.node + '.' + self.name):
+            cmds.addAttr(self.node,
+                         attributeType='double3',
+                         hasMinValue=self.hasMinValue,
+                         hasMaxValue=self.hasMaxValue,
+                         keyable=self.keyable,
+                         longName=self.name)
 
         # add all children attributes
         for child in self.children_name:
-            cmds.addAttr(self.node,
-                         parent=self.name,
-                         attributeType='double',
-                         hasMinValue=self.hasMinValue,
-                         hasMaxValue=self.hasMaxValue,
-                         defaultValue=self.value,
-                         keyable=self.keyable,
-                         longName=self.name + child)
+            if not cmds.objExists(self.node + '.' + self.name + child):
+                cmds.addAttr(self.node,
+                             parent=self.name,
+                             attributeType='double',
+                             hasMinValue=self.hasMinValue,
+                             hasMaxValue=self.hasMaxValue,
+                             defaultValue=self.value,
+                             keyable=self.keyable,
+                             longName=self.name + child)
 
         # set min/max values on children
         for child in self.children_name:
@@ -156,32 +161,38 @@ class Attribute:
                 cmds.addAttr(child_attr, edit=True, max=self.max)
 
     def add_plug(self):
-        cmds.addAttr(self.node,
-                     numberOfChildren=len(self.children_name),
-                     attributeType='compound',
-                     longName=self.name)
+        if not cmds.objExists(self.node + '.' + self.name):
+            cmds.addAttr(self.node,
+                         numberOfChildren=len(self.children_name),
+                         attributeType='compound',
+                         longName=self.name)
+
         for child in self.children_name:
-            cmds.addAttr(self.node, longName=child, dt='string',
-                         parent=self.name)
+            if not cmds.objExists(self.node + '.' + child):
+                cmds.addAttr(self.node, longName=child, dt='string',
+                             parent=self.name)
+
         for plug, val in zip(cmds.listAttr(self.attr)[1:], self.value):
             cmds.setAttr(self.node + '.' + plug, val, type='string')
 
     def add_enum(self):
         if self.enum_list:
             enum_name = ':'.join(self.enum_list) + ':'
-        cmds.addAttr(self.node,
-                     attributeType='enum',
-                     defaultValue=self.value,
-                     enumName=enum_name,
-                     keyable=self.keyable,
-                     longName=self.name)
+        if not cmds.objExists(self.node + '.' + self.name):
+            cmds.addAttr(self.node,
+                         attributeType='enum',
+                         defaultValue=self.value,
+                         enumName=enum_name,
+                         keyable=self.keyable,
+                         longName=self.name)
 
     def add_separator(self):
-        cmds.addAttr(self.node,
-                     attributeType='enum',
-                     enumName='______',
-                     keyable=False,
-                     longName=self.name)
+        if not cmds.objExists(self.node + '.' + self.name):
+            cmds.addAttr(self.node,
+                         attributeType='enum',
+                         enumName='______',
+                         keyable=False,
+                         longName=self.name)
         cmds.setAttr(self.attr, cb=True)
 
     def lock_attr(self, attr):
