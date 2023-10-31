@@ -406,7 +406,7 @@ for s, fs in zip(sides, force_sides):
 
 for s, fs in zip(sides, force_sides):
     # -------------------------------
-    # Arm
+    # Leg
     # -------------------------------
     # *ジョイント階層の指定
     # plugを追加するmodule
