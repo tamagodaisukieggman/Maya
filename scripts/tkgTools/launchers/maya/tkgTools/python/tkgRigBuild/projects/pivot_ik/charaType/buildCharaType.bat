@@ -8,6 +8,7 @@ echo TYPE: %CURRENT_DIR%
 :: 末尾のバックスラッシュを削除
 set BACK_CURRENT_DIR=%CURRENT_DIR:~0,-1%
 
+
 :: 上の階層のディレクトリパスを取得
 for %%i in (%BACK_CURRENT_DIR%) do set PARENT_DIR=%%~dpi
 
