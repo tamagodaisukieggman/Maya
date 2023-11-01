@@ -11,7 +11,7 @@ rigModule = tkgModule.RigModule()
 rep_build_file = build_file.replace('\\', '/')
 data_path = '{}/{}'.format('/'.join(rep_build_file.split('/')[:-2]), '000_data')
 
-mp = "C:/Users/kesun/Documents/maya/scripts/tkgTools/tkgRig/data/projects/wizard2/data/p2/p2_sotai01.ma"
+mp = "c:/cygames/wiz2/team/3dcg/chr/cmn/sotai/sotai01/scenes/p2_sotai01.ma"
 gp = "{}/biped_guide_000.ma".format(data_path)
 
 
@@ -62,7 +62,7 @@ for s, fs in zip(sides, force_sides):
                               side=s, part="arm",
             guide_list=["proxy_Arm" + fs, "proxy_Elbow" + fs, "proxy_Wrist" + fs],
             ctrl_scale=9, fk_ctrl_edge_axis=edge_axis,
-            pv_guide='proxy_Elbow{}_match_loc'.format(fs))
+            pv_guide='proxy_Elbow{}_match_loc'.format(fs), soft_ik=True)
 
     clavicle = tkgPart.build_module(module_type="clavicle",
                               side=s, part="clavicle",
@@ -73,7 +73,7 @@ for s, fs in zip(sides, force_sides):
     hand = tkgPart.build_module(module_type="hand",
                               side=s, part="hand",
             guide_list=["proxy_Wrist" + fs],
-            ctrl_scale=10)
+            ctrl_scale=6)
 
 for s, fs in zip(sides, force_sides):
     if fs == '_L':
@@ -85,7 +85,7 @@ for s, fs in zip(sides, force_sides):
                               side=s, part="leg",
             guide_list=["proxy_Thigh" + fs, "proxy_Knee" + fs, "proxy_Ankle" + fs],
             ctrl_scale=9, fk_ctrl_edge_axis=edge_axis,
-            pv_guide='proxy_Knee{}_match_loc'.format(fs))
+            pv_guide='proxy_Knee{}_match_loc'.format(fs), soft_ik=True)
 
     endJnt = rigModule.create_endJnt(base='proxy_Toe' + fs, wt=[0,0,5], awt_obj=None)
     foot = tkgPart.build_module(module_type="foot",
