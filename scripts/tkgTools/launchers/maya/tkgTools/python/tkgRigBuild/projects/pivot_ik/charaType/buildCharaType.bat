@@ -5,6 +5,7 @@ set CURRENT_DIR=%~dp0
 
 echo TYPE: %CURRENT_DIR%
 
+
 :: 末尾のバックスラッシュを削除
 set BACK_CURRENT_DIR=%CURRENT_DIR:~0,-1%
 
