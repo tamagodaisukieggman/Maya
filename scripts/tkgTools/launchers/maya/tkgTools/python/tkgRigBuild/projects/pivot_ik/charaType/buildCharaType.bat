@@ -22,7 +22,6 @@ set BAT_SCRIPT_DIR=%PARENT_PARENT_DIR:\projects=\bat%
 set BUILD_SCRIPT_DIR=%PARENT_PARENT_DIR:\projects=%
 
 
-
 :: 末尾のバックスラッシュを削除
 set _BACK_CURRENT_DIR=%BUILD_SCRIPT_DIR:~0,-1%
 
