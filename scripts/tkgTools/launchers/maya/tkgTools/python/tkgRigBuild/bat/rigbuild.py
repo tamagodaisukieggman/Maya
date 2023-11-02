@@ -18,7 +18,10 @@ import xml.etree.ElementTree as ET
 
 import maya.cmds as cmds
 import maya.mel as mel
-import pymel.core as pm
+try:
+    import pymel.core as pm
+except:
+    print(traceback.format_exc())
 import maya.OpenMaya as OpenMaya
 import maya.api.OpenMaya as OpenMaya2
 
