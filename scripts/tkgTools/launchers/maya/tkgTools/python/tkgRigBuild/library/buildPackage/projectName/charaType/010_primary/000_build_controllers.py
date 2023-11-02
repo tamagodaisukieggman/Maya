@@ -12,19 +12,17 @@ rigModule = tkgModule.RigModule()
 
 rep_build_file = build_file.replace('\\', '/')
 data_path = '{}/{}'.format('/'.join(rep_build_file.split('/')[:-2]), '000_data')
+sandbox_path = '{}/{}'.format('/'.join(rep_build_file.split('/')[:-5]), 'sandbox')
 
 mp = "c:/cygames/wiz2/team/3dcg/chr/cmn/sotai/sotai01/scenes/p2_sotai01.ma"
 gp = "{}/biped_guide_000.ma".format(data_path)
 
 if not os.path.isfile(mp):
-    mp = None
+    mp = '{}/humanBody.ma'.format(sandbox_path)
 
-try:
-    tkgPart.build_module(module_type="root", side="Cn", part="root", global_name='global',
-                    root_01_name='world',
-                    root_02_name='local', model_path=mp, guide_path=gp)
-except:
-    print(traceback.format_exc())
+tkgPart.build_module(module_type="root", side="Cn", part="root", global_name='global',
+                root_01_name='world',
+                root_02_name='local', model_path=mp, guide_path=gp)
 
 if mp:
     cmds.viewFit("perspShape", fitFactor=1, all=True, animate=True)
