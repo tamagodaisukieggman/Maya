@@ -2,6 +2,7 @@
 import maya.cmds as cmds
 from imp import reload
 import os
+import traceback
 
 import tkgRigBuild.build.buildPart as tkgPart
 import tkgRigBuild.build.rigModule as tkgModule
@@ -18,11 +19,15 @@ gp = "{}/biped_guide_000.ma".format(data_path)
 if not os.path.isfile(mp):
     mp = None
 
-tkgPart.build_module(module_type="root", side="Cn", part="root", global_name='global',
-                root_01_name='world',
-                root_02_name='local', model_path=mp, guide_path=gp)
+try:
+    tkgPart.build_module(module_type="root", side="Cn", part="root", global_name='global',
+                    root_01_name='world',
+                    root_02_name='local', model_path=mp, guide_path=gp)
+except:
+    print(traceback.format_exc())
 
-cmds.viewFit("perspShape", fitFactor=1, all=True, animate=True)
+if mp:
+    cmds.viewFit("perspShape", fitFactor=1, all=True, animate=True)
 
 hip = tkgPart.build_module(module_type="hip", side="Cn", part="hip", guide_list=["proxy_Hip"])
 

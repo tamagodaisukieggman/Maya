@@ -23,6 +23,7 @@ set MAYA_INSTALL_PATH=C:\Program Files\Autodesk\Maya%MAYA_VER%
 :: ----------------------------------------
 set PYTHONDONTWRITEBYTECODE=1
 set MAYA_UI_LANGUAGE=en_US
+set MAYA_ENABLE_LEGACY_VIEWPORT=1
 
 :: ----------------------------------------
 :: 環境のルートパスをリストに追加
