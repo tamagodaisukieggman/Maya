@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import maya.cmds as cmds
 from imp import reload
+import os
 
 import tkgRigBuild.build.buildPart as tkgPart
 import tkgRigBuild.build.rigModule as tkgModule
@@ -14,6 +15,8 @@ data_path = '{}/{}'.format('/'.join(rep_build_file.split('/')[:-2]), '000_data')
 mp = "c:/cygames/wiz2/team/3dcg/chr/cmn/sotai/sotai01/scenes/p2_sotai01.ma"
 gp = "{}/biped_guide_000.ma".format(data_path)
 
+if not os.path.isfile(mp):
+    mp = None
 
 tkgPart.build_module(module_type="root", side="Cn", part="root", global_name='global',
                 root_01_name='world',
