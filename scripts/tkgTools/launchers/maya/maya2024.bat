@@ -60,5 +60,3 @@ if "%1" == "" (
     echo ==================================================
 	call "%MAYA_INSTALL_PATH%\bin\mayabatch.exe" %*
 )
-
-pause
