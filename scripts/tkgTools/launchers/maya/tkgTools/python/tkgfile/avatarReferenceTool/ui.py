@@ -162,6 +162,8 @@ class AvatarReferenceTool(MayaQWidgetDockableMixin, QMainWindow):
         self.picker_items = OrderedDict()
         self.picker_objects = OrderedDict()
 
+        self.prop_dialog = None
+
     def layout(self):
         # 全体の大きさの変更
         self.setGeometry(10, 10, 500, 100) # (left, top, width, height)
@@ -581,10 +583,13 @@ class AvatarReferenceTool(MayaQWidgetDockableMixin, QMainWindow):
         [sel.append(c) for c in attach_ctrls]
         sel.sort()
         if sel:
-            prop_dialog = PropDialog()
-            prop_dialog.prop_objects = sel
-            prop_dialog.build()
-            prop_dialog.show(dockable=True)
+            if self.prop_dialog:
+                self.prop_dialog.close()
+
+            self.prop_dialog = PropDialog()
+            self.prop_dialog.prop_objects = sel
+            self.prop_dialog.build()
+            self.prop_dialog.show(dockable=True)
 
     def closeEvent(self, *args):
         if not self.p4v_status:
@@ -595,6 +600,10 @@ class AvatarReferenceTool(MayaQWidgetDockableMixin, QMainWindow):
     def hideEvent(self, *args):
         self.closeEvent(QCloseEvent())
         return
+
+    # def show(self, dockable=None):
+    #     super(AvatarReferenceTool, self).show(dockable=dockable)
+    #     self.show()
 
 def load_optionVar(key=None):
     return eval(cmds.optionVar(q=key)) if cmds.optionVar(ex=key) else False
@@ -869,7 +878,7 @@ class ErrorDialog(MayaQWidgetDockableMixin, QDialog):
         self.clipboard.setText(self.qpte.toPlainText())
 
 
-class PropDialog(MayaQWidgetDockableMixin, QDialog):
+class PropDialog(MayaQWidgetDockableMixin, QMainWindow):
     def __init__(self, *args, **kwargs):
         super(PropDialog, self).__init__(*args, **kwargs)
 
@@ -890,12 +899,29 @@ class PropDialog(MayaQWidgetDockableMixin, QDialog):
 
         self.attach_node = 'offSet_Root'
 
+        self.data_path = DIR_PATH + '/data'
+
         self.prop_ui_object_dict = OrderedDict()
+        self.picker_objects = OrderedDict()
 
     def build(self):
+        self.main_central_widget = QWidget(self)
+        self.main_layout = QVBoxLayout(self)
+        self.main_central_widget.setLayout(self.main_layout)
+        self.setCentralWidget(self.main_central_widget)
+
+        self.main_scroll = QScrollArea(self)
+        self.main_layout.addWidget(self.main_scroll)
+
+        self.main_content_widget = QWidget(self)
         self.main_v_layout = QVBoxLayout(self)
 
         self.add_selection()
+
+        self.main_content_widget.setLayout(self.main_v_layout)
+        self.main_scroll.setWidget(self.main_content_widget)
+
+        self.resize(1250, 600)
 
     def add_selection(self):
         nss_ql = QLabel('Namespace_{}: '.format('#' * self.nss_pad))
@@ -950,7 +976,7 @@ class PropDialog(MayaQWidgetDockableMixin, QDialog):
             sel_ql = QLabel('Controller: ')
             main_ctrl_sel_btn = QPushButton('Select Controller')
             set_ctrl_h_layout = QHBoxLayout(self)
-            main_ctrl_qle = QLineEdit(self)
+            main_ctrl_qle = FlexLineEdit(self)
             set_ctrl_btn = QPushButton('<< Set')
             prop_space_h_layout = QHBoxLayout(self)
             prop_space_ql = QLabel('Space:')
@@ -981,19 +1007,27 @@ class PropDialog(MayaQWidgetDockableMixin, QDialog):
             main_ref_btn = QPushButton('Reference')
             main_rem_ref_ref_btn = QPushButton('RemoveReference')
             main_refEdr_ref_btn = QPushButton('ReferenceEditor')
+            prop_picker_qbtn = QPushButton('Picker')
 
             sel_pro_v_layout = QVBoxLayout(self)
             main_ref_sel_btn = QPushButton('Select Root')
             set_sel_h_layout = QHBoxLayout(self)
-            main_ref_qle = QLineEdit(self)
+            main_ref_qle = FlexLineEdit(self)
             set_sel_pro_btn = QPushButton('<< Set')
             self.prop_ui_object_dict[arg]['Root'] = main_ref_qle
+
+            # rootCtrl_sel_pro_v_layout = QVBoxLayout(self)
+            rootCtrl_main_ref_sel_btn = QPushButton('Select Root Ctrl')
+            rootCtrl_set_sel_h_layout = QHBoxLayout(self)
+            rootCtrl_main_ref_qle = FlexLineEdit(self)
+            rootCtrl_set_sel_pro_btn = QPushButton('<< Set')
+            self.prop_ui_object_dict[arg]['RootCtrl'] = rootCtrl_main_ref_qle
 
             atc_v_layout = QVBoxLayout(self)
             atc_ql = QLabel('Attach Node: ')
             main_attach_sel_btn = QPushButton('Select Attach Node')
             set_attach_h_layout = QHBoxLayout(self)
-            main_atc_qle = QLineEdit(self)
+            main_atc_qle = FlexLineEdit(self)
             set_attach_pro_btn = QPushButton('<< Set')
             attach_match_h_layout = QHBoxLayout(self)
             attach_ctrl_match_btn = QPushButton('Controller Match')
@@ -1041,12 +1075,19 @@ class PropDialog(MayaQWidgetDockableMixin, QDialog):
             ref_v_layout.addWidget(main_ref_btn)
             ref_v_layout.addWidget(main_rem_ref_ref_btn)
             ref_v_layout.addWidget(main_refEdr_ref_btn)
+            ref_v_layout.addWidget(prop_picker_qbtn)
 
             main_h_layout.addLayout(sel_pro_v_layout)
             sel_pro_v_layout.addWidget(main_ref_sel_btn)
             sel_pro_v_layout.addLayout(set_sel_h_layout)
             set_sel_h_layout.addWidget(main_ref_qle)
             set_sel_h_layout.addWidget(set_sel_pro_btn)
+
+            # main_h_layout.addLayout(rootCtrl_sel_pro_v_layout)
+            sel_pro_v_layout.addWidget(rootCtrl_main_ref_sel_btn)
+            sel_pro_v_layout.addLayout(rootCtrl_set_sel_h_layout)
+            rootCtrl_set_sel_h_layout.addWidget(rootCtrl_main_ref_qle)
+            rootCtrl_set_sel_h_layout.addWidget(rootCtrl_set_sel_pro_btn)
 
             v_splitter = QSplitter(Qt.Vertical)
             v_bottom = QFrame()
@@ -1087,6 +1128,7 @@ class PropDialog(MayaQWidgetDockableMixin, QDialog):
             con_pro_cbox.setChecked(True)
 
             main_ctrl_qle.setText(arg)
+            main_ctrl_qle.setToolTip(arg)
             # main_ctrl_qle.setReadOnly(True)
 
             set_ctrl_btn.clicked.connect(partial(self.set_selection, main_ctrl_qle, prop_space_cmbox, space_match_bake_cmbox))
@@ -1107,14 +1149,16 @@ class PropDialog(MayaQWidgetDockableMixin, QDialog):
             main_ctrl_sel_btn.clicked.connect(partial(self.select_object, main_ctrl_qle))
             main_part_cmbox.currentTextChanged.connect(partial(self.prop_list, main_part_cmbox, main_id_cmbox))
 
-            main_ref_btn.clicked.connect(partial(self.ref_prop, main_ctrl_qle, main_part_cmbox, main_id_cmbox, main_nss_num_cmbox, text_nss_qle, main_ref_qle, 'ref', match_pro_cbox, con_pro_cbox, main_atc_qle, prop_space_cmbox, space_match_bake_cmbox))
-            main_rem_ref_ref_btn.clicked.connect(partial(self.ref_prop, main_ctrl_qle, main_part_cmbox, main_id_cmbox, main_nss_num_cmbox, text_nss_qle, main_ref_qle, 'remove_ref', match_pro_cbox, con_pro_cbox, main_atc_qle, prop_space_cmbox, space_match_bake_cmbox))
+            main_ref_btn.clicked.connect(partial(self.ref_prop, main_ctrl_qle, main_part_cmbox, main_id_cmbox, main_nss_num_cmbox, text_nss_qle, main_ref_qle, rootCtrl_main_ref_qle, 'ref', match_pro_cbox, con_pro_cbox, main_atc_qle, prop_space_cmbox, space_match_bake_cmbox))
+            main_rem_ref_ref_btn.clicked.connect(partial(self.ref_prop, main_ctrl_qle, main_part_cmbox, main_id_cmbox, main_nss_num_cmbox, text_nss_qle, main_ref_qle, rootCtrl_main_ref_qle, 'remove_ref', match_pro_cbox, con_pro_cbox, main_atc_qle, prop_space_cmbox, space_match_bake_cmbox))
             # main_refEdr_ref_btn.clicked.connect(partial(self.ref_prop, main_ctrl_qle, main_part_cmbox, main_id_cmbox, main_nss_num_cmbox, text_nss_qle, main_ref_qle, 'remove_ref', match_pro_cbox, con_pro_cbox, main_atc_qle, prop_space_cmbox))
             main_refEdr_ref_btn.clicked.connect(cmds.ReferenceEditor)
 
-            set_sel_pro_btn.clicked.connect(partial(self.set_selection, main_ref_qle, prop_space_cmbox, space_match_bake_cmbox))
+            set_sel_pro_btn.clicked.connect(partial(self.set_selection, main_ref_qle))
+            rootCtrl_set_sel_pro_btn.clicked.connect(partial(self.set_selection, rootCtrl_main_ref_qle))
 
             main_ref_sel_btn.clicked.connect(partial(self.select_object, main_ref_qle))
+            rootCtrl_main_ref_sel_btn.clicked.connect(partial(self.select_object, rootCtrl_main_ref_qle))
             main_attach_sel_btn.clicked.connect(partial(self.select_object, main_atc_qle))
 
             set_attach_pro_btn.clicked.connect(partial(self.set_selection, main_atc_qle, prop_space_cmbox, space_match_bake_cmbox))
@@ -1123,6 +1167,9 @@ class PropDialog(MayaQWidgetDockableMixin, QDialog):
             attach_ctrl_match_btn.clicked.connect(partial(self.match_transform, main_ctrl_qle, main_ref_qle, main_atc_qle, 1))
 
             space_match_bake_btn.clicked.connect(partial(self.space_match_bake, main_ctrl_qle, prop_space_cmbox, space_match_bake_cmbox))
+
+            prop_picker_qbtn.clicked.connect(partial(self.show_picker, main_ref_qle))
+
 
         if prop_has_dict:
             for i, src_ui_objects in enumerate(self.prop_ui_object_dict.values()):
@@ -1133,6 +1180,7 @@ class PropDialog(MayaQWidgetDockableMixin, QDialog):
 
                 main_ctrl_qle = src_ui_objects['name']
                 main_ref_qle = src_ui_objects['Root']
+                rootCtrl_main_ref_qle = src_ui_objects['RootCtrl']
                 main_atc_qle = src_ui_objects['attachNode']
 
                 prop_has_list = [p for p in prop_has_dict.values()]
@@ -1140,27 +1188,52 @@ class PropDialog(MayaQWidgetDockableMixin, QDialog):
 
                 try:
                     space = prop_has_list[i]['space']
-                    part = prop_has_list[i]['propPart']
-                    id = prop_has_list[i]['propID']
-
-                    searched_ctrl = prop_has_list[i]['name']
-                    jnt = prop_has_list[i]['Root']
-                    attach_node = prop_has_list[i]['attachNode']
-
                     prop_space_cmbox.setCurrentText(space)
+                except Exception as e:
+                    print(traceback.format_exc())
+
+                try:
+                    part = prop_has_list[i]['propPart']
                     main_part_cmbox.setCurrentText(part)
+                except Exception as e:
+                    print(traceback.format_exc())
+
+                try:
+                    id = prop_has_list[i]['propID']
                     main_id_cmbox.setCurrentText(id)
+                except Exception as e:
+                    print(traceback.format_exc())
 
+                try:
+                    searched_ctrl = prop_has_list[i]['name']
                     main_ctrl_qle.setText(searched_ctrl)
-                    main_ref_qle.setText(jnt)
-                    main_atc_qle.setText(attach_node)
+                except Exception as e:
+                    print(traceback.format_exc())
 
+                try:
+                    jnt = prop_has_list[i]['Root']
+                    main_ref_qle.setText(jnt)
+                except Exception as e:
+                    print(traceback.format_exc())
+
+                try:
+                    root_ctrl = prop_has_list[i]['RootCtrl']
+                    rootCtrl_main_ref_qle.setText(root_ctrl)
+                except Exception as e:
+                    print(traceback.format_exc())
+
+                try:
+                    attach_node = prop_has_list[i]['attachNode']
+                    main_atc_qle.setText(attach_node)
+                except Exception as e:
+                    print(traceback.format_exc())
+
+                try:
                     self.set_spaces(main_ctrl_qle=main_ctrl_qle, prop_space_cmbox=prop_space_cmbox, dum=None)
                     self.set_spaces(main_ctrl_qle=main_ctrl_qle, prop_space_cmbox=space_match_bake_cmbox, dum=None)
 
                     path = self.prop_collection[part][id]
-                    avatarReferenceTool.create_prop_network(searched_ctrl, jnt, attach_node, part, id, space, path)
-
+                    avatarReferenceTool.create_prop_network(searched_ctrl, jnt, root_ctrl, attach_node, part, id, space, path)
                 except Exception as e:
                     print(traceback.format_exc())
 
@@ -1168,16 +1241,19 @@ class PropDialog(MayaQWidgetDockableMixin, QDialog):
         sel = cmds.ls(os=True)
         if sel:
             qle.setText(sel[0])
+            qle.setToolTip(sel[0])
 
-        self.set_spaces(main_ctrl_qle=qle, prop_space_cmbox=prop_space_cmbox, dum=None)
-        self.set_spaces(main_ctrl_qle=qle, prop_space_cmbox=space_match_bake_cmbox, dum=None)
+        if prop_space_cmbox:
+            self.set_spaces(main_ctrl_qle=qle, prop_space_cmbox=prop_space_cmbox, dum=None)
+            self.set_spaces(main_ctrl_qle=qle, prop_space_cmbox=space_match_bake_cmbox, dum=None)
 
 
     def set_spaces(self, main_ctrl_qle=None, prop_space_cmbox=None, dum=None):
         prop_space_cmbox.clear()
         ctrl = main_ctrl_qle.text()
-        ctrl_enums_list = avatarReferenceTool.get_prop_enum_spaces(ctrl)
+        ctrl_enums_list, current = avatarReferenceTool.get_prop_enum_spaces(ctrl)
         prop_space_cmbox.addItems(ctrl_enums_list)
+        prop_space_cmbox.setCurrentText(ctrl_enums_list[current])
 
     def select_object(self, qle_object=None):
         text = qle_object.text()
@@ -1242,7 +1318,8 @@ class PropDialog(MayaQWidgetDockableMixin, QDialog):
 
     @avatarReferenceTool.the_world
     def ref_prop(self, main_ctrl_qle=None, main_part_cmbox=None, main_id_cmbox=None, main_nss_num_cmbox=None,
-                 text_nss_qle=None, main_ref_qle=None, type='ref', match_pro_cbox=None, con_pro_cbox=None, main_atc_qle=None, prop_space_cmbox=None, space_match_bake_cmbox=None):
+                 text_nss_qle=None, main_ref_qle=None, rootCtrl_main_ref_qle=None, type='ref', match_pro_cbox=None,
+                 con_pro_cbox=None, main_atc_qle=None, prop_space_cmbox=None, space_match_bake_cmbox=None):
         part = main_part_cmbox.currentText()
         id = main_id_cmbox.currentText()
         path = self.prop_collection[part][id]
@@ -1250,12 +1327,18 @@ class PropDialog(MayaQWidgetDockableMixin, QDialog):
         ctrl = main_ctrl_qle.text()
         ctrl_nss = '{}:'.format(':'.join(ctrl.split(':')[0:-1]))
         jnt = main_ref_qle.text()
+        root_ctrl = rootCtrl_main_ref_qle.text()
 
         if type == 'remove_ref':
             ref_name = '{}'.format(':'.join(jnt.split(':')[0:-1]))
+            if cmds.objExists(ref_name + '_prop_temp_grp'):
+                cmds.delete(ref_name + '_prop_temp_grp')
+
             ctrl_prop_network = '{}_prop_network'.format(ctrl)
             constraints = cmds.getAttr(ctrl_prop_network + '.constraints').split(',')
-            cmds.delete(constraints)
+            for cnst in constraints:
+                if cmds.objExists(cnst):
+                    cmds.delete(cnst)
             if cmds.objExists(ctrl_prop_network):
                 cmds.delete(ctrl_prop_network)
             # main_ref_qle.setText('')
@@ -1268,6 +1351,7 @@ class PropDialog(MayaQWidgetDockableMixin, QDialog):
             main_nss_num_cmbox.clear()
             main_nss_num_cmbox.addItems(all_items)
             main_ref_qle.setText('')
+            rootCtrl_main_ref_qle.setText('')
             main_atc_qle.setText('')
 
             return
@@ -1285,17 +1369,20 @@ class PropDialog(MayaQWidgetDockableMixin, QDialog):
         # main_nss_num_cmbox.setCurrentText(self.nss_num_dict[cur_num_key])
 
         main_ref_qle.setText('{}:{}'.format(ref_name, 'Root'))
+        rootCtrl_main_ref_qle.setText('{}:{}'.format(ref_name, 'Root_ctrl'))
         main_atc_qle.setText('{}:{}'.format(ref_name, self.attach_node))
 
         ctrl = main_ctrl_qle.text()
         space = prop_space_cmbox.currentText()
         jnt = main_ref_qle.text()
+        root_ctrl = rootCtrl_main_ref_qle.text()
         attach_node = main_atc_qle.text()
 
         ctrl_nss = '{}:'.format(':'.join(ctrl.split(':')[0:-1]))
 
         if type == 'ref':
             avatarReferenceTool.prop_update(path, ref_name, False)
+            avatarReferenceTool.prop_scale_connection(ctrl, ctrl_nss, ref_name)
 
         self.set_spaces(main_ctrl_qle=main_ctrl_qle, prop_space_cmbox=space_match_bake_cmbox, dum=None)
 
@@ -1308,12 +1395,124 @@ class PropDialog(MayaQWidgetDockableMixin, QDialog):
             avatarReferenceTool.match_transform(ctrl, attach_node)
 
         if con_pro_cbox.isChecked():
-            pos_con, ori_con = avatarReferenceTool.parent_constraint(ctrl, jnt)
+            pos_con, ori_con = avatarReferenceTool.parent_constraint(ctrl, ref_name+':Root_ctrl_grp')
 
         avatarReferenceTool.switch_prop_space(ctrl, space)
         prop_space_cmbox.setCurrentText(space)
 
-        avatarReferenceTool.create_prop_network(ctrl, jnt, attach_node, part, id, space, path, pos_con, ori_con)
+        avatarReferenceTool.create_prop_network(ctrl, jnt, root_ctrl, attach_node, part, id, space, path, pos_con, ori_con)
+
+    def show_picker(self, main_ref_qle):
+        jnt = main_ref_qle.text()
+
+        ref_name = '{}'.format(':'.join(jnt.split(':')[0:-1]))
+
+        if self.picker_objects:
+            for picker in self.picker_objects.values():
+                picker.close()
+
+        # types = [type for type in self.reference_set_dict.keys()]
+
+        part_picks = OrderedDict()
+
+        sim_ctrl_sets = '{}_prop_temp_ctrl_sets'.format(ref_name)
+        if not cmds.objExists(sim_ctrl_sets):
+            return
+
+        self.picker = avatarReferenceToolPicker.PickerAnimTools()
+        self.picker_objects[ref_name] = self.picker
+
+        cmds.select(sim_ctrl_sets, r=True, ne=True)
+        ctrls = cmds.pickWalk(d='down')
+
+        part_picks[ref_name] = OrderedDict()
+
+        ctrls.sort()
+        for ctrl in ctrls:
+            removed_nss = ctrl.replace(ref_name + ':', '')
+            splited = removed_nss.split('_')[0::]
+
+            side_picker_name = ref_name + '_' + splited[0]
+            part_sets = side_picker_name + '_ctrl_sets'
+
+            if '_L_' in ctrl or '_R_' in ctrl:
+                side_picker_name = ref_name + '_' + splited[0] + '_' + splited[2]
+                part_side_sets = side_picker_name + '_ctrl_sets'
+                part_picks[ref_name][side_picker_name] = part_side_sets
+
+            else:
+                part_picks[ref_name][side_picker_name] = part_sets
+
+        print('Prop Picker:{}'.format(part_picks))
+
+        picker_jsons = OrderedDict()
+        text_at_pos = OrderedDict()
+        for type, part_sets in part_picks.items():
+            self.picker_items = OrderedDict()
+            text_at_pos[type] = OrderedDict()
+            i = 0
+            for sides, picker_sets in part_sets.items():
+                x_pos = 220.0 - i*50
+
+                cmds.select(picker_sets, r=True, ne=True)
+                ctrls = cmds.pickWalk(d='down')
+
+                ctrls.sort()
+                j = 0
+                for ctrl in ctrls:
+                    removed_nss = ctrl.replace(type + ':', '')
+
+                    part_name = removed_nss.split('_')[0]
+                    # if not part_name in text_at_pos.keys():
+                    text_at_pos[type][part_name] = [x_pos, -30]
+
+                    if '_R_' in removed_nss:
+                        if cmds.objExists('{}:{}'.format(type, removed_nss)):
+                            plus_x_pos = x_pos + 25
+                            text_at_pos[type][part_name] = [plus_x_pos, -30]
+
+                    self.picker_items[removed_nss] = OrderedDict()
+                    self.picker_items[removed_nss]['item_name'] = removed_nss
+                    self.picker_items[removed_nss]['rect'] = [x_pos, j*40, 30, 30]
+                    if '_L_' in removed_nss:
+                        color = [255, 50, 50]
+                        edge_color = [255, 100, 100]
+                    elif '_R_' in removed_nss:
+                        color = [50, 50, 255]
+                        edge_color = [100, 100, 255]
+                    else:
+                        color = [212, 212, 50]
+                        edge_color = [255, 255, 100]
+
+                    self.picker_items[removed_nss]['color'] = color
+                    self.picker_items[removed_nss]['edge_color'] = edge_color
+                    self.picker_items[removed_nss]['width'] = 4
+
+                    j += 1
+
+                i += 1
+
+            print('text_at_pos', text_at_pos)
+
+            type_json = self.data_path + '/{}_prop_picker.json'.format(type)
+            avatarReferenceToolPicker.json_transfer(self.data_path + '/{}_prop_picker.json'.format(type), operation='export', export_values=self.picker_items, export_type='utf-8')
+            picker_jsons[type] = type_json
+
+        for type, picker in self.picker_objects.items():
+            if type in picker_jsons.keys():
+                picker.buildUI()
+                picker.setWindowTitle('{}:Controller Picker'.format(type))
+                picker.import_picker_func(picker_jsons[type])
+                picker.set_picker_namespace_qle.setText('{}:'.format(type))
+                picker.items_tree_view.setVisible(False)
+                picker.setting_widget.setVisible(False)
+
+                for part_name, pos in text_at_pos[type].items():
+                    _text = picker.scene.addText(part_name)
+                    _text.setPos(*pos)
+
+                picker.show(dockable=True)
+
 
     def space_match_bake(self, main_ctrl_qle=None, prop_space_cmbox=None, space_match_bake_cmbox=None):
         ctrl = main_ctrl_qle.text()
@@ -1329,19 +1528,57 @@ class PropDialog(MayaQWidgetDockableMixin, QDialog):
             cmds.select(prop_network_sets, ne=True, r=True)
             ctrl_prop_networks = cmds.pickWalk(d='down');cmds.ls(os=True)
             for cp_net in ctrl_prop_networks:
-                part = cmds.getAttr(cp_net + '.propPart')
-                id = cmds.getAttr(cp_net + '.propID')
-                path = cmds.getAttr(cp_net + '.propPath')
-                space = cmds.getAttr(cp_net + '.space')
-
                 ctrl = cmds.getAttr(cp_net + '.ctrl')
-                jnt = cmds.getAttr(cp_net + '.Root')
-                attach_node = cmds.getAttr(cp_net + '.attachNode')
-
                 nss = '{}:'.format(':'.join(ctrl.split(':')[0:-1]))
                 ctrl_removed_nss = ctrl.replace(nss, '')
                 search_ctrls = cmds.ls('*:{}'.format(ctrl_removed_nss))
                 searched_ctrl = search_ctrls[0]
+
+                prop_has_dict[searched_ctrl] = OrderedDict()
+
+                prop_has_dict[searched_ctrl]['name'] = searched_ctrl
+
+                try:
+                    part = cmds.getAttr(cp_net + '.propPart')
+                    prop_has_dict[searched_ctrl]['propPart'] = part
+                except Exception as e:
+                    print(traceback.format_exc())
+
+                try:
+                    id = cmds.getAttr(cp_net + '.propID')
+                    prop_has_dict[searched_ctrl]['propID'] = id
+                except Exception as e:
+                    print(traceback.format_exc())
+
+                try:
+                    space = cmds.getAttr(cp_net + '.space')
+                    prop_has_dict[searched_ctrl]['space'] = space
+                except Exception as e:
+                    print(traceback.format_exc())
+
+                try:
+                    jnt = cmds.getAttr(cp_net + '.Root')
+                    prop_has_dict[searched_ctrl]['Root'] = jnt
+                except Exception as e:
+                    print(traceback.format_exc())
+
+                try:
+                    root_ctrl = cmds.getAttr(cp_net + '.RootCtrl')
+                    prop_has_dict[searched_ctrl]['RootCtrl'] = root_ctrl
+                except Exception as e:
+                    print(traceback.format_exc())
+
+                try:
+                    attach_node = cmds.getAttr(cp_net + '.attachNode')
+                    prop_has_dict[searched_ctrl]['attachNode'] = attach_node
+                except Exception as e:
+                    print(traceback.format_exc())
+
+                try:
+                    path = cmds.getAttr(cp_net + '.propPath')
+                    prop_has_dict[searched_ctrl]['propPath'] = path
+                except Exception as e:
+                    print(traceback.format_exc())
 
                 # prop_space_cmbox = self.prop_ui_object_dict[ctrl]['space']
                 # main_part_cmbox = self.prop_ui_object_dict[ctrl]['propPart']
@@ -1351,14 +1588,7 @@ class PropDialog(MayaQWidgetDockableMixin, QDialog):
                 # main_ref_qle = self.prop_ui_object_dict[ctrl]['Root']
                 # main_atc_qle = self.prop_ui_object_dict[ctrl]['attachNode']
 
-                prop_has_dict[searched_ctrl] = OrderedDict()
-                prop_has_dict[searched_ctrl]['space'] = space
-                prop_has_dict[searched_ctrl]['propPart'] = part
-                prop_has_dict[searched_ctrl]['propID'] = id
 
-                prop_has_dict[searched_ctrl]['name'] = searched_ctrl
-                prop_has_dict[searched_ctrl]['Root'] = jnt
-                prop_has_dict[searched_ctrl]['attachNode'] = attach_node
 
                 # prop_space_cmbox.setCurrentText(space)
                 # main_part_cmbox.setCurrentText(part)
@@ -1371,21 +1601,41 @@ class PropDialog(MayaQWidgetDockableMixin, QDialog):
         return prop_has_dict
 
     def add_prop_rotate_values(self, prop_rot_cmbox):
+        # rot_values = [
+        #     'default',
+        #     'X_90_Y_90',
+        #     'X_90_Z_90',
+        #     'Y_90_Z_90',
+        #     'X_n90_Y_90',
+        #     'X_n90_Z_90',
+        #     'Y_n90_Z_90',
+        #     'X_90_Y_n90',
+        #     'X_90_Z_n90',
+        #     'Y_90_Z_n90',
+        #     'X_n90_Y_n90',
+        #     'X_n90_Z_n90',
+        #     'Y_n90_Z_n90'
+        #     ]
+
         rot_values = [
             'default',
-            'X_90_Y_90',
-            'X_90_Z_90',
-            'Y_90_Z_90',
-            'X_n90_Y_90',
-            'X_n90_Z_90',
-            'Y_n90_Z_90',
-            'X_90_Y_n90',
-            'X_90_Z_n90',
-            'Y_90_Z_n90',
-            'X_n90_Y_n90',
-            'X_n90_Z_n90',
-            'Y_n90_Z_n90'
+            '(90, 90, 0)',
+            '(90, 0, 90)',
+            '(0, 90, 90)',
+
+            '(-90, 90, 0)',
+            '(-90, 0, 90)',
+            '(0, -90, 90)',
+
+            '(90, -90, 0)',
+            '(90, 0, -90)',
+            '(0, 90, -90)',
+
+            '(-90, -90, 0)',
+            '(-90, 0, -90)',
+            '(0, -90, -90)'
             ]
+
 
         prop_rot_cmbox.addItems(rot_values)
 
@@ -1395,6 +1645,27 @@ class PropDialog(MayaQWidgetDockableMixin, QDialog):
         rot_val = prop_rot_cmbox.currentText()
 
         avatarReferenceTool.prop_rotate_from(ctrl, rot_val)
+
+    # def resizeEvent(self, event):
+    #     # MainWindowがリサイズされたときに呼び出されるメソッドです。
+    #     # ここでcontent_widgetのサイズをscrollのサイズに合わせて調整します。
+    #     self.main_content_widget.resize(self.main_scroll.size())
+    #     super().resizeEvent(event)
+
+class FlexLineEdit(QLineEdit):
+    def __init__(self, *args, **kwargs):
+        super(FlexLineEdit, self).__init__(*args, **kwargs)
+
+        # 入力内容が変更されたときにtextChangedシグナルをトリガーします。
+        self.textChanged.connect(self.adjustSizeToText)
+
+    def adjustSizeToText(self, text):
+        # テキスト幅を計算します。
+        text_width = self.fontMetrics().boundingRect(text).width()
+
+        # QLineEditの幅をテキスト幅に適応させます（右に少し余白を追加）。
+        self.setFixedWidth(text_width + 10)
+
 
 if __name__ == '__main__':
     ui = AvatarReferenceTool()

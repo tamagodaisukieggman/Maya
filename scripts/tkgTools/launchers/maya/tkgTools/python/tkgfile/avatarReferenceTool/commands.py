@@ -19,6 +19,12 @@ for plugin in plugins:
     plugin_result = cmds.loadPlugin(plugin) if not cmds.pluginInfo(plugin, q=True, l=True) else False
     plugin_results.append(plugin_result)
 
+FILE_DIALOG_STYLE = cmds.optionVar(q='FileDialogStyle')
+if FILE_DIALOG_STYLE == 1:
+    FBX_TYPE = 'Fbx'
+elif FILE_DIALOG_STYLE == 2:
+    FBX_TYPE = 'FBX'
+
 try:
     DIR_PATH = '/'.join(__file__.replace('\\', '/').split('/')[0:-1])
 except:
@@ -96,8 +102,12 @@ def replace_ref(ref_name=None, path=None):
             cmds.file(
                 path,
                 loadReference=ref_name+'RN',
-                type='FBX'
+                type=FBX_TYPE
             )
+
+        cmds.currentTime(0.0)
+
+        cmds.joint(ref_name+':Root', e=True, apa=True, ch=True)
 
         force_displaylayer_on(ref_name)
         joint_connection(namespace=ref_name, connect=True)
@@ -134,10 +144,9 @@ def avatar_update(reference_set_dict, reference_cbox_dict):
 
     curtime = cmds.currentTime(q=True)
 
-    cmds.currentTime(0.0)
-
     ref_info, ret_no_files = get_reference_info()
     for ref_name, type_path in reference_set_dict.items():
+        print('ReferenceName: {}, Path: {}'.format(ref_name, type_path))
         ex_nss = None
         namespace = ':'+ ref_name
         for refs in ref_info:
@@ -148,17 +157,23 @@ def avatar_update(reference_set_dict, reference_cbox_dict):
         path = type_path[1]
         parts_type = type_path[0]
 
-        anim_temp_save(ref_name=ref_name, parts_type=parts_type, operation='export')
+        try:
+            anim_temp_save(ref_name=ref_name, parts_type=parts_type, operation='export')
+        except:
+            pass
 
         if cbox.isChecked():
             if path:
                 if os.path.isfile(path):
                     # replace
                     if ex_nss:
+                        print('Replace -> ReferenceName: {}, Path: {}'.format(ref_name, type_path))
+                        print('Replace Path: {}'.format(path))
                         cmds.file(
                             path,
                             loadReference=ref_name+'RN',
-                            type='FBX',
+                            type=FBX_TYPE,
+                            f=True
                         )
 
                     # new
@@ -167,11 +182,15 @@ def avatar_update(reference_set_dict, reference_cbox_dict):
                             path,
                             namespace=ref_name,
                             r=True,
-                            type='FBX',
+                            type=FBX_TYPE,
                             ignoreVersion=True,
                             gl=True,
                             mergeNamespacesOnClash=False,
                         )
+
+                    cmds.currentTime(0.0)
+
+                    cmds.joint(ref_name+':Root', e=True, apa=True, ch=True)
 
                     force_displaylayer_on(ref_name)
                     joint_connection(namespace=ref_name, connect=True)
@@ -304,13 +323,14 @@ def prop_update(path, ref_name, unload):
                 path,
                 namespace=ref_name,
                 r=True,
-                type='FBX',
+                type=FBX_TYPE,
                 ignoreVersion=True,
                 gl=True,
                 mergeNamespacesOnClash=False,
             )
 
             force_displaylayer_on(ref_name)
+            cmds.joint(ref_name+':Root', e=True, apa=True, ch=True)
             create_prop_temp_ctrls(prop_namespace=ref_name, path=path)
 
     cmds.playbackOptions(min=start)
@@ -333,12 +353,14 @@ def parent_constraint(src, dst):
 def get_prop_enum_spaces(obj):
     if cmds.objExists(obj + '.propLocalSpace'):
         enums = cmds.addAttr(obj + '.propLocalSpace', q=True, en=True)
+        current = cmds.getAttr(obj + '.propLocalSpace')
 
     elif cmds.objExists(obj + '.space'):
         enums = cmds.addAttr(obj + '.space', q=True, en=True)
+        current = cmds.getAttr(obj + '.space')
 
     enums_list = enums.split(':')
-    return enums_list
+    return enums_list, current
 
 
 def switch_prop_space(obj, space):
@@ -346,7 +368,7 @@ def switch_prop_space(obj, space):
         wt = cmds.xform(obj, q=True, t=True, ws=True)
         wr = cmds.xform(obj, q=True, ro=True, ws=True)
 
-        enums_list = get_prop_enum_spaces(obj)
+        enums_list, current = get_prop_enum_spaces(obj)
         if space in enums_list:
             en_num = enums_list.index(space)
             if cmds.objExists(obj + '.propLocalSpace'):
@@ -356,7 +378,7 @@ def switch_prop_space(obj, space):
 
         cmds.xform(obj, t=wt, ro=wr, ws=True, a=True)
 
-def create_prop_network(ctrl, jnt, attach_node, pro_part, pro_id, space, path, pos_con, ori_con):
+def create_prop_network(ctrl, jnt, root_ctrl, attach_node, pro_part, pro_id, space, path, pos_con, ori_con):
     # ctrl = 'p1:PropAttach_01_ctrl'
     # jnt = 'pro_0:Root'
     # attach_node = 'pro_0:offSet_Root'
@@ -406,6 +428,7 @@ def create_prop_network(ctrl, jnt, attach_node, pro_part, pro_id, space, path, p
     affects = [
         ctrl,
         jnt,
+        root_ctrl,
         attach_node
     ]
 
@@ -414,6 +437,8 @@ def create_prop_network(ctrl, jnt, attach_node, pro_part, pro_id, space, path, p
             at = 'ctrl'
         elif af == jnt:
             at = 'Root'
+        elif af == root_ctrl:
+            at = 'RootCtrl'
         elif af == attach_node:
             at = 'attachNode'
 
@@ -432,20 +457,29 @@ def get_reference_info():
     refNodes = cmds.ls(references=True)
     for RNnode in refNodes:
         ref = {}
-        file_name = cmds.referenceQuery(RNnode, filename=True, failedEdits=True)
-        if os.path.isfile(file_name):
-            ref.update({
-                'namespace' : cmds.referenceQuery(RNnode, namespace=True, failedEdits=True),
-                'filename'   : cmds.referenceQuery(RNnode, filename=True, failedEdits=True),
-                'w_filenam' : cmds.referenceQuery(RNnode, filename=True, withoutCopyNumber=True, failedEdits=True),
-                'isLoaded'  : cmds.referenceQuery(RNnode, isLoaded=True, failedEdits=True),
-                'nodes'     : cmds.referenceQuery(RNnode, nodes=True, failedEdits=True),
-                'node'      : cmds.referenceQuery(RNnode, nodes=True, failedEdits=True),
-                })
-            ret.append(ref)
+        try:
+            file_name = cmds.referenceQuery(RNnode, filename=True, failedEdits=True)
 
-        else:
-            ret_no_files[RNnode.replace('RN', '')] = file_name
+            if os.path.isfile(file_name):
+                ref.update({
+                    'namespace' : cmds.referenceQuery(RNnode, namespace=True, failedEdits=True),
+                    'filename'   : cmds.referenceQuery(RNnode, filename=True, failedEdits=True),
+                    'w_filenam' : cmds.referenceQuery(RNnode, filename=True, withoutCopyNumber=True, failedEdits=True),
+                    'isLoaded'  : cmds.referenceQuery(RNnode, isLoaded=True, failedEdits=True),
+                    'nodes'     : cmds.referenceQuery(RNnode, nodes=True, failedEdits=True),
+                    'node'      : cmds.referenceQuery(RNnode, nodes=True, failedEdits=True),
+                    })
+                ret.append(ref)
+
+            else:
+                ret_no_files[RNnode.replace('RN', '')] = file_name
+
+        except:
+            cmds.lockNode(RNnode, l=False)
+            cmds.delete(RNnode)
+
+            ret_no_files[RNnode.replace('RN', '')] = None
+            print(traceback.format_exc())
 
     return ret, ret_no_files
 
@@ -623,7 +657,7 @@ def import_fbx(fbx_path=None, nss=None, new_scene=None):
     cmds.file(
         fbx_path,
         i=True,
-        type='FBX',
+        type=FBX_TYPE,
         ignoreVersion=True,
         mergeNamespacesOnClash=False,
         pr=True,
@@ -1477,6 +1511,12 @@ def create_temp_ctrls(joints=None, sim_parent=None, type='sim'):
         ori = cmds.orientConstraint(ctrl, jnt, w=True)
         cmds.setAttr(ori[0]+'.interpType', 2)
         consts.append(ori[0])
+        # if type == 'prop':
+        #     poc = cmds.pointCOnstraint(ctrl, jnt, w=True)
+        #     scc = cmds.scaleConstraint(ctrl, jnt, w=True)
+        #     consts.append(poc[0])
+        #     consts.append(scc[0])
+
 
     ctrl_p_grp = '{}_grp'.format(ctrls[0])
     if not cmds.objExists(ctrl_p_grp):
@@ -1488,7 +1528,8 @@ def create_temp_ctrls(joints=None, sim_parent=None, type='sim'):
 
     cmds.parent(ctrls[0], ctrl_p_grp)
 
-    for ctrl in ctrls:
+    pa = None
+    for i, ctrl in enumerate(ctrls):
         if type == 'sim':
             cmds.setAttr(ctrl+'.tx', k=False, cb=False, l=True)
             cmds.setAttr(ctrl+'.ty', k=False, cb=False, l=True)
@@ -1496,6 +1537,25 @@ def create_temp_ctrls(joints=None, sim_parent=None, type='sim'):
             cmds.setAttr(ctrl+'.sx', k=False, cb=False, l=True)
             cmds.setAttr(ctrl+'.sy', k=False, cb=False, l=True)
             cmds.setAttr(ctrl+'.sz', k=False, cb=False, l=True)
+
+        elif type == 'prop':
+            ctrl_ofs_grp = '{}_ofs_grp'.format(ctrl)
+            if not cmds.objExists(ctrl_ofs_grp):
+                cmds.createNode('transform', n=ctrl_ofs_grp, ss=True)
+            cmds.matchTransform(ctrl_ofs_grp, ctrl)
+            cmds.parent(ctrl, ctrl_ofs_grp)
+            if i == 0:
+                cmds.parent(ctrl_ofs_grp, ctrl_p_grp)
+            if pa:
+                cmds.parent(ctrl_ofs_grp, pa)
+            pa = ctrl
+
+            poc = cmds.pointConstraint(ctrl, ctrl.replace('_ctrl', ''), w=True)
+            scc = cmds.scaleConstraint(ctrl, ctrl.replace('_ctrl', ''), w=True)
+            consts.append(poc[0])
+            consts.append(scc[0])
+
+
         cmds.setAttr(ctrl+'.radius', k=False, cb=False, l=True)
         cmds.setAttr(ctrl+'.v', k=False, cb=False, l=True)
 
@@ -1624,12 +1684,6 @@ def create_sim_temp_ctrls(sim_namespace=None, path=None):
             cmds.sets(const, add=sim_const_sets)
 
 def create_prop_temp_ctrls(prop_namespace=None, path=None):
-    # chara_ids = ['p1', 'p2']
-    # for cid in chara_ids:
-    #     head_jnt = '{}:chr:Head'.format(cid)
-    #     if cmds.objExists(head_jnt):
-    #         break
-
     prop_p_grp = '{}_prop_temp_grp'.format(prop_namespace)
     if cmds.objExists(prop_p_grp):
         cmds.delete(prop_p_grp)
@@ -1649,82 +1703,118 @@ def create_prop_temp_ctrls(prop_namespace=None, path=None):
         if cmds.objectType(jnt) == 'joint':
             prop_root_joints.append(jnt)
 
-    prop_root_joints.remove(prop_namespace + ':Root')
+    prop_temp_sets = '{}_prop_temp_sets'.format(prop_namespace)
+    if not cmds.objExists(prop_temp_sets):
+        cmds.sets(em=True, n=prop_temp_sets)
 
-    for prop_root_jnt in prop_root_joints:
-        create_ctrls_sts = True
-        pa = cmds.listRelatives(prop_root_jnt, p=True)
+    # ctrls
+    prop_ctrl_sets = '{}_prop_temp_ctrl_sets'.format(prop_namespace)
+    if not cmds.objExists(prop_ctrl_sets):
+        cmds.sets(em=True, n=prop_ctrl_sets)
+
+    cmds.sets(prop_ctrl_sets, add=prop_temp_sets)
+
+    prop_root_joints = order_joints(prop_root_joints)
+
+    ctrls = []
+    consts = []
+    for i, jnt in enumerate(prop_root_joints):
+        ctrl = create_controller(obj=jnt, ctrl_type='sphere', edge_axis=None,
+                              pos=None, rot=None, scl=[5, 5, 5], line_width=3,
+                              prefix=None, suffix='_ctrl', replace=None, mirrors=None, rgb=[0.1, 0.7, 0.4])
+
+        ctrl_p_grp = '{}_grp'.format(ctrl)
+        if not cmds.objExists(ctrl_p_grp):
+            cmds.createNode('transform', n=ctrl_p_grp, ss=True)
+
+        cmds.parent(ctrl, ctrl_p_grp)
+        cmds.xform(ctrl, t=[0,0,0], ro=[0,0,0], a=True)
+        cmds.setAttr(ctrl + '.jo', *[0,0,0])
+        cmds.matchTransform(ctrl_p_grp, jnt)
+
+        ctrls.append(ctrl)
+
+        pa = cmds.listRelatives(jnt, p=True, type='joint') or None
         if pa:
-            prop_parent = pa[0]
+            cmds.parent(ctrl_p_grp, pa[0] + '_ctrl')
 
-        joints = cmds.ls(prop_root_jnt, dag=True, type='joint')
+        pac = cmds.pointConstraint(ctrl, jnt, w=True)
+        orc = cmds.orientConstraint(ctrl, jnt, w=True)
+        scc = cmds.scaleConstraint(ctrl, jnt, w=True)
+        consts.append(pac[0])
+        consts.append(orc[0])
+        consts.append(scc[0])
 
-        joints = order_joints(joints)
+    cmds.parent(ctrls[0]+'_grp', prop_p_grp)
 
-        try:
-            ctrl_p_grp, ctrls, consts = create_temp_ctrls(joints=joints, sim_parent=prop_parent, type='prop')
-        except:
-            create_ctrls_sts = False
+    for ctrl in ctrls:
+        removed_nss = ctrl.replace(prop_namespace + ':', '')
+        splited = removed_nss.split('_')[0::]
 
-        if not create_ctrls_sts:
-            continue
+        part_sets = prop_namespace + '_' + splited[0] + '_ctrl_sets'
+        if not cmds.objExists(part_sets):
+            cmds.sets(em=True, n=part_sets)
 
-        cmds.parent(ctrl_p_grp, prop_p_grp)
+        cmds.sets(part_sets, add=prop_ctrl_sets)
 
-        prop_temp_sets = '{}_prop_temp_sets'.format(prop_namespace)
-        if not cmds.objExists(prop_temp_sets):
-            cmds.sets(em=True, n=prop_temp_sets)
+        if '_L_' in ctrl or '_R_' in ctrl:
+            part_side_sets = prop_namespace + '_' + splited[0] + '_' + splited[2] + '_ctrl_sets'
+            if not cmds.objExists(part_side_sets):
+                cmds.sets(em=True, n=part_side_sets)
 
-        # ctrls
-        prop_ctrl_sets = '{}_prop_temp_ctrl_sets'.format(prop_namespace)
-        if not cmds.objExists(prop_ctrl_sets):
-            cmds.sets(em=True, n=prop_ctrl_sets)
+            cmds.sets(part_side_sets, add=part_sets)
 
-        cmds.sets(prop_ctrl_sets, add=prop_temp_sets)
+            cmds.sets(ctrl, add=part_side_sets)
 
-        ctrls.sort()
-        for ctrl in ctrls:
-            removed_nss = ctrl.replace(prop_namespace + ':', '')
-            splited = removed_nss.split('_')[1::]
+        else:
+            cmds.sets(ctrl, add=part_sets)
 
-            part_sets = prop_namespace + '_' + splited[0] + '_ctrl_sets'
-            if not cmds.objExists(part_sets):
-                cmds.sets(em=True, n=part_sets)
+    # joint
+    prop_jnt_sets = '{}_prop_temp_jnt_sets'.format(prop_namespace)
+    if not cmds.objExists(prop_jnt_sets):
+        cmds.sets(em=True, n=prop_jnt_sets)
 
-            cmds.sets(part_sets, add=prop_ctrl_sets)
+    cmds.sets(prop_jnt_sets, add=prop_temp_sets)
 
-            if '_L_' in ctrl or '_R_' in ctrl:
-                part_side_sets = prop_namespace + '_' + splited[0] + '_' + splited[2] + '_ctrl_sets'
-                if not cmds.objExists(part_side_sets):
-                    cmds.sets(em=True, n=part_side_sets)
+    cmds.sets(prop_namespace + ':Root', add=prop_jnt_sets)
 
-                cmds.sets(part_side_sets, add=part_sets)
+    for jnt in prop_root_joints:
+        cmds.sets(jnt, add=prop_jnt_sets)
 
-                cmds.sets(ctrl, add=part_side_sets)
+    # consts
+    prop_const_sets = '{}_prop_temp_const_sets'.format(prop_namespace)
+    if not cmds.objExists(prop_const_sets):
+        cmds.sets(em=True, n=prop_const_sets)
 
-            else:
-                cmds.sets(ctrl, add=part_sets)
+    cmds.sets(prop_const_sets, add=prop_temp_sets)
 
-        # joint
-        prop_jnt_sets = '{}_prop_temp_jnt_sets'.format(prop_namespace)
-        if not cmds.objExists(prop_jnt_sets):
-            cmds.sets(em=True, n=prop_jnt_sets)
+    for const in consts:
+        cmds.sets(const, add=prop_const_sets)
 
-        cmds.sets(prop_jnt_sets, add=prop_temp_sets)
 
-        for jnt in joints:
-            cmds.sets(jnt, add=prop_jnt_sets)
+def prop_scale_connection(ctrl, ctrl_nss, prop_namespace):
+    prop_p_grp = '{}_prop_temp_grp'.format(prop_namespace)
+    ctrl_grps = cmds.listRelatives(prop_p_grp, c=True, type='transform')
+    # handattach = ctrl.replace('_ctrl', '').replace(ctrl_nss, ctrl_nss + 'chr:')
+    handattach = prop_namespace +':Root_ctrl'
+    for grp in ctrl_grps:
+        cmds.connectAttr(handattach+'.s', grp+'.s', f=True)
+        if handattach in grp:
+            root_cnst = 'Root_ctrl_grp_parentConstraint1'
+            if cmds.objExists(root_cnst):
+                cmds.delete(root_cnst)
+                cmds.parentConstraint(ctrl, grp, w=True)
 
-        # consts
-        prop_const_sets = '{}_prop_temp_const_sets'.format(prop_namespace)
-        if not cmds.objExists(prop_const_sets):
-            cmds.sets(em=True, n=prop_const_sets)
+    cmds.connectAttr(handattach +'.s', prop_namespace + ':Root.s', f=True)
 
-        cmds.sets(prop_const_sets, add=prop_temp_sets)
-
-        for const in consts:
-            cmds.sets(const, add=prop_const_sets)
-
+    cmds.setAttr(handattach+'.tx', l=True, k=False, cb=False)
+    cmds.setAttr(handattach+'.ty', l=True, k=False, cb=False)
+    cmds.setAttr(handattach+'.tz', l=True, k=False, cb=False)
+    cmds.setAttr(handattach+'.rx', l=True, k=False, cb=False)
+    cmds.setAttr(handattach+'.ry', l=True, k=False, cb=False)
+    cmds.setAttr(handattach+'.rz', l=True, k=False, cb=False)
+    cmds.setAttr(handattach+'.v', l=True, k=False, cb=False)
+    cmds.setAttr(handattach+'.radius', l=True, k=False, cb=False)
 
 def delete_sim_temps(sim_namespace=None):
     # sim temp ctrls
@@ -1762,7 +1852,7 @@ def anim_temp_save(ref_name=None, parts_type=None, operation='export'):
         return
 
     if operation == 'export':
-        try:
+        if os.path.isfile(path):
             cmds.file(
                 path,
                 f=True,
@@ -1772,8 +1862,6 @@ def anim_temp_save(ref_name=None, parts_type=None, operation='export'):
                 es=True
             )
             print('export', path)
-        except:
-            print(traceback.format_exc())
 
     elif operation == 'import':
         if os.path.isfile(path):
@@ -1787,6 +1875,7 @@ def anim_temp_save(ref_name=None, parts_type=None, operation='export'):
                 importTimeRange='override'
             )
 
+
 @bake_with_func
 def space_match_bake(obj, space, match_space):
     switch_prop_space(obj, space)
@@ -1797,18 +1886,18 @@ def space_match_bake(obj, space, match_space):
 def prop_rotate_from(obj, rot):
     mat_ats = OrderedDict({
         'default':[0,0,0],
-        'X_90_Y_90':[90, 90, 0],
-        'X_90_Z_90':[90, 0, 90],
-        'Y_90_Z_90':[0, 90, 90],
-        'X_n90_Y_90':[-90, 90, 0],
-        'X_n90_Z_90':[-90, 0, 90],
-        'Y_n90_Z_90':[0, -90, 90],
-        'X_90_Y_n90':[90, -90, 0],
-        'X_90_Z_n90':[90, 0, -90],
-        'Y_90_Z_n90':[0, 90, -90],
-        'X_n90_Y_n90':[-90, -90, 0],
-        'X_n90_Z_n90':[-90, 0, -90],
-        'Y_n90_Z_n90':[0, -90, -90],
+        '(90, 90, 0)':[90, 90, 0],
+        '(90, 0, 90)':[90, 0, 90],
+        '(0, 90, 90)':[0, 90, 90],
+        '(-90, 90, 0)':[-90, 90, 0],
+        '(-90, 0, 90)':[-90, 0, 90],
+        '(0, -90, 90)':[0, -90, 90],
+        '(90, -90, 0)':[90, -90, 0],
+        '(90, 0, -90)':[90, 0, -90],
+        '(0, 90, -90)':[0, 90, -90],
+        '(-90, -90, 0)':[-90, -90, 0],
+        '(-90, 0, -90)':[-90, 0, -90],
+        '(0, -90, -90)':[0, -90, -90],
     })
 
     cmds.setAttr(obj + '.r', *mat_ats[rot])
