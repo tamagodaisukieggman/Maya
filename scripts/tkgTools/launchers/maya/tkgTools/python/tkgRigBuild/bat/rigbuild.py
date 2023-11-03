@@ -423,13 +423,16 @@ def save_with_playblast(snapshot=None):
     playmax = cmds.playbackOptions(q=1, max=1)
 
     cur_path = cmds.file(q=1, sn=1)
-    cur_dir = os.path.split(cur_path)
+    # cur_dir = os.path.split(cur_path)
+    #
+    # mayaSwatches_path = cur_dir[0] + '/.mayaSwatches/'
+    # try:
+    #     os.makedirs(mayaSwatches_path)
+    # except FileExistsError:
+    #     pass
 
-    mayaSwatches_path = cur_dir[0] + '/.mayaSwatches/'
-    try:
-        os.makedirs(mayaSwatches_path)
-    except FileExistsError:
-        pass
+    base_name, file_ext = os.path.splitext(cur_path)
+    img_path = cur_path.replace(base_name + file_ext, base_name + '.jpg')
 
     if snapshot:
         playmin = cur_time
@@ -440,7 +443,7 @@ def save_with_playblast(snapshot=None):
     cmds.playblast(st=playmin,
                    et=playmax,
                    format='image',
-                   completeFilename="{}/{}.jpg".format(mayaSwatches_path, cur_dir[1]),
+                   completeFilename=img_path,
                    percent=100,
                    viewer=False,
                    forceOverwrite=True,
