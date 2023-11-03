@@ -32,5 +32,3 @@ echo Mayaのバージョンを指定してください。
 set /P MAYA_VERSION="2018, 2019, 2020 :"
 set MAYA_VERSION=%MAYA_VERSION:\=/%
 call "C:\Program Files\Autodesk\Maya"%MAYA_VERSION%"\bin\mayabatch.exe" -command python(\"%COMMAND%\")"
-
-pause
