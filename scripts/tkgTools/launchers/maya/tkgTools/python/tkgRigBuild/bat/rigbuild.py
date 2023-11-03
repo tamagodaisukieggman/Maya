@@ -439,11 +439,11 @@ def save_with_playblast(snapshot=None):
                    et=playmax,
                    format='image',
                    completeFilename="{}/{}.jpg".format(mayaSwatches_path, cur_dir[1]),
-                   percent=50,
+                   percent=100,
                    viewer=False,
                    forceOverwrite=True,
                    fp=4,
-                   showOrnaments=True,
+                   showOrnaments=False,
                    quality=70,
                    clearCache=1)
 
