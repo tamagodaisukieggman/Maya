@@ -47,8 +47,8 @@ for /f "usebackq delims=" %%A in ("%filePath%") do (
 copy %basePath%createCharaType.bat %currentDir%\projectName\
 copy %basePath%hierarchyCharaType.txt %currentDir%\projectName\
 copy %basePath%buildCharaType.bat %currentDir%\projectName\charaType\
+copy %basePath%buildCharaTypePlusImage.bat %currentDir%\projectName\charaType\
 copy %basePath%buildbase.xml %currentDir%\projectName\charaType\
-:: call %currentDir%\projectName\createCharaType.bat
 
 set "sourcePath=%libraryPath%buildPackage\projectName\charaType"
 set "destPath=%currentDir%\projectName\charaType"

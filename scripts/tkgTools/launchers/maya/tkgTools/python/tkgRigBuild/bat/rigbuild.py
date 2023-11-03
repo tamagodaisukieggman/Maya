@@ -59,7 +59,7 @@ logger.addHandler(handler)
 # warnings.filterwarnings('ignore')
 
 class Build(object):
-    def __init__(self, buildPath=None, excactDir=None, logFolder=None):
+    def __init__(self, buildPath=None, excactDir=None, logFolder=None, plus_image=None):
         """Build Commands
         from tkgTools.tkgRig.scripts.build import rigbuild
         reload(rigbuild)
@@ -94,6 +94,8 @@ class Build(object):
         self.save_file_path_list=[]
         self.dataPath = buildPath.replace('\\', '/')
         self.buildPath = buildPath.replace('\\', '/')
+
+        self.plus_image = plus_image
 
     def main(self):
         now = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -137,6 +139,8 @@ class Build(object):
                 writer.writeheader()
                 for result in self.error_results:
                     writer.writerow({'ID':result[0], 'FILE':result[1], 'LINE':result[2], 'ERROR':result[3]})
+
+        # cmds.quit(force=True)
 
     def build_rigs(self):
         build_file_list=[]
@@ -269,10 +273,8 @@ class Build(object):
             file_type = "mayaBinary"
 
         cmds.file(f=1, save=1, options='v=0', type=file_type)
-        try:
+        if self.plus_image:
             save_with_playblast(snapshot=True)
-        except:
-            print(traceback.format_exc())
 
         self.save_file_path_list.append(save_file_path)
         logging.info('\n'+'+'*10+' Save File '+'+'*10+'\n')
@@ -423,7 +425,7 @@ def save_with_playblast(snapshot=None):
     cur_path = cmds.file(q=1, sn=1)
     cur_dir = os.path.split(cur_path)
 
-    mayaSwatches_path = cur_dir[0] + '/.mayaSwatches/' + cur_dir[1]
+    mayaSwatches_path = cur_dir[0] + '/.mayaSwatches/'
     try:
         os.makedirs(mayaSwatches_path)
     except FileExistsError:
