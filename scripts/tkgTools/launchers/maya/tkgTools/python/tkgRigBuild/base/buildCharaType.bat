@@ -55,5 +55,3 @@ call "C:\Program Files\Autodesk\Maya"%MAYA_VERSION%"\bin\mayabatch.exe" -command
 start "" "%CURRENT_DIR%/000_data"
 rem start "" "%CURRENT_DIR%/data"
 rem start "" "%CURRENT_DIR%/data"
-
-pause
