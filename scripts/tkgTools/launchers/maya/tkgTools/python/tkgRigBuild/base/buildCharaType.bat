@@ -40,6 +40,7 @@ for %%i in ("%CD%") do set TYPE=%%~ni
 echo TYPE: %TYPE%
 
 set CURRENT_DIR=%CURRENT_DIR:\=/%
+set LOG_FOLDER=%CURRENT_DIR%\log
 
 echo -------------Build biped-------------
 
@@ -48,7 +49,7 @@ set /P MAYA_VERSION="2018, 2019, 2020 :"
 set MAYA_VERSION=%MAYA_VERSION:\=/%
 
 ::biped
-set COMMAND="import rigbuild;rb=rigbuild.Build(buildPath='%CURRENT_DIR%');rb.main()"
+set COMMAND="import rigbuild;rb=rigbuild.Build(buildPath='%CURRENT_DIR%', logFolder='%LOG_FOLDER%');rb.main()"
 call "C:\Program Files\Autodesk\Maya"%MAYA_VERSION%"\bin\mayabatch.exe" -command python(\"%COMMAND%\")"
 
 ::Folder Open

@@ -6,5 +6,5 @@ projectName/charaType/030_extra/_old
 projectName/charaType/040_init/_old
 projectName/charaType/050_lock/_old
 projectName/charaType/060_user/_old
+projectName/charaType/log
 projectName/charaType/_old
-projectName/log

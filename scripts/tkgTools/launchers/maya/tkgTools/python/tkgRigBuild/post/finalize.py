@@ -2,7 +2,7 @@
 
 import maya.cmds as cmds
 from imp import reload
-
+import os
 
 import tkgRigBuild.libs.control.ctrl as tkgCtrl
 import tkgRigBuild.libs.attribute as tkgAttr
@@ -433,6 +433,7 @@ def set_environment(set_fps=30, set_focalLength=100):
     cmds.currentTime(0)
 
     # camera
+    # cmds.viewSet(home=True)
     persp_cam_shape = cmds.ls('*persp*', type='camera')[0]
     cmds.setAttr('{0}.focalLength'.format(persp_cam_shape), set_focalLength)
     cmds.viewFit(persp_cam_shape, fitFactor=1, all=True)

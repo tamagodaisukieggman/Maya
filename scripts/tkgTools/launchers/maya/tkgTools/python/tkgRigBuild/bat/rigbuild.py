@@ -22,8 +22,9 @@ try:
     import pymel.core as pm
 except:
     print(traceback.format_exc())
-import maya.OpenMaya as OpenMaya
-import maya.api.OpenMaya as OpenMaya2
+import maya.OpenMaya as om
+import maya.api.OpenMaya as om2
+import maya.OpenMayaUI as omui
 
 sys.dont_write_bytecode = True
 
@@ -33,8 +34,8 @@ dir = '{}'.format(os.path.split(os.path.abspath(__file__))[0])
 dir_path = dir.replace('\\', '/')
 typFolder = '{}/types/'.format(dir_path)
 
-logFolder = '{}/log/'.format(dir_path)
-logFile = '{0}build_log.log'.format(logFolder)
+# logFolder = '{}/log/'.format(dir_path)
+# logFile = '{0}build_log.log'.format(logFolder)
 
 # logging settings
 formatter = "%(asctime)s: %(levelname)s - %(message)s"
@@ -49,13 +50,6 @@ formatter = logging.Formatter("%(asctime)s: %(levelname)s - %(message)s")
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
-# ログのファイル出力先を設定
-if not os.path.isdir(logFolder):
-    os.makedirs(logFolder)
-
-fh = logging.FileHandler(logFile)
-logger.addHandler(fh)
-
 # logging.basicConfig(
 #     filename=logFile,
 #     level=logging.INFO,
@@ -65,15 +59,24 @@ logger.addHandler(fh)
 # warnings.filterwarnings('ignore')
 
 class Build(object):
-    def __init__(self, buildPath=None, excactDir=None):
+    def __init__(self, buildPath=None, excactDir=None, logFolder=None):
         """Build Commands
         from tkgTools.tkgRig.scripts.build import rigbuild
         reload(rigbuild)
         rb=rigbuild.Build(types='biped')
         rb.main()
         """
-        if not os.path.isdir(logFolder):
-            os.makedirs(logFolder)
+
+        self.logFolder = logFolder.replace('\\', '/')
+        if not os.path.isdir(self.logFolder):
+            os.makedirs(self.logFolder)
+
+        self.logFile = '{0}/build_log.log'.format(self.logFolder)
+        if '//' in self.logFile:
+            self.logFile = self.logFile.replace('//', '/')
+
+        fh = logging.FileHandler(self.logFile)
+        logger.addHandler(fh)
 
         # list_types=None
         #
@@ -94,7 +97,7 @@ class Build(object):
 
     def main(self):
         now = datetime.now().strftime("%Y%m%d_%H%M%S")
-        txt = u'{0}/error_{1}{2:4d}'.format(logFolder, now, datetime.now().microsecond) # 時間は%H%M%S
+        txt = u'{0}/error_{1}{2:4d}'.format(self.logFolder, now, datetime.now().microsecond) # 時間は%H%M%S
 
         logging.info('\n{}\n'.format('|'*100))
         logging.info('Build Date:{}'.format(perse_date(now)))
@@ -266,6 +269,10 @@ class Build(object):
             file_type = "mayaBinary"
 
         cmds.file(f=1, save=1, options='v=0', type=file_type)
+        try:
+            save_with_playblast(snapshot=True)
+        except:
+            print(traceback.format_exc())
 
         self.save_file_path_list.append(save_file_path)
         logging.info('\n'+'+'*10+' Save File '+'+'*10+'\n')
@@ -391,6 +398,58 @@ def perse_date(now):
     dow = weekday_dict[week.weekday()]
 
     return '{}/{}/{}({}) {}:{}:{}'.format(year_str, month_str, day_str, dow, hour_str, minu_str, sec_str)
+
+# def grabViewport(filePath):
+#     viewport = omui.M3dView.active3dView()
+#     viewport.refresh()
+#     img = om.MImage()
+#     img.create(1920, 1080)
+#     viewport.readColorBuffer(img, True)
+#     ext = filePath.split('.')[1]
+#     img.writeToFile(filePath, ext)
+
+def save_with_playblast(snapshot=None):
+    cur_time=cmds.currentTime(q=1)
+    if cmds.autoKeyframe(q=True, st=True):
+        autoKeyState = 1
+    else:
+        autoKeyState = 0
+
+    cmds.autoKeyframe(st=0)
+
+    playmin = cmds.playbackOptions(q=1, min=1)
+    playmax = cmds.playbackOptions(q=1, max=1)
+
+    cur_path = cmds.file(q=1, sn=1)
+    cur_dir = os.path.split(cur_path)
+
+    mayaSwatches_path = cur_dir[0] + '/.mayaSwatches/' + cur_dir[1]
+    try:
+        os.makedirs(mayaSwatches_path)
+    except FileExistsError:
+        pass
+
+    if snapshot:
+        playmin = cur_time
+        playmax = playmin
+
+    # grabViewport(mayaSwatches_path + '.jpg')
+
+    cmds.playblast(st=playmin,
+                   et=playmax,
+                   format='image',
+                   completeFilename="{}/{}.jpg".format(mayaSwatches_path, cur_dir[1]),
+                   percent=50,
+                   viewer=False,
+                   forceOverwrite=True,
+                   fp=4,
+                   showOrnaments=True,
+                   quality=70,
+                   clearCache=1)
+
+    cmds.currentTime(cur_time)
+    cmds.autoKeyframe(st=autoKeyState)
+
 
 # if __name__ == "__main__":
 #     rb=rigbuild.Build(type='biped')
