@@ -47,9 +47,10 @@ echo -------------Build biped-------------
 echo Mayaのバージョンを指定してください。
 set /P MAYA_VERSION="2018, 2019, 2020 :"
 set MAYA_VERSION=%MAYA_VERSION:\=/%
+set CLOSE_MAYA=import maya.cmds as cmds;cmds.evalDeferred('cmds.quit(force=True)')
 
 ::biped
-set COMMAND="import rigbuild;rb=rigbuild.Build(buildPath='%CURRENT_DIR%', logFolder='%LOG_FOLDER%', plus_image=True);rb.main()"
+set COMMAND="import rigbuild;rb=rigbuild.Build(buildPath='%CURRENT_DIR%', logFolder='%LOG_FOLDER%', plus_image=True);rb.main();%CLOSE_MAYA%"
 call "C:\Program Files\Autodesk\Maya"%MAYA_VERSION%"\bin\maya.exe" -command python(\"%COMMAND%\")"
 
 ::Folder Open
