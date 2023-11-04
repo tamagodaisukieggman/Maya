@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import maya.cmds as cmds
 import json
 
@@ -91,13 +89,22 @@ for s in ['left_', 'right_']:
         end_position = embedding['joints'][s+p[2]]
         embedding['joints'][s+p[1]] = get_mid_point(start_position, end_position)
 
+for joint in ['hips', 'spine', 'neck', 'head']:
+    old_pos = embedding['joints'][joint]
+    new_pos = []
+    new_pos.append(old_pos[0]*0)
+    new_pos.append(old_pos[1])
+    new_pos.append(old_pos[2])
+    embedding['joints'][joint] = new_pos
+
 # Add Spine Segments
+spine_count=3
 start_position = embedding['joints']['hips']
 end_position = embedding['joints']['neck']
 add_segments(start_position=start_position,
              end_position=end_position,
              base_name='spine',
-             count=3,
+             count=spine_count,
              embedding=embedding)
 
 
