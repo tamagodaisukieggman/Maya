@@ -2,6 +2,9 @@
 import maya.cmds as cmds
 import json
 
+import tkgRigBuild.libs.aim as tkgAim
+
+
 def create_joint(name=None, position=None):
     joint = cmds.createNode( 'joint' , name=name )
     cmds.xform( joint , worldSpace=True , translation=position )
@@ -177,3 +180,68 @@ embedded_joints = create_joints_from_embedding( embedding )
 
 for child, parent in parent_hierarchy.items():
     cmds.parent(child, parent)
+
+side_pos_connect = [
+    'shoulder',
+    'arm',
+    'elbow',
+    'hand',
+
+    'thigh',
+    'knee',
+    'ankle',
+    'foot'
+]
+
+for part in side_pos_connect:
+    cmds.connectAttr(mirror[0]+part+'.ty', mirror[1]+part+'.ty', f=True)
+    cmds.connectAttr(mirror[0]+part+'.tz', mirror[1]+part+'.tz', f=True)
+
+    mdn = cmds.createNode('multiplyDivide', ss=True)
+    cmds.setAttr(mdn+'.input2X', -1)
+
+    cmds.connectAttr(mirror[0]+part+'.tx', mdn+'.input1X', f=True)
+    cmds.connectAttr(mdn+'.outputX', mirror[1]+part+'.tx', f=True)
+
+root_jnt = 'root'
+base_joints = cmds.ls(root_jnt, dag=True, type='joint')
+for jnt in base_joints:
+    new_name = 'rot_'+jnt
+    dup = cmds.duplicate(jnt, po=True, n=new_name)
+    pa = cmds.listRelatives(jnt, p=True) or None
+    if pa:
+        parent_name = 'rot_'+pa[0]
+        if cmds.objExists(parent_name):
+            cmds.parent(new_name, parent_name)
+
+# Arm Joint Aim
+arm_root_jnt = 'rot_left_shoulder'
+tkgAim.aim_nodes_from_root(root_jnt=arm_root_jnt,
+                           type='joint',
+                           aim_axis='x',
+                           up_axis='y',
+                           worldUpType='object')
+
+right_arm_root_jnt = arm_root_jnt.replace(mirror[0], mirror[1])
+cmds.delete(right_arm_root_jnt)
+
+cmds.mirrorJoint(arm_root_jnt,
+                 mirrorYZ=True,
+                 mirrorBehavior=True,
+                 searchReplace=mirror)
+
+# Leg Joint Aim
+leg_root_jnt = 'rot_left_thigh'
+tkgAim.aim_nodes_from_root(root_jnt=leg_root_jnt,
+                           type='joint',
+                           aim_axis='x',
+                           up_axis='z',
+                           worldUpType='object')
+
+right_leg_root_jnt = leg_root_jnt.replace(mirror[0], mirror[1])
+cmds.delete(right_leg_root_jnt)
+
+cmds.mirrorJoint(leg_root_jnt,
+                 mirrorYZ=True,
+                 mirrorBehavior=True,
+                 searchReplace=mirror)

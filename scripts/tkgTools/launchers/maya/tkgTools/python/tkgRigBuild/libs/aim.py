@@ -73,56 +73,57 @@ def aim_nodes(base=None, target=None, aim_axis='z', up_axis='y', worldUpType='ob
     if worldUpType == 'object':
         cmds.delete(up_obj)
 
-# 選択したトップジョイントを選択して実行
-joints = cmds.ls(os=True, dag=True, type='joint')
-sorted_joints = order_dags(joints)
+def aim_nodes_from_root(root_jnt=None, type='jonit', aim_axis='x', up_axis='y', worldUpType='object'):
+    # 選択したトップジョイントを選択して実行
+    joints = cmds.ls(root_jnt, dag=True, type=type)
+    sorted_joints = order_dags(joints)
 
-store_joint_values = OrderedDict()
-for sj in sorted_joints:
-    store_joint_values[sj] = [cmds.xform(sj, q=True, t=True, ws=True),
-                              cmds.xform(sj, q=True, ro=True, ws=True)]
+    store_joint_values = OrderedDict()
+    for sj in sorted_joints:
+        store_joint_values[sj] = [cmds.xform(sj, q=True, t=True, ws=True),
+                                  cmds.xform(sj, q=True, ro=True, ws=True)]
 
-tree = OrderedDict()
+    tree = OrderedDict()
 
-for jnt in sorted_joints:
-    tree[jnt] = OrderedDict()
-    children = cmds.listRelatives(jnt, type='joint', c=True)
-    branches = OrderedDict()
-    if children:
-        if 1 < len(children):
-            for chd in children:
-                branches[chd] = get_dag_nodes(obj=chd, type='joint', remove_top=True)
-        else:
-            tree[jnt]['child'] = children[0]
+    for jnt in sorted_joints:
+        tree[jnt] = OrderedDict()
+        children = cmds.listRelatives(jnt, type=type, c=True)
+        branches = OrderedDict()
+        if children:
+            if 1 < len(children):
+                for chd in children:
+                    branches[chd] = get_dag_nodes(obj=chd, type=type, remove_top=True)
+            else:
+                tree[jnt]['child'] = children[0]
 
-    if branches:
-        tree[jnt]['children'] = branches
-
-
-for jnt, child_info in tree.items():
-    if 'child' in child_info.keys():
-        child = child_info['child']
-
-        # worldUpType='object' or worldUpType='scene'
-        aim_nodes(base=child,
-                  target=jnt,
-                  aim_axis='-y',
-                  up_axis='y',
-                  worldUpType='scene')
-
-        wt = store_joint_values[child][0]
-        cmds.xform(child, t=wt, ws=True, a=True, p=True)
-
-    # elif 'children' in child_info.keys():
-    #     children = child_info['children']
-    #     for chi, grand_chi in children.items():
-    #         child_info = tree[chi]
+        if branches:
+            tree[jnt]['children'] = branches
 
 
-    for obj, trs in store_joint_values.items():
-        cmds.xform(obj, t=trs[0], ws=True, a=True, p=True)
+    for jnt, child_info in tree.items():
+        if 'child' in child_info.keys():
+            child = child_info['child']
 
-        # if 'child' in tree[child].keys():
-        #     grand_chi = tree[child]['child']
-        #     wt = store_joint_values[grand_chi][0]
-        #     cmds.xform(grand_chi, t=wt, ws=True, a=True, p=True)
+            # worldUpType='object' or worldUpType='scene'
+            aim_nodes(base=child,
+                      target=jnt,
+                      aim_axis=aim_axis,
+                      up_axis=up_axis,
+                      worldUpType=worldUpType)
+
+            wt = store_joint_values[child][0]
+            cmds.xform(child, t=wt, ws=True, a=True, p=True)
+
+        # elif 'children' in child_info.keys():
+        #     children = child_info['children']
+        #     for chi, grand_chi in children.items():
+        #         child_info = tree[chi]
+
+
+        for obj, trs in store_joint_values.items():
+            cmds.xform(obj, t=trs[0], ws=True, a=True, p=True)
+
+            # if 'child' in tree[child].keys():
+            #     grand_chi = tree[child]['child']
+            #     wt = store_joint_values[grand_chi][0]
+            #     cmds.xform(grand_chi, t=wt, ws=True, a=True, p=True)
