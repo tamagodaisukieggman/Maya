@@ -140,3 +140,39 @@ if root_count != 1:
 # create joints
 # 実際に作成するのはembeddingに格納した値を確認してから
 embedded_joints = create_joints_from_embedding( embedding )
+
+# Connect Joints
+mirror = ['left_', 'right_']
+parent_hierarchy = {
+    'hips':'root',
+    'spine_01':'hips',
+    'spine_02':'spine_01',
+    'spine_03':'spine_02',
+    'neck_01':'spine_03',
+    'neck_02':'neck_01',
+    'head':'neck_02',
+
+    'left_hand':'left_elbow',
+    'left_elbow':'left_arm',
+    'left_arm':'left_shoulder',
+    'left_shoulder':'spine_03',
+
+    'right_hand':'right_elbow',
+    'right_elbow':'right_arm',
+    'right_arm':'right_shoulder',
+    'right_shoulder':'spine_03',
+
+    'left_foot':'left_ankle',
+    'left_ankle':'left_knee',
+    'left_knee':'left_thigh',
+    'left_thigh':'hips',
+
+    'right_foot':'right_ankle',
+    'right_ankle':'right_knee',
+    'right_knee':'right_thigh',
+    'right_thigh':'hips',
+
+}
+
+for child, parent in parent_hierarchy.items():
+    cmds.parent(child, parent)
