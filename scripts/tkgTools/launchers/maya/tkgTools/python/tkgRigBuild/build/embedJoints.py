@@ -225,23 +225,45 @@ tkgAim.aim_nodes_from_root(root_jnt=arm_root_jnt,
 right_arm_root_jnt = arm_root_jnt.replace(mirror[0], mirror[1])
 cmds.delete(right_arm_root_jnt)
 
-cmds.mirrorJoint(arm_root_jnt,
-                 mirrorYZ=True,
-                 mirrorBehavior=True,
-                 searchReplace=mirror)
+arm_parent = cmds.listRelatives(arm_root_jnt, p=True)[0]
+cmds.parent(arm_root_jnt, w=True)
 
 # Leg Joint Aim
 leg_root_jnt = 'rot_left_thigh'
 tkgAim.aim_nodes_from_root(root_jnt=leg_root_jnt,
                            type='joint',
                            aim_axis='x',
-                           up_axis='z',
+                           up_axis='-z',
                            worldUpType='object')
 
 right_leg_root_jnt = leg_root_jnt.replace(mirror[0], mirror[1])
 cmds.delete(right_leg_root_jnt)
 
+# leg_parent = cmds.listRelatives(leg_root_jnt, p=True)[0]
+# cmds.parent(leg_root_jnt, w=True)
+
 cmds.mirrorJoint(leg_root_jnt,
                  mirrorYZ=True,
                  mirrorBehavior=True,
                  searchReplace=mirror)
+
+# Spine Joint Aim
+spine_root_jnt = 'rot_spine_01'
+tkgAim.aim_nodes_from_root(root_jnt=spine_root_jnt,
+                           type='joint',
+                           aim_axis='y',
+                           up_axis='y',
+                           worldUpType='scene')
+
+cmds.parent(arm_root_jnt, arm_parent)
+
+cmds.mirrorJoint(arm_root_jnt,
+                 mirrorYZ=True,
+                 mirrorBehavior=True,
+                 searchReplace=mirror)
+
+
+
+# Const pos to rot
+for bj in base_joints:
+    cmds.pointConstraint(bj, 'rot_'+bj, w=True)
