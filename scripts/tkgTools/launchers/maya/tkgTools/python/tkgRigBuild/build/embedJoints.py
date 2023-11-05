@@ -33,6 +33,17 @@ def add_segments(start_position=None, end_position=None, base_name=None, count=3
         embedding['joints']['{}_{}'.format(base_name, str(i+1).zfill(2))] = mid_point
         rate += step
 
+def merge_joints(joints):
+    for obj in joints:
+        set_wr = cmds.xform(obj, q=1, ro=1, ws=1)
+        cmds.setAttr('{}.jo'.format(obj), *(0, 0, 0))
+        cmds.xform(obj, ro=set_wr, ws=1, a=1)
+
+def freeze_rotate(joints):
+    [cmds.makeIdentity(obj, n=False, s=False, r=True, t=False, apply=True, pn=True)
+        for obj in joints]
+
+
 # First select the shape, not the transform.
 sel = cmds.ls(os=True)
 shape = cmds.listRelatives(sel[0], s=True)[0]
@@ -204,9 +215,11 @@ for part in side_pos_connect:
     cmds.connectAttr(mdn+'.outputX', mirror[1]+part+'.tx', f=True)
 
 root_jnt = 'root'
+rot_joints = []
 base_joints = cmds.ls(root_jnt, dag=True, type='joint')
 for jnt in base_joints:
     new_name = 'rot_'+jnt
+    rot_joints.append(new_name)
     dup = cmds.duplicate(jnt, po=True, n=new_name)
     cmds.setAttr(new_name+'.drawStyle', 3)
     radius_ = cmds.getAttr(jnt+'.radius')
@@ -265,9 +278,25 @@ cmds.mirrorJoint(arm_root_jnt,
                  mirrorBehavior=True,
                  searchReplace=mirror)
 
+# Merge Joints
+merge_joints(rot_joints)
+freeze_rotate(rot_joints)
+
+# Mirror Rot Connect
+for arm_rj in cmds.ls(arm_root_jnt, dag=True, type='joint'):
+    cmds.connectAttr(arm_rj+'.r', arm_rj.replace(mirror[0], mirror[1])+'.r', f=True)
+
+for leg_rj in cmds.ls(leg_root_jnt, dag=True, type='joint'):
+    cmds.connectAttr(leg_rj+'.r', leg_rj.replace(mirror[0], mirror[1])+'.r', f=True)
 
 
+# tkgAim.aim_nodes_from_root(root_jnt='rot_left_shoulder',
+#                            type='joint',
+#                            aim_axis='y',
+#                            up_axis='x',
+#                            worldUpType='object')
 
 # Const pos to rot
 for bj in base_joints:
     cmds.pointConstraint(bj, 'rot_'+bj, w=True)
+    cmds.orientConstraint('rot_'+bj, bj, w=True, mo=True)
