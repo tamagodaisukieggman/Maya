@@ -137,9 +137,6 @@ if root_count != 1:
                  embedding=embedding)
     embedding['joints'].pop('root')
 
-# create joints
-# 実際に作成するのはembeddingに格納した値を確認してから
-embedded_joints = create_joints_from_embedding( embedding )
 
 # Connect Joints
 mirror = ['left_', 'right_']
@@ -173,6 +170,10 @@ parent_hierarchy = {
     'right_thigh':'hips',
 
 }
+
+# create joints
+# 実際に作成するのはembeddingに格納した値を確認してから
+embedded_joints = create_joints_from_embedding( embedding )
 
 for child, parent in parent_hierarchy.items():
     cmds.parent(child, parent)
