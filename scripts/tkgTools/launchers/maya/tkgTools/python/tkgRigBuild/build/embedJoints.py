@@ -100,25 +100,43 @@ for joint in ['hips', 'spine', 'neck', 'head']:
 
 # Add Spine Segments
 spine_count=3
-start_position = embedding['joints']['hips']
-end_position = embedding['joints']['neck']
-add_segments(start_position=start_position,
-             end_position=end_position,
-             base_name='spine',
-             count=spine_count,
-             embedding=embedding)
-embedding['joints'].pop('spine')
+if spine_count != 1:
+    start_position = embedding['joints']['hips']
+    end_position = embedding['joints']['neck']
+    add_segments(start_position=start_position,
+                 end_position=end_position,
+                 base_name='spine',
+                 count=spine_count,
+                 embedding=embedding)
+    embedding['joints'].pop('spine')
 
 # Add Neck Segments
 neck_count=2
-start_position = embedding['joints']['neck']
-end_position = embedding['joints']['head']
-add_segments(start_position=start_position,
-             end_position=end_position,
-             base_name='neck',
-             count=neck_count,
-             embedding=embedding)
-embedding['joints'].pop('neck')
+if neck_count != 1:
+    start_position = embedding['joints']['neck']
+    end_position = embedding['joints']['head']
+    add_segments(start_position=start_position,
+                 end_position=end_position,
+                 base_name='neck',
+                 count=neck_count,
+                 embedding=embedding)
+    embedding['joints'].pop('neck')
+
+# Add Root Joint
+embedding['joints']['root'] = [0, 0, 0]
+
+# Add Neck Segments
+root_count=1
+if root_count != 1:
+    start_position = embedding['joints']['root']
+    end_position = embedding['joints']['root']
+    add_segments(start_position=start_position,
+                 end_position=end_position,
+                 base_name='root',
+                 count=root_count,
+                 embedding=embedding)
+    embedding['joints'].pop('root')
 
 # create joints
+# 実際に作成するのはembeddingに格納した値を確認してから
 embedded_joints = create_joints_from_embedding( embedding )
