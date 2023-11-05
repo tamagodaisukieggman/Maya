@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import maya.cmds as cmds
 import json
 
@@ -106,7 +107,18 @@ add_segments(start_position=start_position,
              base_name='spine',
              count=spine_count,
              embedding=embedding)
+embedding['joints'].pop('spine')
 
+# Add Neck Segments
+neck_count=2
+start_position = embedding['joints']['neck']
+end_position = embedding['joints']['head']
+add_segments(start_position=start_position,
+             end_position=end_position,
+             base_name='neck',
+             count=neck_count,
+             embedding=embedding)
+embedding['joints'].pop('neck')
 
 # create joints
 embedded_joints = create_joints_from_embedding( embedding )
