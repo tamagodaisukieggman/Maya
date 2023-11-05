@@ -208,6 +208,9 @@ base_joints = cmds.ls(root_jnt, dag=True, type='joint')
 for jnt in base_joints:
     new_name = 'rot_'+jnt
     dup = cmds.duplicate(jnt, po=True, n=new_name)
+    cmds.setAttr(new_name+'.drawStyle', 3)
+    radius_ = cmds.getAttr(jnt+'.radius')
+    cmds.setAttr(new_name+'.radius', radius_ * 2)
     pa = cmds.listRelatives(jnt, p=True) or None
     if pa:
         parent_name = 'rot_'+pa[0]
@@ -261,6 +264,7 @@ cmds.mirrorJoint(arm_root_jnt,
                  mirrorYZ=True,
                  mirrorBehavior=True,
                  searchReplace=mirror)
+
 
 
 
