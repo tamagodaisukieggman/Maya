@@ -1,0 +1,7 @@
+NewFolder/
+NewFolder/scenes/
+NewFolder/sourceimages/
+NewFolder/fbx/
+NewFolder/scenes/dummy.ma
+NewFolder/fbx/dummy.fbx
+NewFolder/sourceimages/dummy.txt
