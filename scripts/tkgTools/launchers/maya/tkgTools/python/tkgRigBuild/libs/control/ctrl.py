@@ -150,3 +150,29 @@ class Control(tkgDraw.Draw, tkgGroup.Group):
                          name="ctrlDict",
                          value=tag_string,
                          lock=True)
+
+def create_manip_ctrl(name='manip_CTRL'):
+    draw_util = tkgDraw.Draw()
+
+    # X
+    manipX = draw_util.create_curve(name="manipX", shape="manip", axis="y", scale=1)
+    cmds.delete([manipX+'.cv[0:17]', manipX+'.cv[19:40]', manipX+'.cv[43:44]'])
+    tkgCommon.set_rgb_color(ctrl=manipX, color=[1,0,0])
+
+    # Y
+    manipY = draw_util.create_curve(name="manipY", shape="manip", axis="y", scale=1)
+    cmds.delete([manipY+'.cv[19:41]', manipY+'.cv[43:62]'])
+    tkgCommon.set_rgb_color(ctrl=manipY, color=[0,1,0])
+
+    tkgCommon.merge_curves([manipX, manipY])
+
+    # Z
+    manipZ = draw_util.create_curve(name="manipZ", shape="manip", axis="y", scale=1)
+    cmds.delete([manipZ+'.cv[0:17]', manipZ+'.cv[37:41]', manipZ+'.cv[43:62]'])
+    tkgCommon.set_rgb_color(ctrl=manipZ, color=[0,0,1])
+
+    tkgCommon.merge_curves([manipY, manipZ])
+
+    cmds.rename(manipZ, name)
+
+    return name

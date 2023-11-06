@@ -135,6 +135,7 @@ class Draw(object):
         if not axis == "y":
             self.set_axis(axis)
 
+        return self.curve
 
     def combine_curves(self, curve=None, shapes=None):
         if not curve:
