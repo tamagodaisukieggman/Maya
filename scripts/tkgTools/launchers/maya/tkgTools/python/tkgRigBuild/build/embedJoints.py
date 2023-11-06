@@ -3,6 +3,9 @@ import maya.cmds as cmds
 import json
 
 import tkgRigBuild.libs.aim as tkgAim
+import tkgRigBuild.libs.control.ctrl as tkgCtrl
+reload(tkgAim)
+reload(tkgCtrl)
 
 
 def create_joint(name=None, position=None):
@@ -300,3 +303,19 @@ for leg_rj in cmds.ls(leg_root_jnt, dag=True, type='joint'):
 for bj in base_joints:
     cmds.pointConstraint(bj, 'rot_'+bj, w=True)
     cmds.orientConstraint('rot_'+bj, bj, w=True, mo=True)
+
+
+# Create Manip Ctrls
+for rj in rot_joints:
+    axis_ctrl = rj + '_axis_CTRL'
+    grp = cmds.createNode('transform', ss=True, n=axis_ctrl+'_grp')
+    tkgCtrl.create_manip_ctrl(axis_ctrl)
+
+    cmds.addAttr(axis_ctrl, ln='aimVector', at='enum', en='x:y:z:-x:-y:-z:', k=True)
+    cmds.addAttr(axis_ctrl, ln='upVector', at='enum', en='x:y:z:-x:-y:-z:', k=True)
+
+    cmds.parent(axis_ctrl, grp)
+    cmds.matchTransform(grp, rj)
+
+    cmds.pointConstraint(rj.replace('rot_', ''), grp, w=True)
+    cmds.orientConstraint(rj, grp, w=True)
