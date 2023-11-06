@@ -70,39 +70,36 @@ def adjust_mirrors(force_values=[180, 0, 0], joints=None):
 def set_segmentScaleCompensate(joints=None, ssc_sts=False):
     [cmds.setAttr(jnt+'.ssc', ssc_sts) for jnt in joints]
 
-# Aim Joints
-sel = cmds.ls(os=True, type='joint')
-for obj in sel:
-    tkgAim.aim_nodes_from_root(root_jnt=obj,
-                               type='joint',
-                               aim_axis='z',
-                               up_axis='y',
-                               worldUpType='object')
+def aim_joints(sel=None, aim_axis='x', up_axis='y', worldUpType='object'):
+    # Aim Joints
+    if not sel:
+        sel = cmds.ls(os=True, type='joint')
+    for obj in sel:
+        tkgAim.aim_nodes_from_root(root_jnt=obj,
+                                   type='joint',
+                                   aim_axis=aim_axis,
+                                   up_axis=up_axis,
+                                   worldUpType=worldUpType)
 
-# Merge Joints
-sel = cmds.ls(os=True, dag=True, type='joint')
-freeze_rotate(sel)
-merge_joints(sel)
-round_transform_attrs(sel)
+def correct_joints(sel=None, ssc_sts=False):
+    if not sel:
+        sel = cmds.ls(os=True, dag=True, type='joint')
+    freeze_rotate(sel)
+    merge_joints(sel)
+    round_transform_attrs(sel)
+    set_preferred_angle(sel)
+    set_segmentScaleCompensate(joints=sel, ssc_sts=False)
 
-# Mirror Joints
-mirror = ['_L', '_R']
-sel = cmds.ls(os=True, type='joint')
-for obj in sel:
-    mirror_joints = cmds.mirrorJoint(obj,
-                 mirrorYZ=True,
-                 mirrorBehavior=True,
-                 searchReplace=mirror)
-    adjust_mirrors(force_values=[180, 0, 0],
-                   joints=mirror_joints)
+def mirror_correct_joints(sel=None, mirror = ['_L', '_R']):
+    # Mirror Joints
+    if not sel:
+        sel = cmds.ls(os=True, type='joint')
+    for obj in sel:
+        mirror_joints = cmds.mirrorJoint(obj,
+                     mirrorYZ=True,
+                     mirrorBehavior=True,
+                     searchReplace=mirror)
+        adjust_mirrors(force_values=[180, 0, 0],
+                       joints=mirror_joints)
 
-    freeze_rotate(mirror_joints)
-    merge_joints(mirror_joints)
-    round_transform_attrs(mirror_joints)
-
-# Set Preferred Angle
-joints = cmds.ls('UJ_*', type='joint')
-set_preferred_angle(joints=joints)
-
-# Set segmentScaleCompensate
-set_segmentScaleCompensate(joints=joints, ssc_sts=False)
+        correct_joints(mirror_joints)
