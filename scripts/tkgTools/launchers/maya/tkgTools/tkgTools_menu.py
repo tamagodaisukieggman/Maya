@@ -585,6 +585,11 @@ class CreateMenu(object):
         )
 
         cmds.menuItem(
+            l=u'rig101wireControllers',
+            c='import rig101wireControllers as rig101WC;reload(rig101WC);ui = rig101WC.rig101();ui.rig101WireControllers()'
+        )
+
+        cmds.menuItem(
             l=u'mz_ctrlCreator',
             c='import mz_ctrl.mz_ctrlCreator as mz_ctrlCreator;reload(mz_ctrlCreator)'
         )
@@ -592,6 +597,11 @@ class CreateMenu(object):
         cmds.menuItem(
             l=u'Ctrl_O',
             c='import Ctrl_O.ctrlo as ctrlo;reload(ctrlo);ctrlo.Display_CtrlO_UI()'
+        )
+
+        cmds.menuItem(
+            l=u'Matrix Collision Rig',
+            c='import matrix_collision_rig as mcr;reload(mcr);mcr.show()'
         )
 
         cmds.setParent('..', menu=True)
