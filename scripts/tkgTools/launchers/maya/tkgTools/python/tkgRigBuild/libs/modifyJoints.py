@@ -72,6 +72,7 @@ def set_segmentScaleCompensate(joints=None, ssc_sts=False):
 
 def aim_joints(sel=None, aim_axis='x', up_axis='y', worldUpType='object'):
     # Aim Joints
+    before_sel = cmds.ls(os=True)
     if not sel:
         sel = cmds.ls(os=True, type='joint')
     for obj in sel:
@@ -81,7 +82,11 @@ def aim_joints(sel=None, aim_axis='x', up_axis='y', worldUpType='object'):
                                    up_axis=up_axis,
                                    worldUpType=worldUpType)
 
+    if before_sel:
+        cmds.select(before_sel, r=True)
+
 def correct_joints(sel=None, ssc_sts=False):
+    before_sel = cmds.ls(os=True)
     if not sel:
         sel = cmds.ls(os=True, dag=True, type='joint')
     freeze_rotate(sel)
@@ -89,6 +94,8 @@ def correct_joints(sel=None, ssc_sts=False):
     round_transform_attrs(sel)
     set_preferred_angle(sel)
     set_segmentScaleCompensate(joints=sel, ssc_sts=False)
+    if before_sel:
+        cmds.select(before_sel, r=True)
 
 def mirror_correct_joints(sel=None, mirror = ['_L', '_R']):
     # Mirror Joints
@@ -103,3 +110,33 @@ def mirror_correct_joints(sel=None, mirror = ['_L', '_R']):
                        joints=mirror_joints)
 
         correct_joints(mirror_joints)
+
+def aim_correct_joints(sel=None,
+                       aim_axis='x',
+                       up_axis='y',
+                       worldUpType='object',
+                       ssc_sts=False):
+    aim_joints(sel=sel,
+                     aim_axis=aim_axis,
+                     up_axis=up_axis,
+                     worldUpType=worldUpType)
+    correct_joints(sel=cmds.ls(os=True, dag=True),
+                         ssc_sts=ssc_sts)
+
+# wizard2仕様
+def joint_labeling():
+    joints = cmds.ls(os=True, type='joint', dag=True)
+    if not joints: return
+
+    for obj in joints:
+        if obj.endswith('_L') or obj.endswith('_R'):
+            spl_obj = '_'.join(obj.split('_')[:-1])
+            if obj.endswith('_L'):
+                cmds.setAttr(obj+'.side', 1)
+            if obj.endswith('_R'):
+                cmds.setAttr(obj+'.side', 2)
+        else:
+            spl_obj = obj
+
+        cmds.setAttr(obj+'.type', 18)
+        cmds.setAttr(obj+'.otherType', spl_obj, type='string')
