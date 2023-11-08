@@ -673,7 +673,10 @@ class rig101:
 
     def rig101WireControllers(self):
         if window('rig101WCWindow', exists=True):
-            deleteUI('rig101WCWindow')
+            try:
+                deleteUI('rig101WCWindow')
+            except:
+                pass
 
         rigWindow = window('rig101WCWindow', title="Rigging 101 wireControllers", widthHeight=[300, 50], minimizeButton=False, maximizeButton=False, resizeToFitChildren=True, sizeable=True)
 
