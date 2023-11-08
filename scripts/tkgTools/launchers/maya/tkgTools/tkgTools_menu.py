@@ -371,6 +371,11 @@ class CreateMenu(object):
         )
 
         cmds.menuItem(
+            l=u'SkinEditor',
+            c='import SkinEditor.ui as SkinEditorUI;reload(SkinEditorUI);sse = SkinEditorUI.EditSkinUI();sse.show()'
+        )
+
+        cmds.menuItem(
             l=u'WeightManager',
             c='import tkgrig.weightmanager as weightmanager;reload(weightmanager);wmer=weightmanager.WeightManager();wmer.buildUI();wmer.show(dockable=True)'
         )
@@ -577,6 +582,16 @@ class CreateMenu(object):
         cmds.menuItem(
             l=u'codeControllers',
             c='import tkgrig.codeControllers as codeControllers;reload(codeControllers);controllerLibrary=codeControllers.ControllerLibrary();controllerLibrary.show()'
+        )
+
+        cmds.menuItem(
+            l=u'mz_ctrlCreator',
+            c='import mz_ctrl.mz_ctrlCreator as mz_ctrlCreator;reload(mz_ctrlCreator)'
+        )
+
+        cmds.menuItem(
+            l=u'Ctrl_O',
+            c='import Ctrl_O.ctrlo as ctrlo;reload(ctrlo);ctrlo.Display_CtrlO_UI()'
         )
 
         cmds.setParent('..', menu=True)
