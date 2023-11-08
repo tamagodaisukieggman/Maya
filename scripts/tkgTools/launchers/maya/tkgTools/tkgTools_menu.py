@@ -362,6 +362,267 @@ class CreateMenu(object):
             ann=u'見た目を保持したままジョイントオリエントを回転値に転送する(回転値は0の状態で行う)'
         )
 
+        cmds.menuItem(
+            l=u'Aim + +',
+            sm=True,
+            to=True
+        )
+
+        ## + +
+        # X Y
+        cmds.menuItem(
+            l=u'Aim & Correct Joints(Aim:X, Up:Y, worldSpace:False)[Select Each Root Joint]',
+            c='import tkgRigBuild.libs.modifyJoints as tkgMJ;reload(tkgMJ); \
+            tkgMJ.aim_correct_joints(sel=None, aim_axis="x", up_axis="y", worldUpType="object", ssc_sts=False, worldSpace=False)'
+        )
+
+        cmds.menuItem(
+            l=u'Aim & Correct Joints(Aim:X, Up:Y, worldSpace:True)[Select Each Root Joint]',
+            c='import tkgRigBuild.libs.modifyJoints as tkgMJ;reload(tkgMJ); \
+            tkgMJ.aim_correct_joints(sel=None, aim_axis="x", up_axis="y", worldUpType="object", ssc_sts=False, worldSpace=True)'
+        )
+
+        # X Z
+        cmds.menuItem(
+            l=u'Aim & Correct Joints(Aim:X, Up:Z, worldSpace:False)[Select Each Root Joint]',
+            c='import tkgRigBuild.libs.modifyJoints as tkgMJ;reload(tkgMJ); \
+            tkgMJ.aim_correct_joints(sel=None, aim_axis="x", up_axis="z", worldUpType="object", ssc_sts=False, worldSpace=False)'
+        )
+
+        cmds.menuItem(
+            l=u'Aim & Correct Joints(Aim:X, Up:Z, worldSpace:True)[Select Each Root Joint]',
+            c='import tkgRigBuild.libs.modifyJoints as tkgMJ;reload(tkgMJ); \
+            tkgMJ.aim_correct_joints(sel=None, aim_axis="x", up_axis="z", worldUpType="object", ssc_sts=False, worldSpace=True)'
+        )
+
+        # Y X
+        cmds.menuItem(
+            l=u'Aim & Correct Joints(Aim:Y, Up:X, worldSpace:False)[Select Each Root Joint]',
+            c='import tkgRigBuild.libs.modifyJoints as tkgMJ;reload(tkgMJ); \
+            tkgMJ.aim_correct_joints(sel=None, aim_axis="y", up_axis="x", worldUpType="object", ssc_sts=False, worldSpace=False)'
+        )
+
+        cmds.menuItem(
+            l=u'Aim & Correct Joints(Aim:Y, Up:X, worldSpace:True)[Select Each Root Joint]',
+            c='import tkgRigBuild.libs.modifyJoints as tkgMJ;reload(tkgMJ); \
+            tkgMJ.aim_correct_joints(sel=None, aim_axis="y", up_axis="x", worldUpType="object", ssc_sts=False, worldSpace=True)'
+        )
+
+        # Y Z
+        cmds.menuItem(
+            l=u'Aim & Correct Joints(Aim:Y, Up:Z, worldSpace:False)[Select Each Root Joint]',
+            c='import tkgRigBuild.libs.modifyJoints as tkgMJ;reload(tkgMJ); \
+            tkgMJ.aim_correct_joints(sel=None, aim_axis="y", up_axis="z", worldUpType="object", ssc_sts=False, worldSpace=False)'
+        )
+
+        cmds.menuItem(
+            l=u'Aim & Correct Joints(Aim:Y, Up:Z, worldSpace:True)[Select Each Root Joint]',
+            c='import tkgRigBuild.libs.modifyJoints as tkgMJ;reload(tkgMJ); \
+            tkgMJ.aim_correct_joints(sel=None, aim_axis="y", up_axis="z", worldUpType="object", ssc_sts=False, worldSpace=True)'
+        )
+
+        # Z X
+        cmds.menuItem(
+            l=u'Aim & Correct Joints(Aim:Z, Up:X, worldSpace:False)[Select Each Root Joint]',
+            c='import tkgRigBuild.libs.modifyJoints as tkgMJ;reload(tkgMJ); \
+            tkgMJ.aim_correct_joints(sel=None, aim_axis="z", up_axis="x", worldUpType="object", ssc_sts=False, worldSpace=False)'
+        )
+
+        cmds.menuItem(
+            l=u'Aim & Correct Joints(Aim:Z, Up:X, worldSpace:True)[Select Each Root Joint]',
+            c='import tkgRigBuild.libs.modifyJoints as tkgMJ;reload(tkgMJ); \
+            tkgMJ.aim_correct_joints(sel=None, aim_axis="z", up_axis="x", worldUpType="object", ssc_sts=False, worldSpace=True)'
+        )
+
+        # Z Y
+        cmds.menuItem(
+            l=u'Aim & Correct Joints(Aim:Z, Up:Y, worldSpace:False)[Select Each Root Joint]',
+            c='import tkgRigBuild.libs.modifyJoints as tkgMJ;reload(tkgMJ); \
+            tkgMJ.aim_correct_joints(sel=None, aim_axis="z", up_axis="y", worldUpType="object", ssc_sts=False, worldSpace=False)'
+        )
+
+        cmds.menuItem(
+            l=u'Aim & Correct Joints(Aim:Z, Up:Y, worldSpace:True)[Select Each Root Joint]',
+            c='import tkgRigBuild.libs.modifyJoints as tkgMJ;reload(tkgMJ); \
+            tkgMJ.aim_correct_joints(sel=None, aim_axis="z", up_axis="y", worldUpType="object", ssc_sts=False, worldSpace=True)'
+        )
+
+        cmds.setParent('..', menu=True)
+
+        cmds.menuItem(
+            l=u'Aim - +',
+            sm=True,
+            to=True
+        )
+
+        ## - +
+        # X Y
+        cmds.menuItem(
+            l=u'Aim & Correct Joints(Aim:-X, Up:Y, worldSpace:False)[Select Each Root Joint]',
+            c='import tkgRigBuild.libs.modifyJoints as tkgMJ;reload(tkgMJ); \
+            tkgMJ.aim_correct_joints(sel=None, aim_axis="-x", up_axis="y", worldUpType="object", ssc_sts=False, worldSpace=False)'
+        )
+
+        cmds.menuItem(
+            l=u'Aim & Correct Joints(Aim:-X, Up:Y, worldSpace:True)[Select Each Root Joint]',
+            c='import tkgRigBuild.libs.modifyJoints as tkgMJ;reload(tkgMJ); \
+            tkgMJ.aim_correct_joints(sel=None, aim_axis="-x", up_axis="y", worldUpType="object", ssc_sts=False, worldSpace=True)'
+        )
+
+        # X Z
+        cmds.menuItem(
+            l=u'Aim & Correct Joints(Aim:-X, Up:Z, worldSpace:False)[Select Each Root Joint]',
+            c='import tkgRigBuild.libs.modifyJoints as tkgMJ;reload(tkgMJ); \
+            tkgMJ.aim_correct_joints(sel=None, aim_axis="-x", up_axis="z", worldUpType="object", ssc_sts=False, worldSpace=False)'
+        )
+
+        cmds.menuItem(
+            l=u'Aim & Correct Joints(Aim:-X, Up:Z, worldSpace:True)[Select Each Root Joint]',
+            c='import tkgRigBuild.libs.modifyJoints as tkgMJ;reload(tkgMJ); \
+            tkgMJ.aim_correct_joints(sel=None, aim_axis="-x", up_axis="z", worldUpType="object", ssc_sts=False, worldSpace=True)'
+        )
+
+        # Y X
+        cmds.menuItem(
+            l=u'Aim & Correct Joints(Aim:-Y, Up:X, worldSpace:False)[Select Each Root Joint]',
+            c='import tkgRigBuild.libs.modifyJoints as tkgMJ;reload(tkgMJ); \
+            tkgMJ.aim_correct_joints(sel=None, aim_axis="-y", up_axis="x", worldUpType="object", ssc_sts=False, worldSpace=False)'
+        )
+
+        cmds.menuItem(
+            l=u'Aim & Correct Joints(Aim:-Y, Up:X, worldSpace:True)[Select Each Root Joint]',
+            c='import tkgRigBuild.libs.modifyJoints as tkgMJ;reload(tkgMJ); \
+            tkgMJ.aim_correct_joints(sel=None, aim_axis="-y", up_axis="x", worldUpType="object", ssc_sts=False, worldSpace=True)'
+        )
+
+        # Y Z
+        cmds.menuItem(
+            l=u'Aim & Correct Joints(Aim:-Y, Up:Z, worldSpace:False)[Select Each Root Joint]',
+            c='import tkgRigBuild.libs.modifyJoints as tkgMJ;reload(tkgMJ); \
+            tkgMJ.aim_correct_joints(sel=None, aim_axis="-y", up_axis="z", worldUpType="object", ssc_sts=False, worldSpace=False)'
+        )
+
+        cmds.menuItem(
+            l=u'Aim & Correct Joints(Aim:-Y, Up:Z, worldSpace:True)[Select Each Root Joint]',
+            c='import tkgRigBuild.libs.modifyJoints as tkgMJ;reload(tkgMJ); \
+            tkgMJ.aim_correct_joints(sel=None, aim_axis="-y", up_axis="z", worldUpType="object", ssc_sts=False, worldSpace=True)'
+        )
+
+        # Z X
+        cmds.menuItem(
+            l=u'Aim & Correct Joints(Aim:-Z, Up:X, worldSpace:False)[Select Each Root Joint]',
+            c='import tkgRigBuild.libs.modifyJoints as tkgMJ;reload(tkgMJ); \
+            tkgMJ.aim_correct_joints(sel=None, aim_axis="-z", up_axis="x", worldUpType="object", ssc_sts=False, worldSpace=False)'
+        )
+
+        cmds.menuItem(
+            l=u'Aim & Correct Joints(Aim:-Z, Up:X, worldSpace:True)[Select Each Root Joint]',
+            c='import tkgRigBuild.libs.modifyJoints as tkgMJ;reload(tkgMJ); \
+            tkgMJ.aim_correct_joints(sel=None, aim_axis="-z", up_axis="x", worldUpType="object", ssc_sts=False, worldSpace=True)'
+        )
+
+        # Z Y
+        cmds.menuItem(
+            l=u'Aim & Correct Joints(Aim:-Z, Up:Y, worldSpace:False)[Select Each Root Joint]',
+            c='import tkgRigBuild.libs.modifyJoints as tkgMJ;reload(tkgMJ); \
+            tkgMJ.aim_correct_joints(sel=None, aim_axis="-z", up_axis="y", worldUpType="object", ssc_sts=False, worldSpace=False)'
+        )
+
+        cmds.menuItem(
+            l=u'Aim & Correct Joints(Aim:-Z, Up:Y, worldSpace:True)[Select Each Root Joint]',
+            c='import tkgRigBuild.libs.modifyJoints as tkgMJ;reload(tkgMJ); \
+            tkgMJ.aim_correct_joints(sel=None, aim_axis="-z", up_axis="y", worldUpType="object", ssc_sts=False, worldSpace=True)'
+        )
+
+        cmds.setParent('..', menu=True)
+
+        cmds.menuItem(
+            l=u'Aim - -',
+            sm=True,
+            to=True
+        )
+
+        ## - -
+        # X Y
+        cmds.menuItem(
+            l=u'Aim & Correct Joints(Aim:-X, Up:-Y, worldSpace:False)[Select Each Root Joint]',
+            c='import tkgRigBuild.libs.modifyJoints as tkgMJ;reload(tkgMJ); \
+            tkgMJ.aim_correct_joints(sel=None, aim_axis="-x", up_axis="-y", worldUpType="object", ssc_sts=False, worldSpace=False)'
+        )
+
+        cmds.menuItem(
+            l=u'Aim & Correct Joints(Aim:-X, Up:-Y, worldSpace:True)[Select Each Root Joint]',
+            c='import tkgRigBuild.libs.modifyJoints as tkgMJ;reload(tkgMJ); \
+            tkgMJ.aim_correct_joints(sel=None, aim_axis="-x", up_axis="-y", worldUpType="object", ssc_sts=False, worldSpace=True)'
+        )
+
+        # X Z
+        cmds.menuItem(
+            l=u'Aim & Correct Joints(Aim:-X, Up:-Z, worldSpace:False)[Select Each Root Joint]',
+            c='import tkgRigBuild.libs.modifyJoints as tkgMJ;reload(tkgMJ); \
+            tkgMJ.aim_correct_joints(sel=None, aim_axis="-x", up_axis="-z", worldUpType="object", ssc_sts=False, worldSpace=False)'
+        )
+
+        cmds.menuItem(
+            l=u'Aim & Correct Joints(Aim:-X, Up:-Z, worldSpace:True)[Select Each Root Joint]',
+            c='import tkgRigBuild.libs.modifyJoints as tkgMJ;reload(tkgMJ); \
+            tkgMJ.aim_correct_joints(sel=None, aim_axis="-x", up_axis="-z", worldUpType="object", ssc_sts=False, worldSpace=True)'
+        )
+
+        # Y X
+        cmds.menuItem(
+            l=u'Aim & Correct Joints(Aim:-Y, Up:-X, worldSpace:False)[Select Each Root Joint]',
+            c='import tkgRigBuild.libs.modifyJoints as tkgMJ;reload(tkgMJ); \
+            tkgMJ.aim_correct_joints(sel=None, aim_axis="-y", up_axis="-x", worldUpType="object", ssc_sts=False, worldSpace=False)'
+        )
+
+        cmds.menuItem(
+            l=u'Aim & Correct Joints(Aim:-Y, Up:-X, worldSpace:True)[Select Each Root Joint]',
+            c='import tkgRigBuild.libs.modifyJoints as tkgMJ;reload(tkgMJ); \
+            tkgMJ.aim_correct_joints(sel=None, aim_axis="-y", up_axis="-x", worldUpType="object", ssc_sts=False, worldSpace=True)'
+        )
+
+        # Y Z
+        cmds.menuItem(
+            l=u'Aim & Correct Joints(Aim:-Y, Up:-Z, worldSpace:False)[Select Each Root Joint]',
+            c='import tkgRigBuild.libs.modifyJoints as tkgMJ;reload(tkgMJ); \
+            tkgMJ.aim_correct_joints(sel=None, aim_axis="-y", up_axis="-z", worldUpType="object", ssc_sts=False, worldSpace=False)'
+        )
+
+        cmds.menuItem(
+            l=u'Aim & Correct Joints(Aim:-Y, Up:-Z, worldSpace:True)[Select Each Root Joint]',
+            c='import tkgRigBuild.libs.modifyJoints as tkgMJ;reload(tkgMJ); \
+            tkgMJ.aim_correct_joints(sel=None, aim_axis="-y", up_axis="-z", worldUpType="object", ssc_sts=False, worldSpace=True)'
+        )
+
+        # Z X
+        cmds.menuItem(
+            l=u'Aim & Correct Joints(Aim:-Z, Up:-X, worldSpace:False)[Select Each Root Joint]',
+            c='import tkgRigBuild.libs.modifyJoints as tkgMJ;reload(tkgMJ); \
+            tkgMJ.aim_correct_joints(sel=None, aim_axis="-z", up_axis="-x", worldUpType="object", ssc_sts=False, worldSpace=False)'
+        )
+
+        cmds.menuItem(
+            l=u'Aim & Correct Joints(Aim:-Z, Up:-X, worldSpace:True)[Select Each Root Joint]',
+            c='import tkgRigBuild.libs.modifyJoints as tkgMJ;reload(tkgMJ); \
+            tkgMJ.aim_correct_joints(sel=None, aim_axis="-z", up_axis="-x", worldUpType="object", ssc_sts=False, worldSpace=True)'
+        )
+
+        # Z Y
+        cmds.menuItem(
+            l=u'Aim & Correct Joints(Aim:-Z, Up:-Y, worldSpace:False)[Select Each Root Joint]',
+            c='import tkgRigBuild.libs.modifyJoints as tkgMJ;reload(tkgMJ); \
+            tkgMJ.aim_correct_joints(sel=None, aim_axis="-z", up_axis="-y", worldUpType="object", ssc_sts=False, worldSpace=False)'
+        )
+
+        cmds.menuItem(
+            l=u'Aim & Correct Joints(Aim:-Z, Up:-Y, worldSpace:True)[Select Each Root Joint]',
+            c='import tkgRigBuild.libs.modifyJoints as tkgMJ;reload(tkgMJ); \
+            tkgMJ.aim_correct_joints(sel=None, aim_axis="-z", up_axis="-y", worldUpType="object", ssc_sts=False, worldSpace=True)'
+        )
+
+        cmds.setParent('..', menu=True) # submenu 
+
         cmds.setParent('..', menu=True)
 
         cmds.menuItem(

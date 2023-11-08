@@ -98,8 +98,9 @@ def correct_joints(sel=None, ssc_sts=False):
     if before_sel:
         cmds.select(before_sel, r=True)
 
-def mirror_correct_joints(sel=None, mirror = ['_L', '_R']):
+def mirror_correct_joints(sel=None, mirror=['_L', '_R'], force_values=[180, 0, 0]):
     # Mirror Joints
+    before_sel = cmds.ls(os=True)
     if not sel:
         sel = cmds.ls(os=True, type='joint')
     for obj in sel:
@@ -107,10 +108,12 @@ def mirror_correct_joints(sel=None, mirror = ['_L', '_R']):
                      mirrorYZ=True,
                      mirrorBehavior=True,
                      searchReplace=mirror)
-        adjust_mirrors(force_values=[180, 0, 0],
+        adjust_mirrors(force_values=force_values,
                        joints=mirror_joints)
 
         correct_joints(mirror_joints)
+    if before_sel:
+        cmds.select(before_sel, r=True)
 
 def aim_correct_joints(sel=None,
                        aim_axis='x',
