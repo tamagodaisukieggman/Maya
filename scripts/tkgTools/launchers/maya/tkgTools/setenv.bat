@@ -12,6 +12,9 @@ set MAYA_PACKAGE_PATH=%MAYA_PACKAGE_PATH%;%launcherPath%ApplicationPlugins
 
 set PYTHONPATH=%PYTHONPATH%;%launcherPath%python;%launcherPath%;
 
+set PYTHONPATH=%PYTHONPATH%;%MAYA_SCRIPT_PATH%
+set MAYA_SCRIPT_PATH=%MAYA_SCRIPT_PATH%;%PYTHONPATH%
+
 :: CharcoalEditor
 :: ----------------------------------------
 :: 環境のルートパスをリストに追加
