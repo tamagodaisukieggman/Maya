@@ -1370,7 +1370,6 @@ class PropDialog(MayaQWidgetDockableMixin, QMainWindow):
 
         main_ref_qle.setText('{}:{}'.format(ref_name, 'Root'))
         rootCtrl_main_ref_qle.setText('{}:{}'.format(ref_name, 'Root_ctrl'))
-        main_atc_qle.setText('{}:{}'.format(ref_name, self.attach_node))
 
         ctrl = main_ctrl_qle.text()
         space = prop_space_cmbox.currentText()
@@ -1383,6 +1382,10 @@ class PropDialog(MayaQWidgetDockableMixin, QMainWindow):
         if type == 'ref':
             avatarReferenceTool.prop_update(path, ref_name, False)
             avatarReferenceTool.prop_scale_connection(ctrl, ctrl_nss, ref_name)
+
+        offSet_Root = avatarReferenceTool.get_offSet_Root(attach_node='*{}*'.format(self.attach_node), filter=ref_name+':')
+        main_atc_qle.setText('{}'.format(offSet_Root))
+        # main_atc_qle.setText('{}:{}'.format(ref_name, self.attach_node))
 
         self.set_spaces(main_ctrl_qle=main_ctrl_qle, prop_space_cmbox=space_match_bake_cmbox, dum=None)
 

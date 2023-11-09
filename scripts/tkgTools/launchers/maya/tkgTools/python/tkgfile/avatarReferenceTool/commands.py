@@ -295,6 +295,19 @@ def go_to_bindPose_for_rig(namespace=None):
         br = cmds.getAttr(ctrl + '.bindPoseRotate')[0]
         cmds.xform(ctrl, t=bt, ro=br, ws=True, p=True, a=True)
 
+def get_offSet_Root(attach_node=None, filter=None):
+    oft_roots = cmds.ls(attach_node, r=True)
+    offSet_Root = None
+    if oft_roots:
+        if len(oft_roots) == 1:
+            offSet_Root = oft_roots[0]
+        else:
+            for oft_r in oft_roots:
+                if filter in oft_r:
+                    offSet_Root = oft_r
+                    break
+        return offSet_Root
+
 
 def prop_update(path, ref_name, unload):
     if unload:
@@ -340,6 +353,64 @@ def prop_update(path, ref_name, unload):
     cmds.playbackOptions(aet=animend)
 
     cmds.currentTime(curtime)
+
+def force_constraint(src=None, tgt=None):
+    cnsts = []
+    try:
+        con = cmds.pointConstraint(src, tgt, w=True)
+        cnsts.append(con[0])
+    except:
+        print(traceback.format_exc())
+
+    try:
+        con = cmds.orientConstraint(src, tgt, w=True)
+        cnsts.append(con[0])
+    except:
+        print(traceback.format_exc())
+
+    try:
+        con = cmds.scaleConstraint(src, tgt, w=True)
+        cnsts.append(con[0])
+    except:
+        print(traceback.format_exc())
+
+    return cnsts
+
+def fbx_to_rig_for_prop():
+    attach_ctrl = 'p2:Handattach_R_ctrl'
+    ref_name = 'pro_0'
+    temp_jnt_sets = '{}_prop_temp_jnt_sets'.format(ref_name)
+    # cmds.select(temp_jnt_sets, r=True, ne=True)
+    # base_joints = cmds.pickWalk(d='down');cmds.ls(os=True)
+
+    dups = cmds.duplicate(ref_name + ':Root')
+    consts = cmds.ls('Root', dag=True, type='constraint', l=True)
+    [cmds.delete(c) for c in consts]
+
+    temp_ctrl_sets = '{}_prop_temp_ctrl_sets'.format(ref_name)
+    cmds.select(temp_ctrl_sets, r=True, ne=True)
+    ctrls = cmds.pickWalk(d='down');cmds.ls(os=True)
+
+    ordered_ctrls = order_dags(ctrls)
+
+    all_consts = []
+    for ctrl in ordered_ctrls:
+        spl_ctrl = ctrl.split(':')[-1]
+        jnt = spl_ctrl.replace('_ctrl', '')
+        cmds.matchTransform(jnt, ctrl)
+        if 'Root' in jnt:
+            # con = cmds.scaleConstraint(attach_ctrl, jnt, w=True)
+            # all_consts.append(con[0])
+
+            con = cmds.pointConstraint(attach_ctrl, jnt, w=True)
+            all_consts.append(con[0])
+
+            con = cmds.orientConstraint(attach_ctrl, jnt, w=True)
+            all_consts.append(con[0])
+        else:
+            consts = force_constraint(src=jnt, tgt=ctrl)
+            [all_consts.append(c) for c in consts]
+
 
 def match_transform(src, dst):
     if cmds.objExists(src) and cmds.objExists(dst):
