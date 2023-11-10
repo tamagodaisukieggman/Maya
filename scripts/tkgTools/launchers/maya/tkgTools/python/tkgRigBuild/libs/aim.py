@@ -29,7 +29,7 @@ def get_dag_nodes(obj=None, type=None, remove_top=None):
 
     return order_dags(joints)
 
-def aim_nodes(base=None, target=None, aim_axis='z', up_axis='y', worldUpType='object', worldSpace=False):
+def aim_nodes(base=None, target=None, aim_axis='z', up_axis='y', worldUpType='object', worldSpace=False, world_axis='y'):
     axis_dict = {
         'x':[1,0,0],
         'y':[0,1,0],
@@ -47,14 +47,12 @@ def aim_nodes(base=None, target=None, aim_axis='z', up_axis='y', worldUpType='ob
     aim_obj = cmds.spaceLocator()[0]
     cmds.matchTransform(aim_obj, base)
 
-    settings = {}
-
     up_obj = cmds.spaceLocator()[0]
     cmds.matchTransform(up_obj, target)
 
     if worldUpType == 'object':
         if worldSpace:
-            cmds.xform(up_obj, t=[v*10 for v in axis_dict[up_axis]], r=True, ws=True)
+            cmds.xform(up_obj, t=[v*10 for v in axis_dict[world_axis]], r=True, ws=True)
         else:
             cmds.xform(up_obj, t=[v*10 for v in axis_dict[up_axis]], r=True, os=True)
 
@@ -76,7 +74,7 @@ def aim_nodes(base=None, target=None, aim_axis='z', up_axis='y', worldUpType='ob
     cmds.delete(aim_obj)
     cmds.delete(up_obj)
 
-def aim_nodes_from_root(root_jnt=None, type='jonit', aim_axis='x', up_axis='y', worldUpType='object', worldSpace=False):
+def aim_nodes_from_root(root_jnt=None, type='jonit', aim_axis='x', up_axis='y', worldUpType='object', worldSpace=False, world_axis='y'):
     # 選択したトップジョイントを選択して実行
     joints = cmds.ls(root_jnt, dag=True, type=type)
     sorted_joints = order_dags(joints)
@@ -113,7 +111,8 @@ def aim_nodes_from_root(root_jnt=None, type='jonit', aim_axis='x', up_axis='y', 
                       aim_axis=aim_axis,
                       up_axis=up_axis,
                       worldUpType=worldUpType,
-                      worldSpace=worldSpace)
+                      worldSpace=worldSpace,
+                      world_axis=world_axis)
 
             wt = store_joint_values[child][0]
             cmds.xform(child, t=wt, ws=True, a=True, p=True)
