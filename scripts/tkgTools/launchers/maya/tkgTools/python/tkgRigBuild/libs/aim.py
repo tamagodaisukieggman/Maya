@@ -1,5 +1,8 @@
 from maya import cmds, mel
+import maya.OpenMaya as om
+
 from collections import OrderedDict
+import math
 import traceback
 
 def order_dags(dags=None):
@@ -29,7 +32,7 @@ def get_dag_nodes(obj=None, type=None, remove_top=None):
 
     return order_dags(joints)
 
-def aim_nodes(base=None, target=None, aim_axis='z', up_axis='y', worldUpType='object', worldSpace=False, world_axis='y'):
+def aim_nodes(base=None, target=None, aim_axis='z', up_axis='y', worldUpType='object', worldUpObject=None, worldSpace=False, world_axis='y'):
     axis_dict = {
         'x':[1,0,0],
         'y':[0,1,0],
@@ -56,7 +59,10 @@ def aim_nodes(base=None, target=None, aim_axis='z', up_axis='y', worldUpType='ob
         else:
             cmds.xform(up_obj, t=[v*10 for v in axis_dict[up_axis]], r=True, os=True)
 
-    settings['worldUpObject'] = up_obj
+    if worldUpObject:
+        settings['worldUpObject'] = worldUpObject
+    else:
+        settings['worldUpObject'] = up_obj
 
     cmds.delete(
         cmds.aimConstraint(
@@ -74,7 +80,7 @@ def aim_nodes(base=None, target=None, aim_axis='z', up_axis='y', worldUpType='ob
     cmds.delete(aim_obj)
     cmds.delete(up_obj)
 
-def aim_nodes_from_root(root_jnt=None, type='jonit', aim_axis='x', up_axis='y', worldUpType='object', worldSpace=False, world_axis='y'):
+def aim_nodes_from_root(root_jnt=None, type='jonit', aim_axis='x', up_axis='y', worldUpType='object', worldUpObject=None, worldSpace=False, world_axis='y'):
     # 選択したトップジョイントを選択して実行
     joints = cmds.ls(root_jnt, dag=True, type=type)
     sorted_joints = order_dags(joints)
@@ -111,6 +117,7 @@ def aim_nodes_from_root(root_jnt=None, type='jonit', aim_axis='x', up_axis='y', 
                       aim_axis=aim_axis,
                       up_axis=up_axis,
                       worldUpType=worldUpType,
+                      worldUpObject=worldUpObject,
                       worldSpace=worldSpace,
                       world_axis=world_axis)
 
@@ -130,3 +137,40 @@ def aim_nodes_from_root(root_jnt=None, type='jonit', aim_axis='x', up_axis='y', 
             #     grand_chi = tree[child]['child']
             #     wt = store_joint_values[grand_chi][0]
             #     cmds.xform(grand_chi, t=wt, ws=True, a=True, p=True)
+
+def set_pole_vec(start=None, mid=None, end=None, move=None, obj=None):
+    start = cmds.xform(start, q=True, t=True, ws=True)
+    mid = cmds.xform(mid, q=True, t=True, ws=True)
+    end = cmds.xform(end, q=True, t=True, ws=True)
+
+    startV = om.MVector(start[0] ,start[1],start[2])
+    midV = om.MVector(mid[0] ,mid[1],mid[2])
+    endV = om.MVector(end[0] ,end[1],end[2])
+    startEnd = endV - startV
+    startMid = midV - startV
+    dotP = startMid * startEnd
+    proj = float(dotP) / float(startEnd.length())
+    startEndN = startEnd.normal()
+    projV = startEndN * proj
+    arrowV = startMid - projV
+    arrowV*= 0.5
+    finalV = arrowV + midV
+    cross1 = startEnd ^ startMid
+    cross1.normalize()
+    cross2 = cross1 ^ arrowV
+    cross2.normalize()
+    arrowV.normalize()
+    matrixV = [arrowV.x , arrowV.y , arrowV.z , 0 ,cross1.x ,cross1.y , cross1.z , 0 ,cross2.x , cross2.y , cross2.z , 0,0,0,0,1]
+    matrixM = om.MMatrix()
+    om.MScriptUtil.createMatrixFromList(matrixV , matrixM)
+    matrixFn = om.MTransformationMatrix(matrixM)
+    rot = matrixFn.eulerRotation()
+
+    pvLoc = cmds.spaceLocator(n='poleVecPosLoc')
+    cmds.xform(pvLoc[0] , ws =1 , t= (finalV.x , finalV.y ,finalV.z))
+    cmds.xform(pvLoc[0] , ws = 1 , rotation = ((rot.x/math.pi*180.0),(rot.y/math.pi*180.0),(rot.z/math.pi*180.0)))
+    cmds.select(pvLoc[0])
+    cmds.move(move, 0, 0, r=1, os=1, wd=1)
+
+    cmds.matchTransform(obj, pvLoc[0])
+    cmds.delete(pvLoc[0])

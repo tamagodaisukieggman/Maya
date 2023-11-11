@@ -70,7 +70,7 @@ def adjust_mirrors(force_values=[180, 0, 0], joints=None):
 def set_segmentScaleCompensate(joints=None, ssc_sts=False):
     [cmds.setAttr(jnt+'.ssc', ssc_sts) for jnt in joints]
 
-def aim_joints(sel=None, aim_axis='x', up_axis='y', worldUpType='object', worldSpace=False, world_axis='y'):
+def aim_joints(sel=None, aim_axis='x', up_axis='y', worldUpType='object', worldUpObject=None, worldSpace=False, world_axis='y'):
     # Aim Joints
     before_sel = cmds.ls(os=True)
     if not sel:
@@ -81,6 +81,7 @@ def aim_joints(sel=None, aim_axis='x', up_axis='y', worldUpType='object', worldS
                                    aim_axis=aim_axis,
                                    up_axis=up_axis,
                                    worldUpType=worldUpType,
+                                   worldUpObject=worldUpObject,
                                    worldSpace=worldSpace,
                                    world_axis=world_axis)
 
@@ -120,6 +121,7 @@ def aim_correct_joints(sel=None,
                        aim_axis='x',
                        up_axis='y',
                        worldUpType='object',
+                       worldUpObject=None,
                        ssc_sts=False,
                        worldSpace=False,
                        world_axis='y'):
@@ -127,6 +129,7 @@ def aim_correct_joints(sel=None,
                  aim_axis=aim_axis,
                  up_axis=up_axis,
                  worldUpType=worldUpType,
+                 worldUpObject=worldUpObject,
                  worldSpace=worldSpace,
                  world_axis=world_axis)
     correct_joints(sel=cmds.ls(os=True, dag=True),
