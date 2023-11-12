@@ -52,6 +52,11 @@ class Spline:
 
         self.side = side
         self.part = part
+        if not self.side:
+            self.side = "Cn"
+        if not self.part:
+            self.part = "default"
+
         self.base_name = self.side + '_' + self.part
 
         self.guide_list = guide_list

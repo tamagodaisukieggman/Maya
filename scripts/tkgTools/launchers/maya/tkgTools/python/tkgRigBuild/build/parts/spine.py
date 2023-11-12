@@ -22,7 +22,7 @@ class Spine(tkgModule.RigModule, tkgSpline.Spline):
                  side=None,
                  part=None,
                  guide_list=None,
-                 ctrl_scale=None,
+                 ctrl_scale=1,
                  ctrl_color=[0.364, 0.322, 0.555],
                  fk_ctrl_scale=15,
                  fk_ctrl_color=[0.652, 0.263, 0.119],
