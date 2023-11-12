@@ -4,15 +4,17 @@ from imp import reload
 import maya.cmds as cmds
 
 import tkgRigBuild.libs.attribute as tkgAttr
-import tkgRigBuild.build.chain as tkgChain
 import tkgRigBuild.libs.control.ctrl as tkgCtrl
-import tkgRigBuild.build.guide as tkgGuide
 import tkgRigBuild.libs.transform as tkgXform
+import tkgRigBuild.build.chain as tkgChain
+import tkgRigBuild.build.guide as tkgGuide
+import tkgRigBuild.build.spline as tkgSpline
 reload(tkgAttr)
 reload(tkgChain)
 reload(tkgCtrl)
 reload(tkgGuide)
 reload(tkgXform)
+reload(tkgSpline)
 
 class Ik:
     def __init__(self,
@@ -171,11 +173,26 @@ class Ik:
         self.ik_joints = self.ik_chain.joints
 
     def build_ikh(self, scale_attr=None, constrain=True):
-        self.ikh = cmds.ikHandle(name=self.base_name + '_IKH',
-                                 startJoint=self.ik_joints[0],
-                                 endEffector=self.ik_joints[-1],
-                                 sticky=self.sticky,
-                                 solver=self.solver)[0]
+        settings = {
+            'name':self.base_name + '_IKH',
+            'startJoint':self.ik_joints[0],
+            'endEffector':self.ik_joints[-1],
+            'sticky':self.sticky,
+            'solver':self.solver
+        }
+
+        if self.solver in ['ikSplineSolver']:
+            spline = tkgSpline.Spline(guide_list=self.guide_list,
+                                      side=self.side,
+                                      part=self.part)
+            spline.build_spline_curve()
+            self.ik_spline_crv = spline.crv
+            settings['curve'] = self.ik_spline_crv
+            settings['freezeJoints'] = True
+            settings['createCurve'] = False
+            settings['scv'] = True
+
+        self.ikh = cmds.ikHandle(**settings)[0]
 
         if constrain:
             cmds.parentConstraint(self.base_ctrl.ctrl, self.ik_joints[0],

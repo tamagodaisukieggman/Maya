@@ -154,19 +154,17 @@ class IkChain(tkgModule.RigModule, tkgIk.Ik):
                                       twist_axis=self.twisty_axis)
 
         if self.bendy:
-            bend_01 = self.ik_chain.bend_chain(bone=self.ik_chain.joints[0],
+            for ikj in self.ik_chain.joints[:-1:]:
+                bend = self.ik_chain.bend_chain(bone=ikj,
                                                ctrl_scale=self.ctrl_scale,
                                                global_scale=self.global_scale.attr,
                                                scale_axis=self.bendy_axis)
-            bend_02 = self.ik_chain.bend_chain(bone=self.ik_chain.joints[1],
-                                               ctrl_scale=self.ctrl_scale,
-                                               global_scale=self.global_scale.attr,
-                                               scale_axis=self.bendy_axis)
-            cmds.parent(bend_01['control'], bend_02['control'],
-                        self.control_grp)
-            cmds.parent(bend_01['module'], bend_02['module'], self.module_grp)
+                cmds.parent(bend['control'], self.control_grp)
+                cmds.parent(bend['module'], self.module_grp)
 
         self.build_ikh(scale_attr=self.global_scale)
+        if self.solver in ['ikSplineSolver']:
+            cmds.parent(self.ik_spline_crv, self.module_grp)
         cmds.parent(self.ikh, self.ik_joints[0], self.module_grp)
         if self.soft_ik:
             cmds.parent(self.soft_ik_loc, self.module_grp)
