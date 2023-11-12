@@ -13,8 +13,8 @@ set dd=%ldt:~6,2%
 set tttt=%ldt:~8,4%
 
 ::
-set /P formatted_time="時間を指定(0000):"
-set formatted_time=%formatted_time:\=/%
+echo 今の時間と日付 %date% %time%
+set /P CURRENTTIME="日付と時間を指定(例:2023/11/12 18:29):"
 
 ::バックアップするフォルダの作成
 set BACKUPDIR=%CURRENTDIR%backups\%yyyy%-%mm%-%dd%-%tttt%
@@ -22,11 +22,16 @@ md %BACKUPDIR%
 
 ::このバッチファイルのディレクトリ階層から更新日(/D)が今日のファイルを順次コピーする
 ::echo F |は確認を自動的にファイル(F)で処理するために付ける
-for /f %%a in ('forfiles /P %CURRENTDIR% /S /M *.* /D +0 /C "cmd /c if @ftime GEQ %formatted_time% echo @path"') do (
+for /R %%a in (*) do (
+  set "MODITIME=%%~ta"
   set "SRC=%%~a"
-  echo !SRC!
-  set "modified=!SRC:%CURRENTDIR%=%BACKUPDIR%\!"
-  echo F | xcopy !SRC! !modified! /D /S /R /Y /I /K /E
+
+  IF "!MODITIME!" GTR "%CURRENTTIME%" (
+    set "modified=!SRC:%CURRENTDIR%=%BACKUPDIR%\!"
+    echo F | xcopy !SRC! !modified! /D /S /R /Y /I /K /E
+  ) ELSE (
+    rem
+  )
 )
 
 ::zip圧縮
