@@ -12,16 +12,20 @@ set mm=%ldt:~4,2%
 set dd=%ldt:~6,2%
 set tttt=%ldt:~8,4%
 
+::
+set /P formatted_time="時間を指定(0000):"
+set formatted_time=%formatted_time:\=/%
+
 ::バックアップするフォルダの作成
 set BACKUPDIR=%CURRENTDIR%backups\%yyyy%-%mm%-%dd%-%tttt%
 md %BACKUPDIR%
 
 ::このバッチファイルのディレクトリ階層から更新日(/D)が今日のファイルを順次コピーする
 ::echo F |は確認を自動的にファイル(F)で処理するために付ける
-for /f %%a in ('forfiles /S /M *.* /D +0 /C "cmd /c echo @path"') do (
+for /f %%a in ('forfiles /P %CURRENTDIR% /S /M *.* /D +0 /C "cmd /c if @ftime GEQ %formatted_time% echo @path"') do (
   set "SRC=%%~a"
+  echo !SRC!
   set "modified=!SRC:%CURRENTDIR%=%BACKUPDIR%\!"
-  echo !SRC! !modified! コピー！
   echo F | xcopy !SRC! !modified! /D /S /R /Y /I /K /E
 )
 
@@ -46,6 +50,8 @@ if %errorlevel%==0 (
 ) else (
     echo 圧縮中にエラーが発生しました。
 )
+
+pause
 
 ::元のフォルダの削除
 ::rd /s /q %folder%
