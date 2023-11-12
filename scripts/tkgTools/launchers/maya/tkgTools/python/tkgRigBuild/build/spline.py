@@ -7,8 +7,10 @@ import tkgRigBuild.libs.attribute as tkgAttr
 import tkgRigBuild.build.chain as tkgChain
 import tkgRigBuild.libs.control.ctrl as tkgCtrl
 import tkgRigBuild.libs.transform as tkgXform
-reload(tkgXform)
+reload(tkgAttr)
 reload(tkgChain)
+reload(tkgCtrl)
+reload(tkgXform)
 
 class Spline:
     def __init__(self,

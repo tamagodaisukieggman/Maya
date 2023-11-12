@@ -96,6 +96,7 @@ class Ik:
             self.pv_guide = False
         elif self.solver == 'ikSplineSolver':
             self.s_name = 'spline'
+            self.pv_guide = False
         elif self.solver == 'ikSpringSolver':
             self.s_name = 'spring'
         else:
