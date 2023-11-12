@@ -16,6 +16,7 @@ reload(tkgIk)
 class IkChain(tkgModule.RigModule, tkgIk.Ik):
     """
     # -*- coding: utf-8 -*-
+    # solvers = ['ikRPsolver', 'ikSCsolver', 'ikSplineSolver', 'ikSpringSolver']
     import maya.cmds as cmds
     from imp import reload
 
