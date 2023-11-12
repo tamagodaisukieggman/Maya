@@ -21,10 +21,7 @@ md %BACKUPDIR%
 for /f %%a in ('forfiles /S /M *.* /D +0 /C "cmd /c echo @path"') do (
   set "SRC=%%~a"
   set "modified=!SRC:%CURRENTDIR%=%BACKUPDIR%\!"
-  echo !SRC!
-  echo !modified!
-  pause
-
+  echo !SRC! !modified! コピー！
   echo F | xcopy !SRC! !modified! /D /S /R /Y /I /K /E
 )
 
@@ -49,8 +46,6 @@ if %errorlevel%==0 (
 ) else (
     echo 圧縮中にエラーが発生しました。
 )
-
-pause
 
 ::元のフォルダの削除
 ::rd /s /q %folder%
