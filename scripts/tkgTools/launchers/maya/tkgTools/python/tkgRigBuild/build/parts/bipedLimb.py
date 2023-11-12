@@ -52,39 +52,57 @@ class BipedLimb(tkgModule.RigModule, tkgIk.Ik, tkgFk.Fk):
                  model_path=None,
                  guide_path=None):
         """
-        import maya.cmds as cmds
-        from imp import reload
-        import tkgRigBuild.build.buildPart as tkgPart
-        reload(tkgPart)
+# -*- coding: utf-8 -*-
+import maya.cmds as cmds
+from imp import reload
 
-        mp = "C:/Users/kesun/Documents/maya/scripts/tkgTools/tkgRig/data/projects/wizard2/data/p2/p2_sotai01.ma"
-        gp = "C:/Users/kesun/Documents/maya/scripts/tkgTools/tkgRig/scripts/build/types/biped/wizard2_base_00_000/000_data/chr0006_proxy_joints.ma"
+import tkgRigBuild.build.parts.bipedLimb as tkgBipedLimb
+import tkgRigBuild.post.finalize as tkgFinalize
+reload(tkgBipedLimb)
+reload(tkgFinalize)
 
-        tkgPart.build_module(module_type="root",
-                        side="Cn",
-                    model_path=mp,
-                    guide_path=gp,
-                    root_shape="cube",
-                    global_shape="cube")
+import traceback
 
-        cmds.viewFit("perspShape", fitFactor=1, all=True, animate=True)
+sel = cmds.ls(os=True, dag=True)
+try:
+    tkgBipedLimb.BipedLimb(
+                 side=None,
+                 part=None,
+                 guide_list=sel,
+                 fk_ctrl_axis='x',
+                 fk_ctrl_edge_axis='-x',
+                 ctrl_scale=1,
+                 ctrl_color=[0.364, 0.322, 0.555],
+                 edge_axis=None,
+                 create_ik=True,
+                 create_fk=True,
+                 stretchy=True,
+                 stretchy_axis='scaleX',
+                 soft_ik=None,
+                 twisty=True,
+                 twisty_axis='x',
+                 bendy=True,
+                 bendy_mid_ctrl_axis='x',
+                 bendy_tan_ctrl_axis='y',
+                 bendy_scale_axis='scaleY',
+                 segments=4,
+                 sticky=None,
+                 solver=None,
+                 pv_guide='auto',
+                 offset_pv=0,
+                 slide_pv=None,
+                 gimbal=True,
+                 offset=True,
+                 pad='auto',
+                 fk_shape='cube',
+                 gimbal_shape='circle',
+                 offset_shape='square',
+                 model_path=None,
+                 guide_path=None)
+except:
+    print(traceback.format_exc())
 
-
-        tkgPart.build_module(module_type="hip", side="Cn", part="hip",
-                    guide_list=["proxy_Hip"], offset_hip=-0.5)
-
-        tkgPart.build_module(module_type="chest", side="Cn", part="chest",
-                    guide_list=["proxy_Spine3"])
-
-        for s in ['Lf', 'Rt']:
-            if s == 'Lf':
-                fs = '_L'
-            else:
-                fs = '_R'
-
-            arm = tkgPart.build_module(module_type="bipedLimb",
-                                      side=s, part="arm",
-                    guide_list=["proxy_Arm" + fs, "proxy_Elbow" + fs, "proxy_Wrist" + fs])
+tkgFinalize.add_color_attributes()
 
         """
         super(BipedLimb, self).__init__(side=side, part=part,
