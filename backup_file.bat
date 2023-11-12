@@ -22,12 +22,14 @@ md %BACKUPDIR%
 
 ::このバッチファイルのディレクトリ階層から更新日(/D)が今日のファイルを順次コピーする
 ::echo F |は確認を自動的にファイル(F)で処理するために付ける
-for /R %%a in (*) do (
+for /r %%a in ('forfiles /P %CURRENTDIR% /S /M *.* /D +0 /C "cmd /c echo @path"') do (
   set "MODITIME=%%~ta"
   set "SRC=%%~a"
 
   IF "!MODITIME!" GTR "%CURRENTTIME%" (
     set "modified=!SRC:%CURRENTDIR%=%BACKUPDIR%\!"
+    echo 対象ファイル !SRC!
+    echo コピー先のパス !modified!
     echo F | xcopy !SRC! !modified! /D /S /R /Y /I /K /E
   ) ELSE (
     rem
