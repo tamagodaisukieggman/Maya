@@ -5,12 +5,14 @@ import maya.cmds as cmds
 
 import tkgRigBuild.build.rigModule as tkgModule
 import tkgRigBuild.libs.attribute as tkgAttr
+import tkgRigBuild.libs.common as tkgCommon
 import tkgRigBuild.build.chain as tkgChain
 import tkgRigBuild.build.ik as tkgIk
 reload(tkgModule)
 reload(tkgAttr)
 reload(tkgChain)
 reload(tkgIk)
+reload(tkgCommon)
 
 
 class IkChain(tkgModule.RigModule, tkgIk.Ik):
@@ -72,7 +74,7 @@ class IkChain(tkgModule.RigModule, tkgIk.Ik):
                  twisty=None,
                  twisty_axis='x',
                  bendy=None,
-                 bendy_axis='scaleX',
+                 bendy_axis='scaleY',
                  segments=None,
                  model_path=None,
                  guide_path=None):
@@ -165,6 +167,33 @@ class IkChain(tkgModule.RigModule, tkgIk.Ik):
         self.build_ikh(scale_attr=self.global_scale)
         if self.solver in ['ikSplineSolver']:
             cmds.parent(self.ik_spline_crv, self.module_grp)
+            ik_spline_joints = tkgCommon.duplicate_spl_joints(joints=self.guide_list,
+                                           prefix='ik_spline_',
+                                           suffix=None,
+                                           replace=None)
+
+            ik_spline_mid_joints = tkgCommon.duplicate_spl_joints(joints=self.guide_list[:-1:],
+                                           prefix='ik_spline_mid_',
+                                           suffix=None,
+                                           replace=None)
+
+            for isj, ismj in zip(ik_spline_joints, ik_spline_mid_joints):
+                pos1 = cmds.xform(isj, q=True, t=True, ws=True)
+                pos2 = cmds.xform(ismj, q=True, t=True, ws=True)
+                mid_point = tkgCommon.get_mid_point(pos1, pos2, percentage=0.5)
+                cmds.xform(ismj, t=mid_point, ws=True, a=True)
+
+            [ik_spline_joints.append(j) for j in ik_spline_mid_joints]
+
+            crv_sc = cmds.skinCluster(ik_spline_joints,
+                                       self.ik_spline_crv,
+                                       mi=4,
+                                       sm=0,
+                                       sw=0.5,
+                                       n='{}_skinCluster'.format(self.ik_spline_crv))[0]
+            crv_bind=cmds.listConnections('{}.bindPose'.format(crv_sc),c=0,d=1,p=0)
+            if crv_bind:cmds.delete(crv_bind)
+
         cmds.parent(self.ikh, self.ik_joints[0], self.module_grp)
         if self.soft_ik:
             cmds.parent(self.soft_ik_loc, self.module_grp)

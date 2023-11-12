@@ -132,11 +132,13 @@ class Chain:
                     self.constraints.append(pac)
                 elif orient_constraint and point_constraint:
                     orc = cmds.orientConstraint(src, jnt, mo=True)[0]
+                    cmds.setAttr(orc+'.interpType', 2)
                     poc = cmds.pointConstraint(src, jnt, mo=True)[0]
                     self.constraints.append(orc)
                     self.constraints.append(poc)
                 elif orient_constraint:
                     orc = cmds.orientConstraint(src, jnt, mo=True)[0]
+                    cmds.setAttr(orc+'.interpType', 2)
                     self.constraints.append(orc)
                 elif point_constraint:
                     poc = cmds.pointConstraint(src, jnt, mo=True)[0]
@@ -306,7 +308,7 @@ class Chain:
             t_val += ti
 
     def bend_chain(self, bone, ctrl_scale, spans=16, mirror=False,
-                   global_scale=None, mid_ctrl_axis='x', tan_ctrl_axis='x', scale_axis='scaleX'):
+                   global_scale=None, mid_ctrl_axis='x', tan_ctrl_axis='x', scale_axis='scaleY'):
         if mirror:
             mirror = -1
         else:
@@ -366,7 +368,7 @@ class Chain:
 
             # aim at the next joint
             cmds.setAttr(jnt + '.rotateOrder', 1)
-            cmds.aimConstraint(next_jnt, jnt, aimVector=(0, 1 * mirror, 0),
+            aim = cmds.aimConstraint(next_jnt, jnt, aimVector=(0, 1 * mirror, 0),
                                upVector=(0, 0, 1), worldUpType='none', skip='y')
             loc_list.append(loc)
 

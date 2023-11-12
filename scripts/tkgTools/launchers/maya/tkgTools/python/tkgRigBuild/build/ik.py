@@ -190,7 +190,7 @@ class Ik:
             settings['curve'] = self.ik_spline_crv
             settings['freezeJoints'] = True
             settings['createCurve'] = False
-            settings['scv'] = True
+            settings['snapHandleFlagToggle'] = True
 
         self.ikh = cmds.ikHandle(**settings)[0]
 
