@@ -19,7 +19,7 @@ draw_util.write_curve(control=None, name=None, force=None)
 draw_util.create_curve(name="cool_name", shape="nurbsCircle3", axis="z", scale=5)
 '''
 
-SHAPE_DIR = os.path.dirname(os.path.realpath(__file__)) + "\shapes"
+SHAPE_DIR = os.path.dirname(os.path.realpath(__file__)) + "/shapes"
 
 class Draw(object):
     def __init__(self, curve=None):
