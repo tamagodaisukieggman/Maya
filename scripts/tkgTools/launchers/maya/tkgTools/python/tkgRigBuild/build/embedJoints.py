@@ -344,7 +344,7 @@ left_arm_pos_locs, left_arm_rot_locs = create_pos_rot_locs(left_arms)
 left_leg_pos_locs, left_leg_rot_locs = create_pos_rot_locs(left_legs)
 
 cmds.parent('left_hand_POS_LOC_GRP', 'left_arm_POS_LOC')
-cmds.parent('left_knee_POS_LOC_GRP', 'left_thigh_POS_LOC')
+# cmds.parent('left_knee_POS_LOC_GRP', 'left_thigh_POS_LOC')
 cmds.parent('left_ankle_POS_LOC_GRP', 'left_thigh_POS_LOC')
 cmds.parent('left_ball_POS_LOC_GRP', 'left_thigh_POS_LOC')
 
