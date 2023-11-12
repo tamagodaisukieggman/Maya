@@ -5,6 +5,12 @@ setlocal EnableExtensions EnableDelayedExpansion
 :: カレントディレクトリを取得
 set CURRENTDIR=%~dp0
 
+:: 末尾のバックスラッシュを削除
+set BACKCURRENTDIR=%CURRENTDIR:~0,-1%
+
+:: 上の階層のディレクトリパスを取得
+for %%i in (%BACKCURRENTDIR%) do set PARENTCURRENTDIR=%%~dpi
+
 ::今日の日付を変数にする
 for /F "usebackq tokens=1,2 delims==" %%i in (`wmic os get LocalDateTime /VALUE 2^>NUL`) do if '.%%i.'=='.LocalDateTime.' set ldt=%%j
 set yyyy=%ldt:~0,4%
@@ -17,7 +23,7 @@ echo 今の時間と日付 %date% %time%
 set /P CURRENTTIME="日付と時間を指定(例:2023/11/12 18:29):"
 
 ::バックアップするフォルダの作成
-set BACKUPDIR=%CURRENTDIR%backups\%yyyy%-%mm%-%dd%-%tttt%
+set BACKUPDIR=%PARENTCURRENTDIR%backups\%yyyy%-%mm%-%dd%-%tttt%
 md %BACKUPDIR%
 
 ::このバッチファイルのディレクトリ階層から更新日(/D)が今日のファイルを順次コピーする
