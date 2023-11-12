@@ -8,8 +8,9 @@ cd "$currentDir"
 
 # Extract the Maya version from the script's filename
 filename=$(basename "$0")
+noExtFile="${filename%.*}"
 replacement="maya"
-MAYA_VER=${filename#$replacement}
+MAYA_VER=${noExtFile/$replacement/}
 
 echo "Maya Version: $MAYA_VER"
 
