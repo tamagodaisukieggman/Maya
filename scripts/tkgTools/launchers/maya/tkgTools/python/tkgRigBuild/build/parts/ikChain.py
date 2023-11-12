@@ -19,46 +19,46 @@ reload(tkgFk)
 
 class IkChain(tkgModule.RigModule, tkgIk.Ik):
     """
-    # -*- coding: utf-8 -*-
-    # solvers = ['ikRPsolver', 'ikSCsolver', 'ikSplineSolver', 'ikSpringSolver']
-    import maya.cmds as cmds
-    from imp import reload
+# -*- coding: utf-8 -*-
+# solvers = ['ikRPsolver', 'ikSCsolver', 'ikSplineSolver', 'ikSpringSolver']
+import maya.cmds as cmds
+from imp import reload
 
-    import tkgRigBuild.build.parts.ikChain as tkgIkChain
-    import tkgRigBuild.post.finalize as tkgFinalize
-    reload(tkgIkChain)
-    reload(tkgFinalize)
+import tkgRigBuild.build.parts.ikChain as tkgIkChain
+import tkgRigBuild.post.finalize as tkgFinalize
+reload(tkgIkChain)
+reload(tkgFinalize)
 
-    import traceback
+import traceback
 
-    sel = cmds.ls(os=True) # select 3 joints(start, middle, end)
-    try:
-        tkgIkChain.IkChain(
-                        side='A',
-                         part=None,
-                         guide_list=sel,
-                         ctrl_scale=3,
-                         ctrl_color=[0.8, 0.5, 0.2],
-                         sticky=None,
-                         solver=None,
-                         pv_guide='auto',
-                         offset_pv=0,
-                         slide_pv=None,
-                         stretchy=True,
-                         stretchy_axis='scaleX',
-                         soft_ik=True,
-                         twisty=True,
-                         twisty_axis='x',
-                         bendy=True,
-                         bendy_axis='scaleX',
-                         segments=None,
-                         model_path=None,
-                         guide_path=None)
-    except:
-        print(traceback.format_exc())
+sel = cmds.ls(os=True, dag=True) # select 3 joints(start, middle, end)
 
-    # tkgFinalize.add_color_attributes()
-    """
+try:
+    tkgIkChain.IkChain(
+                    side='A',
+                     part=None,
+                     guide_list=sel,
+                     ctrl_scale=3,
+                     ctrl_color=[0.8, 0.5, 0.2],
+                     sticky=None,
+                     solver='ikSplineSolver',
+                     pv_guide='auto',
+                     offset_pv=0,
+                     slide_pv=None,
+                     stretchy=True,
+                     stretchy_axis='scaleX',
+                     soft_ik=False,
+                     twisty=True,
+                     twisty_axis='x',
+                     bendy=True,
+                     segments=1,
+                     model_path=None,
+                     guide_path=None)
+except:
+    print(traceback.format_exc())
+
+# tkgFinalize.add_color_attributes()
+"""
     def __init__(self,
                  side=None,
                  part=None,
