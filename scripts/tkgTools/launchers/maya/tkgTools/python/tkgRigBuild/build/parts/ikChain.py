@@ -8,11 +8,13 @@ import tkgRigBuild.libs.attribute as tkgAttr
 import tkgRigBuild.libs.common as tkgCommon
 import tkgRigBuild.build.chain as tkgChain
 import tkgRigBuild.build.ik as tkgIk
+import tkgRigBuild.build.fk as tkgFk
 reload(tkgModule)
 reload(tkgAttr)
 reload(tkgChain)
 reload(tkgIk)
 reload(tkgCommon)
+reload(tkgFk)
 
 
 class IkChain(tkgModule.RigModule, tkgIk.Ik):
@@ -76,6 +78,8 @@ class IkChain(tkgModule.RigModule, tkgIk.Ik):
                  bendy=None,
                  bendy_axis='scaleY',
                  segments=None,
+                 dForwardAxis='x',
+                 dWorldUpAxis='z',
                  model_path=None,
                  guide_path=None):
         super(IkChain, self).__init__(side=side, part=part,
@@ -97,6 +101,9 @@ class IkChain(tkgModule.RigModule, tkgIk.Ik):
         self.bendy = bendy
         self.bendy_axis = bendy_axis
         self.segments = segments
+
+        self.dForwardAxis = dForwardAxis
+        self.dWorldUpAxis = dWorldUpAxis
 
         self.soft_ik = soft_ik
 
@@ -167,25 +174,99 @@ class IkChain(tkgModule.RigModule, tkgIk.Ik):
         self.build_ikh(scale_attr=self.global_scale)
         if self.solver in ['ikSplineSolver']:
             cmds.parent(self.ik_spline_crv, self.module_grp)
-            ik_spline_joints = tkgCommon.duplicate_spl_joints(joints=self.guide_list,
+            self.ik_spline_joints = tkgCommon.duplicate_spl_joints(joints=self.guide_list,
                                            prefix='ik_spline_',
                                            suffix=None,
                                            replace=None)
 
-            ik_spline_mid_joints = tkgCommon.duplicate_spl_joints(joints=self.guide_list[:-1:],
-                                           prefix='ik_spline_mid_',
-                                           suffix=None,
-                                           replace=None)
+            dTwist_up_axis = {
+                'x':[200000,0,0],
+                'y':[0,200000,0],
+                'z':[0,0,200000],
+                '-x':[-200000,0,0],
+                '-y':[0,-200000,0],
+                '-z':[0,0,-200000],
+                '-x-':[200000,0,0],
+                '-y-':[0,200000,0],
+                '-z-':[0,0,200000],
+            }
 
-            for isj, ismj in zip(ik_spline_joints, ik_spline_mid_joints):
-                pos1 = cmds.xform(isj, q=True, t=True, ws=True)
-                pos2 = cmds.xform(ismj, q=True, t=True, ws=True)
-                mid_point = tkgCommon.get_mid_point(pos1, pos2, percentage=0.5)
-                cmds.xform(ismj, t=mid_point, ws=True, a=True)
+            dForward_axis = {
+                'x':0,
+                'y':2,
+                'z':4,
+                '-x':1,
+                '-y':3,
+                '-z':5,
+            }
 
-            [ik_spline_joints.append(j) for j in ik_spline_mid_joints]
+            dWorldUp_axis = {
+                'x':6,
+                'y':0,
+                'z':3,
+                '-x':7,
+                '-y':1,
+                '-z':4,
+                '-x-':8,
+                '-y-':2,
+                '-z-':5
+            }
 
-            crv_sc = cmds.skinCluster(ik_spline_joints,
+            # For Base IK UP Joint
+            self.ik_spline_base_up_joint = cmds.duplicate(self.ik_spline_joints[0],
+                                                          n='up_'+self.ik_spline_joints[0])[0]
+            cmds.move(*dTwist_up_axis[self.dWorldUpAxis], self.ik_spline_base_up_joint, r=True, os=True, wd=True)
+            pa = cmds.listRelatives(self.ik_spline_base_up_joint, p=True) or None
+            if pa: cmds.parent(self.ik_spline_base_up_joint, w=True)
+
+            # For Main IK UP Joint
+            self.ik_spline_tip_up_joint = cmds.duplicate(self.ik_spline_joints[-1],
+                                                          n='up_'+self.ik_spline_joints[0])[0]
+            cmds.move(*dTwist_up_axis[self.dWorldUpAxis], self.ik_spline_tip_up_joint, r=True, os=True, wd=True)
+            pa = cmds.listRelatives(self.ik_spline_tip_up_joint, p=True) or None
+            if pa: cmds.parent(self.ik_spline_tip_up_joint, w=True)
+
+            # Get Loft
+            loft_axis = tkgCommon.get_loft_axis(start=self.ik_spline_joints[0],
+                                                end=self.ik_spline_joints[-1])
+
+            self.ik_lofted, self.ik_curve = tkgCommon.create_loft(nodes=self.ik_spline_joints,
+                                                                  name=self.ik_spline_joints[0]+'_loft_suf',
+                                                                  axis=loft_axis)
+
+            # ik_spline_mid_joints = tkgCommon.duplicate_spl_joints(joints=self.guide_list[:-1:],
+            #                                prefix='ik_spline_mid_',
+            #                                suffix=None,
+            #                                replace=None)
+            #
+            # for isj, ismj in zip(ik_spline_joints[1::], ik_spline_mid_joints):
+            #     pos1 = cmds.xform(isj, q=True, t=True, ws=True)
+            #     pos2 = cmds.xform(ismj, q=True, t=True, ws=True)
+            #     mid_point = tkgCommon.get_mid_point(pos1, pos2, percentage=0.5)
+            #     cmds.xform(ismj, t=mid_point, ws=True, a=True)
+            #
+            # [ik_spline_joints.append(j) for j in ik_spline_mid_joints]
+
+            cmds.setAttr('{0}.dTwistControlEnable'.format(self.ikh), 1)
+            cmds.setAttr('{0}.dWorldUpType'.format(self.ikh), 2)
+            cmds.setAttr('{0}.dForwardAxis'.format(self.ikh), dForward_axis[self.dForwardAxis])
+            cmds.setAttr('{0}.dWorldUpAxis'.format(self.ikh), dWorldUp_axis[self.dWorldUpAxis])
+            cmds.connectAttr('{0}.worldMatrix[0]'.format(self.ik_spline_base_up_joint), '{0}.dWorldUpMatrix'.format(self.ikh))
+            cmds.connectAttr('{0}.worldMatrix[0]'.format(self.ik_spline_tip_up_joint), '{0}.dWorldUpMatrixEnd'.format(self.ikh))
+
+            cmds.setAttr('{0}.ikFkManipulation'.format(self.ikh), 1)
+            # cmds.setAttr('{0}.dTwistValueType'.format(self.ikh), 1)
+
+            ik_spl_pma = cmds.createNode('plusMinusAverage', ss=True)
+            ik_spl_pb = cmds.createNode('pairBlend', ss=True)
+            cmds.setAttr(ik_spl_pma+'.operation', 2)
+            cmds.setAttr(ik_spl_pb+'.weight', 0.5)
+            cmds.connectAttr(self.base_ctrl.ctrl+'.r'+self.dForwardAxis.replace('-', ''), ik_spl_pma+'.input1D[0]', f=True)
+            cmds.connectAttr(self.main_ctrl.ctrl+'.r'+self.dForwardAxis.replace('-', ''), ik_spl_pma+'.input1D[1]', f=True)
+            cmds.connectAttr(ik_spl_pma+'.output1D', ik_spl_pb+'.inRotate'+self.dForwardAxis.replace('-', '').upper()+'2', f=True)
+            cmds.connectAttr(ik_spl_pb+'.outRotate'+self.dForwardAxis.replace('-', '').upper(), self.ikh+'.twist', f=True)
+
+            crv_sc = cmds.skinCluster(self.ik_spline_joints,
                                        self.ik_spline_crv,
                                        mi=4,
                                        sm=0,
@@ -193,6 +274,31 @@ class IkChain(tkgModule.RigModule, tkgIk.Ik):
                                        n='{}_skinCluster'.format(self.ik_spline_crv))[0]
             crv_bind=cmds.listConnections('{}.bindPose'.format(crv_sc),c=0,d=1,p=0)
             if crv_bind:cmds.delete(crv_bind)
+
+            cmds.parent(self.ik_spline_joints[0], self.base_ctrl.ctrl)
+            cmds.parent(self.ik_spline_joints[-1], self.main_ctrl.ctrl)
+
+            # Create FK For IK Spline
+            self.ik_spline_fk = tkgFk.Fk(side=self.side,
+                                            part=self.part,
+                                            guide_list=self.guide_list,
+                                            gimbal=None,
+                                            offset=None,
+                                            pad="auto",
+                                            fk_ctrl_axis='x',
+                                            fk_ctrl_edge_axis='-x',
+                                            ctrl_scale=1,
+                                            ctrl_color=[0.1, 0.4, 0.8],
+                                            remove_last=False,
+                                            add_joints=True,
+                                            fk_shape="cube",
+                                            gimbal_shape="circle",
+                                            offset_shape="square")
+            self.ik_spline_fk.build_fk()
+
+            for ik_spl, fk in zip(self.ik_chain.joints, self.ik_spline_fk.fk_ctrls):
+                orc = cmds.orientConstraint(ik_spl, fk.ctrl, w=True, mo=True)[0]
+                cmds.setAttr(orc+'.interpType', 2)
 
         cmds.parent(self.ikh, self.ik_joints[0], self.module_grp)
         if self.soft_ik:
