@@ -371,8 +371,9 @@ except:
                 cmds.parent(ik_mid_ctrls[bsp].top, self.ik_spline_main_up_joint_ctrl.ctrl)
 
             if mid_spl:
-                cmds.pointConstraint(self.base_ctrl.ctrl, ik_mid_ctrls[mid_spl].top, w=True, mo=True)
-                cmds.pointConstraint(self.main_ctrl.ctrl, ik_mid_ctrls[mid_spl].top, w=True, mo=True)
+                pac_mid_spl = cmds.parentConstraint(self.base_ctrl.ctrl, ik_mid_ctrls[mid_spl].top, w=True, mo=True)[0]
+                pac_mid_spl = cmds.parentConstraint(self.main_ctrl.ctrl, ik_mid_ctrls[mid_spl].top, w=True, mo=True)[0]
+                cmds.setAttr(pac_mid_spl+'.interpType', 2)
 
             # Create FK For IK Spline
             self.ik_spline_fk = tkgFk.Fk(side=self.side,
@@ -392,11 +393,12 @@ except:
                                             offset_shape="square")
             self.ik_spline_fk.build_fk()
 
-            for ik_spl, fk in zip(self.ik_chain.joints, self.ik_spline_fk.fk_ctrls):
-                cmds.connectAttr(ik_spl+'.r', fk.ctrl+'_SDK_GRP.r', f=True)
-                # cmds.connectAttr(ik_spl+'.' + self.stretchy_axis, fk.ctrl+'_SDK_GRP.' + self.stretchy_axis, f=True)
-
-            poc_ik_fk = cmds.pointConstraint(self.base_ctrl.ctrl, self.ik_spline_fk.fk_top, w=True, mo=True)[0]
+            # FKをメインにしたほうがいいかも
+            # for ik_spl, fk in zip(self.ik_chain.joints, self.ik_spline_fk.fk_ctrls):
+            #     cmds.connectAttr(ik_spl+'.r', fk.ctrl+'_SDK_GRP.r', f=True)
+            #     # cmds.connectAttr(ik_spl+'.' + self.stretchy_axis, fk.ctrl+'_SDK_GRP.' + self.stretchy_axis, f=True)
+            #
+            # poc_ik_fk = cmds.pointConstraint(self.base_ctrl.ctrl, self.ik_spline_fk.fk_top, w=True, mo=True)[0]
 
         cmds.parent(self.ikh, self.ik_joints[0], self.module_grp)
         if self.soft_ik:
