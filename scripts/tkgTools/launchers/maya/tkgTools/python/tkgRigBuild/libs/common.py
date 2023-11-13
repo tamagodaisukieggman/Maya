@@ -203,3 +203,20 @@ def get_mid_point(pos1, pos2, percentage=0.5):
                  pos1[1] + (pos2[1] - pos1[1]) * percentage,
                  pos1[2] + (pos2[2] - pos1[2]) * percentage]
     return mid_point
+
+def split_list(lst):
+    # リストの長さを取得
+    length = len(lst)
+
+    # リストの長さが偶数の場合
+    if length % 2 == 0:
+        # 中間のインデックスを見つける
+        middle_index = length // 2
+        # リストを中間で分割する
+        return lst[:middle_index], lst[middle_index:]
+    # リストの長さが奇数の場合
+    else:
+        # 中間のインデックスを見つける
+        middle_index = length // 2
+        # 中間の値を含む分割されたリストを返す
+        return lst[middle_index], lst[:middle_index], lst[middle_index+1:]

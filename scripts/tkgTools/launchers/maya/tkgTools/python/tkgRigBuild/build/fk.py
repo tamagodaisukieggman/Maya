@@ -43,6 +43,8 @@ class Fk:
         self.gimbal_shape = gimbal_shape
         self.offset_shape = offset_shape
 
+        self.fk_top = None
+
         self.part_fk_main_ctrls = []
         self.part_fk_gimbal_ctrls = []
         self.part_fk_offset_ctrls = []
@@ -85,6 +87,10 @@ class Fk:
                                 ctrl_scale=self.ctrl_scale,
                                 ctrl_color=self.ctrl_color,
                                 edge_axis=self.fk_ctrl_edge_axis)
+
+            if not self.fk_top:
+                self.fk_top = fk.top
+
             self.part_fk_main_ctrls.append(fk.ctrl)
             par = fk.ctrl
             self.fk_ctrls.append(fk)

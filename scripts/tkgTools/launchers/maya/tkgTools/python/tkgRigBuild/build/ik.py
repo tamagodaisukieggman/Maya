@@ -5,12 +5,14 @@ import maya.cmds as cmds
 
 import tkgRigBuild.libs.attribute as tkgAttr
 import tkgRigBuild.libs.control.ctrl as tkgCtrl
+import tkgRigBuild.libs.common as tkgCommon
 import tkgRigBuild.libs.transform as tkgXform
 import tkgRigBuild.build.chain as tkgChain
 import tkgRigBuild.build.guide as tkgGuide
 import tkgRigBuild.build.spline as tkgSpline
 reload(tkgAttr)
 reload(tkgChain)
+reload(tkgCommon)
 reload(tkgCtrl)
 reload(tkgGuide)
 reload(tkgXform)
@@ -182,16 +184,29 @@ class Ik:
         }
 
         if self.solver in ['ikSplineSolver']:
-            spline = tkgSpline.Spline(guide_list=self.guide_list,
+            # print('tkgXform.get_distance', tkgXform.get_distance(self.ik_joints[-1], self.ik_joints[-2]))
+            pos1 = cmds.xform(self.ik_joints[-1], q=True, t=True, ws=True)
+            pos2 = cmds.xform(self.ik_joints[-2], q=True, t=True, ws=True)
+            mid_point = tkgCommon.get_mid_point(pos1, pos2, percentage=-0.1)
+
+            ik_end_jnt = self.ik_joints[-1]+'_END'
+            cmds.createNode('joint', n=ik_end_jnt, ss=True)
+            cmds.xform(ik_end_jnt, t=mid_point, ws=True, a=True)
+            cmds.parent(ik_end_jnt, self.ik_joints[-1])
+            guide_ik_joints = [j for j in self.ik_joints]
+            guide_ik_joints.append(ik_end_jnt)
+            spline = tkgSpline.Spline(guide_list=guide_ik_joints,
                                       side=self.side,
                                       part=self.part)
             spline.build_spline_curve()
             self.ik_spline_crv = spline.crv
+            settings['endEffector'] = ik_end_jnt
             settings['curve'] = self.ik_spline_crv
-            # settings['freezeJoints'] = True
+            settings['freezeJoints'] = True
             settings['createCurve'] = False
             # settings['snapHandleFlagToggle'] = True
             settings['scv'] = False
+            settings['rtm'] = True
 
         self.ikh = cmds.ikHandle(**settings)[0]
 
