@@ -23,6 +23,7 @@ reload(tkgFk)
 class IkChain(tkgModule.RigModule, tkgIk.Ik):
     """
 # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # solvers = ['ikRPsolver', 'ikSCsolver', 'ikSplineSolver', 'ikSpringSolver']
 import maya.cmds as cmds
 from imp import reload
@@ -35,28 +36,65 @@ reload(tkgFinalize)
 import traceback
 
 sel = cmds.ls(os=True, dag=True) # select 3 joints(start, middle, end)
-
+# z-aim, x-up
 try:
     tkgIkChain.IkChain(
-                    side='A',
-                     part=None,
-                     guide_list=sel,
-                     ctrl_scale=3,
-                     ctrl_color=[0.8, 0.5, 0.2],
-                     sticky=None,
-                     solver='ikSplineSolver',
-                     pv_guide='auto',
-                     offset_pv=0,
-                     slide_pv=None,
-                     stretchy=True,
-                     stretchy_axis='scaleX',
-                     soft_ik=False,
-                     twisty=True,
-                     twisty_axis='x',
-                     bendy=True,
-                     segments=1,
-                     model_path=None,
-                     guide_path=None)
+                 side=sel[0],
+                 part=None,
+                 guide_list=sel,
+                 ctrl_scale=3,
+                 ctrl_color=[0.8, 0.5, 0.2],
+                 sticky=None,
+                 solver='ikSplineSolver',
+                 pv_guide='auto',
+                 offset_pv=0,
+                 slide_pv=None,
+                 stretchy=True,
+                 stretchy_axis='scaleZ',
+                 soft_ik=None,
+                 twisty=None,
+                 twisty_axis='x',
+                 bendy=True,
+                 bendy_axis='scaleY',
+                 mid_ctrl_axis='z',
+                 tan_ctrl_axis='z',
+                 segments=None,
+                 dForwardAxis='z',
+                 dWorldUpAxis='x',
+                 model_path=None,
+                 guide_path=None)
+
+except:
+    print(traceback.format_exc())
+
+# x-aim, y-up
+try:
+    tkgIkChain.IkChain(
+                 side=sel[0],
+                 part=None,
+                 guide_list=sel,
+                 ctrl_scale=3,
+                 ctrl_color=[0.8, 0.5, 0.2],
+                 sticky=None,
+                 solver='ikSplineSolver',
+                 pv_guide='auto',
+                 offset_pv=0,
+                 slide_pv=None,
+                 stretchy=True,
+                 stretchy_axis='scaleX',
+                 soft_ik=None,
+                 twisty=None,
+                 twisty_axis='x',
+                 bendy=True,
+                 bendy_axis='scaleY',
+                 mid_ctrl_axis='x',
+                 tan_ctrl_axis='x',
+                 segments=None,
+                 dForwardAxis='x',
+                 dWorldUpAxis='y',
+                 model_path=None,
+                 guide_path=None)
+
 except:
     print(traceback.format_exc())
 
@@ -80,6 +118,8 @@ except:
                  twisty_axis='x',
                  bendy=None,
                  bendy_axis='scaleY',
+                 mid_ctrl_axis='x',
+                 tan_ctrl_axis='x',
                  segments=None,
                  dForwardAxis='x',
                  dWorldUpAxis='z',
@@ -103,6 +143,8 @@ except:
         self.twisty_axis = twisty_axis
         self.bendy = bendy
         self.bendy_axis = bendy_axis
+        self.mid_ctrl_axis = mid_ctrl_axis
+        self.tan_ctrl_axis = tan_ctrl_axis
         self.segments = segments
 
         self.dForwardAxis = dForwardAxis
@@ -170,7 +212,9 @@ except:
                 bend = self.ik_chain.bend_chain(bone=ikj,
                                                ctrl_scale=self.ctrl_scale,
                                                global_scale=self.global_scale.attr,
-                                               scale_axis=self.bendy_axis)
+                                               scale_axis=self.bendy_axis,
+                                               mid_ctrl_axis=self.mid_ctrl_axis,
+                                               tan_ctrl_axis=self.tan_ctrl_axis)
                 cmds.parent(bend['control'], self.control_grp)
                 cmds.parent(bend['module'], self.module_grp)
 
@@ -287,7 +331,7 @@ except:
             cmds.connectAttr(ik_spl_pma+'.output1D', ik_spl_pb+'.inRotate'+self.dForwardAxis.replace('-', '').upper()+'2', f=True)
             cmds.connectAttr(ik_spl_pb+'.outRotate'+self.dForwardAxis.replace('-', '').upper(), self.ikh+'.twist', f=True)
 
-            self.ik_spline_base_up_joint_ctrl = tkgCtrl.Control(shape="cylinder",
+            self.ik_spline_base_up_joint_ctrl = tkgCtrl.Control(shape="sphere",
                                             prefix=self.side,
                                             suffix="CTRL",
                                             name=self.part + '_IK_rot_base',
@@ -303,7 +347,7 @@ except:
             pac_ik_base_up = cmds.parentConstraint(self.ik_spline_base_up_joint_ctrl.ctrl, self.ik_spline_base_up_joint, w=True, mo=True)[0]
             cmds.setAttr(pac_ik_base_up+'.interpType', 2)
 
-            self.ik_spline_main_up_joint_ctrl = tkgCtrl.Control(shape="cylinder",
+            self.ik_spline_main_up_joint_ctrl = tkgCtrl.Control(shape="sphere",
                                             prefix=self.side,
                                             suffix="CTRL",
                                             name=self.part + '_IK_rot_main',
@@ -341,7 +385,7 @@ except:
             ik_mid_ctrls = OrderedDict()
             for i, iksj in enumerate(self.ik_spline_joints):
                 if i != 0 and i != len(self.ik_spline_joints)-1:
-                    self.ik_spline_mid_ctrl = tkgCtrl.Control(shape="handle_2d_4x",
+                    self.ik_spline_mid_ctrl = tkgCtrl.Control(shape="octahedron",
                                                     prefix=self.side,
                                                     suffix="CTRL",
                                                     name=self.part + '_IK_mid_'+str(i).zfill(2),
@@ -388,7 +432,7 @@ except:
                                             offset=None,
                                             pad="auto",
                                             fk_ctrl_axis='x',
-                                            fk_ctrl_edge_axis='-x',
+                                            fk_ctrl_edge_axis=None,
                                             ctrl_scale=2.4,
                                             ctrl_color=[0.1, 0.4, 0.8],
                                             remove_last=False,
