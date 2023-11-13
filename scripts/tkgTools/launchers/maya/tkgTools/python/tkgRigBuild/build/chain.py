@@ -349,6 +349,7 @@ class Chain:
                           degree=3)
 
         loc_list = []
+        up_obj_locs = []
         seg_inc = 1 / float(len(seg_jnt_list))
         for i, jnt in enumerate(seg_jnt_list):
             if jnt != seg_jnt_list[-1]:
@@ -367,9 +368,13 @@ class Chain:
             cmds.pointConstraint(loc, jnt)
 
             # aim at the next joint
+            up_obj_loc = cmds.spaceLocator(n=jnt+'_UP_LOC')[0]
+            up_obj_locs.append(up_obj_loc)
             cmds.setAttr(jnt + '.rotateOrder', 1)
+            cmds.matchTransform(up_obj_loc, jnt)
+            cmds.move(*[0, 0, 1000], up_obj_loc, wd=True, os=True, r=True)
             aim = cmds.aimConstraint(next_jnt, jnt, aimVector=(0, 1 * mirror, 0),
-                               upVector=(0, 0, 1), worldUpType='none', skip='y')
+                               upVector=(0, 0, 1), worldUpType='object', worldUpObject=up_obj_loc)
             loc_list.append(loc)
 
         # create the stretch per joint
@@ -432,6 +437,7 @@ class Chain:
                                   rotation=bone,
                                   ctrl_scale=ctrl_scale * 0.8)
         self.part_bend_ctrls.append(mid_ctrl.ctrl)
+        [cmds.parent(upl, mid_ctrl.ctrl) for upl in up_obj_locs]
         s_tan = tkgCtrl.Control(parent=ctrl_grp,
                                shape='square',
                                prefix=None,

@@ -182,6 +182,8 @@ except:
                                            suffix=None,
                                            replace=None)
 
+            [cmds.parent(n, self.module_grp) for n in self.ik_spline_joints]
+
             dTwist_up_axis = {
                 'x':[20,0,0],
                 'y':[0,20,0],
@@ -231,6 +233,7 @@ except:
             cmds.matchTransform(self.ik_spline_base_up_joint, self.ik_spline_joints[0])
             pa = cmds.listRelatives(self.ik_spline_base_up_joint, p=True) or None
             if pa: cmds.parent(self.ik_spline_base_up_joint, w=True)
+            cmds.parent(self.ik_spline_base_up_joint, self.module_grp)
 
             # For Main IK UP Joint
             self.ik_spline_main_up_joint = cmds.duplicate(self.ik_spline_joints[-1],
@@ -239,6 +242,7 @@ except:
             cmds.matchTransform(self.ik_spline_main_up_joint, self.ik_spline_joints[-1])
             pa = cmds.listRelatives(self.ik_spline_main_up_joint, p=True) or None
             if pa: cmds.parent(self.ik_spline_main_up_joint, w=True)
+            cmds.parent(self.ik_spline_main_up_joint, self.module_grp)
 
             # Get Loft
             # loft_axis = tkgCommon.get_loft_axis(start=self.ik_spline_joints[0],
@@ -365,15 +369,16 @@ except:
                 back_spl = splited[2]
 
             for fsp in front_spl:
-                cmds.parent(ik_mid_ctrls[fsp].top, self.ik_spline_base_up_joint_ctrl.ctrl)
+                cmds.parent(ik_mid_ctrls[fsp].top, self.base_ctrl.ctrl)
 
             for bsp in back_spl:
-                cmds.parent(ik_mid_ctrls[bsp].top, self.ik_spline_main_up_joint_ctrl.ctrl)
+                cmds.parent(ik_mid_ctrls[bsp].top, self.main_ctrl.ctrl)
 
             if mid_spl:
                 pac_mid_spl = cmds.parentConstraint(self.base_ctrl.ctrl, ik_mid_ctrls[mid_spl].top, w=True, mo=True)[0]
                 pac_mid_spl = cmds.parentConstraint(self.main_ctrl.ctrl, ik_mid_ctrls[mid_spl].top, w=True, mo=True)[0]
                 cmds.setAttr(pac_mid_spl+'.interpType', 2)
+                cmds.parent(ik_mid_ctrls[mid_spl].top, self.ik_ctrl_grp)
 
             # Create FK For IK Spline
             self.ik_spline_fk = tkgFk.Fk(side=self.side,
@@ -384,7 +389,7 @@ except:
                                             pad="auto",
                                             fk_ctrl_axis='x',
                                             fk_ctrl_edge_axis='-x',
-                                            ctrl_scale=1,
+                                            ctrl_scale=2.4,
                                             ctrl_color=[0.1, 0.4, 0.8],
                                             remove_last=False,
                                             add_joints=True,
@@ -400,7 +405,14 @@ except:
             #
             # poc_ik_fk = cmds.pointConstraint(self.base_ctrl.ctrl, self.ik_spline_fk.fk_top, w=True, mo=True)[0]
 
+            cmds.parent(self.ik_spline_fk.fk_joints[0], self.module_grp)
+
+            cmds.parent(self.ik_spline_fk.fk_top, self.ik_ctrl_grp)
+            cmds.parent(self.base_ctrl.top, self.ik_spline_fk.fk_ctrls[0].ctrl)
+            cmds.parent(self.main_ctrl.top, self.ik_spline_fk.fk_ctrls[-1].ctrl)
+
         cmds.parent(self.ikh, self.ik_joints[0], self.module_grp)
+
         if self.soft_ik:
             cmds.parent(self.soft_ik_loc, self.module_grp)
 
