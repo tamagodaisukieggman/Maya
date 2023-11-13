@@ -7,10 +7,12 @@ import tkgRigBuild.libs.attribute as tkgAttr
 import tkgRigBuild.build.chain as tkgChain
 import tkgRigBuild.libs.control.ctrl as tkgCtrl
 import tkgRigBuild.libs.transform as tkgXform
+import tkgRigBuild.libs.common as tkgCommon
 reload(tkgAttr)
 reload(tkgChain)
 reload(tkgCtrl)
 reload(tkgXform)
+reload(tkgCommon)
 
 class Spline:
     def __init__(self,
@@ -185,29 +187,31 @@ class Spline:
 
     def build_spline_curve(self):
         # build spline curve
-        point_list = []
-        for gde in self.guide_list:
-            pos = cmds.xform(gde, query=True, worldSpace=True, translation=True)
-            point_list.append(pos)
+        # point_list = []
+        # for gde in self.guide_list:
+        #     pos = cmds.xform(gde, query=True, worldSpace=True, translation=True)
+        #     point_list.append(pos)
+        #
+        # tmp = cmds.curve(editPoint=point_list, degree=1,
+        #                  name=self.base_name + '_tmp')
+        # self.crv, bs = cmds.fitBspline(tmp, constructionHistory=True,
+        #                                tolerance=0.01,
+        #                                name=self.base_name + '_CRV')
+        #
+        # cmds.delete(self.crv, constructionHistory=True)
+        # self.crv = cmds.rebuildCurve(self.crv,
+        #                              replaceOriginal=True,
+        #                              rebuildType=0,
+        #                              endKnots=1,
+        #                              keepRange=0,
+        #                              keepControlPoints=False,
+        #                              keepEndPoints=False,
+        #                              keepTangents=False,
+        #                              spans=4,
+        #                              degree=3)[0]
+        # cmds.delete(tmp)
 
-        tmp = cmds.curve(editPoint=point_list, degree=1,
-                         name=self.base_name + '_tmp')
-        self.crv, bs = cmds.fitBspline(tmp, constructionHistory=True,
-                                       tolerance=0.01,
-                                       name=self.base_name + '_CRV')
-
-        cmds.delete(self.crv, constructionHistory=True)
-        self.crv = cmds.rebuildCurve(self.crv,
-                                     replaceOriginal=True,
-                                     rebuildType=0,
-                                     endKnots=1,
-                                     keepRange=0,
-                                     keepControlPoints=False,
-                                     keepEndPoints=False,
-                                     keepTangents=False,
-                                     spans=4,
-                                     degree=3)[0]
-        cmds.delete(tmp)
+        self.crv = tkgCommon.create_curve_on_nodes(nodes=self.guide_list, name=self.base_name + '_CRV')
 
     def build_spline_chain(self, scale_attr=None):
         if not scale_attr:

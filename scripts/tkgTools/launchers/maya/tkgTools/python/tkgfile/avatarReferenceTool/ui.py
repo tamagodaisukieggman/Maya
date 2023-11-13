@@ -1021,6 +1021,7 @@ class PropDialog(MayaQWidgetDockableMixin, QMainWindow):
             rootCtrl_set_sel_h_layout = QHBoxLayout(self)
             rootCtrl_main_ref_qle = FlexLineEdit(self)
             rootCtrl_set_sel_pro_btn = QPushButton('<< Set')
+            fbx_to_rig_pro_btn = QPushButton('FBX to Rig')
             self.prop_ui_object_dict[arg]['RootCtrl'] = rootCtrl_main_ref_qle
 
             atc_v_layout = QVBoxLayout(self)
@@ -1088,6 +1089,7 @@ class PropDialog(MayaQWidgetDockableMixin, QMainWindow):
             sel_pro_v_layout.addLayout(rootCtrl_set_sel_h_layout)
             rootCtrl_set_sel_h_layout.addWidget(rootCtrl_main_ref_qle)
             rootCtrl_set_sel_h_layout.addWidget(rootCtrl_set_sel_pro_btn)
+            sel_pro_v_layout.addWidget(fbx_to_rig_pro_btn)
 
             v_splitter = QSplitter(Qt.Vertical)
             v_bottom = QFrame()
@@ -1138,7 +1140,7 @@ class PropDialog(MayaQWidgetDockableMixin, QMainWindow):
             self.set_spaces(main_ctrl_qle=main_ctrl_qle, prop_space_cmbox=prop_space_cmbox, dum=None)
             prop_space_cmbox.currentTextChanged.connect(partial(self.switch_prop_space, main_ctrl_qle, prop_space_cmbox))
 
-            self.add_prop_rotate_values(prop_rot_cmbox)
+            self.add_prop_rotate_values(main_ctrl_qle, prop_rot_cmbox)
             # prop_rot_btn.clicked.connect(partial(self.prop_rotate_from, main_ctrl_qle, prop_rot_cmbox))
             prop_rot_cmbox.currentTextChanged.connect(partial(self.prop_rotate_from, main_ctrl_qle, prop_rot_cmbox))
             # prop_reload_space_btn.clicked.connect(partial(self.reload_space, prop_space_cmbox))
@@ -1160,6 +1162,7 @@ class PropDialog(MayaQWidgetDockableMixin, QMainWindow):
             main_ref_sel_btn.clicked.connect(partial(self.select_object, main_ref_qle))
             rootCtrl_main_ref_sel_btn.clicked.connect(partial(self.select_object, rootCtrl_main_ref_qle))
             main_attach_sel_btn.clicked.connect(partial(self.select_object, main_atc_qle))
+            fbx_to_rig_pro_btn.clicked.connect(partial(self.fbx_to_rig, main_ctrl_qle, main_ref_qle))
 
             set_attach_pro_btn.clicked.connect(partial(self.set_selection, main_atc_qle, prop_space_cmbox, space_match_bake_cmbox))
 
@@ -1259,6 +1262,12 @@ class PropDialog(MayaQWidgetDockableMixin, QMainWindow):
         text = qle_object.text()
         if cmds.objExists(text):
             cmds.select(text, r=True)
+
+    def fbx_to_rig(self, main_ctrl_qle=None, main_ref_qle=None):
+        attach_ctrl = main_ctrl_qle.text()
+        jnt = main_ref_qle.text()
+        ref_name = '{}'.format(':'.join(jnt.split(':')[0:-1]))
+        avatarReferenceTool.fbx_to_rig_for_prop(attach_ctrl=attach_ctrl, ref_name=ref_name)
 
     def select_attach_node(self, qle_object=None):
         text = qle_object.text()
@@ -1603,7 +1612,7 @@ class PropDialog(MayaQWidgetDockableMixin, QMainWindow):
 
         return prop_has_dict
 
-    def add_prop_rotate_values(self, prop_rot_cmbox):
+    def add_prop_rotate_values(self, main_ctrl_qle, prop_rot_cmbox):
         # rot_values = [
         #     'default',
         #     'X_90_Y_90',
@@ -1642,6 +1651,10 @@ class PropDialog(MayaQWidgetDockableMixin, QMainWindow):
 
         prop_rot_cmbox.addItems(rot_values)
 
+        ctrl = main_ctrl_qle.text()
+        ro = tuple([int(n) for n in cmds.getAttr(ctrl+'.r')[0]])
+        if str(ro) in rot_values:
+            prop_rot_cmbox.setCurrentText(str(ro))
 
     def prop_rotate_from(self, main_ctrl_qle, prop_rot_cmbox, dum=None):
         ctrl = main_ctrl_qle.text()

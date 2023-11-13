@@ -67,6 +67,10 @@ def merge_curves(sel=None):
 
     cmds.select(sel[1], r=True)
 
+def create_curve_on_nodes(nodes=None, name=None):
+    pts=[cmds.xform(j,q=True,ws=True,t=True) for j in nodes]
+    return cmds.curve(ep=pts, d=3, n=name)
+
 def create_loft(nodes=None, name='loft_suf', axis='x'):
     if not nodes:
         nodes = cmds.ls(os=True)
@@ -79,9 +83,8 @@ def create_loft(nodes=None, name='loft_suf', axis='x'):
 
     moves = move_axis[axis]
 
-    pts=[cmds.xform(j,q=True,ws=True,t=True) for j in nodes]
-    cuC = cmds.curve(ep=pts, d=3, n='{0}_center_crv'.format(nodes[0]))
-    cuR = cmds.curve(ep=pts, d=3)
+    cuC = create_curve_on_nodes(nodes=nodes, name='{0}_center_crv'.format(nodes[0]))
+    cuR = create_curve_on_nodes(nodes=nodes, name='{0}_right_crv'.format(nodes[0]))
     cmds.move(moves[0][0],moves[0][1],moves[0][2],cuR,ls=True) #+z axis
     cuL = cmds.duplicate(cuR)
     cmds.move(moves[1][0],moves[1][1],moves[1][2],cuL,ls=True) #-z axis

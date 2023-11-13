@@ -1,18 +1,6 @@
 {
     "Multi_File_Browser": {
         "path": [
-            "//cydrive01/104_projects/148_wizard2/30_design/02_3DCG/01_キャラ/モデルチェック/キャラ揺れ骨追加確認/01_check/20230920/bob01/scenes/p0_h_bob01_joint.ma",
-            "C:/cygames/wiz2/team/3dcg/rig/p2/cmn/scenes/p2_00.ma",
-            "C:/cygames/wiz2/team/3dcg/chr/cmn/sotai/sotai01/scenes/p2_sotai01.ma",
-            "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/data/projects/wizard2/data/20230920/bob01/scenes",
-            "//cydrive01/104_projects/148_wizard2/30_design/02_3DCG/05_rig/to_chara/sim/20230920/bob01/scenes/p0_h_bob01_joint.ma",
-            "C:/cygames/wiz2/team/3dcg/chr/ply/onepiece/onepiece02/scenes/p2_o_onepiece02.ma",
-            "C:/cygames/wiz2/team/3dcg/chr/ply/onepiece/onepiece01/scenes/p1_o_onepiece01.ma",
-            "C:/cygames/wiz2/team/3dcg/chr/ply/onepiece/onepiece02/scenes/p1_o_onepiece02.ma",
-            "C:/cygames/wiz2/team/3dcg/chr/ply/onepiece/onepiece03/scenes/p2_o_onepiece03.ma",
-            "C:/cygames/wiz2/team/3dcg/chr/ply/onepiece/onepiece03/scenes/p1_o_onepiece03.ma",
-            "C:/cygames/wiz2/team/3dcg/chr/ply/onepiece/onepiece04/scenes/p1_o_onepiece04.ma",
-            "//cydrive01/104_projects/148_wizard2/30_design/02_3DCG/01_キャラ/モデルチェック/キャラ揺れ骨追加確認/01_check/20230927/pro_c_albertsword01/pro_c_albertsword01.ma",
             "C:/cygames/wiz2/team/3dcg/chr/ply/onepiece/onepiece01/scenes/p2_o_onepiece01.ma",
             "C:/cygames/wiz2/team/3dcg/chr/pro/costume/arisa01/scenes/pro_c_arisa01_02.ma",
             "C:/cygames/wiz2/team/3dcg/chr/pro/costume/arisa01/scenes/pro_c_arisa01_03.ma",
@@ -41,7 +29,6 @@
             "//cydrive01/104_projects/148_wizard2/30_design/02_3DCG/01_キャラ/モデルチェック/キャラ揺れ骨追加確認/01_check/20231004/mariamaris01/scenes/p2_c_mariamaris01.ma",
             "C:/cygames/wiz2/team/3dcg/chr/pro/costume/arisa01/scenes/pro_c_arisa01_01.ma",
             "C:/cygames/wiz2/team/3dcg/chr/ply/onepiece/onepiece04/scenes/p2_o_onepiece04.ma",
-            "C:/cygames/wiz2/team/3dcg/env/battle/BGb01/scenes/BGb00001_d025_fine_01.ma",
             "//cydrive01/104_projects/148_wizard2/30_design/02_3DCG/01_キャラ/モデルチェック/キャラ揺れ骨追加確認/01_check/20231005/rowenspear01/pro_c_rowenspear01.ma",
             "//cydrive01/104_projects/148_wizard2/30_design/02_3DCG/01_キャラ/モデルチェック/キャラ揺れ骨追加確認/01_check/20231005/filenespear01/pro_c_filenespear01.ma",
             "//cydrive01/104_projects/148_wizard2/30_design/02_3DCG/01_キャラ/モデルチェック/キャラ揺れ骨追加確認/01_check/20231005/erisstaff01/pro_c_erisstaff01.ma",
@@ -95,12 +82,25 @@
             "C:/cygames/wiz2/team/3dcg/chr/ply/costume/albert01/fbx/p1_c_albert01.fbx",
             "C:/cygames/wiz2/team/3dcg/chr/ply/costume/albert01/fbx/p2_c_albert01.fbx",
             "C:/cygames/wiz2/team/3dcg/chr/ply/costume/arisa01/fbx/p2_c_arisa01.fbx",
-            "C:/cygames/wiz2/team/3dcg/mot/ava/p1/cmn/scenes/an_p1_cmn_emote_001.ma",
             "//cydrive01/104_projects/148_wizard2/30_design/02_3DCG/01_キャラ/モデルチェック/キャラ揺れ骨追加確認/01_check/20231018/fish01/scenes/pro_g_fish01.ma",
             "C:/cygames/wiz2/team/3dcg/rig/sandbox/olivia_wing2/scenes/olivia_wing2_00.ma",
             "C:/cygames/wiz2/team/3dcg/rig/orivia01/eff/scenes/orivia01_00.ma",
             "C:/cygames/wiz2/team/3dcg/rig/orivia01/eff/scenes/eff_b_orivia01_01.ma",
-            "F:/myTechData/Maya/scripts/tkgTools/launchers/maya/tkgTools/python/tkgRigBuild/library/buildPackage/projectName/charaType/000_data/biped_guide_000.ma"
+            "F:/myTechData/Maya/scripts/tkgTools/launchers/maya/tkgTools/python/tkgRigBuild/library/buildPackage/projectName/charaType/000_data/biped_guide_000.ma",
+            "C:/cygames/wiz2/team/3dcg/mot/ava/p1/cmn/scenes/an_p1_cmn_emote_001.ma",
+            "C:/cygames/wiz2/team/3dcg/mot/ava/p2/cmn/scenes/an_p2_cmn_emote_502.ma",
+            "C:/cygames/wiz2/team/3dcg/mot/ava/p2/cmn/scenes/an_p2_cmn_emote_503.ma",
+            "C:/cygames/wiz2/team/3dcg/rig/work/share/ply/albert01/scenes/p1_c_albert01.ma",
+            "C:/cygames/wiz2/team/3dcg/chr/ply/costume/albert01/scenes/p1_c_albert01.ma",
+            "C:/cygames/wiz2/team/3dcg/env/battle/BGb01/scenes/BGb00001_d025_fine_01.ma",
+            "C:/cygames/wiz2/team/3dcg/mot/ava/p2/cmn/scenes/an_p2_cmn_emote_505.ma",
+            "//cydrive01/104_projects/148_wizard2/99_other/01_saito_ryota/_to/to_takagi/231026/weight_hair/an_p0_h_womanwavehair01_normal_error.ma",
+            "//cydrive01/104_projects/148_wizard2/99_other/01_saito_ryota/_to/to_takagi/231026/weight_hair/an_p0_h_wolf01_hard_error.ma",
+            "//cydrive01/104_projects/148_wizard2/99_other/01_saito_ryota/_to/to_takagi/231026/weight_hair/an_p0_h_twintail01_soft_error.ma",
+            "//cydrive01/104_projects/148_wizard2/99_other/01_saito_ryota/_to/to_takagi/231026/weight_hair/an_p0_h_twintail01_normal_error.ma",
+            "//cydrive01/104_projects/148_wizard2/99_other/01_saito_ryota/_to/to_takagi/231026/weight_hair/an_p0_h_straight01_soft_error.ma",
+            "//cydrive01/104_projects/148_wizard2/99_other/01_saito_ryota/_to/to_takagi/231026/weight_hair/an_p0_h_rawcutbangs01_soft_error.ma",
+            "//cydrive01/104_projects/148_wizard2/99_other/01_saito_ryota/_to/to_takagi/231026/weight_hair/an_p0_h_mediumperm01_soft_error.ma"
         ],
         "bookmark": {
             "world": {
@@ -150,6 +150,6 @@
                 ]
             }
         },
-        "curpath": "F:/myTechData/Maya/scripts/tkgTools/launchers/maya/tkgTools/python/tkgRigBuild/library/buildPackage/projectName/charaType/000_data/biped_guide_000.ma"
+        "curpath": "//cydrive01/104_projects/148_wizard2/99_other/01_saito_ryota/_to/to_takagi/231026/weight_hair/an_p0_h_mediumperm01_soft_error.ma"
     }
 }

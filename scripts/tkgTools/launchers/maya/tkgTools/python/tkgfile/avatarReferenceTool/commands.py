@@ -249,6 +249,14 @@ def the_world(func):
         try:
             cmds.refresh(su=1)
 
+            all_items = cmds.ls(type='transform')
+            all_items = order_dags(all_items)
+            all_items_dict = OrderedDict()
+            for item in all_items:
+                wt = cmds.xform(item, q=True, t=True, ws=True)
+                wr = cmds.xform(item, q=True, ro=True, ws=True)
+                all_items_dict[item] = [wt, wr]
+
             cur_time=cmds.currentTime(q=1)
             if cmds.autoKeyframe(q=True, st=True):
                 autoKeyState = True
@@ -273,6 +281,10 @@ def the_world(func):
 
             cmds.playbackOptions(ast=animstart)
             cmds.playbackOptions(aet=animend)
+
+            for item, value in all_items_dict.items():
+                cmds.xform(item, t=value[0], ws=True, p=True)
+                cmds.xform(item, ro=value[1], ws=True, p=True)
 
             cmds.refresh(su=0)
 
@@ -376,9 +388,12 @@ def force_constraint(src=None, tgt=None):
 
     return cnsts
 
-def fbx_to_rig_for_prop():
-    attach_ctrl = 'p2:Handattach_R_ctrl'
-    ref_name = 'pro_0'
+def fbx_to_rig_for_prop(attach_ctrl=None, ref_name=None):
+    # attach_ctrl = 'p2:Handattach_R_ctrl'
+    # ref_name = 'pro_0'
+    wt = cmds.xform(attach_ctrl, q=True, t=True, ws=True)
+    wr = cmds.xform(attach_ctrl, q=True, ro=True, ws=True)
+
     temp_jnt_sets = '{}_prop_temp_jnt_sets'.format(ref_name)
     # cmds.select(temp_jnt_sets, r=True, ne=True)
     # base_joints = cmds.pickWalk(d='down');cmds.ls(os=True)
@@ -410,6 +425,12 @@ def fbx_to_rig_for_prop():
         else:
             consts = force_constraint(src=jnt, tgt=ctrl)
             [all_consts.append(c) for c in consts]
+
+
+    cmds.connectAttr('Root.s', ref_name + ':Root_ctrl.s', f=True)
+
+    cmds.xform(attach_ctrl, t=wt, ws=True, a=True)
+    cmds.xform(attach_ctrl, ro=wr, ws=True, a=True)
 
 
 def match_transform(src, dst):
@@ -449,7 +470,7 @@ def switch_prop_space(obj, space):
 
         cmds.xform(obj, t=wt, ro=wr, ws=True, a=True)
 
-def create_prop_network(ctrl, jnt, root_ctrl, attach_node, pro_part, pro_id, space, path, pos_con, ori_con):
+def create_prop_network(ctrl, jnt, root_ctrl, attach_node, pro_part, pro_id, space, path, pos_con=None, ori_con=None):
     # ctrl = 'p1:PropAttach_01_ctrl'
     # jnt = 'pro_0:Root'
     # attach_node = 'pro_0:offSet_Root'
@@ -494,7 +515,8 @@ def create_prop_network(ctrl, jnt, root_ctrl, attach_node, pro_part, pro_id, spa
     if not cmds.objExists(ctrl_prop_network + '.constraints'):
         cmds.addAttr(ctrl_prop_network, ln='constraints', dt='string')
         cmds.setAttr(ctrl_prop_network + '.constraints', e=True, cb=True)
-        cmds.setAttr(ctrl_prop_network + '.constraints', '{},{}'.format(pos_con, ori_con), type='string')
+        if pos_con and ori_con:
+            cmds.setAttr(ctrl_prop_network + '.constraints', '{},{}'.format(pos_con, ori_con), type='string')
 
     affects = [
         ctrl,

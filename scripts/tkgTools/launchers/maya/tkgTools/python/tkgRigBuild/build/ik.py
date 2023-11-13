@@ -188,9 +188,10 @@ class Ik:
             spline.build_spline_curve()
             self.ik_spline_crv = spline.crv
             settings['curve'] = self.ik_spline_crv
-            settings['freezeJoints'] = True
+            # settings['freezeJoints'] = True
             settings['createCurve'] = False
-            settings['snapHandleFlagToggle'] = True
+            # settings['snapHandleFlagToggle'] = True
+            settings['scv'] = False
 
         self.ikh = cmds.ikHandle(**settings)[0]
 
