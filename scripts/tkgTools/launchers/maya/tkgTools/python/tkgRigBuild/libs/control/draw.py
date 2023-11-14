@@ -123,14 +123,8 @@ class Draw(object):
             if info["form"] >= 1:
                 cmds.closeCurve(crv_shape, ch=False, ps=0, rpo=True)
 
-        curve_shapes = tkgCommon.get_shapes(self.curve)
-        for i, shp in enumerate(curve_shapes):
-            cmds.setAttr('{}.lineWidth'.format(shp), 2)
-
-            if i == 0:
-                cmds.rename(shp, self.curve + "Shape")
-            else:
-                cmds.rename(shp, "{}Shape_{}".format(self.curve, i))
+        # fix_shapes
+        tkgCommon.fix_shapes(self.curve)
 
         if not axis == "y":
             self.set_axis(axis)

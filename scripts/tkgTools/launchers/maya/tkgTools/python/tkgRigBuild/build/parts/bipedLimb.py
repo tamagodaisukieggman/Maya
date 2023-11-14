@@ -148,7 +148,8 @@ tkgFinalize.add_color_attributes()
         self.gimbal = gimbal
         self.offset = offset
         self.pad = pad
-
+        self.fk_top = None
+        
         if self.pad == 'auto':
             self.pad = len(str(len(self.guide_list))) + 1
 

@@ -41,6 +41,8 @@ class Finger(tkgModule.RigModule, tkgFk.Fk):
         self.fk_ctrl_edge_axis = fk_ctrl_edge_axis
         self.ctrl_color = ctrl_color
 
+        self.fk_top = None
+
         if self.pad == 'auto':
             self.pad = len(str(len(self.guide_list))) + 1
 

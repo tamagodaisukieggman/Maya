@@ -17,6 +17,16 @@ def get_shapes(node):
     else:
         return None
 
+def fix_shapes(node):
+    curve_shapes = get_shapes(node)
+    for i, shp in enumerate(curve_shapes):
+        cmds.setAttr('{}.lineWidth'.format(shp), 2)
+
+        if i == 0:
+            cmds.rename(shp, node + "Shape")
+        else:
+            cmds.rename(shp, "{}Shape_{}".format(node, i))
+
 def get_transform(node):
     if node:
         if cmds.nodeType(node) == "transform":
@@ -68,8 +78,10 @@ def merge_curves(sel=None):
     cmds.select(sel[1], r=True)
 
 def create_curve_on_nodes(nodes=None, name=None):
-    pts=[cmds.xform(j,q=True,ws=True,t=True) for j in nodes]
-    return cmds.curve(ep=pts, d=3, n=name)
+    pts = [cmds.xform(j,q=True,ws=True,t=True) for j in nodes]
+    crv = cmds.curve(ep=pts, d=3, n=name)
+    fix_shapes(crv)
+    return crv
 
 def create_loft(nodes=None, name='loft_suf', axis='x'):
     if not nodes:
