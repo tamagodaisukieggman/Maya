@@ -408,6 +408,7 @@ class Chain:
         # organize
         rig_grp = cmds.group(b_crv, j_crv, loc_list,
                              name=bone.replace('JNT', 'bendy_rig_GRP'))
+
         ctrl_grp = cmds.group(empty=True, name=bone.replace('JNT', 'CTRL_GRP'))
         cmds.matchTransform(ctrl_grp, bone)
         cmds.hide(rig_grp)
@@ -437,7 +438,13 @@ class Chain:
                                   rotation=bone,
                                   ctrl_scale=ctrl_scale * 0.8)
         self.part_bend_ctrls.append(mid_ctrl.ctrl)
-        [cmds.parent(upl, mid_ctrl.ctrl) for upl in up_obj_locs]
+
+        up_locs_const_grp = cmds.createNode('transform', n=bone.replace('JNT', 'bendy_up_locs_CNST_GRP'), ss=True)
+        pac = cmds.parentConstraint(mid_ctrl.ctrl, up_locs_const_grp, w=True)[0]
+        cmds.setAttr(pac+'.interpType', 2)
+        [cmds.parent(n, up_locs_const_grp) for n in up_obj_locs]
+        cmds.parent(up_locs_const_grp, rig_grp)
+
         s_tan = tkgCtrl.Control(parent=ctrl_grp,
                                shape='square',
                                prefix=None,

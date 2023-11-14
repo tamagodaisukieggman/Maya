@@ -182,7 +182,6 @@ class Spine(tkgModule.RigModule, tkgSpline.Spline):
             crv_bind=cmds.listConnections('{}.bindPose'.format(crv_sc),c=0,d=1,p=0)
             if crv_bind:cmds.delete(crv_bind)
 
-
             # blend locator between start and end
             mid_loc = cmds.spaceLocator(name=mid_jnt.replace('JNT', 'LOC'))[0]
             cmds.matchTransform(mid_loc, mid_jnt)

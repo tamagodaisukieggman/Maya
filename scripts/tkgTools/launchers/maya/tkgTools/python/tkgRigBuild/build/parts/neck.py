@@ -117,6 +117,15 @@ class Neck(tkgModule.RigModule, tkgSpline.Spline):
             cmds.parentConstraint(self.mid_ctrl.ctrl, mid_jnt,
                                   maintainOffset=False)
 
+            crv_sc = cmds.skinCluster([base_jnt, mid_jnt, tip_jnt],
+                                       self.spline_lofted,
+                                       mi=4,
+                                       sm=0,
+                                       sw=0.5,
+                                       n='{}_skinCluster'.format(self.spline_lofted))[0]
+            crv_bind=cmds.listConnections('{}.bindPose'.format(crv_sc),c=0,d=1,p=0)
+            if crv_bind:cmds.delete(crv_bind)
+
             # blend locator between start and end
             cmds.pointConstraint(self.base_driver, self.tip_driver,
                                  self.mid_ctrl.top, maintainOffset=True)
@@ -144,6 +153,7 @@ class Neck(tkgModule.RigModule, tkgSpline.Spline):
             cmds.setAttr(pma + '.operation', 3)
 
             cmds.parent(self.loc_grp, self.module_grp)
+            cmds.parent(self.fol_grp, self.module_grp)
 
         # bind curve to control joint
         bind_list = cmds.listRelatives(c_jnt_grp) + [self.crv]
