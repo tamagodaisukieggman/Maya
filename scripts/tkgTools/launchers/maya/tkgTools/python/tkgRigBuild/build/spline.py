@@ -242,19 +242,45 @@ class Spline:
                                        min=0, max=1, keyable=True,
                                        name='stretch')
 
+            # Loft & Follicle
+            loft_axis = tkgCommon.get_loft_axis(start=self.spline_joints[0],
+                                                end=self.spline_joints[-1])
+
+            self.spline_lofted, self.spline_curve = tkgCommon.create_loft(nodes=self.spline_joints,
+                                                                  name=self.spline_joints[0]+'_loft_suf',
+                                                                  axis=loft_axis)
+
+            # # Bind
+            # crv_sc = cmds.skinCluster(self.ik_spline_joints,
+            #                            self.ik_lofted,
+            #                            mi=4,
+            #                            sm=0,
+            #                            sw=0.5,
+            #                            n='{}_skinCluster'.format(self.ik_lofted))[0]
+            # crv_bind=cmds.listConnections('{}.bindPose'.format(crv_sc),c=0,d=1,p=0)
+            # if crv_bind:cmds.delete(crv_bind)
+            #
+
+            fols = tkgCommon.create_follicles(self.spline_lofted, self.spline_joints)
+
+            self.fol_grp = cmds.group(empty=True,
+                                      name=self.base_name + '_driver_FOL_GRP')
+            cmds.parent(self.spline_lofted, self.fol_grp)
+            cmds.parent(self.spline_curve, self.fol_grp)
+
             self.loc_grp = cmds.group(empty=True,
                                       name=self.base_name + '_driver_LOC_GRP')
             inc = 1.0 / (self.joint_num - 1)
             par = None
-            for i, jnt in enumerate(self.spline_joints):
+            for i, (jnt, fol) in enumerate(zip(self.spline_joints, fols)):
                 # create measure locators along curve
-                pci = cmds.createNode('pointOnCurveInfo',
-                                      name=jnt.replace('JNT', 'PCI'))
+                # pci = cmds.createNode('pointOnCurveInfo',
+                #                       name=jnt.replace('JNT', 'PCI'))
                 loc = cmds.spaceLocator(name=jnt.replace('JNT', 'LOC'))[0]
-                cmds.setAttr(pci + '.parameter', i * inc)
-                cmds.connectAttr(self.crv + 'Shape.worldSpace[0]',
-                                 pci + '.inputCurve')
-                cmds.connectAttr(pci + '.position', loc + '.translate')
+                # cmds.setAttr(pci + '.parameter', i * inc)
+                # cmds.connectAttr(self.crv + 'Shape.worldSpace[0]',
+                #                  pci + '.inputCurve')
+                cmds.connectAttr(fol + '.translate', loc + '.translate')
                 cmds.setAttr(loc + '.inheritsTransform', 0)
 
                 if par:
@@ -267,6 +293,7 @@ class Spline:
                 # define previous joint and use in the next iteration
                 par = jnt
                 cmds.parent(loc, self.loc_grp)
+                cmds.parent(fol, self.fol_grp)
 
         if self.fk_offset:
             ctrl_par = None
