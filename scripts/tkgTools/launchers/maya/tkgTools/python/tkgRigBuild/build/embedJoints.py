@@ -495,3 +495,9 @@ set_arm_axis_pv_up(shoulder_aim_axis='x', shoulder_up_axis='-y',
 
 set_leg_axis_pv_up(leg_aim_axis='x', leg_up_axis='z',
             ball_aim_axis='-x', ball_up_axis='z')
+
+# delete guides
+cnsts = [n for n in cmds.ls('root', dag=True) if 'Constraint' in n]
+[cmds.delete(cn) for cn in cnsts]
+grps = cmds.ls('*_GRP', assemblies=True)
+[cmds.delete(gp) for gp in grps]
