@@ -53,7 +53,11 @@ def create_pos_rot_locs(objects=None):
 # First select the shape, not the transform.
 sel = cmds.ls(os=True)
 segments = tkgMJ.embed_biped_joints(sel[0], root_count=1, spine_count=3, neck_count=2, knee_count=2)
-root_segments, spine_segments, neck_segments, left_knee_segments, right_knee_segments
+root_segments = segments[0]
+spine_segments = segments[1]
+neck_segments = segments[2]
+left_knee_segments = segments[3]
+right_knee_segments = segments[4]
 
 mirror = ['left_', 'right_']
 
@@ -91,10 +95,11 @@ side_pos_connect = [
     'hand',
 
     'thigh',
-    'knee',
     'ankle',
     'ball'
 ]
+
+[side_pos_connect.append('_'.join(n.split('_')[1::])) for n in left_knee_segments.seg_joints]
 
 for part in side_pos_connect:
     cmds.connectAttr(mirror[0]+part+'.t', 'mirror_'+mirror[0]+part+'.t', f=True)
@@ -104,8 +109,8 @@ for part in side_pos_connect:
     cmds.orientConstraint('mirror_'+mirror[0]+part, mirror[1]+part, w=True, mo=True)
 
 # Controllers Const
-left_arms = cmds.ls(left_shoulder, dag=True, type='joint')
-left_legs = cmds.ls(left_thigh, dag=True, type='joint')
+left_arms = cmds.ls('left_shoulder', dag=True, type='joint')
+left_legs = cmds.ls('left_thigh', dag=True, type='joint')
 
 left_arm_pos_locs, left_arm_rot_locs = create_pos_rot_locs(left_arms)
 left_leg_pos_locs, left_leg_rot_locs = create_pos_rot_locs(left_legs)
@@ -241,67 +246,107 @@ def set_arm_axis_pv_up(shoulder_aim_axis='x', shoulder_up_axis='-y',
     cmds.delete(left_hand_loc)
     cmds.delete(left_elbow_pvloc)
 
+
 def set_leg_axis_pv_up(leg_aim_axis='x', leg_up_axis='-z',
             ball_aim_axis='-x', ball_up_axis='-z'):
-    left_thigh = left_legs[0]
-    left_knee = left_legs[1]
-    left_ankle = left_legs[2]
-    left_ball = left_legs[3]
+
+    buf_left_legs = [n for n in left_legs]
+    buf_left_leg_rot_locs = [n for n in left_leg_rot_locs]
+    buf_left_knee_rot_locs = [n for n in left_leg_rot_locs
+                                if 'knee' in '_'.join(n.split('_')[:2:])]
+
+    [buf_left_legs.remove(n) for n in left_knee_segments.seg_joints]
+    [buf_left_leg_rot_locs.remove(n)
+        for n in left_leg_rot_locs if not '_'.join(n.split('_')[:2:]) in left_legs]
+
+    left_thigh = buf_left_legs[0]
+    left_ankle = buf_left_legs[1]
+    left_ball = buf_left_legs[2]
 
     left_thigh_loc = cmds.spaceLocator(n=left_thigh+'_LOC')[0]
-    left_knee_loc = cmds.spaceLocator(n=left_knee+'_LOC')[0]
     left_ankle_loc = cmds.spaceLocator(n=left_ankle+'_LOC')[0]
     left_ball_loc = cmds.spaceLocator(n=left_ball+'_LOC')[0]
 
-    left_knee_pvloc = cmds.spaceLocator(n=left_knee+'_PV_LOC')[0]
-
     cmds.matchTransform(left_thigh_loc, left_thigh)
-    cmds.matchTransform(left_knee_loc, left_knee)
     cmds.matchTransform(left_ankle_loc, left_ankle)
     cmds.matchTransform(left_ball_loc, left_ball)
 
+    # Knee PV obj
+    left_knee_pvlocs = []
+    for i, leg_obj in enumerate(left_legs):
+        # i == 0
+        if i+2 == len(left_legs)-1:
+            break
+        start_obj = leg_obj
+        mid_obj = left_legs[i+1]
+        end_obj = left_legs[i+2]
+        left_knee_pvloc = cmds.spaceLocator(n=leg_obj+'_PV_LOC')[0]
+        tkgAim.set_pole_vec(start=start_obj,
+                            mid=mid_obj,
+                            end=end_obj,
+                            move=10,
+                            obj=left_knee_pvloc)
+
+        left_knee_pvlocs.append(left_knee_pvloc)
+
+    # Knee
+    for i, (left_knee, left_knee_rot_ctrl) in enumerate(zip(left_knee_segments.seg_joints, buf_left_knee_rot_locs)):
+        left_knee_loc = cmds.spaceLocator(n=left_knee+'_LOC')[0]
+        cmds.matchTransform(left_knee_loc, left_knee)
+
+        if i == len(left_knee_segments.seg_joints)-1:
+            base_loc = buf_left_leg_rot_locs[1]
+        else:
+            base_loc = buf_left_knee_rot_locs[i+1]
+
+        # Leg
+        tkgAim.aim_nodes(base=base_loc, target=left_knee_rot_ctrl+'_OFFSET_GRP',
+                         aim_axis=leg_aim_axis, up_axis=leg_up_axis,
+                         worldUpType='object', worldUpObject=left_knee_pvlocs[i])
+        tkgAim.aim_nodes(base=base_loc, target=left_knee_rot_ctrl,
+                         aim_axis=leg_aim_axis, up_axis=leg_up_axis,
+                         worldUpType='object', worldUpObject=left_knee_pvlocs[i])
+
+        cmds.delete(left_knee_loc)
+
+    cmds.delete(left_knee_pvlocs)
+
+    # Thigh
+    left_knee_pvloc = cmds.spaceLocator(n=left_knee_segments.seg_joints[0]+'_PV_LOC')[0]
     tkgAim.set_pole_vec(start=left_thigh_loc,
-                        mid=left_knee,
+                        mid=left_knee_segments.seg_joints[0],
                         end=left_ankle,
                         move=10,
                         obj=left_knee_pvloc)
 
-    # Leg
-    tkgAim.aim_nodes(base=left_knee_loc, target=left_leg_rot_locs[0]+'_OFFSET_GRP',
+    tkgAim.aim_nodes(base=buf_left_knee_rot_locs[0], target=buf_left_leg_rot_locs[0]+'_OFFSET_GRP',
                      aim_axis=leg_aim_axis, up_axis=leg_up_axis,
                      worldUpType='object', worldUpObject=left_knee_pvloc)
-    tkgAim.aim_nodes(base=left_knee_loc, target=left_leg_rot_locs[0],
+    tkgAim.aim_nodes(base=buf_left_knee_rot_locs[0], target=buf_left_leg_rot_locs[0],
                      aim_axis=leg_aim_axis, up_axis=leg_up_axis,
                      worldUpType='object', worldUpObject=left_knee_pvloc)
+    cmds.delete(left_knee_pvloc)
 
-    tkgAim.aim_nodes(base=left_ankle_loc, target=left_leg_rot_locs[1]+'_OFFSET_GRP',
-                     aim_axis=leg_aim_axis, up_axis=leg_up_axis,
-                     worldUpType='object', worldUpObject=left_knee_pvloc)
-    tkgAim.aim_nodes(base=left_ankle_loc, target=left_leg_rot_locs[1],
-                     aim_axis=leg_aim_axis, up_axis=leg_up_axis,
-                     worldUpType='object', worldUpObject=left_knee_pvloc)
-
-    tkgAim.aim_nodes(base=left_ball_loc, target=left_leg_rot_locs[2]+'_OFFSET_GRP',
-                     aim_axis=leg_aim_axis, up_axis=leg_up_axis,
-                     worldUpType='object', worldUpObject=left_knee_pvloc)
-    tkgAim.aim_nodes(base=left_ball_loc, target=left_leg_rot_locs[2],
-                     aim_axis=leg_aim_axis, up_axis=leg_up_axis,
-                     worldUpType='object', worldUpObject=left_knee_pvloc)
-
+    # tkgAim.aim_nodes(base=left_ball_loc, target=buf_left_leg_rot_locs[1]+'_OFFSET_GRP',
+    #                  aim_axis=leg_aim_axis, up_axis=leg_up_axis,
+    #                  worldUpType='object', worldUpObject=left_knee_pvloc)
+    # tkgAim.aim_nodes(base=left_ball_loc, target=buf_left_leg_rot_locs[1],
+    #                  aim_axis=leg_aim_axis, up_axis=leg_up_axis,
+    #                  worldUpType='object', worldUpObject=left_knee_pvloc)
 
     # Ball
-    tkgAim.aim_nodes(base=left_ankle_loc, target=left_leg_rot_locs[3]+'_OFFSET_GRP',
+    tkgAim.aim_nodes(base=left_ankle_loc, target=buf_left_leg_rot_locs[2]+'_OFFSET_GRP',
                      aim_axis=ball_aim_axis, up_axis=ball_up_axis,
                      worldUpType='object', worldSpace=True, world_axis='y')
-    tkgAim.aim_nodes(base=left_ankle_loc, target=left_leg_rot_locs[3],
+    tkgAim.aim_nodes(base=left_ankle_loc, target=buf_left_leg_rot_locs[2],
                      aim_axis=ball_aim_axis, up_axis=ball_up_axis,
                      worldUpType='object', worldSpace=True, world_axis='y')
 
     cmds.delete(left_thigh_loc)
-    cmds.delete(left_knee_loc)
     cmds.delete(left_ankle_loc)
     cmds.delete(left_ball_loc)
-    cmds.delete(left_knee_pvloc)
+
+
 
 set_arm_axis_pv_up(shoulder_aim_axis='x', shoulder_up_axis='-y',
             arm_aim_axis='x', arm_up_axis='z')

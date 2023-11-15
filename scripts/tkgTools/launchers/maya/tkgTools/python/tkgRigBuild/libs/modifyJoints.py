@@ -182,6 +182,7 @@ class Segments:
         self.top = None
         self.bottom = None
         self.parent_dict = {}
+        self.seg_joints = []
 
         self.insert()
 
@@ -198,6 +199,7 @@ class Segments:
 
             self.top = seg_joints[0]
             self.bottom = seg_joints[-1]
+            self.seg_joints = seg_joints
 
             # set parent
             if self.parent:
