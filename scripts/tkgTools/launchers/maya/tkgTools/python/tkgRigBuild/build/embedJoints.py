@@ -11,6 +11,31 @@ reload(tkgMJ)
 reload(tkgCtrl)
 reload(tkgCommon)
 
+"""
+import maya.cmds as cmds
+import maya.mel as mel
+
+import tkgRigBuild.build.embedJoints as tkgEJ
+reload(tkgEJ)
+
+sel = cmds.ls(os=True)
+
+embed = tkgEJ.EmbedJoints(mesh=sel[0],
+                 root_count=1,
+                 spine_count=3,
+                 neck_count=1,
+                 knee_count=1,
+                 type='biped')
+
+embed.create_biped_joints()
+
+embed.set_arm_axis_pv_up(shoulder_aim_axis='x', shoulder_up_axis='-y',
+                     arm_aim_axis='x', arm_up_axis='z')
+
+embed.set_leg_axis_pv_up(leg_aim_axis='x', leg_up_axis='z',
+                ball_aim_axis='-x', ball_up_axis='z')
+"""
+
 class EmbedJoints:
     def __init__(self,
                  mesh=None,
