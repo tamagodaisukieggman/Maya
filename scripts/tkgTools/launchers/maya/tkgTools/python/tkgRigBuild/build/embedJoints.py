@@ -420,8 +420,7 @@ class EmbedJoints:
         # delete guides
         cnsts = [n for n in cmds.ls('root', dag=True) if 'Constraint' in n]
         [cmds.delete(cn) for cn in cnsts]
-        grps = cmds.ls('*_GRP', assemblies=True)
-        [cmds.delete(gp) for gp in grps]
+        cmds.delete('adjustment_grp')
 
     def create_offset_grp(self, obj=None):
         obj_grp = cmds.createNode('transform', n=obj+'_GRP', ss=True)
