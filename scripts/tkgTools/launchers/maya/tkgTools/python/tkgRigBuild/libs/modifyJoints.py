@@ -216,6 +216,7 @@ class Segments:
 
             self.top = self.base_name
             self.bottom = self.base_name
+            self.seg_joints.append(self.base_name)
 
 
 def embed_biped_joints(mesh=None, root_count=1, spine_count=3, neck_count=1, knee_count=1):

@@ -1,7 +1,6 @@
 {
     "Multi_File_Browser": {
         "path": [
-            "C:/cygames/wiz2/team/3dcg/chr/ply/onepiece/onepiece01/scenes/p2_o_onepiece01.ma",
             "C:/cygames/wiz2/team/3dcg/chr/pro/costume/arisa01/scenes/pro_c_arisa01_02.ma",
             "C:/cygames/wiz2/team/3dcg/chr/pro/costume/arisa01/scenes/pro_c_arisa01_03.ma",
             "C:\\Users\\CF0990\\Documents\\maya\\scripts\\tkgTools\\tkgRig\\data\\projects\\wizard2\\data\\20231003\\arisa01\\scenes/pro_c_arisa01_02.ma",
@@ -93,14 +92,15 @@
             "C:/cygames/wiz2/team/3dcg/rig/work/share/ply/albert01/scenes/p1_c_albert01.ma",
             "C:/cygames/wiz2/team/3dcg/chr/ply/costume/albert01/scenes/p1_c_albert01.ma",
             "C:/cygames/wiz2/team/3dcg/env/battle/BGb01/scenes/BGb00001_d025_fine_01.ma",
-            "C:/cygames/wiz2/team/3dcg/mot/ava/p2/cmn/scenes/an_p2_cmn_emote_505.ma",
             "//cydrive01/104_projects/148_wizard2/99_other/01_saito_ryota/_to/to_takagi/231026/weight_hair/an_p0_h_womanwavehair01_normal_error.ma",
             "//cydrive01/104_projects/148_wizard2/99_other/01_saito_ryota/_to/to_takagi/231026/weight_hair/an_p0_h_wolf01_hard_error.ma",
             "//cydrive01/104_projects/148_wizard2/99_other/01_saito_ryota/_to/to_takagi/231026/weight_hair/an_p0_h_twintail01_soft_error.ma",
             "//cydrive01/104_projects/148_wizard2/99_other/01_saito_ryota/_to/to_takagi/231026/weight_hair/an_p0_h_twintail01_normal_error.ma",
             "//cydrive01/104_projects/148_wizard2/99_other/01_saito_ryota/_to/to_takagi/231026/weight_hair/an_p0_h_straight01_soft_error.ma",
             "//cydrive01/104_projects/148_wizard2/99_other/01_saito_ryota/_to/to_takagi/231026/weight_hair/an_p0_h_rawcutbangs01_soft_error.ma",
-            "//cydrive01/104_projects/148_wizard2/99_other/01_saito_ryota/_to/to_takagi/231026/weight_hair/an_p0_h_mediumperm01_soft_error.ma"
+            "//cydrive01/104_projects/148_wizard2/99_other/01_saito_ryota/_to/to_takagi/231026/weight_hair/an_p0_h_mediumperm01_soft_error.ma",
+            "C:/cygames/wiz2/team/3dcg/chr/ply/costume/garan01/scenes/p1_c_garan01.ma",
+            "C:/cygames/wiz2/team/3dcg/mot/ava/p2/cmn/scenes/an_p2_cmn_emote_505.ma"
         ],
         "bookmark": {
             "world": {
@@ -150,6 +150,6 @@
                 ]
             }
         },
-        "curpath": "//cydrive01/104_projects/148_wizard2/99_other/01_saito_ryota/_to/to_takagi/231026/weight_hair/an_p0_h_mediumperm01_soft_error.ma"
+        "curpath": "C:/cygames/wiz2/team/3dcg/mot/ava/p2/cmn/scenes/an_p2_cmn_emote_505.ma"
     }
 }
