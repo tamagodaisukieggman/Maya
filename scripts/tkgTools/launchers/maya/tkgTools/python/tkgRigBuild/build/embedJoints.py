@@ -27,7 +27,7 @@ embed = tkgEJ.EmbedJoints(mesh=sel[0],
                  knee_count=1,
                  type='biped')
 
-embed.create_biped_joints()
+# embed.create_biped_joints()
 
 embed.set_arm_axis_pv_up(shoulder_aim_axis='x', shoulder_up_axis='-y',
                      arm_aim_axis='x', arm_up_axis='z')
@@ -51,6 +51,9 @@ class EmbedJoints:
         self.neck_count = neck_count
         self.knee_count = knee_count
         self.type = type
+
+        if self.type == 'biped':
+            self.create_biped_joints()
 
     def create_biped_joints(self):
         # First select the shape, not the transform.
