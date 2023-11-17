@@ -5284,23 +5284,23 @@ def add_ctrls_namespace(*args, **kwargs):
 
 def fullbake(sel=None):
     try:
-        cmds.refresh(su=1)
-        cmds.cycleCheck(e=0)
+        cmds.refresh(su=True)
+        cmds.cycleCheck(e=False)
 
-        playmin = cmds.playbackOptions(q=1, min=1)
-        playmax = cmds.playbackOptions(q=1, max=1)
+        playmin = cmds.playbackOptions(q=True, min=True)
+        playmax = cmds.playbackOptions(q=True, max=True)
 
         if not sel:
             sel = cmds.ls(os=True)
-        cmds.bakeResults(sel, sm=1, t=(playmin, playmax), sb=1, osr=1, dic=1, pok=1, sac=0, ral=0, rba=0, bol=0, mr=1, cp=0, s=0)
+        cmds.bakeResults(sel, sm=True, t=(playmin, playmax), sb=True, osr=True, dic=True, pok=True, sac=False, ral=False, rba=False, bol=False, mr=True, cp=False, s=False)
 
         cmds.filterCurve(sel, f='euler')
 
-        cmds.refresh(su=0)
-        cmds.cycleCheck(e=1)
+        cmds.refresh(su=False)
+        cmds.cycleCheck(e=True)
     except:
-        cmds.refresh(su=0)
-        cmds.cycleCheck(e=1)
+        cmds.refresh(su=False)
+        cmds.cycleCheck(e=True)
 
 
 @bake_with_func
