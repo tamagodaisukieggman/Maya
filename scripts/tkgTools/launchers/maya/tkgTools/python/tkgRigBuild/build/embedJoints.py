@@ -6,10 +6,12 @@ import tkgRigBuild.libs.aim as tkgAim
 import tkgRigBuild.libs.modifyJoints as tkgMJ
 import tkgRigBuild.libs.control.ctrl as tkgCtrl
 import tkgRigBuild.libs.common as tkgCommon
+import tkgRigBuild.libs.maths as tkgMath
 reload(tkgAim)
 reload(tkgMJ)
 reload(tkgCtrl)
 reload(tkgCommon)
+reload(tkgMath)
 
 """
 import maya.cmds as cmds
@@ -183,6 +185,15 @@ class EmbedJoints:
             cmds.connectAttr('left_thigh_POS_LOC_GRP.rotLocsScale', llrl+'.sy', f=True)
             cmds.connectAttr('left_thigh_POS_LOC_GRP.rotLocsScale', llrl+'.sz', f=True)
 
+        # Foot Roll Pivs
+        foot_roll_piv_locs = []
+        for ball, ankle in zip(['left_ball', 'right_ball'], ['left_ankle', 'right_ankle']):
+            locs = self.create_foot_roll_pivots(ball=ball, ankle=ankle)
+            [foot_roll_piv_locs.append(loc) for loc in locs]
+
+        foot_roll_piv_grp = 'foot_roll_piv_grp'
+        cmds.createNode('transform', n=foot_roll_piv_grp, ss=True)
+        [cmds.parent(loc, foot_roll_piv_grp) for loc in foot_roll_piv_locs]
 
         # Adjustment Grp
         adjustment_grp = 'adjustment_grp'
@@ -191,6 +202,7 @@ class EmbedJoints:
         cmds.parent('left_shoulder_POS_LOC_GRP', adjustment_grp)
         cmds.parent('left_thigh_POS_LOC_GRP', adjustment_grp)
         cmds.parent(aim_loc_grp, adjustment_grp)
+        # cmds.parent(foot_roll_piv_grp, adjustment_grp)
 
         cmds.addAttr(adjustment_grp, ln='armPosLocsScale', at='double', dv=1, k=True)
         cmds.addAttr(adjustment_grp, ln='armRotLocsScale', at='double', dv=1, k=True)
@@ -460,3 +472,42 @@ class EmbedJoints:
             pa = pos_loc
 
         return pos_locs, rot_locs
+
+    def create_foot_roll_pivots(self, ball=None, ankle=None):
+        if 'left_' in ball and 'left_' in ankle:
+            in_axis = '-x'
+            out_axis = 'x'
+            prefix = 'left_'
+        elif 'right_' in ball and 'right_' in ankle:
+            in_axis = 'x'
+            out_axis = '-x'
+            prefix = 'right_'
+
+        toe_point = cmds.xform(ball, q=True, t=True, ws=True)
+        toe_hit_point = tkgCommon.closest_hit_point_on_mesh(point=toe_point, mesh=self.mesh, axis='z')
+        toe_loc = cmds.spaceLocator(n=prefix+'toe_piv_loc')[0]
+        cmds.xform(toe_loc, t=[toe_hit_point[0],
+                               0,
+                               toe_hit_point[2]])
+
+        heel_point = cmds.xform(ankle, q=True, t=True, ws=True)
+        heel_hit_point = tkgCommon.closest_hit_point_on_mesh(point=heel_point, mesh=self.mesh, axis='-z')
+        heel_loc = cmds.spaceLocator(n=prefix+'heel_piv_loc')[0]
+        cmds.xform(heel_loc, t=[heel_hit_point[0],
+                               0,
+                               heel_hit_point[2]])
+
+        toe_heel_mid_point = tkgCommon.get_mid_point(toe_point, heel_point)
+        in_hit_point = tkgCommon.closest_hit_point_on_mesh(point=toe_heel_mid_point, mesh=self.mesh, axis=in_axis)
+        in_loc = cmds.spaceLocator(n=prefix+'in_piv_loc')[0]
+        cmds.xform(in_loc, t=[in_hit_point[0],
+                               0,
+                               in_hit_point[2]])
+
+        out_hit_point = tkgCommon.closest_hit_point_on_mesh(point=toe_heel_mid_point, mesh=self.mesh, axis=out_axis)
+        out_loc = cmds.spaceLocator(n=prefix+'out_piv_loc')[0]
+        cmds.xform(out_loc, t=[out_hit_point[0],
+                               0,
+                               out_hit_point[2]])
+
+        return [loc for loc in [toe_loc, heel_loc, in_loc, out_loc]]

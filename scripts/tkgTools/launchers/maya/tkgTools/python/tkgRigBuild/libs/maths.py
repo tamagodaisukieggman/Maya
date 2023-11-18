@@ -39,3 +39,25 @@ def truncate(f, n):
 
 def round_value(value=None, digit=3):
     return truncate(round(value, digit), digit)
+
+def get_perpendicular_point(pos1, pos2, obj_pos):
+    # 2点間の座標を取得
+    # pos1 = cmds.xform(line_point1, q=True, ws=True, t=True)
+    # pos2 = cmds.xform(line_point2, q=True, ws=True, t=True)
+
+    # 2点間のベクトル（直線の方向）を計算
+    line_vector = [pos2[0] - pos1[0], pos2[1] - pos1[1], pos2[2] - pos1[2]]
+
+    # 別のオブジェクトの位置を取得
+    # obj_pos = cmds.xform(other_object, q=True, ws=True, t=True)
+
+    # オブジェクトから直線への最短距離ベクトルを計算
+    obj_vector = [obj_pos[0] - pos1[0], obj_pos[1] - pos1[1], obj_pos[2] - pos1[2]]
+    dot_product = sum(p*q for p, q in zip(obj_vector, line_vector))
+    line_length_squared = sum(p*p for p in line_vector)
+    t = dot_product / line_length_squared
+
+    # 最も近い点を計算
+    closest_point = [pos1[0] + t * line_vector[0], pos1[1] + t * line_vector[1], pos1[2] + t * line_vector[2]]
+
+    return closest_point

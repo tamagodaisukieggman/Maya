@@ -6,8 +6,10 @@ import math
 
 import tkgRigBuild.libs.aim as tkgAim
 import tkgRigBuild.libs.common as tkgCommon
+import tkgRigBuild.libs.maths as tkgMath
 reload(tkgAim)
 reload(tkgCommon)
+reload(tkgMath)
 
 def truncate(f, n):
     return math.floor(f * 10 ** n) / 10 ** n
@@ -309,6 +311,18 @@ def embed_biped_joints(mesh=None, root_count=1, spine_count=3, neck_count=1, kne
         # mid_point = tkgCommon.get_mid_point(start_position, end_position, 1.000005)
         # embedding['joints'][s+'knee'] = [mid_position[0], mid_position[1], mid_point[2]]
 
+        point1 = embedding['joints'][s+'arm']
+        point2 = embedding['joints'][s+'elbow']
+        point3 = embedding['joints'][s+'hand']
+        perpendicular = tkgMath.get_perpendicular_point(point1, point2, point3)
+        perpendicular_oppose_point = tkgCommon.get_mid_point(point3, perpendicular, 1.6)
+        embedding['joints'][s+'hand'] = [perpendicular_oppose_point[0],
+                                         perpendicular_oppose_point[1],
+                                         perpendicular_oppose_point[2]]
+        distance = tkgMath.distance_between(point_a=point3, point_b=perpendicular)
+        embedding['joints'][s+'elbow'] = [point2[0],
+                                          point2[1],
+                                          (point2[2] - distance)*0.8]
 
     for joint in ['hips', 'spine', 'neck', 'head']:
         old_pos = embedding['joints'][joint]

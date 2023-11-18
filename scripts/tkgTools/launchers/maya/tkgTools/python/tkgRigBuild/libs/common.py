@@ -3,6 +3,7 @@ from collections import OrderedDict
 import re
 
 import maya.cmds as cmds
+import maya.api.OpenMaya as om2
 
 import tkgRigBuild.libs.modifyJoints as tkgMJ
 
@@ -232,3 +233,40 @@ def split_list(lst):
         middle_index = length // 2
         # 中間の値を含む分割されたリストを返す
         return lst[middle_index], lst[:middle_index], lst[middle_index+1:]
+
+
+def closest_hit_point_on_mesh(point=None, mesh=None, axis='z'):
+    axis_dict = {
+        'x':[1,0,0],
+        'y':[0,1,0],
+        'z':[0,0,1],
+        '-x':[-1,0,0],
+        '-y':[0,-1,0],
+        '-z':[0,0,-1]
+    }
+
+    direction = om2.MVector(*axis_dict[axis])  # Z軸方向
+    startPoint = om2.MPoint(*point)
+
+
+    # メッシュのダグパスを取得
+    selectionList = om2.MSelectionList()
+    selectionList.add(mesh)
+    dagPath = selectionList.getDagPath(0)
+
+    # メッシュの形状ノードを取得
+    meshFn = om2.MFnMesh(dagPath)
+
+    try:
+        # レイの作成と交点の取得
+        hitPoint = meshFn.closestIntersection(
+            om2.MFloatPoint(startPoint),  # レイの開始点
+            om2.MFloatVector(direction),  # レイの方向
+            om2.MSpace.kWorld,            # ワールド座標系
+            10000,                       # 最大距離
+            False                        # 任意の交点ではなく最も近い点
+        )[0]
+    except:
+        return point
+
+    return [hitPoint.x, hitPoint.y, hitPoint.z]
