@@ -79,7 +79,7 @@ class EmbedJoints:
         self.mirror = ['left_', 'right_']
 
         # Mirror Joints
-        mirror_joints = self.simple_duplicate_joints(root_jnt='root', prefix='mirror_')
+        mirror_joints = self.simple_duplicate(root_jnt='root', prefix='mirror_')
 
         mirror_grp = cmds.createNode('transform', n='mirror_joints_GRP', ss=True)
         cmds.parent('mirror_root', mirror_grp)
@@ -199,6 +199,25 @@ class EmbedJoints:
         foot_roll_piv_grp = 'foot_roll_piv_grp'
         cmds.createNode('transform', n=foot_roll_piv_grp, ss=True)
         [cmds.parent(loc, foot_roll_piv_grp) for loc in foot_roll_piv_locs]
+        self.simple_set_overrideColorRGB(obj=foot_roll_piv_grp, color=[0, 1, 1])
+
+        mirror_foot_piv = self.simple_duplicate(root_jnt=foot_roll_piv_grp, prefix='mirror_', type='transform')
+        cmds.parent(mirror_foot_piv[0], foot_roll_piv_grp)
+        cmds.setAttr(mirror_foot_piv[0]+'.sx', -1)
+        cmds.setAttr(mirror_foot_piv[0]+'.v', 0)
+
+        side_pos_connect = [
+            'toe_piv_loc',
+            'heel_piv_loc',
+            'in_piv_loc',
+            'out_piv_loc'
+        ]
+        for part in side_pos_connect:
+            cmds.connectAttr(self.mirror[0]+part+'.t', 'mirror_'+self.mirror[0]+part+'.t', f=True)
+            cmds.connectAttr(self.mirror[0]+part+'.r', 'mirror_'+self.mirror[0]+part+'.r', f=True)
+
+            cmds.pointConstraint('mirror_'+self.mirror[0]+part, self.mirror[1]+part, w=True)
+            cmds.orientConstraint('mirror_'+self.mirror[0]+part, self.mirror[1]+part, w=True, mo=True)
 
         # Adjustment Grp
         adjustment_grp = 'adjustment_grp'
@@ -206,6 +225,7 @@ class EmbedJoints:
         cmds.parent(mirror_grp, adjustment_grp)
         cmds.parent(aim_loc_grp, adjustment_grp)
         # cmds.parent(foot_roll_piv_grp, adjustment_grp)
+        self.simple_set_overrideColorRGB(obj=adjustment_grp, color=[1, 1, 0])
 
         self.add_all_scale_tweak_attr(adjustment_grp, self.left_arm_pos_grp)
         self.add_all_scale_tweak_attr(adjustment_grp, self.left_leg_pos_grp)
@@ -252,9 +272,14 @@ class EmbedJoints:
             cmds.connectAttr(grp+'.rotLocsScale', larl+'.sy', f=True)
             cmds.connectAttr(grp+'.rotLocsScale', larl+'.sz', f=True)
 
-    def simple_duplicate_joints(self, root_jnt='root', prefix='mirror_'):
+    def simple_set_overrideColorRGB(self, obj=None, color=[1, 1, 0]):
+        cmds.setAttr(obj + '.overrideEnabled', True)
+        cmds.setAttr(obj + '.overrideRGBColors', 1)
+        cmds.setAttr(obj + '.overrideColorRGB', *color)
+
+    def simple_duplicate(self, root_jnt='root', prefix='mirror_', type='joint'):
         dup_joints = []
-        base_joints = cmds.ls(root_jnt, dag=True, type='joint')
+        base_joints = cmds.ls(root_jnt, dag=True, type=type)
         for jnt in base_joints:
             new_name = prefix+jnt
             dup_joints.append(new_name)
