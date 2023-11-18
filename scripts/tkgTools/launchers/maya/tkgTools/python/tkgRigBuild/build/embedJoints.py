@@ -79,18 +79,7 @@ class EmbedJoints:
         self.mirror = ['left_', 'right_']
 
         # Mirror Joints
-        root_jnt = 'root'
-        mirror_joints = []
-        base_joints = cmds.ls(root_jnt, dag=True, type='joint')
-        for jnt in base_joints:
-            new_name = 'mirror_'+jnt
-            mirror_joints.append(new_name)
-            dup = cmds.duplicate(jnt, po=True, n=new_name)
-            pa = cmds.listRelatives(jnt, p=True) or None
-            if pa:
-                parent_name = 'mirror_'+pa[0]
-                if cmds.objExists(parent_name):
-                    cmds.parent(new_name, parent_name)
+        mirror_joints = self.simple_duplicate_joints(root_jnt='root', prefix='mirror_')
 
         mirror_grp = cmds.createNode('transform', n='mirror_joints_GRP', ss=True)
         cmds.parent('mirror_root', mirror_grp)
@@ -105,6 +94,7 @@ class EmbedJoints:
         cmds.orientConstraint('spine_03', 'mirror_spine_03', w=True, mo=True)
 
         side_pos_connect = [
+            'head',
             'shoulder',
             'arm',
             'elbow',
@@ -116,20 +106,36 @@ class EmbedJoints:
         ]
 
         [side_pos_connect.append('_'.join(n.split('_')[1::])) for n in self.left_knee_segments.seg_joints]
+        [side_pos_connect.append(n) for n in self.spine_segments.seg_joints]
+        [side_pos_connect.append(n) for n in self.neck_segments.seg_joints]
 
         for part in side_pos_connect:
-            cmds.connectAttr(self.mirror[0]+part+'.t', 'mirror_'+self.mirror[0]+part+'.t', f=True)
-            cmds.connectAttr(self.mirror[0]+part+'.r', 'mirror_'+self.mirror[0]+part+'.r', f=True)
+            if ('spine' in part
+                or 'neck' in part
+                or 'head' in part):
+                cmds.connectAttr(part+'.t', 'mirror_'+part+'.t', f=True)
+                cmds.connectAttr(part+'.r', 'mirror_'+part+'.r', f=True)
 
-            cmds.pointConstraint('mirror_'+self.mirror[0]+part, self.mirror[1]+part, w=True)
-            cmds.orientConstraint('mirror_'+self.mirror[0]+part, self.mirror[1]+part, w=True, mo=True)
+                # cmds.pointConstraint('mirror_'+part, part, w=True)
+                # cmds.orientConstraint('mirror_'+part, part, w=True, mo=True)
+
+            else:
+                cmds.connectAttr(self.mirror[0]+part+'.t', 'mirror_'+self.mirror[0]+part+'.t', f=True)
+                cmds.connectAttr(self.mirror[0]+part+'.r', 'mirror_'+self.mirror[0]+part+'.r', f=True)
+
+                cmds.pointConstraint('mirror_'+self.mirror[0]+part, self.mirror[1]+part, w=True)
+                cmds.orientConstraint('mirror_'+self.mirror[0]+part, self.mirror[1]+part, w=True, mo=True)
 
         # Controllers Const
         self.left_arms = cmds.ls('left_shoulder', dag=True, type='joint')
         self.left_legs = cmds.ls('left_thigh', dag=True, type='joint')
 
-        self.left_arm_pos_locs, self.left_arm_rot_locs = self.create_pos_rot_locs(self.left_arms)
-        self.left_leg_pos_locs, self.left_leg_rot_locs = self.create_pos_rot_locs(self.left_legs)
+        self.left_arm_pos_grp, self.left_arm_rot_grp, self.left_arm_pos_locs, self.left_arm_rot_locs = self.create_pos_rot_locs(self.left_arms)
+        self.left_leg_pos_grp, self.left_leg_rot_grp, self.left_leg_pos_locs, self.left_leg_rot_locs = self.create_pos_rot_locs(self.left_legs)
+
+        self.spine_pos_grp, self.spine_rot_grp, self.spine_pos_locs, self.spine_rot_locs = self.create_pos_rot_locs(self.spine_segments.seg_joints)
+        self.neck_pos_grp, self.neck_rot_grp, self.neck_pos_locs, self.neck_rot_locs = self.create_pos_rot_locs(self.neck_segments.seg_joints)
+        self.head_pos_grp, self.head_rot_grp, self.head_pos_locs, self.head_rot_locs = self.create_pos_rot_locs(['head'])
 
         cmds.parent('left_hand_POS_LOC_GRP', 'left_arm_POS_LOC')
         # cmds.parent('left_knee_POS_LOC_GRP', 'left_thigh_POS_LOC')
@@ -160,30 +166,29 @@ class EmbedJoints:
 
         # Scale Tweak
         # arm
-        cmds.addAttr('left_shoulder_POS_LOC_GRP', ln='posLocsScale', at='double', dv=1, k=True)
-        cmds.addAttr('left_shoulder_POS_LOC_GRP', ln='rotLocsScale', at='double', dv=1, k=True)
-
-        for lapl, larl in zip(self.left_arm_pos_locs, self.left_arm_rot_locs):
-            cmds.connectAttr('left_shoulder_POS_LOC_GRP.posLocsScale', lapl+'.localScaleX', f=True)
-            cmds.connectAttr('left_shoulder_POS_LOC_GRP.posLocsScale', lapl+'.localScaleY', f=True)
-            cmds.connectAttr('left_shoulder_POS_LOC_GRP.posLocsScale', lapl+'.localScaleZ', f=True)
-
-            cmds.connectAttr('left_shoulder_POS_LOC_GRP.rotLocsScale', larl+'.sx', f=True)
-            cmds.connectAttr('left_shoulder_POS_LOC_GRP.rotLocsScale', larl+'.sy', f=True)
-            cmds.connectAttr('left_shoulder_POS_LOC_GRP.rotLocsScale', larl+'.sz', f=True)
+        self.add_scale_tweak_attr(grp=self.left_arm_pos_grp,
+                             pos_ctrls=self.left_arm_pos_locs,
+                             rot_ctrls=self.left_arm_rot_locs)
 
         # leg
-        cmds.addAttr('left_thigh_POS_LOC_GRP', ln='posLocsScale', at='double', dv=1, k=True)
-        cmds.addAttr('left_thigh_POS_LOC_GRP', ln='rotLocsScale', at='double', dv=1, k=True)
+        self.add_scale_tweak_attr(grp=self.left_leg_pos_grp,
+                             pos_ctrls=self.left_leg_pos_locs,
+                             rot_ctrls=self.left_leg_rot_locs)
 
-        for llpl, llrl in zip(self.left_leg_pos_locs, self.left_leg_rot_locs):
-            cmds.connectAttr('left_thigh_POS_LOC_GRP.posLocsScale', llpl+'.localScaleX', f=True)
-            cmds.connectAttr('left_thigh_POS_LOC_GRP.posLocsScale', llpl+'.localScaleY', f=True)
-            cmds.connectAttr('left_thigh_POS_LOC_GRP.posLocsScale', llpl+'.localScaleZ', f=True)
+        # Spine
+        self.add_scale_tweak_attr(grp=self.spine_pos_grp,
+                             pos_ctrls=self.spine_pos_locs,
+                             rot_ctrls=self.spine_rot_locs)
 
-            cmds.connectAttr('left_thigh_POS_LOC_GRP.rotLocsScale', llrl+'.sx', f=True)
-            cmds.connectAttr('left_thigh_POS_LOC_GRP.rotLocsScale', llrl+'.sy', f=True)
-            cmds.connectAttr('left_thigh_POS_LOC_GRP.rotLocsScale', llrl+'.sz', f=True)
+        # Neck
+        self.add_scale_tweak_attr(grp=self.neck_pos_grp,
+                             pos_ctrls=self.neck_pos_locs,
+                             rot_ctrls=self.neck_rot_locs)
+
+        # Head
+        self.add_scale_tweak_attr(grp=self.head_pos_grp,
+                             pos_ctrls=self.head_pos_locs,
+                             rot_ctrls=self.head_rot_locs)
 
         # Foot Roll Pivs
         foot_roll_piv_locs = []
@@ -199,21 +204,68 @@ class EmbedJoints:
         adjustment_grp = 'adjustment_grp'
         cmds.createNode('transform', n=adjustment_grp, ss=True)
         cmds.parent(mirror_grp, adjustment_grp)
-        cmds.parent('left_shoulder_POS_LOC_GRP', adjustment_grp)
-        cmds.parent('left_thigh_POS_LOC_GRP', adjustment_grp)
         cmds.parent(aim_loc_grp, adjustment_grp)
         # cmds.parent(foot_roll_piv_grp, adjustment_grp)
 
-        cmds.addAttr(adjustment_grp, ln='armPosLocsScale', at='double', dv=1, k=True)
-        cmds.addAttr(adjustment_grp, ln='armRotLocsScale', at='double', dv=1, k=True)
-        cmds.connectAttr(adjustment_grp + '.armPosLocsScale', 'left_shoulder_POS_LOC_GRP.posLocsScale', f=True)
-        cmds.connectAttr(adjustment_grp + '.armRotLocsScale', 'left_shoulder_POS_LOC_GRP.rotLocsScale', f=True)
+        self.add_all_scale_tweak_attr(adjustment_grp, self.left_arm_pos_grp)
+        self.add_all_scale_tweak_attr(adjustment_grp, self.left_leg_pos_grp)
+        self.add_all_scale_tweak_attr(adjustment_grp, self.spine_pos_grp)
+        self.add_all_scale_tweak_attr(adjustment_grp, self.neck_pos_grp)
+        self.add_all_scale_tweak_attr(adjustment_grp, self.head_pos_grp)
 
-        cmds.addAttr(adjustment_grp, ln='legPosLocsScale', at='double', dv=1, k=True)
-        cmds.addAttr(adjustment_grp, ln='legRotLocsScale', at='double', dv=1, k=True)
-        cmds.connectAttr(adjustment_grp + '.legPosLocsScale', 'left_thigh_POS_LOC_GRP.posLocsScale', f=True)
-        cmds.connectAttr(adjustment_grp + '.legRotLocsScale', 'left_thigh_POS_LOC_GRP.rotLocsScale', f=True)
+    def add_all_scale_tweak_attr(self, all_grp=None, grp=None):
+        if ('spine' in grp
+            or 'neck' in grp
+            or 'head' in grp):
+            part = grp.split('_')[0]
+        else:
+            part = grp.split('_')[1]
+        part_dict = {
+            'shoulder':'arm',
+            'thigh':'leg',
+            'spine':'spine',
+            'neck':'neck',
+            'head':'head'
+        }
+        pos_scale_at = '{}PosLocsScale'.format(part_dict[part])
+        rot_scale_at = '{}RotLocsScale'.format(part_dict[part])
+        if not cmds.objExists(all_grp + '.' + pos_scale_at):
+            cmds.addAttr(all_grp, ln=pos_scale_at, at='double', dv=1, k=True)
+        if not cmds.objExists(all_grp + '.' + rot_scale_at):
+            cmds.addAttr(all_grp, ln=rot_scale_at, at='double', dv=1, k=True)
 
+        cmds.connectAttr(all_grp + '.' + pos_scale_at, grp+'.posLocsScale', f=True)
+        cmds.connectAttr(all_grp + '.' + rot_scale_at, grp+'.rotLocsScale', f=True)
+
+        cmds.parent(grp, all_grp)
+
+    def add_scale_tweak_attr(self, grp=None, pos_ctrls=None, rot_ctrls=None):
+        cmds.addAttr(grp, ln='posLocsScale', at='double', dv=1, k=True)
+        cmds.addAttr(grp, ln='rotLocsScale', at='double', dv=1, k=True)
+
+        for lapl, larl in zip(pos_ctrls, rot_ctrls):
+            cmds.connectAttr(grp+'.posLocsScale', lapl+'.localScaleX', f=True)
+            cmds.connectAttr(grp+'.posLocsScale', lapl+'.localScaleY', f=True)
+            cmds.connectAttr(grp+'.posLocsScale', lapl+'.localScaleZ', f=True)
+
+            cmds.connectAttr(grp+'.rotLocsScale', larl+'.sx', f=True)
+            cmds.connectAttr(grp+'.rotLocsScale', larl+'.sy', f=True)
+            cmds.connectAttr(grp+'.rotLocsScale', larl+'.sz', f=True)
+
+    def simple_duplicate_joints(self, root_jnt='root', prefix='mirror_'):
+        dup_joints = []
+        base_joints = cmds.ls(root_jnt, dag=True, type='joint')
+        for jnt in base_joints:
+            new_name = prefix+jnt
+            dup_joints.append(new_name)
+            dup = cmds.duplicate(jnt, po=True, n=new_name)
+            pa = cmds.listRelatives(jnt, p=True) or None
+            if pa:
+                parent_name = prefix+pa[0]
+                if cmds.objExists(parent_name):
+                    cmds.parent(new_name, parent_name)
+
+        return dup_joints
 
     #--------------------------
     # Adjusting Axis
@@ -447,18 +499,27 @@ class EmbedJoints:
     def create_pos_rot_locs(self, objects=None):
         pos_locs = []
         rot_locs = []
+        first_pos_grp = None
+        first_rot_grp = None
         pa = None
-        for obj in objects:
+        for i, obj in enumerate(objects):
             pos_loc = obj+'_POS_LOC'
             cmds.spaceLocator(n=pos_loc)
+            cmds.setAttr(pos_loc+'Shape.localPositionX', 2)
+            cmds.setAttr(pos_loc+'Shape.localPositionY', 2)
+            cmds.setAttr(pos_loc+'Shape.localPositionZ', 2)
             pos_locs.append(pos_loc)
             pos_grp = self.create_offset_grp(obj=pos_loc)
+            if i == 0:
+                first_pos_grp = pos_grp
             cmds.matchTransform(pos_grp, obj)
 
             rot_loc = obj+'_ROT_LOC'
             tkgCtrl.create_manip_ctrl(rot_loc)
             rot_locs.append(rot_loc)
             rot_grp = self.create_offset_grp(obj=rot_loc)
+            if i == 0:
+                first_rot_grp = rot_grp
             cmds.matchTransform(rot_grp, obj)
 
             cmds.parent(rot_grp, pos_loc)
@@ -471,7 +532,7 @@ class EmbedJoints:
 
             pa = pos_loc
 
-        return pos_locs, rot_locs
+        return first_pos_grp, first_rot_grp, pos_locs, rot_locs
 
     def create_foot_roll_pivots(self, ball=None, ankle=None):
         if 'left_' in ball and 'left_' in ankle:
