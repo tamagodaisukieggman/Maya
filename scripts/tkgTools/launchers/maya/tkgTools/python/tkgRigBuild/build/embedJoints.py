@@ -65,6 +65,17 @@ class EmbedJoints:
                 self.mesh = sel[0]
             else:
                 return
+
+        # GEO grp
+        self.geo_grp = 'gep_GRP'
+        if not cmds.objExists(self.geo_grp):
+            cmds.createNode('transform', n=self.geo_grp, ss=True)
+
+        cmds.setAttr(self.geo_grp + '.overrideEnabled', 1)
+        cmds.setAttr(self.geo_grp + '.overrideDisplayType', 2)
+
+        cmds.parent(self.mesh, self.geo_grp)
+
         segments = tkgMJ.embed_biped_joints(self.mesh,
                                             self.root_count,
                                             self.spine_count,
@@ -196,15 +207,15 @@ class EmbedJoints:
             locs = self.create_foot_roll_pivots(ball=ball, ankle=ankle)
             [foot_roll_piv_locs.append(loc) for loc in locs]
 
-        foot_roll_piv_grp = 'foot_roll_piv_grp'
-        cmds.createNode('transform', n=foot_roll_piv_grp, ss=True)
-        [cmds.parent(loc, foot_roll_piv_grp) for loc in foot_roll_piv_locs]
-        self.simple_set_overrideColorRGB(obj=foot_roll_piv_grp, color=[0, 1, 1])
+        self.foot_roll_piv_grp = 'foot_roll_piv_GRP'
+        cmds.createNode('transform', n=self.foot_roll_piv_grp, ss=True)
+        [cmds.parent(loc, self.foot_roll_piv_grp) for loc in foot_roll_piv_locs]
+        self.simple_set_overrideColorRGB(obj=self.foot_roll_piv_grp, color=[0, 1, 1])
 
-        mirror_foot_piv = self.simple_duplicate(root_jnt=foot_roll_piv_grp, prefix='mirror_', type='transform')
-        cmds.parent(mirror_foot_piv[0], foot_roll_piv_grp)
-        cmds.setAttr(mirror_foot_piv[0]+'.sx', -1)
-        cmds.setAttr(mirror_foot_piv[0]+'.v', 0)
+        self.mirror_foot_piv = self.simple_duplicate(root_jnt=self.foot_roll_piv_grp, prefix='mirror_', type='transform')
+        cmds.parent(self.mirror_foot_piv[0], self.foot_roll_piv_grp)
+        cmds.setAttr(self.mirror_foot_piv[0]+'.sx', -1)
+        cmds.setAttr(self.mirror_foot_piv[0]+'.v', 0)
 
         side_pos_connect = [
             'toe_piv_loc',
@@ -220,18 +231,18 @@ class EmbedJoints:
             cmds.orientConstraint('mirror_'+self.mirror[0]+part, self.mirror[1]+part, w=True, mo=True)
 
         # Adjustment Grp
-        adjustment_grp = 'adjustment_grp'
-        cmds.createNode('transform', n=adjustment_grp, ss=True)
-        cmds.parent(mirror_grp, adjustment_grp)
-        cmds.parent(aim_loc_grp, adjustment_grp)
-        # cmds.parent(foot_roll_piv_grp, adjustment_grp)
-        self.simple_set_overrideColorRGB(obj=adjustment_grp, color=[1, 1, 0])
+        self.adjustment_grp = 'adjustment_GRP'
+        cmds.createNode('transform', n=self.adjustment_grp, ss=True)
+        cmds.parent(mirror_grp, self.adjustment_grp)
+        cmds.parent(aim_loc_grp, self.adjustment_grp)
+        # cmds.parent(self.foot_roll_piv_grp, self.adjustment_grp)
+        self.simple_set_overrideColorRGB(obj=self.adjustment_grp, color=[1, 1, 0])
 
-        self.add_all_scale_tweak_attr(adjustment_grp, self.left_arm_pos_grp)
-        self.add_all_scale_tweak_attr(adjustment_grp, self.left_leg_pos_grp)
-        self.add_all_scale_tweak_attr(adjustment_grp, self.spine_pos_grp)
-        self.add_all_scale_tweak_attr(adjustment_grp, self.neck_pos_grp)
-        self.add_all_scale_tweak_attr(adjustment_grp, self.head_pos_grp)
+        self.add_all_scale_tweak_attr(self.adjustment_grp, self.left_arm_pos_grp)
+        self.add_all_scale_tweak_attr(self.adjustment_grp, self.left_leg_pos_grp)
+        self.add_all_scale_tweak_attr(self.adjustment_grp, self.spine_pos_grp)
+        self.add_all_scale_tweak_attr(self.adjustment_grp, self.neck_pos_grp)
+        self.add_all_scale_tweak_attr(self.adjustment_grp, self.head_pos_grp)
 
     def add_all_scale_tweak_attr(self, all_grp=None, grp=None):
         if ('spine' in grp
@@ -509,7 +520,12 @@ class EmbedJoints:
         # delete guides
         cnsts = [n for n in cmds.ls('root', dag=True) if 'Constraint' in n]
         [cmds.delete(cn) for cn in cnsts]
-        cmds.delete('adjustment_grp')
+        cmds.delete(self.adjustment_grp)
+
+        # delete guides
+        cnsts = [n for n in cmds.ls(self.foot_roll_piv_grp, dag=True) if 'Constraint' in n]
+        [cmds.delete(cn) for cn in cnsts]
+        cmds.delete(self.mirror_foot_piv)
 
     def create_offset_grp(self, obj=None):
         obj_grp = cmds.createNode('transform', n=obj+'_GRP', ss=True)
