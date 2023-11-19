@@ -1,17 +1,24 @@
 # -*- coding: utf-8 -*-
 import maya.cmds as cmds
+
+import datetime
 from imp import reload
+import os
 
 import tkgRigBuild.libs.aim as tkgAim
 import tkgRigBuild.libs.modifyJoints as tkgMJ
 import tkgRigBuild.libs.control.ctrl as tkgCtrl
 import tkgRigBuild.libs.common as tkgCommon
 import tkgRigBuild.libs.maths as tkgMath
+import tkgRigBuild.build.guides as tkgGuides
 reload(tkgAim)
 reload(tkgMJ)
 reload(tkgCtrl)
 reload(tkgCommon)
 reload(tkgMath)
+reload(tkgGuides)
+
+GUIDE_PATH = os.path.dirname(tkgGuides.__file__.replace('\\', '/'))
 
 """
 import maya.cmds as cmds
@@ -517,6 +524,13 @@ class EmbedJoints:
         cmds.delete(left_ball_loc)
 
     def delete_adjust_rig(self):
+        # Temp Save
+        cmds.viewFit()
+        now = datetime.datetime.now()
+        file_name = now.strftime("guide_%Y%m%d%H%M.ma")
+        cmds.file(rn=GUIDE_PATH + '/' + file_name)
+        cmds.file(s=True, f=True)
+
         # delete guides
         cnsts = [n for n in cmds.ls('root', dag=True) if 'Constraint' in n]
         [cmds.delete(cn) for cn in cnsts]
