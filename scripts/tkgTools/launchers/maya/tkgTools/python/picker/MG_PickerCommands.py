@@ -7,6 +7,7 @@ import maya.OpenMayaUI as omui
 import maya.api.OpenMaya as om2
 import maya.api.OpenMayaAnim as oma2
 
+from collections import OrderedDict
 import math
 import re
 import traceback
@@ -25,6 +26,7 @@ except ImportError:
     from PySide import __version__
     from shiboken import wrapInstance
 
+WINDOW_OPTIONVAR = 'wizard2_MGPicker_UI'
 
 DEFAULT_CTRL_SPACES = {
     'Cog_ctrl.space':'main',
@@ -425,16 +427,78 @@ def merge_ctrl_values_per_frames(merge_ctrl_dict=None, ctrls=None):
         cmds.refresh(su=0)
         print(traceback.format_exc())
 
+# optionVar
+def load_optionVar(key=None):
+    return eval(cmds.optionVar(q=key)) if cmds.optionVar(ex=key) else False
+
+def save_optionVar(ui_items=None):
+    for key, value in ui_items.items():
+        cmds.optionVar(sv=[key, str(value)])
 
 # MGPicker class
 class MGP:
     def __init__(self):
         self.cur_mgp_btn = None
         self.mgp_btn_members = []
+        self.ui_items = OrderedDict()
+        self.picker_nss = None
+
+        self.load_picker_items()
 
     def get_current_picker_items(self):
         self.cur_mgp_btn = cmds.MGPicker(q=True, currentItem=True)
         self.mgp_btn_members = cmds.MGPickerItem(self.cur_mgp_btn, q=True, selectMembers=True)
+
+    def get_picker_view_namespace(self):
+        self.picker_nss = cmds.MGPickerView(q=True, namespace=True)
+
+    def get_before_bake(self):
+        self.before_bake_sts = cmds.MGPickerItem(BAKE_BEFORE_BTN, q=True, atv=True)
+
+    def get_setKey_ikfk(self):
+        self.setKey_ikfk_sts = cmds.MGPickerItem(SETKEY_IKFK_BTN, q=True, atv=True)
+
+    def get_picker_items(self):
+        # Namespace
+        self.get_picker_view_namespace()
+        self.get_before_bake()
+        self.get_setKey_ikfk()
+
+    def save_picker_items(self):
+        self.get_picker_items()
+
+        if not self.ui_items:
+            self.ui_items[WINDOW_OPTIONVAR] = OrderedDict()
+
+        self.ui_items[WINDOW_OPTIONVAR]['pickerNamespace'] = self.picker_nss
+        self.ui_items[WINDOW_OPTIONVAR]['beforeBake'] = self.before_bake_sts
+        self.ui_items[WINDOW_OPTIONVAR]['setKeyIKFK'] = self.setKey_ikfk_sts
+
+        save_optionVar(self.ui_items)
+
+    def load_picker_items(self):
+        self.ui_items = load_optionvar(WINDOW_OPTIONVAR)
+        if self.ui_items:
+            print('#'*20)
+            print('Set to MGPicker Settings')
+            print('#'*20)
+            for item_key, item_value in self.ui_items.items():
+                if item_key == 'pickerNamespace':
+                    self.picker_nss = item_value
+                    cmds.MGPickerView(e=True, namespace=self.picker_nss)
+                    print('Set Namespace: ', self.picker_nss)
+
+                elif item_key == 'beforeBake':
+                    self.before_bake_sts = item_value
+                    cmds.MGPickerItem(BAKE_BEFORE_BTN, e=True, atv=self.before_bake_sts)
+                    print('Set Before Bake: ', self.before_bake_sts)
+
+                elif item_key == 'setKeyIKFK':
+                    self.setKey_ikfk_sts = item_value
+                    cmds.MGPickerItem(SETKEY_IKFK_BTN, e=True, atv=self.setKey_ikfk_sts)
+                    print('Set Key IKFK: ', self.setKey_ikfk_sts)
+        else:
+            print('Ooops! There was no picker optionVars.')
 
 # Namespace class
 class Namespace:
@@ -464,6 +528,9 @@ class Namespace:
 # Controller class
 class Ctrl(Namespace, MGP):
     def __init__(self, prefix=None, suffix=None):
+        # For optionVar
+        self.ui_items = OrderedDict()
+
         # Namespace Activate
         self.get_current_picker_namespace()
 
@@ -486,6 +553,8 @@ class Ctrl(Namespace, MGP):
         if self.all_ctrls:
             self.all_ctrls = order_dags(self.all_ctrls)
             self.all_ctrls_without_namespace = [n.replace(self.cur_nss, '') for n in self.all_ctrls]
+            # Save optionVar
+            self.save_picker_items()
         else:
             print('Ooops! There are no controllers.')
 
@@ -510,8 +579,10 @@ class Ctrl(Namespace, MGP):
 
     def space_match(self, attr=None, val=None, auto_side=None):
         self.get_current_picker_items()
-        rot_ctrl = self.cur_nss + IK_AUTO_ROT_CTRLS[auto_side]
-        [set_enum_attr(ctrl=ctrl, attr=attr, val=val, rot_ctrl=rot_ctrl) for ctrl in self.mgp_btn_members]
+        rot_ctrl = None
+        if auto_side:
+            rot_ctrl = self.cur_nss + IK_AUTO_ROT_CTRLS[auto_side]
+        [set_enum_attr(ctrl=self.cur_nss + ctrl, attr=attr, val=val, rot_ctrl=rot_ctrl) for ctrl in self.mgp_btn_members]
 
     def get_hand_L_ctrl_values(self):
         ikfk_switch = self.cur_nss+'ikfk_Wrist_L_ctrl.ikfk'
@@ -708,6 +779,7 @@ class Ctrl(Namespace, MGP):
 class Animation:
     def __init__(self, prefix=None, suffix=None):
         self.ctrl = Ctrl(prefix=prefix, suffix=suffix)
+        self.all_ctrls = self.ctrl.all_ctrls
 
     def fullbake(self, sel=None):
         try:
@@ -1621,14 +1693,14 @@ class IKFK:
             foot_R=foot_R, foot_R_ikfk=match_type,
             force_state_key=currentValue
         )
-
-anim = Animation(prefix=None, suffix='_ctrl')
-anim.cog_hip_matchbake(bake_to='hip')
-
-anim.ctrl.all_ctrls
-
-sel = cmds.ls(os=True)
-anim.fullbake(sel)
+#
+# anim = Animation(prefix=None, suffix='_ctrl')
+# anim.cog_hip_matchbake(bake_to='hip')
+#
+# anim.ctrl.all_ctrls
+#
+# sel = cmds.ls(os=True)
+# anim.fullbake(sel)
 
 # ctrl.reset_spaces()
 
