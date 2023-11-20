@@ -1,11 +1,50 @@
 # -*- coding: utf-8 -*-
 from collections import OrderedDict
+import codecs
+import json
 import re
 
 import maya.cmds as cmds
 import maya.api.OpenMaya as om2
 
 import tkgRigBuild.libs.modifyJoints as tkgMJ
+
+COMPOUND_ATTRS = ['translate',
+                  'rotate',
+                  'scale',
+                  'rotateAxis',
+                  'preferredAngle',
+                  'jointOrient',
+                  'wireColorRGB',
+                  'outlinerColor']
+
+SINGLE_ATTRS = ['rotateOrder',
+                'inheritsTransform',
+                'segmentScaleCompensate',
+                'side',
+                'type',
+                'otherType',
+                'radius',
+                'useObjectColor',
+                'objectColor',
+                'useOutlinerColor']
+
+def order_dags(dags=None):
+    parent_dag = cmds.ls(dags[0], l=1, type='transform')[0].split('|')[1]
+
+    all_hir = cmds.listRelatives(parent_dag, ad=True, f=True)
+    hir_split_counter = {}
+    parent_node = '|' + parent_dag
+    hir_split_counter[parent_node] = len(parent_node.split('|'))
+    for fp_node in all_hir:
+        hir_split_counter[fp_node] = len(fp_node.split('|'))
+
+    hir_split_counter_sorted = sorted(hir_split_counter.items(), key=lambda x:x[1])
+
+    sorted_joint_list = [dag_count[0] for dag_count in hir_split_counter_sorted]
+
+    all_ordered_dags = cmds.ls(sorted_joint_list)
+    return [dag for dag in all_ordered_dags if dag in dags]
 
 def get_shapes(node):
     shape_list = cmds.listRelatives(node, s=True, ni=True)
@@ -270,3 +309,54 @@ def closest_hit_point_on_mesh(point=None, mesh=None, axis='z'):
         return point
 
     return [hitPoint.x, hitPoint.y, hitPoint.z]
+
+def json_transfer(file_name=None, operation=None, export_values=None):
+    encodings = ["utf-8", "shift_jis", "iso-2022-jp", "euc-jp"]
+    if operation == 'export':
+        try:
+            with codecs.open(file_name, 'w', encoding='utf-8') as f:
+                json.dump(export_values, f, indent=4, ensure_ascii=False)
+        except:
+            with open(file_name, 'w', encoding='utf-8') as f:
+                json.dump(export_values, f, indent=4, ensure_ascii=False)
+
+    elif operation == 'import':
+        for encoding in encodings:
+            try:
+                with codecs.open(file_name, 'r', encoding=encoding) as f:
+                    return json.load(f, encoding, object_pairs_hook=OrderedDict)
+            except:
+                with open(file_name, 'r', encoding=encoding) as f:
+                    return json.load(f, object_pairs_hook=OrderedDict)
+
+def get_node_values(nodes=None):
+    u"""
+    joints_attrs = get_joint_values()
+    file_name = 'C:/Users/'+os.environ['USER']+'/Documents/maya/scripts/tkgTools/tkgRig/scripts/build/types/biped/wizard2_base_00_000/000_data/chr0006_proxy_joints.ma.json'
+    json_transfer(file_name, 'export', joints_attrs)
+    """
+    node_values = {}
+
+    ordered_nodes = order_dags(nodes)
+
+    node_values['hierarchy'] = ordered_nodes
+
+    for node in ordered_nodes:
+        node_values[node] = {}
+        for gcat in COMPOUND_ATTRS:
+            if cmds.objExists(node+'.'+gcat):
+                node_values[node][gcat] = cmds.getAttr(node+'.'+gcat)[0]
+                if gcat == 'translate':
+                    node_values[node]['worldTranslate'] = cmds.xform(node, q=True, t=True, ws=True)
+                elif gcat == 'rotate':
+                    node_values[node]['worldRotate'] = cmds.xform(node, q=True, ro=True, ws=True)
+        for gsat in SINGLE_ATTRS:
+            if cmds.objExists(node+'.'+gsat):
+                node_values[node][gsat] = cmds.getAttr(node+'.'+gsat)
+        pa = cmds.listRelatives(node, p=True) or list()
+        if pa:
+            node_values[node]['parent'] = pa[0]
+        else:
+            node_values[node]['parent'] = None
+
+    return node_values

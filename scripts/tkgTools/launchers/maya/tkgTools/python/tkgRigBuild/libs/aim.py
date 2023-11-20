@@ -2,25 +2,12 @@ from maya import cmds, mel
 import maya.OpenMaya as om
 
 from collections import OrderedDict
+from imp import reload
 import math
 import traceback
 
-def order_dags(dags=None):
-    parent_dag = cmds.ls(dags[0], l=1, type='transform')[0].split('|')[1]
-
-    all_hir = cmds.listRelatives(parent_dag, ad=True, f=True)
-    hir_split_counter = {}
-    parent_node = '|' + parent_dag
-    hir_split_counter[parent_node] = len(parent_node.split('|'))
-    for fp_node in all_hir:
-        hir_split_counter[fp_node] = len(fp_node.split('|'))
-
-    hir_split_counter_sorted = sorted(hir_split_counter.items(), key=lambda x:x[1])
-
-    sorted_joint_list = [dag_count[0] for dag_count in hir_split_counter_sorted]
-
-    all_ordered_dags = cmds.ls(sorted_joint_list)
-    return [dag for dag in all_ordered_dags if dag in dags]
+import tkgRigBuild.libs.common as tkgCommon
+reload(tkgCommon)
 
 def get_dag_nodes(obj=None, type=None, remove_top=None):
     joints = cmds.ls(obj, dag=True, type=type)
@@ -30,7 +17,7 @@ def get_dag_nodes(obj=None, type=None, remove_top=None):
     if not joints:
         return None
 
-    return order_dags(joints)
+    return tkgCommon.order_dags(joints)
 
 def aim_nodes(base=None, target=None, aim_axis='z', up_axis='y', worldUpType='object', worldUpObject=None, worldSpace=False, world_axis='y'):
     axis_dict = {
@@ -83,7 +70,7 @@ def aim_nodes(base=None, target=None, aim_axis='z', up_axis='y', worldUpType='ob
 def aim_nodes_from_root(root_jnt=None, type='jonit', aim_axis='x', up_axis='y', worldUpType='object', worldUpObject=None, worldSpace=False, world_axis='y'):
     # 選択したトップジョイントを選択して実行
     joints = cmds.ls(root_jnt, dag=True, type=type)
-    sorted_joints = order_dags(joints)
+    sorted_joints = tkgCommon.order_dags(joints)
 
     store_joint_values = OrderedDict()
     for sj in sorted_joints:
