@@ -52,7 +52,8 @@ class EmbedJoints:
                  spine_count=3,
                  neck_count=1,
                  knee_count=1,
-                 type='biped'):
+                 type=None,
+                 create=None):
 
         self.mesh = mesh
         self.root_count = root_count
@@ -60,9 +61,11 @@ class EmbedJoints:
         self.neck_count = neck_count
         self.knee_count = knee_count
         self.type = type
+        self.create = create
 
-        if self.type == 'biped':
-            self.create_biped_joints()
+        if self.create:
+            if self.type == 'biped':
+                self.create_biped_joints()
 
     def create_biped_joints(self):
         # First select the shape, not the transform.
@@ -74,7 +77,7 @@ class EmbedJoints:
                 return
 
         # GEO grp
-        self.geo_grp = 'gep_GRP'
+        self.geo_grp = 'guide_geo_GRP'
         if not cmds.objExists(self.geo_grp):
             cmds.createNode('transform', n=self.geo_grp, ss=True)
 
@@ -209,14 +212,14 @@ class EmbedJoints:
                              rot_ctrls=self.head_rot_locs)
 
         # Foot Roll Pivs
-        foot_roll_piv_locs = []
+        self.foot_roll_piv_locs = []
         for ball, ankle in zip(['left_ball', 'right_ball'], ['left_ankle', 'right_ankle']):
             locs = self.create_foot_roll_pivots(ball=ball, ankle=ankle)
-            [foot_roll_piv_locs.append(loc) for loc in locs]
+            [self.foot_roll_piv_locs.append(loc) for loc in locs]
 
         self.foot_roll_piv_grp = 'foot_roll_piv_GRP'
         cmds.createNode('transform', n=self.foot_roll_piv_grp, ss=True)
-        [cmds.parent(loc, self.foot_roll_piv_grp) for loc in foot_roll_piv_locs]
+        [cmds.parent(loc, self.foot_roll_piv_grp) for loc in self.foot_roll_piv_locs]
         self.simple_set_overrideColorRGB(obj=self.foot_roll_piv_grp, color=[0, 1, 1])
 
         self.mirror_foot_piv = self.simple_duplicate(root_jnt=self.foot_roll_piv_grp, prefix='mirror_', type='transform')
@@ -534,12 +537,30 @@ class EmbedJoints:
         # delete guides
         cnsts = [n for n in cmds.ls('root', dag=True) if 'Constraint' in n]
         [cmds.delete(cn) for cn in cnsts]
-        cmds.delete(self.adjustment_grp)
+        cmds.delete('adjustment_GRP')
 
         # delete guides
-        cnsts = [n for n in cmds.ls(self.foot_roll_piv_grp, dag=True) if 'Constraint' in n]
+        cnsts = [n for n in cmds.ls('foot_roll_piv_GRP', dag=True) if 'Constraint' in n]
         [cmds.delete(cn) for cn in cnsts]
-        cmds.delete(self.mirror_foot_piv)
+        cmds.delete('mirror_foot_roll_piv_GRP')
+
+    def publish_adjust_joints(self):
+        self.delete_adjust_rig()
+
+        cmds.viewFit()
+        now = datetime.datetime.now()
+        file_name = now.strftime("adjust_joints_%Y%m%d%H%M.ma")
+        cmds.file(rn=GUIDE_PATH + '/' + file_name)
+
+        mesh = cmds.listRelatives('guide_geo_GRP')[0]
+        cmds.parent(mesh, w=True)
+        cmds.delete('guide_geo_GRP')
+
+        foot_roll_piv_locs = cmds.listRelatives('foot_roll_piv_GRP')
+        [cmds.parent(n, w=True) for n in foot_roll_piv_locs]
+        cmds.delete('foot_roll_piv_GRP')
+
+        cmds.file(s=True, f=True)
 
     def create_offset_grp(self, obj=None):
         obj_grp = cmds.createNode('transform', n=obj+'_GRP', ss=True)
