@@ -1,1 +1,4 @@
 # Maya
+
+License
+MIT
