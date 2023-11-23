@@ -360,3 +360,250 @@ def get_node_values(nodes=None):
             node_values[node]['parent'] = None
 
     return node_values
+
+def find_centerline(verticies=None, axis='y', local_world='world'):
+    """
+    Find an approximate centerline of a cylindrical mesh.
+    :param mesh: Name of the mesh object.
+    :return: A list of points representing the centerline.
+    """
+
+    pos_settings = {}
+    if local_world == 'local':
+        pos_settings['local'] = True
+        pos_settings['world'] = False
+    if local_world == 'world':
+        pos_settings['local'] = False
+        pos_settings['world'] = True
+
+    # 頂点の位置を取得
+    vertex_positions = [cmds.pointPosition(v, **pos_settings)
+                        for v in verticies]
+
+    # 各頂点のXとZ座標の合計を計算
+    sum_x, sum_y, sum_z = 0, 0, 0
+    for pos in vertex_positions:
+        sum_x += pos[0]
+        sum_y += pos[1]
+        sum_z += pos[2]
+
+    # 平均座標を計算
+    n = len(vertex_positions)
+    if axis == 'x':
+        yz_avg = (sum_y / n, sum_z / n)
+        x_coords = [pos[0] for pos in vertex_positions]
+        return [(x, yz_avg[0], yz_avg[1]) for x in x_coords]
+
+    elif axis == 'y':
+        xz_avg = (sum_x / n, sum_z / n)
+        y_coords = [pos[1] for pos in vertex_positions]
+        return [(xz_avg[0], y, xz_avg[1]) for y in y_coords]
+
+    elif axis == 'z':
+        xy_avg = (sum_x / n, sum_y / n)
+        z_coords = [pos[2] for pos in vertex_positions]
+        return [(xy_avg[0], xy_avg[1], z) for z in z_coords]
+
+
+def get_highest_lowest_vertex(verticies=None,
+                              axis=['x', 'y', 'z', '-x', '-y', '-z'],
+                              than_axis=['x', 'y', 'z'],
+                              local_world='world'):
+    """
+    verticies = cmds.ls(os=True, long=True, fl=True)
+    try:
+        vertex_values = get_highest_lowest_vertex(verticies, local_world='world')
+        highest_pos = vertex_values[0]
+        lowest_pos = vertex_values[1]
+        higher_than_pos = vertex_values[2]
+        lower_than_pos = vertex_values[3]
+    except:
+        print(traceback.format_exc())
+    """
+    pos_settings = {}
+    if local_world == 'local':
+        pos_settings['local'] = True
+        pos_settings['world'] = False
+    if local_world == 'world':
+        pos_settings['local'] = False
+        pos_settings['world'] = True
+
+    highest_pos = {}
+    lowest_pos = {}
+    higher_than_pos = {}
+    lower_than_pos = {}
+    if 'x' in axis:
+        highest_x = float('-inf')
+    if 'y' in axis:
+        highest_y = float('-inf')
+    if 'z' in axis:
+        highest_z = float('-inf')
+    if '-x' in axis:
+        lowest_x = float('inf')
+    if '-y' in axis:
+        lowest_y = float('inf')
+    if '-z' in axis:
+        lowest_z = float('inf')
+
+    center_x_points = None
+    center_y_points = None
+    center_z_points = None
+    if 'x' in than_axis:
+        center_y_points = find_centerline(verticies, 'y')
+        center_z_points = find_centerline(verticies, 'z')
+
+    if 'y' in than_axis:
+        center_x_points = find_centerline(verticies, 'x')
+        center_z_points = find_centerline(verticies, 'z')
+
+    if 'z' in than_axis:
+        center_x_points = find_centerline(verticies, 'x')
+        center_y_points = find_centerline(verticies, 'y')
+
+    for i, vertex in enumerate(verticies):
+        position = cmds.pointPosition(vertex, **pos_settings)
+        # center X
+        if 'y' in than_axis or 'z' in than_axis:
+            for th_ax in than_axis:
+                if 'x' == th_ax:
+                    continue
+                ul_key = 'centerXthan{}'.format(th_ax.upper())
+                if not ul_key in higher_than_pos.keys():
+                    higher_than_pos[ul_key] = []
+                if not ul_key in lower_than_pos.keys():
+                    lower_than_pos[ul_key] = []
+
+                if th_ax == 'y':
+                    if position[1] >= center_x_points[i][1]:
+                        higher_than_pos[ul_key].append(vertex)
+                    elif position[1] <= center_x_points[i][1]:
+                        lower_than_pos[ul_key].append(vertex)
+
+                elif th_ax == 'z':
+                    if position[2] >= center_x_points[i][2]:
+                        higher_than_pos[ul_key].append(vertex)
+                    elif position[2] <= center_x_points[i][2]:
+                        lower_than_pos[ul_key].append(vertex)
+
+        # center Y
+        if 'x' in than_axis or 'z' in than_axis:
+            for th_ax in than_axis:
+                if 'y' == th_ax:
+                    continue
+                ul_key = 'centerYthan{}'.format(th_ax.upper())
+                if not ul_key in higher_than_pos.keys():
+                    higher_than_pos[ul_key] = []
+                if not ul_key in lower_than_pos.keys():
+                    lower_than_pos[ul_key] = []
+
+                if th_ax == 'x':
+                    if position[0] >= center_y_points[i][0]:
+                        higher_than_pos[ul_key].append(vertex)
+                    elif position[0] <= center_y_points[i][0]:
+                        lower_than_pos[ul_key].append(vertex)
+
+                elif th_ax == 'z':
+                    if position[2] >= center_y_points[i][2]:
+                        higher_than_pos[ul_key].append(vertex)
+                    elif position[2] <= center_y_points[i][2]:
+                        lower_than_pos[ul_key].append(vertex)
+
+        # center Z
+        if 'x' in than_axis or 'y' in than_axis:
+            for th_ax in than_axis:
+                if 'z' == th_ax:
+                    continue
+                ul_key = 'centerZthan{}'.format(th_ax.upper())
+                if not ul_key in higher_than_pos.keys():
+                    higher_than_pos[ul_key] = []
+                if not ul_key in lower_than_pos.keys():
+                    lower_than_pos[ul_key] = []
+
+                if th_ax == 'x':
+                    if position[0] >= center_z_points[i][0]:
+                        higher_than_pos[ul_key].append(vertex)
+                    elif position[0] <= center_z_points[i][0]:
+                        lower_than_pos[ul_key].append(vertex)
+
+                elif th_ax == 'y':
+                    if position[1] >= center_z_points[i][1]:
+                        higher_than_pos[ul_key].append(vertex)
+                    elif position[1] <= center_z_points[i][1]:
+                        lower_than_pos[ul_key].append(vertex)
+
+
+    for i, vertex in enumerate(verticies):
+        position = cmds.pointPosition(vertex, **pos_settings)
+
+        if 'x' in axis:
+            if position[0] > highest_x:
+                highest_x = position[0]
+                highest_pos['x'] = vertex
+        if 'y' in axis:
+            if position[1] > highest_y:
+                highest_y = position[1]
+                highest_pos['y'] = vertex
+        if 'z' in axis:
+            if position[2] > highest_z:
+                highest_z = position[2]
+                highest_pos['z'] = vertex
+
+        if '-x' in axis:
+            if position[0] < lowest_x:
+                lowest_x = position[0]
+                lowest_pos['-x'] = vertex
+        if '-y' in axis:
+            if position[1] < lowest_y:
+                lowest_y = position[1]
+                lowest_pos['-y'] = vertex
+        if '-z' in axis:
+            if position[2] < lowest_z:
+                lowest_z = position[2]
+                lowest_pos['-z'] = vertex
+
+    return highest_pos, lowest_pos, higher_than_pos, lower_than_pos
+
+def get_finger_tip(mesh=None):
+    sel = cmds.ls(os=True)
+    # 選択されたメッシュの頂点を取得
+    vertices = cmds.polyListComponentConversion(mesh, toVertex=True)
+    vertices = cmds.filterExpand(vertices, selectionMask=31)
+
+    # 条件に合う頂点を探索
+    max_x = float('-inf')
+    min_y = float('inf')
+    target_vertex = None
+
+    for vertex in vertices:
+        # 頂点の座標を取得
+        position = cmds.pointPosition(vertex, world=True)
+
+        # Xが最大でYが最小の頂点を探す
+        if position[0] > max_x or (position[0] == max_x and position[1] < min_y):
+            max_x = position[0]
+            min_y = position[1]
+            target_vertex = vertex
+
+    persp_wt = cmds.xform('persp', q=True, t=True, ws=True)
+    persp_wr = cmds.xform('persp', q=True, ro=True, ws=True)
+
+    cmds.xform('persp', t=[0,0,0], ro=[0,0,0], a=True)
+    cmds.viewFit()
+
+    cmds.select(target_vertex, r=True)
+
+    pw_count = 30
+    for i in range(pw_count):
+        cmds.pickWalk(d='down')
+
+    finger_tip = cmds.ls(os=True)[0]
+
+    cmds.xform('persp', t=persp_wt, ws=True)
+    cmds.xform('persp', ro=persp_wr, ws=True)
+
+    if sel:
+        cmds.select(sel, r=True)
+
+    cmds.FrameSelectedWithoutChildren()
+
+    return finger_tip

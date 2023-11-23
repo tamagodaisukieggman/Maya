@@ -254,6 +254,12 @@ class EmbedJoints:
         self.add_all_scale_tweak_attr(self.adjustment_grp, self.neck_pos_grp)
         self.add_all_scale_tweak_attr(self.adjustment_grp, self.head_pos_grp)
 
+        self.create_finger_guides()
+        print('self.finger_tip', self.finger_tip)
+
+    def create_finger_guides(self):
+        self.finger_tip = tkgCommon.get_finger_tip(mesh=self.mesh)
+
     def add_all_scale_tweak_attr(self, all_grp=None, grp=None):
         if ('spine' in grp
             or 'neck' in grp
