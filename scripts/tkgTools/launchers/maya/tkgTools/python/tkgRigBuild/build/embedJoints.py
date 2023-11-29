@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import maya.cmds as cmds
+import maya.mel as mel
 
 import datetime
 from imp import reload
@@ -120,6 +121,7 @@ class EmbedJoints:
             'arm',
             'elbow',
             'hand',
+            'hips',
 
             'thigh',
             'ankle',
@@ -133,7 +135,8 @@ class EmbedJoints:
         for part in side_pos_connect:
             if ('spine' in part
                 or 'neck' in part
-                or 'head' in part):
+                or 'head' in part
+                or 'hips' in part):
                 cmds.connectAttr(part+'.t', 'mirror_'+part+'.t', f=True)
                 cmds.connectAttr(part+'.r', 'mirror_'+part+'.r', f=True)
 
@@ -157,6 +160,7 @@ class EmbedJoints:
         self.spine_pos_grp, self.spine_rot_grp, self.spine_pos_locs, self.spine_rot_locs = self.create_pos_rot_locs(self.spine_segments.seg_joints)
         self.neck_pos_grp, self.neck_rot_grp, self.neck_pos_locs, self.neck_rot_locs = self.create_pos_rot_locs(self.neck_segments.seg_joints)
         self.head_pos_grp, self.head_rot_grp, self.head_pos_locs, self.head_rot_locs = self.create_pos_rot_locs(['head'])
+        self.hips_pos_grp, self.hips_rot_grp, self.hips_pos_locs, self.hips_rot_locs = self.create_pos_rot_locs(['hips'])
 
         cmds.parent('left_hand_POS_LOC_GRP', 'left_arm_POS_LOC')
         # cmds.parent('left_knee_POS_LOC_GRP', 'left_thigh_POS_LOC')
@@ -211,6 +215,11 @@ class EmbedJoints:
                              pos_ctrls=self.head_pos_locs,
                              rot_ctrls=self.head_rot_locs)
 
+        # Hips
+        self.add_scale_tweak_attr(grp=self.hips_pos_grp,
+                             pos_ctrls=self.hips_pos_locs,
+                             rot_ctrls=self.hips_rot_locs)
+
         # Foot Roll Pivs
         self.foot_roll_piv_locs = []
         for ball, ankle in zip(['left_ball', 'right_ball'], ['left_ankle', 'right_ankle']):
@@ -253,7 +262,12 @@ class EmbedJoints:
         self.add_all_scale_tweak_attr(self.adjustment_grp, self.spine_pos_grp)
         self.add_all_scale_tweak_attr(self.adjustment_grp, self.neck_pos_grp)
         self.add_all_scale_tweak_attr(self.adjustment_grp, self.head_pos_grp)
+        self.add_all_scale_tweak_attr(self.adjustment_grp, self.hips_pos_grp)
 
+        cmds.select(self.mesh, r=True)
+        mel.eval('fitPanel -selectedNoChildren;')
+
+        # Fingers
         self.create_finger_guides()
         print('self.finger_tip', self.finger_tip)
 
@@ -263,7 +277,8 @@ class EmbedJoints:
     def add_all_scale_tweak_attr(self, all_grp=None, grp=None):
         if ('spine' in grp
             or 'neck' in grp
-            or 'head' in grp):
+            or 'head' in grp
+            or 'hips' in grp):
             part = grp.split('_')[0]
         else:
             part = grp.split('_')[1]
@@ -272,7 +287,8 @@ class EmbedJoints:
             'thigh':'leg',
             'spine':'spine',
             'neck':'neck',
-            'head':'head'
+            'head':'head',
+            'hips':'hips'
         }
         pos_scale_at = '{}PosLocsScale'.format(part_dict[part])
         rot_scale_at = '{}RotLocsScale'.format(part_dict[part])
@@ -587,9 +603,9 @@ class EmbedJoints:
         for i, obj in enumerate(objects):
             pos_loc = obj+'_POS_LOC'
             cmds.spaceLocator(n=pos_loc)
-            cmds.setAttr(pos_loc+'Shape.localPositionX', 2)
-            cmds.setAttr(pos_loc+'Shape.localPositionY', 2)
-            cmds.setAttr(pos_loc+'Shape.localPositionZ', 2)
+            # cmds.setAttr(pos_loc+'Shape.localPositionX', 2)
+            # cmds.setAttr(pos_loc+'Shape.localPositionY', 2)
+            # cmds.setAttr(pos_loc+'Shape.localPositionZ', 2)
             pos_locs.append(pos_loc)
             pos_grp = self.create_offset_grp(obj=pos_loc)
             if i == 0:
