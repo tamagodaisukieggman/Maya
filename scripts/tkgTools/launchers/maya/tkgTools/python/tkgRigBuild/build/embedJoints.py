@@ -46,6 +46,16 @@ embed.set_leg_axis_pv_up(leg_aim_axis='x', leg_up_axis='z',
                 ball_aim_axis='-x', ball_up_axis='z')
 """
 
+AXIS_DICT = {
+    'x':[1,0,0],
+    'y':[0,1,0],
+    'z':[0,0,1],
+    '-x':[-1,0,0],
+    '-y':[0,-1,0],
+    '-z':[0,0,-1]
+}
+
+
 class EmbedJoints:
     def __init__(self,
                  mesh=None,
@@ -109,11 +119,11 @@ class EmbedJoints:
         cmds.setAttr(mirror_grp+'.v', 0)
 
         # left to right connection
-        cmds.pointConstraint('hips', 'mirror_hips', w=True)
-        cmds.orientConstraint('hips', 'mirror_hips', w=True, mo=True)
+        # cmds.pointConstraint('hips', 'mirror_hips', w=True)
+        # cmds.orientConstraint('hips', 'mirror_hips', w=True, mo=True)
 
-        cmds.pointConstraint('spine_03', 'mirror_spine_03', w=True)
-        cmds.orientConstraint('spine_03', 'mirror_spine_03', w=True, mo=True)
+        # cmds.pointConstraint('spine_03', 'mirror_spine_03', w=True)
+        # cmds.orientConstraint('spine_03', 'mirror_spine_03', w=True, mo=True)
 
         side_pos_connect = [
             'head',
@@ -140,8 +150,10 @@ class EmbedJoints:
                 cmds.connectAttr(part+'.t', 'mirror_'+part+'.t', f=True)
                 cmds.connectAttr(part+'.r', 'mirror_'+part+'.r', f=True)
 
-                # cmds.pointConstraint('mirror_'+part, part, w=True)
-                # cmds.orientConstraint('mirror_'+part, part, w=True, mo=True)
+                # cmds.pointConstraint(part, 'mirror_'+part, w=True)
+                # cmds.orientConstraint(part, 'mirror_'+part, w=True, mo=True)
+
+                pass
 
             else:
                 cmds.connectAttr(self.mirror[0]+part+'.t', 'mirror_'+self.mirror[0]+part+'.t', f=True)
@@ -547,6 +559,43 @@ class EmbedJoints:
         cmds.delete(left_thigh_loc)
         cmds.delete(left_ankle_loc)
         cmds.delete(left_ball_loc)
+
+    def set_spine_axis_pv_up(self, spine_aim_axis='y', spine_up_axis='z', offset_aim_rotate=0):
+        aim_joints = []
+        pa = None
+        for srloc in self.spine_rot_locs:
+            aim_jnt = cmds.createNode('joint', ss=True)
+            cmds.matchTransform(aim_jnt, srloc, pos=True, rot=True, scl=False)
+            if pa:
+                cmds.parent(aim_jnt, pa)
+            pa = aim_jnt
+            aim_joints.append(aim_jnt)
+
+        tkgMJ.merge_joints(aim_joints)
+
+        up_obj = cmds.spaceLocator()[0]
+        cmds.matchTransform(up_obj, aim_joints[0])
+        axis_vec = [v*1000 for v in AXIS_DICT[spine_up_axis]]
+        cmds.xform(up_obj, t=axis_vec, ws=True, a=True)
+
+        tkgMJ.aim_joints(sel=aim_joints,
+                         aim_axis=spine_aim_axis,
+                         up_axis=spine_up_axis,
+                         worldUpType='object',
+                         worldUpObject=up_obj,
+                         worldSpace=False,
+                         world_axis='y')
+
+        cmds.delete(up_obj)
+
+        for aim_jnt, srloc in zip(aim_joints, self.spine_rot_locs):
+            cmds.matchTransform(srloc, aim_jnt, pos=False, rot=True, scl=False)
+
+        cmds.delete(aim_joints)
+
+        offset_rotate = [v*offset_aim_rotate for v in AXIS_DICT[spine_aim_axis]]
+        for obj in self.spine_rot_locs:
+            cmds.rotate(*offset_rotate, obj, r=True, os=True, fo=True)
 
     def delete_adjust_rig(self):
         # Temp Save
