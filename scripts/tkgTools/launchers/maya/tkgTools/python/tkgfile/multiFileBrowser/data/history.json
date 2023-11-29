@@ -1,8 +1,6 @@
 {
     "Multi_File_Browser": {
         "path": [
-            "C:/cygames/wiz2/team/3dcg/chr/pro/costume/arisa01/scenes/pro_c_arisa01_02.ma",
-            "C:/cygames/wiz2/team/3dcg/chr/pro/costume/arisa01/scenes/pro_c_arisa01_03.ma",
             "C:\\Users\\CF0990\\Documents\\maya\\scripts\\tkgTools\\tkgRig\\data\\projects\\wizard2\\data\\20231003\\arisa01\\scenes/pro_c_arisa01_02.ma",
             "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/data/projects/wizard2/data/20231003/arisa01/scenes/pro_c_arisa01_03.ma",
             "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/data/projects/wizard2/data/20231003/arisa01/scenes/pro_c_arisa01_01.ma",
@@ -70,7 +68,6 @@
             "//cydrive01/104_projects/148_wizard2/30_design/02_3DCG/05_rig/to_chara/sim/20231012/garan01/p1_c_garan01.ma",
             "//cydrive01/104_projects/148_wizard2/30_design/02_3DCG/01_キャラ/モデルチェック/キャラ揺れ骨追加確認/01_check/20231013/luna01/scenes/p2_c_luna01.ma",
             "C:/cygames/wiz2/team/3dcg/chr/pro/general/book01/scenes/pro_g_book01.ma",
-            "c:\\cygames\\wiz2\\team\\3dcg\\chr\\ply\\bottoms\\frillyskirt01\\scenes\\p2_b_frillyskirt01.ma",
             "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/data/projects/wizard2/data/20231013/luna01/scenes/p2_c_luna01.ma",
             "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/data/projects/wizard2/data/20231013/book/pro_g_book01.ma",
             "//cydrive01/104_projects/148_wizard2/30_design/02_3DCG/01_キャラ/モデルチェック/キャラ揺れ骨追加確認/01_check/20231013/lovesign01/p1_c_lovesign01.ma",
@@ -100,7 +97,10 @@
             "//cydrive01/104_projects/148_wizard2/99_other/01_saito_ryota/_to/to_takagi/231026/weight_hair/an_p0_h_rawcutbangs01_soft_error.ma",
             "//cydrive01/104_projects/148_wizard2/99_other/01_saito_ryota/_to/to_takagi/231026/weight_hair/an_p0_h_mediumperm01_soft_error.ma",
             "C:/cygames/wiz2/team/3dcg/chr/ply/costume/garan01/scenes/p1_c_garan01.ma",
-            "C:/cygames/wiz2/team/3dcg/mot/ava/p2/cmn/scenes/an_p2_cmn_emote_505.ma"
+            "C:/cygames/wiz2/team/3dcg/mot/ava/p2/cmn/scenes/an_p2_cmn_emote_505.ma",
+            "C:/cygames/wiz2/team/3dcg/chr/ply/bottoms/pleatedskirt01/scenes/p2_b_pleatedskirt01.ma",
+            "c:\\cygames\\wiz2\\team\\3dcg\\chr\\ply\\bottoms\\frillyskirt01\\scenes\\p2_b_frillyskirt01.ma",
+            "C:/cygames/wiz2/team/3dcg/chr/ply/bottoms/frillyskirt01/scenes/p2_b_frillyskirt01.ma"
         ],
         "bookmark": {
             "world": {
@@ -150,6 +150,6 @@
                 ]
             }
         },
-        "curpath": "C:/cygames/wiz2/team/3dcg/mot/ava/p2/cmn/scenes/an_p2_cmn_emote_505.ma"
+        "curpath": "C:/cygames/wiz2/team/3dcg/chr/ply/bottoms/frillyskirt01/scenes/p2_b_frillyskirt01.ma"
     }
 }
