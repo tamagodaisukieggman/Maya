@@ -32,3 +32,24 @@ def reference_model(path, namespace="chr"):
     root_nodes = cmds.ls(namespace + ":|*", rn=True, assemblies=True)
 
     return root_nodes
+
+def get_reference_info(excludes):
+    """
+    リファレンス情報の取得
+    """
+    ret = []
+    refNodes = cmds.ls(references=True)
+    for RNnode in refNodes:
+        if not RNnode in excludes:
+            ref = {}
+            ref.update({
+                'namespace' : cmds.referenceQuery(RNnode, namespace=True),
+                'filename'   : cmds.referenceQuery(RNnode, filename=True),
+                'w_filenam' : cmds.referenceQuery(RNnode, filename=True, withoutCopyNumber=True),
+                'isLoaded'  : cmds.referenceQuery(RNnode, isLoaded=True),
+                'nodes'     : cmds.referenceQuery(RNnode, nodes=True),
+                'node'      : cmds.referenceQuery(RNnode, nodes=True)[0],
+                })
+            ret.append(ref)
+
+    return ret
