@@ -9,9 +9,9 @@ import maya.mel as mel
 import buildRig.common as brCommon
 import buildRig.node as brNode
 
-class Transform:
+class Transform(brNode.Node):
     def __init__(self, node=None, offsets=['_offset']):
-        self.node = node
+        super(Transform, self).__init__(node=node)
         self.offsets = offsets
 
     def create(self):
@@ -27,9 +27,8 @@ class Transform:
 
             cmds.matchTransform(node_offset, self.node)
 
-            self.node_obj = brNode.Node(self.node)
-            if self.node_obj.parent:
-                cmds.parent(node_offset, self.node_obj.parent)
+            if self.parent:
+                cmds.parent(node_offset, self.parent)
 
             cmds.parent(self.node, node_offset)
 
