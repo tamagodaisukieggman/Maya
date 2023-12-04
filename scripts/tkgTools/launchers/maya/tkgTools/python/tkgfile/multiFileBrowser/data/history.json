@@ -1,7 +1,6 @@
 {
     "Multi_File_Browser": {
         "path": [
-            "C:\\Users\\CF0990\\Documents\\maya\\scripts\\tkgTools\\tkgRig\\data\\projects\\wizard2\\data\\20231003\\arisa01\\scenes/pro_c_arisa01_02.ma",
             "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/data/projects/wizard2/data/20231003/arisa01/scenes/pro_c_arisa01_03.ma",
             "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/data/projects/wizard2/data/20231003/arisa01/scenes/pro_c_arisa01_01.ma",
             "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/data/projects/wizard2/data/20231003/arisa01/scenes/pro_c_arisa01_02.ma",
@@ -100,7 +99,8 @@
             "C:/cygames/wiz2/team/3dcg/mot/ava/p2/cmn/scenes/an_p2_cmn_emote_505.ma",
             "C:/cygames/wiz2/team/3dcg/chr/ply/bottoms/pleatedskirt01/scenes/p2_b_pleatedskirt01.ma",
             "c:\\cygames\\wiz2\\team\\3dcg\\chr\\ply\\bottoms\\frillyskirt01\\scenes\\p2_b_frillyskirt01.ma",
-            "C:/cygames/wiz2/team/3dcg/chr/ply/bottoms/frillyskirt01/scenes/p2_b_frillyskirt01.ma"
+            "C:/cygames/wiz2/team/3dcg/chr/ply/bottoms/frillyskirt01/scenes/p2_b_frillyskirt01.ma",
+            "F:/Google Drive/マイドライブ/CG/maya/rig/library/sheriff_public.ma"
         ],
         "bookmark": {
             "world": {
@@ -150,6 +150,6 @@
                 ]
             }
         },
-        "curpath": "C:/cygames/wiz2/team/3dcg/chr/ply/bottoms/frillyskirt01/scenes/p2_b_frillyskirt01.ma"
+        "curpath": "F:/Google Drive/マイドライブ/CG/maya/rig/library/sheriff_public.ma"
     }
 }
