@@ -231,7 +231,7 @@ def mirror_joint_color(dummy=None):
         cmds.setAttr(mir_obj+'.useOutlinerColor', setting['useOutlinerColor'])
         cmds.setAttr(mir_obj+'.outlinerColor', *setting['outlinerColor'])
 
-def modify_joints(FUNCTIONS):
+def modify_joints():
     # ウィンドウの作成
     window_name = "ModifyJointAxis"
     if cmds.window(window_name, exists=True):
