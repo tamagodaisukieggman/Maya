@@ -19,7 +19,8 @@ class Node:
         self.wld_rot = None
         self.jnt_orient = None
 
-        self.get_values()
+        if cmds.objExists(self.node):
+            self.get_values()
 
     def get_values(self):
         self.get_parent()
@@ -32,6 +33,7 @@ class Node:
 
     def rename(self, prefix=None, suffix=None, replace=None):
         self.buf_rename = brCommon.rename(self.node, prefix, suffix, replace)
+        return self.buf_rename
 
     def do_rename(self):
         cmds.rename(self.node, self.buf_rename)
@@ -48,12 +50,17 @@ class Nodes:
     def __init__(self, nodes=None):
         self.nodes = nodes
         self.node_list = []
-        for n in self.nodes:
-            node = Node(n)
-            self.node_list.append(node)
+        self.node_rename_list = []
+        self.get_node_objects()
 
     def rename(self, prefix=None, suffix=None, replace=None):
-        [node.rename(prefix, suffix, replace) for node in self.node_list]
+        self.node_rename_list = [node.rename(prefix, suffix, replace) for
+                                                    node in self.node_list]
 
     def do_rename(self):
         [node.do_rename() for node in self.node_list]
+
+    def get_node_objects(self):
+        for n in self.nodes:
+            node = Node(n)
+            self.node_list.append(node)
