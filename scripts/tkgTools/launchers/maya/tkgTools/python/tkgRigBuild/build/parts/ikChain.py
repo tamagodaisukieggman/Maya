@@ -121,6 +121,7 @@ except:
                  mid_ctrl_axis='x',
                  tan_ctrl_axis='x',
                  segments=None,
+                 fk_ctrl_scale=2,
                  dForwardAxis='x',
                  dWorldUpAxis='z',
                  model_path=None,
@@ -146,6 +147,7 @@ except:
         self.mid_ctrl_axis = mid_ctrl_axis
         self.tan_ctrl_axis = tan_ctrl_axis
         self.segments = segments
+        self.fk_ctrl_scale = fk_ctrl_scale
 
         self.dForwardAxis = dForwardAxis
         self.dWorldUpAxis = dWorldUpAxis
@@ -433,7 +435,7 @@ except:
                                             pad="auto",
                                             fk_ctrl_axis='x',
                                             fk_ctrl_edge_axis=None,
-                                            ctrl_scale=2.4,
+                                            ctrl_scale=self.fk_ctrl_scale,
                                             ctrl_color=[0.1, 0.4, 0.8],
                                             remove_last=False,
                                             add_joints=True,
