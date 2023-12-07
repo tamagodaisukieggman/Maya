@@ -72,6 +72,12 @@ class CreateMenu(object):
         )
 
         cmds.menuItem(
+            l=u'Default ViewFit',
+            c='import tkgfile.utils as tkgfileuls;reload(tkgfileuls);tkgfileuls.default_viewFit()',
+            ann=u'デフォルトのカメラ設定でviewFitします'
+        )
+
+        cmds.menuItem(
             l=u'Select reference before opening file',
             c='import tkgfile.window as tkgfilewin;reload(tkgfilewin);ttd=tkgfilewin.TkgDialogs();ttd.get_PreloadReferenceEditor()',
             ann=u'ファイルを開く前に読み込むリファレンスを選択してから開く'

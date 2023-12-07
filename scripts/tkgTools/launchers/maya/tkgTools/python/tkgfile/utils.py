@@ -192,6 +192,13 @@ def replace_clipboard_path():
     clipboard.setText(text)
     return text
 
+def default_viewFit():
+    sel = cmds.ls(os=True)
+    cmds.select(cl=True)
+    mel.eval('GoToDefaultView;')
+    cmds.viewFit()
+    cmds.select(sel, r=True)
+
 class JsonFile(object):
     @classmethod
     def read(cls, file_path):
