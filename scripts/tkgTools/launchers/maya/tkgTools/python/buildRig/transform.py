@@ -12,54 +12,69 @@ reload(brCommon)
 reload(brNode)
 
 class Transform(brNode.Node):
-    def __init__(self, node=None, offsets=['_offset']):
+    def __init__(self, node=None):
         super(Transform, self).__init__(node=node)
-        self.offsets = offsets
 
     def create(self):
         if not cmds.objExists(self.node):
             cmds.createNode('transform', n=self.node, ss=True)
 
-    def do_offset(self):
-        for offset in self.offsets:
-            node_offset = self.node + offset
-
-            if not cmds.objExists(node_offset):
-                cmds.createNode('transform', n=node_offset, ss=True)
-
-            cmds.matchTransform(node_offset, self.node)
-
-            if self.parent:
-                cmds.parent(node_offset, self.parent)
-
-            cmds.parent(self.node, node_offset)
-
 class Transforms(brNode.Nodes):
     """
-    import maya.cmds as cmds
-    from imp import reload
+import maya.cmds as cmds
+from imp import reload
 
-    import buildRig.transform as brTrs
-    reload(brTrs)
+import buildRig.transform as brTrs
+reload(brTrs)
 
-    trs = brTrs.Transforms(nodes=['grp', 'offset', 'space', 'mocap', 'drv'])
-    trs.nodes_rename(prefix='prefix_', suffix=None, replace=None)
-    trs.node_rename_list # Result: ['prefix_grp', 'prefix_offset', 'prefix_space', 'prefix_mocap', 'prefix_drv'] #
-    trs.create()
+# 新規作成
+trs = brTrs.Transforms(nodes=['grp', 'offset', 'space', 'mocap', 'drv'], offsets=False)
+trs.nodes_rename(prefix='prefix_', suffix=None, replace=None)
+trs.create()
+trs.do_parent(reverse=False)
+
+# Transformしたら実行すると値が更新される
+for node_object in trs.node_list:
+    node_object.get_values()
+
+# コントローラのオフセットノード作成
+sel = cmds.ls(os=True)
+trs = brTrs.Transforms(nodes=['grp', 'offset', 'space', 'mocap', 'drv', sel[0]], offsets=True)
+trs.nodes_rename(prefix=None, suffix=None, replace=['CTL', 'ctrl'])
+trs.create()
+trs.do_parent(reverse=False)
     """
-    def __init__(self, nodes=None, offsets=['_offset']):
+    def __init__(self, nodes=None, offsets=False):
         super(Transforms, self).__init__(nodes=nodes)
         self.offsets = offsets
 
-    def create(self):
-        for n in self.nodes:
-            trs = Transform(n)
-            trs.create()
+        if self.offsets:
+            buf_nodes = []
+            ctrl = self.nodes[-1]
+            for i, n in enumerate(self.nodes):
+                if i == len(self.nodes)-1:
+                    buf_nodes.append(n)
+                else:
+                    buf_nodes.append('{}_{}'.format(ctrl, n))
 
-    def do_offset(self):
-        for n in self.nodes:
-            trs = Transform(n, self.offsets)
-            trs.do_offset()
+            self.nodes = buf_nodes
+            self.get_node_objects()
+
+    def create(self):
+        for i, n in enumerate(self.nodes):
+            trs = Transform(n)
+            if self.offsets and i == len(self.nodes)-1:
+                if self.node_list[i].buf_rename:
+                    self.node_list[i].do_rename()
+            else:
+                trs.create()
+
+        self.get_node_objects()
+
+        if self.offsets:
+            ctrl = self.node_list[-1].node
+            for i, n in enumerate(self.node_list[:-1:]):
+                cmds.matchTransform(n.node, ctrl)
 
     def do_parent(self, reverse=False):
         parent = None
@@ -74,8 +89,12 @@ class Transforms(brNode.Nodes):
                 cmds.parent(n, parent)
             parent = n
 
+    def do_parent_root(self):
+        for i, n in enumerate(self.nodes):
+            if i == 0:
+                pass
+            else:
+                cmds.parent(n, self.nodes[0])
+
     def nodes_rename(self, prefix=None, suffix=None, replace=None):
         self.rename(prefix, suffix, replace)
-        if self.node_rename_list:
-            self.nodes = self.node_rename_list
-            self.get_node_objects()

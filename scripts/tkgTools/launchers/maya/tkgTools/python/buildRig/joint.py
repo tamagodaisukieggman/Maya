@@ -39,9 +39,22 @@ class Joint(brNode.Node):
         if self.parent:
             cmds.parent(self.dup, w=True)
 
-class Joints:
+class Joints(brNode.Nodes):
+    """
+import maya.cmds as cmds
+from imp import reload
+
+import buildRig.joint as brJnt
+reload(brJnt)
+
+sel = cmds.ls(os=True)
+jnts = brJnt.Joints(nodes=sel)
+jnts.copy()
+jnts.rename(prefix='prefix_', suffix=None, replace=None)
+jnts.do_rename()
+    """
     def __init__(self, nodes=None):
-        self.nodes = nodes
+        super(Joints, self).__init__(nodes=nodes)
         self.copies = []
 
     def copy(self, new_name=['', '_copy', None]):

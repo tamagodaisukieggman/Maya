@@ -50,17 +50,17 @@ class Nodes:
     def __init__(self, nodes=None):
         self.nodes = nodes
         self.node_list = []
-        self.node_rename_list = []
         self.get_node_objects()
 
     def rename(self, prefix=None, suffix=None, replace=None):
-        self.node_rename_list = [node.rename(prefix, suffix, replace) for
+        self.nodes = [node.rename(prefix, suffix, replace) for
                                                     node in self.node_list]
 
     def do_rename(self):
         [node.do_rename() for node in self.node_list]
 
     def get_node_objects(self):
+        self.node_list = []
         for n in self.nodes:
             node = Node(n)
             self.node_list.append(node)
