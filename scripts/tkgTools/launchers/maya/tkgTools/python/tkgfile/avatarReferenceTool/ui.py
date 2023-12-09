@@ -488,6 +488,10 @@ class AvatarReferenceTool(MayaQWidgetDockableMixin, QMainWindow):
                         basename_without_ext = os.path.splitext(os.path.basename(file_name))[0]
                         btn = self.reference_btn_dict[ex_nss]
                         btn.setText(basename_without_ext)
+                        print('ex_nss', ex_nss)
+
+        print('self.reference_set_dict, self.reference_cbox_dict')
+        print(self.reference_set_dict, self.reference_cbox_dict)
 
         if ret_no_files:
             pick_files = avatarReferenceTool.in_line_for_files(ret_no_files)

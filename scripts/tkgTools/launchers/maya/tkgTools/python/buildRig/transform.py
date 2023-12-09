@@ -94,7 +94,17 @@ trs.do_parent(reverse=False)
             if i == 0:
                 pass
             else:
-                cmds.parent(n, self.nodes[0])
+                n_pa = cmds.listRelatives(n, p=True) or []
+                if not self.nodes[0] in n_pa:
+                    cmds.parent(n, self.nodes[0])
 
     def nodes_rename(self, prefix=None, suffix=None, replace=None):
         self.rename(prefix, suffix, replace)
+
+def create_transforms(nodes=['grp', 'offset', 'space', 'mocap', 'drv', 'ctrl'], offsets=True,
+                      prefix=None, suffix=None, replace=None):
+    trs = Transforms(nodes=nodes, offsets=offsets)
+    trs.nodes_rename(prefix=prefix, suffix=suffix, replace=replace)
+    trs.create()
+    trs.do_parent(reverse=False)
+    return trs

@@ -130,7 +130,7 @@ def delete_ref(ref_name=None):
         cmds.namespace(mergeNamespaceWithParent=True, removeNamespace=ref_name)
     except:
         # print(traceback.format_exc())
-        pass
+        print(traceback.format_exc())
 
     delete_sim_temps(sim_namespace=ref_name)
 
@@ -145,14 +145,9 @@ def avatar_update(reference_set_dict, reference_cbox_dict):
     curtime = cmds.currentTime(q=True)
 
     ref_info, ret_no_files = get_reference_info()
+    print('#'*20)
     for ref_name, type_path in reference_set_dict.items():
-        print('ReferenceName: {}, Path: {}'.format(ref_name, type_path))
-        ex_nss = None
-        namespace = ':'+ ref_name
-        for refs in ref_info:
-            if namespace == refs['namespace']:
-                ex_nss = True
-
+        # print('ReferenceName: {}, Path: {}'.format(ref_name, type_path))
         cbox = reference_cbox_dict[ref_name]
         path = type_path[1]
         parts_type = type_path[0]
@@ -160,33 +155,36 @@ def avatar_update(reference_set_dict, reference_cbox_dict):
         try:
             anim_temp_save(ref_name=ref_name, parts_type=parts_type, operation='export')
         except:
-            pass
+            print(traceback.format_exc())
 
         if cbox.isChecked():
+            print('Check:', ref_name)
             if path:
                 if os.path.isfile(path):
-                    # replace
-                    if ex_nss:
-                        print('Replace -> ReferenceName: {}, Path: {}'.format(ref_name, type_path))
-                        print('Replace Path: {}'.format(path))
-                        cmds.file(
-                            path,
-                            loadReference=ref_name+'RN',
-                            type=FBX_TYPE,
-                            f=True
-                        )
+                    print('Update: {}, Path: {}'.format(ref_name, type_path))
 
-                    # new
-                    else:
-                        cmds.file(
-                            path,
-                            namespace=ref_name,
-                            r=True,
-                            type=FBX_TYPE,
-                            ignoreVersion=True,
-                            gl=True,
-                            mergeNamespacesOnClash=False,
-                        )
+                    # Delete
+                    joint_connection(namespace=ref_name, connect=False)
+                    if cmds.objExists(ref_name+'RN'):
+                        cmds.file(rr=True, referenceNode=ref_name+'RN')
+                        try:
+                            cmds.namespace(mergeNamespaceWithParent=True, removeNamespace=ref_name)
+                        except:
+                            # print(traceback.format_exc())
+                            print(traceback.format_exc())
+
+                    delete_sim_temps(sim_namespace=ref_name)
+
+                    # Create
+                    cmds.file(
+                        path,
+                        namespace=ref_name,
+                        r=True,
+                        type=FBX_TYPE,
+                        ignoreVersion=True,
+                        gl=True,
+                        mergeNamespacesOnClash=False,
+                    )
 
                     cmds.currentTime(0.0)
 
@@ -207,19 +205,21 @@ def avatar_update(reference_set_dict, reference_cbox_dict):
 
         else:
             # anim_temp_save(parts_type=parts_type, operation='export')
-            if ex_nss:
-                joint_connection(namespace=ref_name, connect=False)
+            print('Uncheck:', ref_name)
+            # if ex_nss:
+            joint_connection(namespace=ref_name, connect=False)
+            if cmds.objExists(ref_name+'RN'):
                 cmds.file(rr=True, referenceNode=ref_name+'RN')
                 try:
                     cmds.namespace(mergeNamespaceWithParent=True, removeNamespace=ref_name)
                 except:
-                    # print(traceback.format_exc())
-                    pass
+                    print(traceback.format_exc())
 
             delete_sim_temps(sim_namespace=ref_name)
 
         # anim_temp_save(parts_type=parts_type, operation='import')
 
+    print('#'*20)
     cmds.playbackOptions(min=start)
     cmds.playbackOptions(max=end)
 
@@ -328,7 +328,7 @@ def prop_update(path, ref_name, unload):
             cmds.namespace(mergeNamespaceWithParent=True, removeNamespace=ref_name)
         except:
             # print(traceback.format_exc())
-            pass
+            print(traceback.format_exc())
 
         return
 
@@ -933,7 +933,7 @@ def export_avatar_collection(type='avatar'):
         export_path = 'C:/Users/'+os.getenv('USER')+'/Documents/maya/scripts/tkgTools/launchers/maya/tkgTools/python/tkgfile/avatarReferenceTool/data/{}_collection.json'.format(type)
         json_transfer(file_name=export_path, operation='export', export_values=files)
     except Exception as e:
-        pass
+        print(traceback.format_exc())
 
     p4v_status = True
     try:

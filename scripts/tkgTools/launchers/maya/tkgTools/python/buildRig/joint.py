@@ -9,10 +9,8 @@ import maya.mel as mel
 
 import buildRig.common as brCommon
 import buildRig.node as brNode
-import buildRig.transform as brTrs
 reload(brCommon)
 reload(brNode)
-reload(brTrs)
 
 class Joint(brNode.Node):
     def __init__(self, node=None):
@@ -77,6 +75,16 @@ jnts.do_rename()
         for j in self.nodes:
             jnt = Joint(j)
             jnt.set_ssc()
+
+def create_joints(nodes=None, prefix=None, suffix=None, replace=['_copy', '']):
+    jnts = Joints(nodes=nodes)
+    jnts.copy()
+    copy_jnts = Joints(nodes=jnts.copies)
+    copy_jnts.rename(prefix=prefix, suffix=suffix, replace=replace)
+    copy_jnts.do_rename()
+    copy_jnts.get_node_objects()
+
+    return copy_jnts
 
 
 # jnt.rename(prefix='PrEfIx_', suffix='_suffix', replace=['joint2', 'JNT2'])

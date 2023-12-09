@@ -12,6 +12,7 @@ class Node:
     def __init__(self, node=None, parent=None):
         self.node = node
         self.parent = parent
+        self.full_path = None
 
         self.buf_rename = None
 
@@ -24,12 +25,17 @@ class Node:
 
     def get_values(self):
         self.get_parent()
+        self.get_full_path()
         self.get_wld_trs()
         self.get_jo()
 
     def get_parent(self):
         parent = cmds.listRelatives(self.node, p=True, f=True) or None
         if parent: self.parent = parent[0]
+
+    def get_full_path(self):
+        full_path = cmds.ls(self.node, l=True) or None
+        if full_path: self.full_path = full_path[0]
 
     def rename(self, prefix=None, suffix=None, replace=None):
         self.buf_rename = brCommon.rename(self.node, prefix, suffix, replace)
