@@ -7,6 +7,7 @@ import maya.cmds as cmds
 import maya.mel as mel
 
 import buildRig.common as brCommon
+reload(brCommon)
 
 class Node:
     def __init__(self, node=None, parent=None):
@@ -54,6 +55,9 @@ class Node:
 
     def freezeTransform(self, pos=True, rot=True, scl=True):
         cmds.makeIdentity(self.node, apply=True, t=pos, r=rot, s=scl, n=False, pn=True)
+
+    def set_preferredAngle(self):
+        cmds.joint(self.node, e=True, spa=True, ch=True)
 
 class Nodes:
     def __init__(self, nodes=None):

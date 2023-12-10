@@ -111,8 +111,21 @@ class Fk(brGrp.RigModule):
     def connection(self):
         for ctrl_object, jnt in zip(self.trs_objects, self.jnt_object.nodes):
             ctrl = ctrl_object.nodes[-1]
+
+            # pairBlend
             pbn = cmds.createNode('pairBlend', n=jnt+'_PBN', ss=True)
+
+            # setAttr
             cmds.setAttr(pbn+'.rotInterpolation', 1)
+
+            # connectAttr
             cmds.connectAttr(ctrl+'.r', pbn+'.inRotate2', f=True)
             cmds.connectAttr(pbn+'.outRotate', jnt+'.r', f=True)
+
+            cmds.connectAttr(ctrl+'.rotateOrder', jnt+'.rotateOrder', f=True)
+            cmds.connectAttr(jnt+'.rotateOrder', pbn+'.rotateOrder', f=True)
+
+            cmds.connectAttr(ctrl+'.s', jnt+'.s', f=True)
+
+            #
             cmds.pointConstraint(ctrl, jnt, w=True)
