@@ -52,6 +52,9 @@ class Node:
         if cmds.objectType(self.node) == 'joint':
             self.jnt_orient = cmds.getAttr(self.node+'.jo')[0]
 
+    def freezeTransform(self, pos=True, rot=True, scl=True):
+        cmds.makeIdentity(self.node, apply=True, t=pos, r=rot, s=scl, n=False, pn=True)
+
 class Nodes:
     def __init__(self, nodes=None):
         self.nodes = nodes

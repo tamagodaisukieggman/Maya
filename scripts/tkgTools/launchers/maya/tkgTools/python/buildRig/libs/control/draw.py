@@ -147,6 +147,9 @@ class Draw(object):
         if not axis == "y":
             self.set_axis(axis)
 
+        # Unlock RotateOrder
+        cmds.setAttr(self.curve+'.rotateOrder', k=True)
+
         return self.curve
 
     def combine_curves(self, curve=None, shapes=None):

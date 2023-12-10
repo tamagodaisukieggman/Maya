@@ -21,14 +21,27 @@ class Fk(brGrp.RigModule):
     def __init__(self,
                  module=None,
                  side=None,
-                 parent_rig_module=True,
+                 rig_joints_parent=None,
+                 rig_ctrls_parent=None,
                  joints=None,
                  shape='cube',
                  axis='x',
                  scale=5):
+        """
+        Params:
+        module = string<モジュール名を指定する>
+        side = string<中央、右、左がわかる識別子を指定する>
+        rig_joints_parent = string<ジョイントをペアレントする親を指定する>
+        rig_ctrls_parent = string<コントローラをペアレントする親を指定する>
+        joints = list[string]<ベースになるジョイントのリストを指定する>
+        shape = string<コントローラのタイプを指定する>
+        axis = string<コントローラの向き'x', 'y', 'z'のどれかを指定する>
+        scale = float<コントローラのサイズを指定する>
+        """
         super(Fk, self).__init__(module=module,
                                  side=side)
-        self.parent_rig_module = parent_rig_module
+        self.rig_joints_parent = rig_joints_parent
+        self.rig_ctrls_parent = rig_ctrls_parent
         self.joints = joints
         self.shape = shape
         self.axis = axis
@@ -48,12 +61,13 @@ class Fk(brGrp.RigModule):
     def create_fk_module(self):
         self.create_joints()
         self.create_ctrls()
-        if self.parent_rig_module:
-            self.create_rig_module()
+        self.create_rig_module()
+        self.connection()
 
     def create_joints(self):
         self.jnt_object = brJnt.create_joints(nodes=self.joints, prefix='FK_', suffix=None, replace=['_copy', ''])
         for node in self.jnt_object.node_list:
+            node.freezeTransform()
             node.get_values()
         self.top_fk_joint_nodes.append(self.jnt_object.node_list[0].full_path.split('|')[1])
 
@@ -80,8 +94,25 @@ class Fk(brGrp.RigModule):
         self.trs_module_fk = brTrs.create_transforms(nodes=[self.module_grp, self.module_grp + '_FK'], offsets=False)
         self.trs_ctrl_fk = brTrs.create_transforms(nodes=[self.ctrl_grp, self.ctrl_grp + '_FK'], offsets=False)
 
+        # リグ用のジョイントをペアレント化させる
+        if not self.rig_joints_parent:
+            self.rig_joints_parent = self.trs_module_fk.nodes[-1]
+
         for jnt in self.top_fk_joint_nodes:
-            cmds.parent(jnt, self.trs_module_fk.nodes[-1])
+            cmds.parent(jnt, self.rig_joints_parent)
+
+        # コントローラをペアレント化させる
+        if not self.rig_ctrls_parent:
+            self.rig_ctrls_parent = self.trs_ctrl_fk.nodes[-1]
 
         for ctrl in self.top_fk_ctrl_nodes:
-            cmds.parent(ctrl, self.trs_ctrl_fk.nodes[-1])
+            cmds.parent(ctrl, self.rig_ctrls_parent)
+
+    def connection(self):
+        for ctrl_object, jnt in zip(self.trs_objects, self.jnt_object.nodes):
+            ctrl = ctrl_object.nodes[-1]
+            pbn = cmds.createNode('pairBlend', n=jnt+'_PBN', ss=True)
+            cmds.setAttr(pbn+'.rotInterpolation', 1)
+            cmds.connectAttr(ctrl+'.r', pbn+'.inRotate2', f=True)
+            cmds.connectAttr(pbn+'.outRotate', jnt+'.r', f=True)
+            cmds.pointConstraint(ctrl, jnt, w=True)
