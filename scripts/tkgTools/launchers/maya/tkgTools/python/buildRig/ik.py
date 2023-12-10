@@ -223,8 +223,11 @@ ik = brIk.Ik(module=None,
         ori_con = cmds.orientConstraint(self.ik_local_ctrl_object.nodes[-1], self.ik_joints[-1], w=True)[0]
         cmds.setAttr(ori_con+'.interpType', 2)
 
-        switch_ori_con = cmds.orientConstraint(self.ik_joints[1], self.ik_local_ctrl_object.nodes[2], w=True)[0]
+        switch_ori_con = cmds.orientConstraint(self.ik_joints[1], self.ik_local_ctrl_object.nodes[2], w=True, mo=True)[0]
         cmds.setAttr(switch_ori_con+'.interpType', 2)
+        cmds.disconnectAttr(switch_ori_con+'.constraintRotateX', self.ik_local_ctrl_object.nodes[2]+'.rx')
+        cmds.disconnectAttr(switch_ori_con+'.constraintRotateY', self.ik_local_ctrl_object.nodes[2]+'.ry')
+        cmds.disconnectAttr(switch_ori_con+'.constraintRotateZ', self.ik_local_ctrl_object.nodes[2]+'.rz')
 
         # local pairBlend
         pbn = cmds.createNode('pairBlend', n=self.ik_local_ctrl_object.nodes[2]+'_PBN', ss=True)
@@ -232,3 +235,7 @@ ik = brIk.Ik(module=None,
 
         cmds.connectAttr(switch_ori_con+'.constraintRotate', pbn+'.inRotate2', f=True)
         cmds.connectAttr(pbn+'.outRotate', self.ik_local_ctrl_object.nodes[2]+'.r', f=True)
+
+        # local pairBlend addAttr
+        cmds.addAttr(self.ik_local_ctrl_object.nodes[-1], ln='autoPose', sn='ap', at='double', dv=0, max=1, min=0, k=True)
+        cmds.connectAttr(self.ik_local_ctrl_object.nodes[-1]+'.ap', pbn+'.weight', f=True)

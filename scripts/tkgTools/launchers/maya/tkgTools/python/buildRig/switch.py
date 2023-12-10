@@ -63,8 +63,8 @@ class Switch(brGrp.RigModule):
     def create_switch_module(self):
         self.create_joints()
         self.create_ctrls()
-        # self.create_rig_module()
-        # self.connection()
+        self.create_rig_module()
+        self.connection()
 
     def create_joints(self):
         self.jnt_object = brJnt.create_joints(nodes=self.joints, prefix=self.rig_type + '_SWITCH_', suffix=None, replace=['_copy', ''])
@@ -82,6 +82,7 @@ class Switch(brGrp.RigModule):
         self.trs_object = brTrs.create_transforms(nodes=['GRP', 'OFFSET', 'SPACE', 'MOCAP', 'DRV', self.draw.curve], offsets=True,
                                                 prefix=None, suffix=None, replace=['_CURVE', self.rig_type + '_SWITCH_CTRL'])
         self.trs_objects.append(self.trs_object)
+        self.switch_ctrl_object = self.trs_object
 
         for trs_object in self.trs_objects:
             for node in trs_object.node_list:
@@ -105,27 +106,28 @@ class Switch(brGrp.RigModule):
         if not self.rig_ctrls_parent:
             self.rig_ctrls_parent = self.trs_ctrl_switch.nodes[-1]
 
-        for ctrl in self.top_fk_ctrl_nodes:
+        for ctrl in self.top_switch_ctrl_nodes:
             cmds.parent(ctrl, self.rig_ctrls_parent)
 
     def connection(self):
-        for ctrl_object, jnt in zip(self.trs_objects, self.jnt_object.nodes):
-            ctrl = ctrl_object.nodes[-1]
-
-            # pairBlend
-            pbn = cmds.createNode('pairBlend', n=jnt+'_PBN', ss=True)
-
-            # setAttr
-            cmds.setAttr(pbn+'.rotInterpolation', 1)
-
-            # connectAttr
-            cmds.connectAttr(ctrl+'.r', pbn+'.inRotate2', f=True)
-            cmds.connectAttr(pbn+'.outRotate', jnt+'.r', f=True)
-
-            cmds.connectAttr(ctrl+'.rotateOrder', jnt+'.rotateOrder', f=True)
-            cmds.connectAttr(jnt+'.rotateOrder', pbn+'.rotateOrder', f=True)
-
-            cmds.connectAttr(ctrl+'.s', jnt+'.s', f=True)
-
-            #
-            cmds.pointConstraint(ctrl, jnt, w=True)
+        cmds.pointConstraint(self.jnt_object.nodes[-1], self.top_switch_ctrl_nodes[0], w=True)
+        # for ctrl_object, jnt in zip(self.trs_objects, self.jnt_object.nodes):
+        #     ctrl = ctrl_object.nodes[-1]
+        #
+        #     # pairBlend
+        #     pbn = cmds.createNode('pairBlend', n=jnt+'_PBN', ss=True)
+        #
+        #     # setAttr
+        #     cmds.setAttr(pbn+'.rotInterpolation', 1)
+        #
+        #     # connectAttr
+        #     cmds.connectAttr(ctrl+'.r', pbn+'.inRotate2', f=True)
+        #     cmds.connectAttr(pbn+'.outRotate', jnt+'.r', f=True)
+        #
+        #     cmds.connectAttr(ctrl+'.rotateOrder', jnt+'.rotateOrder', f=True)
+        #     cmds.connectAttr(jnt+'.rotateOrder', pbn+'.rotateOrder', f=True)
+        #
+        #     cmds.connectAttr(ctrl+'.s', jnt+'.s', f=True)
+        #
+        #     #
+        #     cmds.pointConstraint(ctrl, jnt, w=True)

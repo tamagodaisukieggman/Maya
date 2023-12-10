@@ -86,7 +86,9 @@ trs.do_parent(reverse=False)
             if i == 0:
                 pass
             else:
-                cmds.parent(n, parent)
+                pa = cmds.listRelatives(n, p=True) or None
+                if not pa:
+                    cmds.parent(n, parent)
             parent = n
 
     def do_parent_root(self):
