@@ -27,7 +27,7 @@ class RigModule(RigBase):
     def __init__(self,
                  module=None,
                  side=None):
-        super(RigModule, self).__init__()
+        super().__init__()
         self.module = module
         self.side = side
 
