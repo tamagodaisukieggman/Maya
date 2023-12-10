@@ -25,9 +25,13 @@ class Switch(brGrp.RigModule):
                  rig_ctrls_parent=None,
                  rig_type='IKFK',
                  joints=None,
-                 shape='cube',
+                 shape='switch',
                  axis='x',
-                 scale=5):
+                 scale=5,
+                 switch_fk_joints=None,
+                 switch_fk_ctrls=None,
+                 switch_ik_joints=None,
+                 switch_ik_ctrls=None):
         """
         Params:
         module = string<モジュール名を指定する>
@@ -55,6 +59,11 @@ class Switch(brGrp.RigModule):
         self.top_switch_joint_nodes = []
         self.top_switch_ctrl_nodes = []
 
+        self.switch_fk_joints = switch_fk_joints
+        self.switch_fk_ctrls = switch_fk_ctrls
+        self.switch_ik_joints = switch_ik_joints
+        self.switch_ik_ctrls = switch_ik_ctrls
+
         # Controller
         self.draw = brDraw.Draw()
 
@@ -64,6 +73,7 @@ class Switch(brGrp.RigModule):
         self.create_joints()
         self.create_ctrls()
         self.create_rig_module()
+        self.get_ikfk_shapes()
         self.connection()
 
     def create_joints(self):
@@ -109,8 +119,45 @@ class Switch(brGrp.RigModule):
         for ctrl in self.top_switch_ctrl_nodes:
             cmds.parent(ctrl, self.rig_ctrls_parent)
 
+    def get_ikfk_shapes(self):
+        self.fk_ctrl_shapes = []
+        self.ik_ctrl_shapes = []
+        for fk_trs_object in self.switch_fk_ctrls:
+            [node.get_values() for node in fk_trs_object.node_list]
+            for fk_node in fk_trs_object.node_list:
+                if fk_node.shapes:
+                    for fks in fk_node.shapes:
+                        if not fks in self.fk_ctrl_shapes:
+                            self.fk_ctrl_shapes.append(fks)
+
+        for ik_trs_object in self.switch_ik_ctrls:
+            [node.get_values() for node in ik_trs_object.node_list]
+            for ik_node in ik_trs_object.node_list:
+                if ik_node.shapes:
+                    for iks in ik_node.shapes:
+                        if not iks in self.ik_ctrl_shapes:
+                            self.ik_ctrl_shapes.append(iks)
+
     def connection(self):
         cmds.pointConstraint(self.jnt_object.nodes[-1], self.top_switch_ctrl_nodes[0], w=True)
+
+        cmds.addAttr(self.switch_ctrl_object.nodes[-1], ln='switch', sn='swh', at='double', dv=0, max=1, min=0, k=True)
+
+        for i, (fk_jnt, ik_jnt, switch_jnt) in enumerate(zip(self.switch_fk_joints, self.switch_ik_joints, self.jnt_object.nodes)):
+            pac = cmds.parentConstraint(fk_jnt, switch_jnt, w=True)[0]
+            cmds.parentConstraint(ik_jnt, switch_jnt, w=True)[0]
+            cmds.setAttr(pac+'.interpType', 2)
+
+            # IK connection
+            cmds.connectAttr(self.switch_ctrl_object.nodes[-1]+'.swh', pac+'.w1', f=True)
+            [cmds.connectAttr(pac+'.w1', s+'.v', f=True) for s in self.ik_ctrl_shapes]
+
+            # FK connection
+            rev = cmds.createNode('reverse', n=switch_jnt + '_REV', ss=True)
+            cmds.connectAttr(self.switch_ctrl_object.nodes[-1]+'.swh', rev+'.inputX', f=True)
+            cmds.connectAttr(rev+'.outputX', pac+'.w0', f=True)
+            [cmds.connectAttr(pac+'.w0', s+'.v', f=True) for s in self.fk_ctrl_shapes]
+
         # for ctrl_object, jnt in zip(self.trs_objects, self.jnt_object.nodes):
         #     ctrl = ctrl_object.nodes[-1]
         #

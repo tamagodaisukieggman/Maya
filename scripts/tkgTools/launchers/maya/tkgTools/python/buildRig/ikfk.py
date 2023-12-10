@@ -59,10 +59,55 @@ class Ikfk(brGrp.RigModule):
                  switch_rig_ctrls_parent=None,
                  switch_rig_type='IKFK',
                  switch_joints=None,
-                 switch_shape='cube',
+                 switch_shape='switch',
                  switch_axis='x',
                  switch_scale=5):
         """
+# -*- coding: utf-8 -*-
+import maya.cmds as cmds
+import maya.mel as mel
+from imp import reload
+import traceback
+
+import buildRig.ikfk as brIkfk
+reload(brIkfk)
+
+
+sel = cmds.ls(os=True, type='joint')
+
+ikfk = brIkfk.Ikfk(module=None,
+                 side=None,
+                 ik_rig_joints_parent=None,
+                 ik_rig_ctrls_parent=None,
+                 ik_joints=sel,
+                 ik_base_shape='cube',
+                 ik_base_axis='x',
+                 ik_base_scale=1000,
+                 ik_main_shape='jack',
+                 ik_main_axis='x',
+                 ik_main_scale=1000,
+                 ik_pv_shape='locator_3d',
+                 ik_pv_axis='x',
+                 ik_pv_scale=1000,
+                 ik_local_shape='cube',
+                 ik_local_axis='x',
+                 ik_local_scale=700,
+                 ik_solver=1,
+
+                 fk_rig_joints_parent=None,
+                 fk_rig_ctrls_parent=None,
+                 fk_joints=sel,
+                 fk_shape='cube',
+                 fk_axis='x',
+                 fk_scale=1000,
+
+                 switch_rig_joints_parent=None,
+                 switch_rig_ctrls_parent=None,
+                 switch_rig_type='IKFK',
+                 switch_joints=sel,
+                 switch_shape='switch',
+                 switch_axis='x',
+                 switch_scale=500)
         """
         super(Ikfk, self).__init__(module=module,
                                  side=side)
@@ -149,7 +194,11 @@ class Ikfk(brGrp.RigModule):
                  joints=self.switch_joints,
                  shape=self.switch_shape,
                  axis=self.switch_axis,
-                 scale=self.switch_scale)
+                 scale=self.switch_scale,
+                 switch_fk_joints=self.fk.jnt_object.nodes,
+                 switch_fk_ctrls=self.fk.trs_objects,
+                 switch_ik_joints=self.ik.jnt_object.nodes,
+                 switch_ik_ctrls=self.ik.trs_objects)
 
     def connection(self):
         pass

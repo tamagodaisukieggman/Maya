@@ -20,6 +20,7 @@ class Node:
         self.wld_pos = None
         self.wld_rot = None
         self.jnt_orient = None
+        self.shapes = None
 
         if cmds.objExists(self.node):
             self.get_values()
@@ -29,6 +30,7 @@ class Node:
         self.get_full_path()
         self.get_wld_trs()
         self.get_jo()
+        self.get_shapes()
 
     def get_parent(self):
         parent = cmds.listRelatives(self.node, p=True, f=True) or None
@@ -52,6 +54,9 @@ class Node:
     def get_jo(self):
         if cmds.objectType(self.node) == 'joint':
             self.jnt_orient = cmds.getAttr(self.node+'.jo')[0]
+
+    def get_shapes(self):
+        self.shapes = cmds.listRelatives(self.node, s=True) or None
 
     def freezeTransform(self, pos=True, rot=True, scl=True):
         cmds.makeIdentity(self.node, apply=True, t=pos, r=rot, s=scl, n=False, pn=True)
