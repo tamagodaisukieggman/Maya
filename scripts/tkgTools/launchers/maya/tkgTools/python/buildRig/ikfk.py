@@ -47,6 +47,8 @@ class Ikfk(brGrp.RigModule):
                  ik_local_axis='x',
                  ik_local_scale=10,
                  ik_solver=1,
+                 dForwardAxis='-z',
+                 dWorldUpAxis='x',
 
                  fk_rig_joints_parent=None,
                  fk_rig_ctrls_parent=None,
@@ -93,6 +95,8 @@ ikfk = brIkfk.Ikfk(module=None,
                  ik_local_axis='x',
                  ik_local_scale=700,
                  ik_solver=1,
+                 dForwardAxis='-z',
+                 dWorldUpAxis='x',
 
                  fk_rig_joints_parent=None,
                  fk_rig_ctrls_parent=None,
@@ -129,6 +133,8 @@ ikfk = brIkfk.Ikfk(module=None,
         self.ik_local_axis = ik_local_axis
         self.ik_local_scale = ik_local_scale
         self.ik_solver = ik_solver
+        self.dForwardAxis = dForwardAxis
+        self.dWorldUpAxis = dWorldUpAxis
 
         # FK module settings
         self.fk_rig_joints_parent = fk_rig_joints_parent
@@ -173,7 +179,9 @@ ikfk = brIkfk.Ikfk(module=None,
                      ik_local_shape=self.ik_local_shape,
                      ik_local_axis=self.ik_local_axis,
                      ik_local_scale=self.ik_local_scale,
-                     solver=self.ik_solver)
+                     solver=self.ik_solver,
+                     dForwardAxis=self.dForwardAxis,
+                     dWorldUpAxis=self.dWorldUpAxis)
 
     def create_fk_module(self):
         self.fk = brFk.Fk(module=self.module,

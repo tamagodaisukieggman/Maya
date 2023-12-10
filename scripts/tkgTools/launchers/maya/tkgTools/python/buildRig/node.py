@@ -64,6 +64,11 @@ class Node:
     def set_preferredAngle(self):
         cmds.joint(self.node, e=True, spa=True, ch=True)
 
+    def unparent(self):
+        pa = cmds.listRelatives(self.node, p=True) or None
+        if pa:
+            cmds.parent(self.node, w=True)
+
 class Nodes:
     def __init__(self, nodes=None):
         self.nodes = nodes

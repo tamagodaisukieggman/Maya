@@ -50,6 +50,12 @@ def fix_shapes(node):
         else:
             cmds.rename(shp, "{}Shape_{}".format(node, i))
 
+def create_curve_on_nodes(nodes=None, name=None):
+    pts = [cmds.xform(j,q=True,ws=True,t=True) for j in nodes]
+    crv = cmds.curve(ep=pts, d=3, n=name)
+    fix_shapes(crv)
+    return crv
+
 def get_transform(node):
     if node:
         if cmds.nodeType(node) == "transform":
@@ -114,6 +120,23 @@ def distance_between(point_a=None, point_b=None):
     vector_ab = vector_from_two_points(point_a, point_b)
     distance = vector_length(vector_ab)
     return distance
+
+def split_list(lst):
+    # リストの長さを取得
+    length = len(lst)
+
+    # リストの長さが偶数の場合
+    if length % 2 == 0:
+        # 中間のインデックスを見つける
+        middle_index = length // 2
+        # リストを中間で分割する
+        return lst[:middle_index], lst[middle_index:]
+    # リストの長さが奇数の場合
+    else:
+        # 中間のインデックスを見つける
+        middle_index = length // 2
+        # 中間の値を含む分割されたリストを返す
+        return lst[middle_index], lst[:middle_index], lst[middle_index+1:]
 
 def json_transfer(file_name=None, operation=None, export_values=None):
     if operation == 'export':
