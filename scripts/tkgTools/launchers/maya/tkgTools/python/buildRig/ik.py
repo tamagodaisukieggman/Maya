@@ -74,6 +74,27 @@ ik = brIk.Ik(module=None,
              ik_local_axis='x',
              ik_local_scale=1000,
              solver=1)
+
+ik = brIk.Ik(module=None,
+             side=None,
+             rig_joints_parent=None,
+             rig_ctrls_parent=None,
+             joints=sel,
+             ik_base_shape='cube',
+             ik_base_axis='x',
+             ik_base_scale=1000,
+             ik_main_shape='jack',
+             ik_main_axis='x',
+             ik_main_scale=1000,
+             ik_pv_shape='locator_3d',
+             ik_pv_axis='x',
+             ik_pv_scale=1000,
+             ik_local_shape='cube',
+             ik_local_axis='x',
+             ik_local_scale=1000,
+             solver=2,
+             dForwardAxis='-z',
+             dWorldUpAxis='x')
         """
         super(Ik, self).__init__(module=module,
                                  side=side)
@@ -377,7 +398,11 @@ ik = brIk.Ik(module=None,
                          scale=self.ik_main_scale / 2)
 
         for ik_jnt, trs_object in zip(self.ik_joints, fk.trs_objects):
-            cmds.connectAttr(ik_jnt+'.r', trs_object.nodes[1]+'.r', f=True)
+            pbn = cmds.createNode('pairBlend', n=trs_object.nodes[1]+'_PBN', ss=True)
+            cmds.setAttr(pbn+'.rotInterpolation', 1)
+
+            cmds.connectAttr(ik_jnt+'.r', pbn+'.inRotate2', f=True)
+            cmds.connectAttr(pbn+'.outRotate', trs_object.nodes[1]+'.r', f=True)
 
     def create_ikSpline_sineDeformer(self):
         type = 'sine'
