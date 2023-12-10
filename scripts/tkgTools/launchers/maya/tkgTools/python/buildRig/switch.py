@@ -144,8 +144,8 @@ class Switch(brGrp.RigModule):
         cmds.addAttr(self.switch_ctrl_object.nodes[-1], ln='switch', sn='swh', at='double', dv=0, max=1, min=0, k=True)
 
         for i, (fk_jnt, ik_jnt, switch_jnt) in enumerate(zip(self.switch_fk_joints, self.switch_ik_joints, self.jnt_object.nodes)):
-            pac = cmds.parentConstraint(fk_jnt, switch_jnt, w=True)[0]
-            cmds.parentConstraint(ik_jnt, switch_jnt, w=True)[0]
+            pac = cmds.orientConstraint(fk_jnt, switch_jnt, w=True)[0]
+            cmds.orientConstraint(ik_jnt, switch_jnt, w=True)[0]
             cmds.setAttr(pac+'.interpType', 2)
 
             # IK connection
