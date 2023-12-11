@@ -429,26 +429,41 @@ ik = brIk.Ik(module=None,
         cmds.addAttr(dbn, ln='stretchLength', sn='sl',
                      at='double', dv=sum(ik_chain_length), max=sum(ik_chain_length), min=sum(ik_chain_length))
 
-        adn = cmds.createNode('addDoubleLinear', n=main_ctrl+'_ADN', ss=True)
-        dif = sum(ik_chain_length) - cmds.getAttr(dbn+'.distance')
-        cmds.setAttr(adn+'.input2', dif)
-
         goal_mdn = cmds.createNode('multiplyDivide', n=self.ik_joints[-1]+'_STRETCH_MDN', ss=True)
         cmds.setAttr(goal_mdn+'.input1X', sum(ik_chain_length))
         cmds.setAttr(goal_mdn+'.operation', 2)
 
-        cdn = cmds.createNode('condition', n=main_ctrl+'_STRETCH_CDN', ss=True)
-        cmds.setAttr(cdn+'.operation', 3)
-        cmds.setAttr(cdn+'.colorIfTrueR', 1)
-        cmds.connectAttr(dbn+'.distance', adn+'.input1', f=True)
-        cmds.connectAttr(adn+'.output', cdn+'.secondTerm', f=True)
-        cmds.connectAttr(dbn+'.stretchLength', cdn+'.firstTerm', f=True)
+        if self.solver in ['ikSplineSolver']:
+            adn = cmds.createNode('addDoubleLinear', n=main_ctrl+'_ADN', ss=True)
+            dif = sum(ik_chain_length) - cmds.getAttr(dbn+'.distance')
+            cmds.setAttr(adn+'.input2', dif)
 
-        pma = cmds.createNode('plusMinusAverage', n=main_ctrl+'_STRETCH_PMA', ss=True)
-        for i, mdn in enumerate(mdns):
-            cmds.connectAttr(mdn+'.outputX', pma+'.input1D[{}]'.format(i), f=True)
-        cmds.connectAttr(adn+'.output', goal_mdn+'.input1X', f=True)
-        cmds.connectAttr(pma+'.output1D', goal_mdn+'.input2X', f=True)
+            cdn = cmds.createNode('condition', n=main_ctrl+'_STRETCH_CDN', ss=True)
+            cmds.setAttr(cdn+'.operation', 3)
+            cmds.setAttr(cdn+'.colorIfTrueR', 1)
+            cmds.connectAttr(dbn+'.distance', adn+'.input1', f=True)
+            cmds.connectAttr(adn+'.output', cdn+'.secondTerm', f=True)
+            cmds.connectAttr(dbn+'.stretchLength', cdn+'.firstTerm', f=True)
+
+            pma = cmds.createNode('plusMinusAverage', n=main_ctrl+'_STRETCH_PMA', ss=True)
+            for i, mdn in enumerate(mdns):
+                cmds.connectAttr(mdn+'.outputX', pma+'.input1D[{}]'.format(i), f=True)
+            cmds.connectAttr(adn+'.output', goal_mdn+'.input1X', f=True)
+            cmds.connectAttr(pma+'.output1D', goal_mdn+'.input2X', f=True)
+
+        else:
+            cdn = cmds.createNode('condition', n=main_ctrl+'_STRETCH_CDN', ss=True)
+            cmds.setAttr(cdn+'.operation', 3)
+            cmds.setAttr(cdn+'.colorIfTrueR', 1)
+            cmds.connectAttr(dbn+'.distance', cdn+'.secondTerm', f=True)
+            cmds.connectAttr(dbn+'.stretchLength', cdn+'.firstTerm', f=True)
+
+            pma = cmds.createNode('plusMinusAverage', n=main_ctrl+'_STRETCH_PMA', ss=True)
+            for i, mdn in enumerate(mdns):
+                cmds.connectAttr(mdn+'.outputX', pma+'.input1D[{}]'.format(i), f=True)
+            cmds.connectAttr(dbn+'.distance', goal_mdn+'.input1X', f=True)
+            cmds.connectAttr(pma+'.output1D', goal_mdn+'.input2X', f=True)
+            # ikrp
 
         stretch_bta = cmds.createNode('blendTwoAttr', n=main_ctrl+'_STRETCH_BTA', ss=True)
         cmds.setAttr(stretch_bta+'.input[0]', 1)
