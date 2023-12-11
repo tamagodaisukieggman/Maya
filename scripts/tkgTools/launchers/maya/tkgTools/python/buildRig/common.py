@@ -7,6 +7,7 @@ import re
 
 import maya.cmds as cmds
 import maya.mel as mel
+import maya.api.OpenMaya as om2
 
 def rename(obj=None, prefix=None, suffix=None, replace=None):
     """
@@ -121,6 +122,16 @@ def distance_between(point_a=None, point_b=None):
     distance = vector_length(vector_ab)
     return distance
 
+def chain_length(chain_list=None):
+    chain_length = []
+    for i, obj in enumerate(chain_list):
+        if i == 0:
+            pass
+        else:
+            length = distance_between(obj, chain_list[i-1])
+            chain_length.append(length)
+    return chain_length
+
 def split_list(lst):
     # リストの長さを取得
     length = len(lst)
@@ -137,6 +148,26 @@ def split_list(lst):
         middle_index = length // 2
         # 中間の値を含む分割されたリストを返す
         return lst[middle_index], lst[:middle_index], lst[middle_index+1:]
+
+def m_obj(obj):
+    selection_list = om2.MSelectionList()
+    selection_list.add(obj)
+    return selection_list.getDependNode(0)
+
+def fn_addNumAttr(obj=None, longName=None, shortName=None, minValue=None, maxValue=None, defaultValue=None, numericData=om2.MFnNumericData.kFloat):
+    m_object = m_obj(obj)
+    m_dependency_node = om2.MFnDependencyNode(m_object)
+
+    num_att_fn = om2.MFnNumericAttribute(m_object)
+    attr = num_att_fn.create(longName, shortName, numericData, defaultValue) # float
+    num_att_fn.keyable=True
+
+    if maxValue != None:
+        num_att_fn.setMax(maxValue)
+    if minValue != None:
+        num_att_fn.setMin(minValue)
+
+    m_dependency_node.addAttribute(attr)
 
 def json_transfer(file_name=None, operation=None, export_values=None):
     if operation == 'export':
