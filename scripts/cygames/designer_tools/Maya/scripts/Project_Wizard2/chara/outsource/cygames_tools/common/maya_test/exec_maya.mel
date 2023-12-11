@@ -1,0 +1,6 @@
+python("exec(compile(open(\"C:/cygames/shrdev/shr/tools/in/ext/maya/2023/modules/shr/tests/maya_test/app.py\", \"rb\").read(), \"C:/cygames/shrdev/shr/tools/in/ext/maya/2023/modules/shr/tests/maya_test/app.py\", \"exec\"))");
+
+
+
+
+

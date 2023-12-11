@@ -1,0 +1,92 @@
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file 'D:\tech-designer\maya_legacy\scripts\CyGeneral\CySceneExplorer\ui\collection_file_widget.ui'
+#
+# Created: Mon Oct 23 19:36:01 2023
+#      by: pyside2-uic  running on PySide2 2.0.0~alpha0
+#
+# WARNING! All changes made in this file will be lost!
+
+from PySide2 import QtCore, QtGui, QtWidgets
+
+class Ui_Form(object):
+    def setupUi(self, Form):
+        Form.setObjectName("Form")
+        Form.resize(416, 63)
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(Form)
+        self.horizontalLayout_2.setSpacing(0)
+        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.col_frame = QtWidgets.QFrame(Form)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.col_frame.sizePolicy().hasHeightForWidth())
+        self.col_frame.setSizePolicy(sizePolicy)
+        self.col_frame.setMaximumSize(QtCore.QSize(10, 16777215))
+        self.col_frame.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.col_frame.setFrameShadow(QtWidgets.QFrame.Plain)
+        self.col_frame.setObjectName("col_frame")
+        self.horizontalLayout_2.addWidget(self.col_frame)
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
+        self.horizontalLayout.setContentsMargins(15, 10, 15, 10)
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.verticalLayout = QtWidgets.QVBoxLayout()
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.name_label = QtWidgets.QLabel(Form)
+        self.name_label.setObjectName("name_label")
+        self.verticalLayout.addWidget(self.name_label)
+        self.line = QtWidgets.QFrame(Form)
+        self.line.setFrameShadow(QtWidgets.QFrame.Plain)
+        self.line.setFrameShape(QtWidgets.QFrame.HLine)
+        self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line.setObjectName("line")
+        self.verticalLayout.addWidget(self.line)
+        self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_3.setSpacing(6)
+        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
+        self.desc_icon_button = QtWidgets.QPushButton(Form)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.desc_icon_button.sizePolicy().hasHeightForWidth())
+        self.desc_icon_button.setSizePolicy(sizePolicy)
+        self.desc_icon_button.setMaximumSize(QtCore.QSize(12, 12))
+        self.desc_icon_button.setText("")
+        self.desc_icon_button.setFlat(True)
+        self.desc_icon_button.setObjectName("desc_icon_button")
+        self.horizontalLayout_3.addWidget(self.desc_icon_button)
+        self.desc_label = QtWidgets.QLabel(Form)
+        self.desc_label.setObjectName("desc_label")
+        self.horizontalLayout_3.addWidget(self.desc_label)
+        self.verticalLayout.addLayout(self.horizontalLayout_3)
+        self.horizontalLayout.addLayout(self.verticalLayout)
+        self.file_info_label = QtWidgets.QLabel(Form)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.file_info_label.sizePolicy().hasHeightForWidth())
+        self.file_info_label.setSizePolicy(sizePolicy)
+        self.file_info_label.setText("")
+        self.file_info_label.setObjectName("file_info_label")
+        self.horizontalLayout.addWidget(self.file_info_label)
+        self.col_item_del_button = QtWidgets.QPushButton(Form)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.col_item_del_button.sizePolicy().hasHeightForWidth())
+        self.col_item_del_button.setSizePolicy(sizePolicy)
+        self.col_item_del_button.setText("")
+        self.col_item_del_button.setFlat(True)
+        self.col_item_del_button.setObjectName("col_item_del_button")
+        self.horizontalLayout.addWidget(self.col_item_del_button)
+        self.horizontalLayout_2.addLayout(self.horizontalLayout)
+
+        self.retranslateUi(Form)
+        QtCore.QMetaObject.connectSlotsByName(Form)
+
+    def retranslateUi(self, Form):
+        Form.setWindowTitle(QtWidgets.QApplication.translate("Form", "Form", None, -1))
+        self.name_label.setText(QtWidgets.QApplication.translate("Form", "Name", None, -1))
+        self.desc_label.setText(QtWidgets.QApplication.translate("Form", "Desc", None, -1))
+

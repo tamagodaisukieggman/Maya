@@ -1,0 +1,103 @@
+children:
+- children:
+  - children:
+    - children:
+      - children:
+        - children:
+          - node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Neck|Head'
+          node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Neck'
+        - children:
+          - children:
+            - node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_L|Arm_L|ArmRoll_L'
+            - children:
+              - node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_L|Arm_L|Elbow_L|WristRoll_L'
+              - children:
+                - children:
+                  - node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_L|Arm_L|Elbow_L|Wrist_L|HandattachOffset_L|Handattach_L'
+                  node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_L|Arm_L|Elbow_L|Wrist_L|HandattachOffset_L'
+                - children:
+                  - children:
+                    - node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_L|Arm_L|Elbow_L|Wrist_L|Index_01_L|Index_02_L|Index_03_L'
+                    node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_L|Arm_L|Elbow_L|Wrist_L|Index_01_L|Index_02_L'
+                  node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_L|Arm_L|Elbow_L|Wrist_L|Index_01_L'
+                - children:
+                  - children:
+                    - node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_L|Arm_L|Elbow_L|Wrist_L|Middle_01_L|Middle_02_L|Middle_03_L'
+                    node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_L|Arm_L|Elbow_L|Wrist_L|Middle_01_L|Middle_02_L'
+                  node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_L|Arm_L|Elbow_L|Wrist_L|Middle_01_L'
+                - children:
+                  - children:
+                    - node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_L|Arm_L|Elbow_L|Wrist_L|Pinky_01_L|Pinky_02_L|Pinky_03_L'
+                    node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_L|Arm_L|Elbow_L|Wrist_L|Pinky_01_L|Pinky_02_L'
+                  node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_L|Arm_L|Elbow_L|Wrist_L|Pinky_01_L'
+                - children:
+                  - children:
+                    - node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_L|Arm_L|Elbow_L|Wrist_L|Ring_01_L|Ring_02_L|Ring_03_L'
+                    node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_L|Arm_L|Elbow_L|Wrist_L|Ring_01_L|Ring_02_L'
+                  node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_L|Arm_L|Elbow_L|Wrist_L|Ring_01_L'
+                - children:
+                  - children:
+                    - node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_L|Arm_L|Elbow_L|Wrist_L|Thumb_01_L|Thumb_02_L|Thumb_03_L'
+                    node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_L|Arm_L|Elbow_L|Wrist_L|Thumb_01_L|Thumb_02_L'
+                  node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_L|Arm_L|Elbow_L|Wrist_L|Thumb_01_L'
+                node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_L|Arm_L|Elbow_L|Wrist_L'
+              node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_L|Arm_L|Elbow_L'
+            node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_L|Arm_L'
+          node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_L'
+        - children:
+          - children:
+            - node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_R|Arm_R|ArmRoll_R'
+            - children:
+              - node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_R|Arm_R|Elbow_R|WristRoll_R'
+              - children:
+                - children:
+                  - node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_R|Arm_R|Elbow_R|Wrist_R|HandattachOffset_R|Handattach_R'
+                  node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_R|Arm_R|Elbow_R|Wrist_R|HandattachOffset_R'
+                - children:
+                  - children:
+                    - node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_R|Arm_R|Elbow_R|Wrist_R|Index_01_R|Index_02_R|Index_03_R'
+                    node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_R|Arm_R|Elbow_R|Wrist_R|Index_01_R|Index_02_R'
+                  node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_R|Arm_R|Elbow_R|Wrist_R|Index_01_R'
+                - children:
+                  - children:
+                    - node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_R|Arm_R|Elbow_R|Wrist_R|Middle_01_R|Middle_02_R|Middle_03_R'
+                    node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_R|Arm_R|Elbow_R|Wrist_R|Middle_01_R|Middle_02_R'
+                  node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_R|Arm_R|Elbow_R|Wrist_R|Middle_01_R'
+                - children:
+                  - children:
+                    - node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_R|Arm_R|Elbow_R|Wrist_R|Pinky_01_R|Pinky_02_R|Pinky_03_R'
+                    node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_R|Arm_R|Elbow_R|Wrist_R|Pinky_01_R|Pinky_02_R'
+                  node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_R|Arm_R|Elbow_R|Wrist_R|Pinky_01_R'
+                - children:
+                  - children:
+                    - node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_R|Arm_R|Elbow_R|Wrist_R|Ring_01_R|Ring_02_R|Ring_03_R'
+                    node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_R|Arm_R|Elbow_R|Wrist_R|Ring_01_R|Ring_02_R'
+                  node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_R|Arm_R|Elbow_R|Wrist_R|Ring_01_R'
+                - children:
+                  - children:
+                    - node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_R|Arm_R|Elbow_R|Wrist_R|Thumb_01_R|Thumb_02_R|Thumb_03_R'
+                    node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_R|Arm_R|Elbow_R|Wrist_R|Thumb_01_R|Thumb_02_R'
+                  node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_R|Arm_R|Elbow_R|Wrist_R|Thumb_01_R'
+                node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_R|Arm_R|Elbow_R|Wrist_R'
+              node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_R|Arm_R|Elbow_R'
+            node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_R|Arm_R'
+          node: '|p1|Root|Hip|Spine1|Spine2|Spine3|Shoulder_R'
+        node: '|p1|Root|Hip|Spine1|Spine2|Spine3'
+      node: '|p1|Root|Hip|Spine1|Spine2'
+    node: '|p1|Root|Hip|Spine1'
+  - children:
+    - children:
+      - children:
+        - node: '|p1|Root|Hip|Thigh_L|Knee_L|Ankle_L|Toe_L'
+        node: '|p1|Root|Hip|Thigh_L|Knee_L|Ankle_L'
+      node: '|p1|Root|Hip|Thigh_L|Knee_L'
+    node: '|p1|Root|Hip|Thigh_L'
+  - children:
+    - children:
+      - children:
+        - node: '|p1|Root|Hip|Thigh_R|Knee_R|Ankle_R|Toe_R'
+        node: '|p1|Root|Hip|Thigh_R|Knee_R|Ankle_R'
+      node: '|p1|Root|Hip|Thigh_R|Knee_R'
+    node: '|p1|Root|Hip|Thigh_R'
+  node: '|p1|Root|Hip'
+node: Root

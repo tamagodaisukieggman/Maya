@@ -1,0 +1,45 @@
+global proc centerPivotToComponent(){
+	$a_SEL = `ls -sl`;
+	if(size($a_SEL) == 0){
+		confirmDialog -title "IGN_CenterPivot_to_Component" -message "\nコンポーネントが１つも選択されていません\n" -button "OK";
+		return;
+	}
+
+	string $a_MESH_COMPONENT[] = `filterExpand -sm 31 -sm 32 -sm 34`;
+
+	string $a_SHAPE[] = `selectedNodes`;
+
+	if(size($a_MESH_COMPONENT) && size($a_SHAPE)){
+		for($i = 0; $i < size($a_SHAPE); $i++){
+			string $parents[] = `listRelatives -fullPath -parent $a_SHAPE[$i]`;
+			$TRANSFORM = $parents[0];
+
+			float $a_BBOX[6] = `polyEvaluate -boundingBoxComponent $TRANSFORM`;
+			float $BBOX_CENTER_X = ( $a_BBOX[0] + $a_BBOX[1] ) / 2;
+			float $BBOX_CENTER_Y = ( $a_BBOX[2] + $a_BBOX[3] ) / 2;
+			float $BBOX_CENTER_Z = ( $a_BBOX[4] + $a_BBOX[5] ) / 2;
+
+			float $WORLD_BEFORE_MATRIX[] = `getAttr ($TRANSFORM + ".worldMatrix")`;
+			float $WORLD_BEFORE_X = $WORLD_BEFORE_MATRIX[12];
+			float $WORLD_BEFORE_Y = $WORLD_BEFORE_MATRIX[13];
+			float $WORLD_BEFORE_Z = $WORLD_BEFORE_MATRIX[14];
+
+			move -a $BBOX_CENTER_X $BBOX_CENTER_Y $BBOX_CENTER_Z $TRANSFORM;
+
+			xform -ws -piv $BBOX_CENTER_X $BBOX_CENTER_Y $BBOX_CENTER_Z $TRANSFORM;
+
+			float $WORLD_AFTER_MATRIX[] = `getAttr ($TRANSFORM + ".worldMatrix")`;
+			float $WORLD_AFTER_X = $WORLD_AFTER_MATRIX[12];
+			float $WORLD_AFTER_Y = $WORLD_AFTER_MATRIX[13];
+			float $WORLD_AFTER_Z = $WORLD_AFTER_MATRIX[14];
+
+			float $MOVE_VALUE_X = $WORLD_AFTER_X - $WORLD_BEFORE_X;
+			float $MOVE_VALUE_Y = $WORLD_AFTER_Y - $WORLD_BEFORE_Y;
+			float $MOVE_VALUE_Z = $WORLD_AFTER_Z - $WORLD_BEFORE_Z;
+
+			$a_FACE = `polyListComponentConversion -tf $TRANSFORM`;
+
+			move -r (-1 * $MOVE_VALUE_X) (-1 * $MOVE_VALUE_Y) (-1 * $MOVE_VALUE_Z) $a_FACE;
+		}
+	}
+}

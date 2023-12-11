@@ -1,0 +1,40 @@
+global proc CyKeepCombine()
+{
+
+string $buffer[];
+string $sele[] = `ls -sl -type "transform"`;
+if((`size $sele`) <= 1){return;}
+
+int $select_size = (`size $sele` - 1);
+int $buffer_size = `tokenize $sele[$select_size] "|" $buffer`;
+
+string $group[] = `listRelatives -p -f $sele[$select_size]`;
+float $xyz[] = `xform -q -t -ws ($sele[$select_size] + ".rotatePivot")`;
+float $y = `getAttr ($sele[$select_size] + ".ry")`;
+
+string $marge_model[] = `polyUnite -ch 1 $sele`;
+move $xyz[0] $xyz[1] $xyz[2] ($marge_model[0] + ".scalePivot") ($marge_model[0] + ".rotatePivot");
+if(`objExists $group[0]`){
+	parent $marge_model[0] $group[0];
+	select $marge_model[0];
+	makeIdentity -apply true -t 1 -r 1 -s 1 -n 0;
+} 
+
+DeleteHistory;
+string $new_name = `rename $buffer[$buffer_size - 1]`;
+setAttr ($new_name + ".ry") ($y * -1);  //----Y軸回転のみ維持
+makeIdentity -apply true -r 1 -n 0 ;
+setAttr ($new_name + ".ry") $y;
+
+string $x;
+for($x in $sele){
+    if(`objExists $x`){
+        string $get_vertex[] = `polyListComponentConversion -tv $x`;
+        if((`size $get_vertex`) == 0){
+            delete $x;  //----空ノード且つ頂点データ（shape）をもっていれば削除
+        }
+    }
+}
+
+}
+
