@@ -1,0 +1,38 @@
+{
+    "pv": null, 
+    "rot": {
+        "legs": {
+            "_L_": [
+                {
+                    "thigh_L_proxy_jnt": "thigh_L_fk_ctrl"
+                }, 
+                {
+                    "calf_L_proxy_jnt": "calf_L_fk_ctrl"
+                }, 
+                {
+                    "foot_L_proxy_jnt": "foot_L_fk_ctrl"
+                }, 
+                {
+                    "ball_L_proxy_jnt": "ball_L_fk_ctrl"
+                }
+            ]
+        }, 
+        "arms": {
+            "_L_": [
+                {
+                    "clavicle_L_proxy_jnt": "clavicle_L_fk_ctrl"
+                }, 
+                {
+                    "upperarm_L_proxy_jnt": "upperarm_L_fk_ctrl"
+                }, 
+                {
+                    "lowerarm_L_proxy_jnt": "lowerarm_L_fk_ctrl"
+                }, 
+                {
+                    "hand_L_proxy_jnt": "hand_L_fk_ctrl"
+                }
+            ]
+        }
+    }, 
+    "pos": null
+}

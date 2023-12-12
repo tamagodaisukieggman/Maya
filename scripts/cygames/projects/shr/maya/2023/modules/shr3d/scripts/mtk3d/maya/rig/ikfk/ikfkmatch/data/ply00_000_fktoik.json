@@ -1,0 +1,109 @@
+{
+    "pv": {
+        "legs": {
+            "_R_": [
+                {
+                    "calf_R_ik_pv_ctrl": [
+                        "thigh_R_proxy_jnt", 
+                        "calf_R_proxy_jnt", 
+                        "foot_R_proxy_jnt"
+                    ]
+                }
+            ], 
+            "_L_": [
+                {
+                    "calf_L_ik_pv_ctrl": [
+                        "thigh_L_proxy_jnt", 
+                        "calf_L_proxy_jnt", 
+                        "foot_L_proxy_jnt"
+                    ]
+                }
+            ]
+        }, 
+        "arms": {
+            "_R_": [
+                {
+                    "upperarm_R_ik_pv_ctrl": [
+                        "upperarm_R_proxy_jnt", 
+                        "lowerarm_R_proxy_jnt", 
+                        "hand_R_proxy_jnt"
+                    ]
+                }
+            ], 
+            "_L_": [
+                {
+                    "upperarm_L_ik_pv_ctrl": [
+                        "upperarm_L_proxy_jnt", 
+                        "lowerarm_L_proxy_jnt", 
+                        "hand_L_proxy_jnt"
+                    ]
+                }
+            ]
+        }
+    }, 
+    "rot": {
+        "legs": {
+            "_R_": [
+                {
+                    "ikfk_match_loc_foot_R_proxy_jnt": "foot_R_ik_ctrl"
+                }, 
+                {
+                    "ball_R_proxy_jnt": "foot_R_ik_ctrl_revFoot_holdBall_ctrl"
+                }
+            ], 
+            "_L_": [
+                {
+                    "ikfk_match_loc_foot_L_proxy_jnt": "foot_L_ik_ctrl"
+                }, 
+                {
+                    "ball_L_proxy_jnt": "foot_L_ik_ctrl_revFoot_holdBall_ctrl"
+                }
+            ]
+        }, 
+        "arms": {
+            "_R_": [
+                {
+                    "clavicle_R_proxy_jnt": "clavicle_R_ikAutoRot_ctrl_ikAutoShoulder_ctrl"
+
+                }, 
+                {
+					"hand_R_proxy_jnt": "hand_R_ikRot_ctrl_ikRot_ctrl"
+                }
+            ], 
+            "_L_": [
+                {
+                    "clavicle_L_proxy_jnt": "clavicle_L_ikAutoRot_ctrl_ikAutoShoulder_ctrl"
+                }, 
+                {
+					"hand_L_proxy_jnt": "hand_L_ikRot_ctrl_ikRot_ctrl"
+                }
+            ]
+        }
+    }, 
+    "pos": {
+        "legs": {
+            "_R_": [
+                {
+                    "foot_R_proxy_jnt": "foot_R_ik_ctrl"
+                }
+            ], 
+            "_L_": [
+                {
+                    "foot_L_proxy_jnt": "foot_L_ik_ctrl"
+                }
+            ]
+        }, 
+        "arms": {
+            "_R_": [
+                {
+                    "hand_R_proxy_jnt": "hand_R_ik_ctrl"
+                }
+            ], 
+            "_L_": [
+                {
+                    "hand_L_proxy_jnt": "hand_L_ik_ctrl"
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,33 @@
+//===============================================
+//
+// グリッドコントローラ
+// 
+// Fujita Yukihiro
+//
+//===============================================
+
+global proc fy_gridController_UI()
+{
+    if(`workspaceControl -ex uWsc_fy_gridController`)
+    {
+        return;
+        //workspaceControl -e -close uWsc_fy_gridController;
+    }
+ 
+     if(`workspaceControlState -exists uWsc_fy_gridController`)
+    {
+        workspaceControlState -remove uWsc_fy_gridController;
+    }
+    
+    workspaceControl
+        -retain false
+        -iw 100
+        -ih 100
+        -uiScript "fy_gridController"
+        -label "Grid Controller"
+        //-heightProperty "fixed"
+        //-widthProperty "fixed"
+        uWsc_fy_gridController;
+    
+}
+

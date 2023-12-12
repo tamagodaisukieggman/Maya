@@ -1,0 +1,526 @@
+///////////////////////////////////////
+// UI 作成
+///////////////////////////////////////
+global proc shr_simpleMaterialList()
+{
+    // TA ツールログ送信
+    shr_toolLog("Simple Material List", "", "launched.");
+
+    //プリファレンスに値が無ければデフォルト値を設定
+    if (`optionVar -ex "ov_shenron_materials_only_shr_simpleMaterialList"` == 0)
+    {
+        optionVar -iv "ov_shenron_materials_only_shr_simpleMaterialList" 0;
+    }
+
+    // メニュー作成
+    shr_simpleMaterialList_createMenu;
+
+    string $form = `formLayout`;
+
+        string $buttons_row = `rowLayout -nc 5`;
+            iconTextButton
+                -style "iconAndTextHorizontal"
+                -i "shr_simpleMaterialList/set_material.png"
+                -c "shr_simpleMaterialList_assignMaterial"
+                -l "Set"
+                -ann "マテリアルを選択項目に割り当て"
+                ;
+            iconTextButton
+                -style "iconAndTextHorizontal"
+                -i "shr_simpleMaterialList/get_material.png"
+                -c "shr_simpleMaterialList_getMaterialsFromObjects"
+                -l "Get"
+                -ann "オブジェクトからマテリアルを選択"
+                ;
+            iconTextButton
+                -style "iconAndTextHorizontal"
+                -i "shr_simpleMaterialList/select_objects.png"
+                -c "shr_simpleMaterialList_selectObjectFromMaterials"
+                -l "Sel"
+                -ann "マテリアルからオブジェクトを選択"
+                ;
+
+            separator -hr false -st "in" -w 8 -h 16;
+
+            iconTextButton
+                -style "iconAndTextHorizontal"
+                -i "shr_simpleMaterialList/create_material.png"
+                -c "shr_materialCreateAssignTool"
+                -l "Create"
+                -ann "マテリアル作成・割り当てツールを起動"
+                ;
+
+            setParent ..;
+
+        string $mat_tsl = `textScrollList
+            -allowMultiSelection true
+            -doubleClickCommand "shr_simpleMaterialList_openAE(`textScrollList -q -selectItem uTsl_matList_shr_simpleMaterialList`)"
+            -selectCommand "shr_simpleMaterialList_updateMaterialInfo"
+            uTsl_matList_shr_simpleMaterialList`;
+
+            popupMenu;
+                menuItem
+                    -l "アトリビュートエディタで開く"
+                    -i "attributes.png"
+                    -c "shr_simpleMaterialList_openAE(`textScrollList -q -selectItem uTsl_matList_shr_simpleMaterialList`)"
+                    ;
+                menuItem
+                    -d true
+                    ;
+                menuItem
+                    -l "マテリアルを選択項目に割り当て"
+                    -i "shr_simpleMaterialList/set_material.png"
+                    -c "shr_simpleMaterialList_assignMaterial"
+                    ;
+                menuItem
+                    -l "オブジェクトからマテリアルを選択"
+                    -i "shr_simpleMaterialList/get_material.png"
+                    -c "shr_simpleMaterialList_getMaterialsFromObjects"
+                    ;
+                menuItem
+                    -l "マテリアルからオブジェクトを選択"
+                    -i "shr_simpleMaterialList/select_objects.png"
+                    -c "shr_simpleMaterialList_selectObjectFromMaterials"
+                    ;
+                menuItem
+                    -d true
+                    ;
+                menuItem
+                    -l "マテリアルを削除"
+                    -c "shr_simpleMaterialList_deleteMaterials"
+                    ;
+                menuItem
+                    -l "マテリアルを複製"
+                    -c "shr_simpleMaterialList_duplicateMaterials"
+                    ;
+
+        string $mat_info_row = `rowLayout -nc 4 -adj 3`;
+            swatchDisplayPort
+                -wh 64 64
+                -rs 64
+                -sn "lambert1"
+                -vis on
+                uSdp_swatch_shr_simpleMaterialList;
+
+            separator -hr false -w 10;
+
+            rowColumnLayout -nc 2 -adj 2 -cal 1 right -cal 2 left;
+
+                int $height = 22;
+
+                text -h $height -l "Name : " ;
+                text -h $height -l "" uTxt_matName_shr_simpleMaterialList;
+
+                text -h $height -l "Type : ";
+                text -h $height -l "" uTxt_typeName_shr_simpleMaterialList;
+
+                text -h $height -l "Color : ";
+                attrColorSliderGrp -en off -h $height -at "lambert1.color" -l "" -adj 3 -cw 1 0 -cw 2 16 -cw 3 64 uAcsg_color_shr_simpleMaterialList;
+
+                setParent..;
+
+        int $margin = 4;
+
+        formLayout -edit
+            -af $buttons_row "top" $margin
+            -af $buttons_row "left" $margin
+            -an $buttons_row "bottom"
+            -af $buttons_row "right" $margin
+
+            -ac $mat_tsl "top"     $margin $buttons_row
+            -af $mat_tsl "left"    $margin
+            -ac $mat_tsl "bottom"  $margin $mat_info_row
+            -af $mat_tsl "right"    $margin
+
+            -an $mat_info_row "top"
+            -af $mat_info_row "left"    $margin
+            -af $mat_info_row "bottom" $margin
+            -af $mat_info_row "right"    $margin
+
+            $form;
+
+    // マテリアルリストを更新
+    shr_simpleMaterialList_updateMaterialList;
+
+    scriptJob -event "SceneOpened" "shr_simpleMaterialList_updateMaterialList" -parent uWsc_shr_simpleMaterialList;
+}
+
+///////////////////////////////////////
+// メニュー作成
+///////////////////////////////////////
+global proc shr_simpleMaterialList_createMenu()
+{
+    menuBarLayout;
+
+    menu -label "リスト" ;
+        menuItem
+            -label "リストを更新"
+            -c "shr_simpleMaterialList_updateMaterialList"
+            ;
+
+        menuItem
+            -label "shrnron 仕様のマテリアルのみをリスト"
+            -cb `optionVar -q ov_shenron_materials_only_shr_simpleMaterialList`
+            -c "optionVar -iv ov_shenron_materials_only_shr_simpleMaterialList #1; shr_simpleMaterialList_updateMaterialList;"
+            ;
+
+    menu -label "ツール" ;
+        menuItem
+            -label "未使用マテリアルの削除"
+            -c "hyperShadePanelMenuCommand(\"hyperShadePanel1\", \"deleteUnusedNodes\"); shr_simpleMaterialList_updateMaterialList;"
+            ;
+
+    menu -l "ヘルプ" -helpMenu on;
+        menuItem
+            -l "Simple Material List のヘルプ"
+            -c "showHelp -absolute \"https://wisdom.cygames.jp/pages/viewpage.action?pageId=490032581\""
+            ;
+}
+
+////////////////////////////////////////
+// マテリアルリストを更新
+////////////////////////////////////////
+global proc shr_simpleMaterialList_updateMaterialList()
+{
+    // 現在リストで選択している項目を保存
+    string $sel_items[] = shr_simpleMaterialList_getSelectedListItems();
+
+    // シェンロン仕様マテリアルのみ表示対応
+    int $shenron_materials_only = `optionVar -q ov_shenron_materials_only_shr_simpleMaterialList`;
+
+    string $materials[] = shr_simpleMaterialList_getMaterials($shenron_materials_only);
+
+    // マテリアルリストを名前順にソート
+    $materials = `sort $materials`;
+
+    // テキストスクロールリストをクリア
+    textScrollList -e -removeAll uTsl_matList_shr_simpleMaterialList;
+
+    string $elm;
+
+    for ($elm in $materials)
+    {
+        textScrollList -e -a $elm uTsl_matList_shr_simpleMaterialList;
+    }
+
+    // もともとリストで選択していた項目が存在すれば、リストで選択
+    for($elm in $sel_items)
+    {
+        if (stringArrayContains($elm, $materials))
+        {
+            textScrollList -e -si $elm uTsl_matList_shr_simpleMaterialList;
+        }
+    }
+
+    // マテリアル情報を更新
+    shr_simpleMaterialList_updateMaterialInfo;
+}
+
+///////////////////////////////////////
+// マテリアル情報を更新
+///////////////////////////////////////
+global proc shr_simpleMaterialList_updateMaterialInfo()
+{
+    string $name = "-";
+    string $type = "-";
+
+    string $sel_items[] = shr_simpleMaterialList_getSelectedListItems();
+
+    if(`size($sel_items)` == 0)
+    {
+        swatchDisplayPort -e -sn "lambert1" -vis off uSdp_swatch_shr_simpleMaterialList;
+        attrColorSliderGrp -e -en off -at "lambert1.color" uAcsg_color_shr_simpleMaterialList;
+    }
+    else if(`size($sel_items)` == 1)
+    {
+        swatchDisplayPort -e -sn $sel_items[0] -vis on uSdp_swatch_shr_simpleMaterialList;
+
+        $name = $sel_items[0];
+        $type = `nodeType $sel_items[0]`;
+
+        if(`attributeExists "color" $sel_items[0]`)
+        {
+            attrColorSliderGrp -e -en on -at ($sel_items[0] + ".color") uAcsg_color_shr_simpleMaterialList;
+        }
+    }
+    // 複数選択の場合
+    else
+    {
+        swatchDisplayPort -e -sn "lambert1" -vis off uSdp_swatch_shr_simpleMaterialList;
+
+        $name = "複数選択";
+        $type = "複数選択";
+        attrColorSliderGrp -e -en off -at "lambert1.color" uAcsg_color_shr_simpleMaterialList;
+    }
+
+    text -e -l $name uTxt_matName_shr_simpleMaterialList;
+    text -e -l $type uTxt_typeName_shr_simpleMaterialList;
+}
+
+///////////////////////////////////////
+// アトリビュートエディタで開く
+///////////////////////////////////////
+global proc shr_simpleMaterialList_openAE(string $materials[])
+{
+    if(`size($materials)` == 0)
+    {
+        return;
+    }
+
+    select -r $materials[0];
+
+    AttributeEditor;
+}
+
+///////////////////////////////////////
+// マテリアルをアサイン
+///////////////////////////////////////
+global proc shr_simpleMaterialList_assignMaterial()
+{
+    string $sel_items[] = shr_simpleMaterialList_getSelectedListItems();
+
+    if(`size($sel_items)` == 0)
+    {
+        confirmDialog -t "確認" -icon "information" -m "リストでマテリアルを選択してから実行してください。" -b "確認";
+
+        return;
+    }
+
+    if(`size($sel_items)` >= 2)
+    {
+        string $message = "リストでマテリアルが複数選択されています。\n\n単一のマテリアルを選択して実行してください。";
+
+        confirmDialog -t "確認" -icon "information" -m $message -b "確認";
+
+        return;
+    }
+
+    // マテリアルをアサイン
+    hyperShade -assign $sel_items[0];
+}
+
+///////////////////////////////////////
+// オブジェクトからマテリアルを選択
+///////////////////////////////////////
+global proc shr_simpleMaterialList_getMaterialsFromObjects()
+{
+    // DONE: リスト除外しているマテリアルの処理
+
+    string $sel[] = `ls -sl`;
+
+    // オブジェクトからマテリアルを選択
+    hyperShade -smn;
+
+    string $selected_materials[] = `ls -sl`;
+
+    // マテリアルリストを更新
+    shr_simpleMaterialList_updateMaterialList;
+
+    string $all_items[] = `textScrollList -q -ai uTsl_matList_shr_simpleMaterialList`;
+
+    textScrollList -e -deselectAll uTsl_matList_shr_simpleMaterialList;
+
+    string $elm;
+
+    for($elm in $selected_materials)
+    {
+        if(stringArrayContains($elm, $all_items))
+        {
+            textScrollList -e -si $elm uTsl_matList_shr_simpleMaterialList;
+        }
+    }
+
+    // マテリアル情報を更新
+    shr_simpleMaterialList_updateMaterialInfo;
+
+    // 元の選択を復元
+    select -r $sel;
+}
+
+///////////////////////////////////////
+// マテリアルからオブジェクトを選択
+///////////////////////////////////////
+global proc shr_simpleMaterialList_selectObjectFromMaterials()
+{
+    hyperShade -objects `shr_simpleMaterialList_getSelectedListItems`;
+}
+
+///////////////////////////////////////
+// マテリアルを削除
+///////////////////////////////////////
+global proc shr_simpleMaterialList_deleteMaterials()
+{
+    string $sel_items[] = shr_simpleMaterialList_getSelectedListItems();
+
+    if(`size($sel_items)` == 0)
+    {
+        return;
+    }
+
+    // 選択項目のうち削除できない内部ノードを取得
+    string $internal_nodes[] = shr_simpleMaterialList_getInternalNode($sel_items);
+
+    if(`size($internal_nodes)` != 0)
+    {
+        string $message = "以下のマテリアルは削除できない内部ノードのためスキップします。\n\n";
+
+        $message += stringArrayToString($internal_nodes, "\n");
+
+        confirmDialog -icon "information" -m $message;
+
+        $sel_items = stringArrayRemove($internal_nodes, $sel_items);
+
+        if(`size($sel_items)` == 0)
+        {
+            return;
+        }
+    }
+
+    delete $sel_items;
+
+    // マテリアルリストを更新
+    shr_simpleMaterialList_updateMaterialList;
+}
+
+///////////////////////////////////////
+// マテリアルを複製
+///////////////////////////////////////
+global proc shr_simpleMaterialList_duplicateMaterials()
+{
+    string $sel[] = `ls -sl`;
+
+    string $sel_items[] = shr_simpleMaterialList_getSelectedListItems();
+
+    if(`size($sel_items)` == 0)
+    {
+        confirmDialog -t "確認" -icon "information" -m "リストでマテリアルを選択してから実行してください。" -b "確認";
+
+        return;
+    }
+
+    // 選択項目のうち削除できない内部ノードを取得
+    string $internal_nodes[] = shr_simpleMaterialList_getInternalNode($sel_items);
+
+    if(`size($internal_nodes)` != 0)
+    {
+        string $message = "以下のマテリアルは複製できない内部ノードのためスキップします。\n\n";
+
+        $message += stringArrayToString($internal_nodes, "\n");
+
+        confirmDialog -icon "information" -m $message;
+
+        $sel_items = stringArrayRemove($internal_nodes, $sel_items);
+
+        if(`size($sel_items)` == 0)
+        {
+            return;
+        }
+    }
+
+    select -r $sel_items;
+
+    // 複製コマンド実行
+    hyperShadePanelMenuCommand("hyperShadePanel1", "duplicateWithConnections");
+
+    string $duped_materials[] = `ls -sl`;
+
+    // マテリアルリストを更新
+    shr_simpleMaterialList_updateMaterialList;
+
+    // リストの選択を解除
+    textScrollList -e -da uTsl_matList_shr_simpleMaterialList;
+
+    string $elm;
+
+    // 複製されたマテリアルをリストで選択
+    for($elm in $duped_materials)
+    {
+        textScrollList -e -si $elm uTsl_matList_shr_simpleMaterialList;
+    }
+
+    // 元の選択を復元
+    select -r $sel;
+}
+
+///////////////////////////////////////
+// マテリアルリストで選択している項目を取得
+///////////////////////////////////////
+global proc string[] shr_simpleMaterialList_getSelectedListItems()
+{
+    string $sel_items[] = `textScrollList -q -si uTsl_matList_shr_simpleMaterialList`;
+
+    string $elm;
+
+    for($elm in $sel_items)
+    {
+        if(`objExists $elm` == false)
+        {
+            // 存在しないマテリアル項目をリストから削除
+            textScrollList -e -ri $elm uTsl_matList_shr_simpleMaterialList;
+        }
+    }
+
+    return `textScrollList -q -si uTsl_matList_shr_simpleMaterialList`;
+}
+
+///////////////////////////////////////
+// 渡したマテリアルリストから内部ノードマテリアルを取得
+///////////////////////////////////////
+global proc string[] shr_simpleMaterialList_getInternalNode(string $materials[])
+{
+    string $internal_nodes[] = {
+        "lambert1",
+        "particleCloud1",
+        "standardSurface1"
+    };
+
+    string $found_internal_nodes[];
+
+    string $elm;
+
+    for($elm in $internal_nodes)
+    {
+        if(stringArrayContains($elm, $materials))
+        {
+            $found_internal_nodes[`size($found_internal_nodes)`] = $elm;
+        }
+    }
+
+    return $found_internal_nodes;
+}
+
+///////////////////////////////////////
+// マテリアルを取得
+///////////////////////////////////////
+global proc string[] shr_simpleMaterialList_getMaterials(int $shenron_materials_only)
+{
+    string $all_materials[] = `ls -mat`;
+
+    if($shenron_materials_only)
+    {
+        string $shenron_materials[];
+
+        string $elm;
+
+        // shenron 用マテリアル名 正規表現 例:mi_r99_temp01_01
+        string $regEx = "^mi_[a-z][0-z][0-z]_([rs]99)*[a-z]+[0-9][0-9]_[0-9][0-9]$";
+
+        for($elm in $all_materials)
+        {
+            // shenron の命名仕様か判定
+            if(`match $regEx $elm` == $elm)
+            {
+                $shenron_materials[`size($shenron_materials)`] = $elm;
+            }
+        }
+
+        return $shenron_materials;
+    }
+    else
+    {
+        return $all_materials;
+    }
+}
+
+// NOTE:
+// shr_simpleMaterialList_UI;

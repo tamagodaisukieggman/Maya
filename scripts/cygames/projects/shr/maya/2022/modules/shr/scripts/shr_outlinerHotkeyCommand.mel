@@ -1,0 +1,62 @@
+//===============================================
+//
+// Outliner ショートカット用
+//
+// Fujita Yukihiro
+//
+//===============================================
+global proc shr_outlinerHotkeyCommand(string $menuItemName, string $outlinerName)
+{
+    filterUIClearFilter $outlinerName;
+
+    if ($menuItemName == "すべて")
+    {
+        outlinerEditor -edit -showDagOnly false $outlinerName;
+    }
+    else if ($menuItemName == "すべて（DAGのみ）")
+    {
+        outlinerEditor -edit -showDagOnly true $outlinerName;
+    }
+    else if ($menuItemName == "file ノード")
+    {
+        string $objectFilter = "shr_objectFilter_texture_" + $outlinerName;
+        string $objectTypeFilter = "shr_objectTypeFilter_texture_" + $outlinerName;
+
+        // フィルタ作成
+        createNode objectMultiFilter -n $objectFilter;
+        	setAttr ".an" -type "string" "file ノード";
+        	setAttr ".cat" -type "stringArray" 4 "Modeling" "Camera" "Animating" "Lighting"  ;
+        createNode objectTypeFilter -n $objectTypeFilter;
+        	setAttr ".ch" yes;
+        	setAttr ".tnam" -type "string" "file";
+        connectAttr ($objectTypeFilter + ".out") ($objectFilter + ".res");
+        connectAttr ($objectFilter + ".in") ($objectTypeFilter + ".in");
+
+        // アウトライナの表示更新
+        outlinerEditor -edit -showDagOnly false -filter $objectFilter $outlinerName;
+    }
+    else if ($menuItemName == "マテリアル")
+    {
+        string $objectFilter = "shr_objectFilter_material_" + $outlinerName;
+        string $objectTypeFilter = "shr_objectTypeFilter_material_" + $outlinerName;
+
+        // フィルタ作成
+        createNode objectMultiFilter -n $objectFilter;
+        	setAttr ".an" -type "string" "マテリアル";
+        	setAttr ".cat" -type "stringArray" 4 "Modeling" "Camera" "Animating" "Lighting"  ;
+        createNode objectTypeFilter -n $objectTypeFilter;
+        	setAttr ".ch" yes;
+        	setAttr ".tnam" -type "string" "lambert";
+        connectAttr ($objectTypeFilter + ".out") ($objectFilter + ".res");
+        connectAttr ($objectFilter + ".in") ($objectTypeFilter + ".in");
+
+        // アウトライナの表示更新
+        outlinerEditor -edit -showDagOnly false -filter $objectFilter $outlinerName;
+    }
+
+    // プリファレンスに保存
+    string $prefName = "shr_outlinerEx_displayModePref_" + $outlinerName;
+
+    optionVar -sv $prefName $menuItemName;
+
+}

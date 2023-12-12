@@ -1,0 +1,324 @@
+{
+    "pelvis_c_001": [
+        "pelvis_C_fk_ctrl"
+    ], 
+    "hip_c_001": [
+        "pelvis_C_fkRot_ctrl"
+    ], 
+    "spine_c_001": [
+        "spine_C_01_fk_ctrl"
+    ], 
+    "spine_c_002": [
+        "spine_C_02_fk_ctrl"
+    ], 
+    "spine_c_003": [
+        "spine_C_03_fk_ctrl"
+    ], 
+    "neck_c_001": [
+        "neck_C_fk_ctrl"
+    ], 
+    "head_c_001": [
+        "head_C_fk_ctrl"
+    ], 
+    "clavicle_l_001_ik": [
+        "clavicle_L_ikAutoRot_ctrl"
+    ], 
+    "elbow_l_001_ik": [
+        "lowerarm_L_ik_pv_ctrl"
+    ], 
+    "hand_l_001_ik": [
+        "hand_L_ik_ctrl"
+    ], 
+    "hand_l_001_ik_rot": [
+        "hand_L_ikRot_ctrl"
+    ], 
+    "clavicle_r_001_ik": [
+        "clavicle_R_ikAutoRot_ctrl"
+    ], 
+    "elbow_r_001_ik": [
+        "lowerarm_R_ik_pv_ctrl"
+    ], 
+    "hand_r_001_ik": [
+        "hand_R_ik_ctrl"
+    ], 
+    "hand_r_001_ik_rot": [
+        "hand_R_ikRot_ctrl"
+    ], 
+    "foot_l_001_ik": [
+        "foot_L_ik_ctrl"
+    ], 
+    "foot_l_001_ik_rot": [
+        "foot_L_ik_ctrl"
+    ], 
+    "ball_l_001_ik": [
+        "ball_L_ik_ctrl"
+    ], 
+    "foot_r_001_ik": [
+        "foot_R_ik_ctrl"
+    ], 
+    "foot_r_001_ik_rot": [
+        "foot_R_ik_ctrl"
+    ], 
+    "ball_r_001_ik": [
+        "ball_R_ik_ctrl"
+    ], 
+    "knee_r_001_ik": [
+        "calf_R_ik_pv_ctrl"
+    ], 
+    "knee_l_001_ik": [
+        "calf_L_ik_pv_ctrl"
+    ], 
+    "clavicle_l_001_fk": [
+        "clavicle_L_fk_ctrl"
+    ], 
+    "upperarm_l_001_fk": [
+        "upperarm_L_fk_ctrl"
+    ], 
+    "lowerarm_l_001_fk": [
+        "lowerarm_L_fk_ctrl"
+    ], 
+    "hand_l_001_fk": [
+        "hand_L_fk_ctrl"
+    ], 
+    "clavicle_r_001_fk": [
+        "clavicle_R_fk_ctrl"
+    ], 
+    "upperarm_r_001_fk": [
+        "upperarm_R_fk_ctrl"
+    ], 
+    "lowerarm_r_001_fk": [
+        "lowerarm_R_fk_ctrl"
+    ], 
+    "hand_r_001_fk": [
+        "hand_R_fk_ctrl"
+    ], 
+    "thigh_l_001_fk": [
+        "thigh_L_fk_ctrl"
+    ], 
+    "calf_l_001_fk": [
+        "calf_L_fk_ctrl"
+    ], 
+    "foot_l_001_fk": [
+        "foot_L_fk_ctrl"
+    ], 
+    "ball_l_001_fk": [
+        "ball_L_fk_ctrl"
+    ], 
+    "thigh_r_001_fk": [
+        "thigh_R_fk_ctrl"
+    ], 
+    "calf_r_001_fk": [
+        "calf_R_fk_ctrl"
+    ], 
+    "foot_r_001_fk": [
+        "foot_R_fk_ctrl"
+    ], 
+    "ball_r_001_fk": [
+        "ball_R_fk_ctrl"
+    ], 
+    "arms_l_ikfk:IK": [
+        "hand_L_ik_ctrl|shared_ik_fk_crvShape.ikfk", 
+        "1.0"
+    ], 
+    "arms_l_ikfk:FK": [
+        "hand_L_ik_ctrl|shared_ik_fk_crvShape.ikfk", 
+        "0.0"
+    ], 
+    "arms_r_ikfk:IK": [
+        "hand_R_ik_ctrl|shared_ik_fk_crvShape.ikfk", 
+        "1.0"
+    ], 
+    "arms_r_ikfk:FK": [
+        "hand_R_ik_ctrl|shared_ik_fk_crvShape.ikfk", 
+        "0.0"
+    ], 
+    "legs_l_ikfk:IK": [
+        "foot_L_ik_ctrl|shared_ik_fk_crvShape.ikfk", 
+        "1.0"
+    ], 
+    "legs_l_ikfk:FK": [
+        "foot_L_ik_ctrl|shared_ik_fk_crvShape.ikfk", 
+        "0.0"
+    ], 
+    "legs_r_ikfk:IK": [
+        "foot_R_ik_ctrl|shared_ik_fk_crvShape.ikfk", 
+        "1.0"
+    ], 
+    "legs_r_ikfk:FK": [
+        "foot_R_ik_ctrl|shared_ik_fk_crvShape.ikfk", 
+        "0.0"
+    ], 
+    "thumb_l_001_fk": [
+        "thumb_L_01_fk_ctrl"
+    ], 
+    "thumb_l_002_fk": [
+        "thumb_L_01_fk_ctrl"
+    ], 
+    "thumb_l_003_fk": [
+        "thumb_L_02_fk_ctrl"
+    ], 
+    "thumb_l_004_fk": [
+        "thumb_L_03_fk_ctrl"
+    ], 
+    "index_l_002_fk": [
+        "index_L_01_fk_ctrl"
+    ], 
+    "index_l_003_fk": [
+        "index_L_02_fk_ctrl"
+    ], 
+    "index_l_004_fk": [
+        "index_L_03_fk_ctrl"
+    ], 
+    "middle_l_002_fk": [
+        "middle_L_01_fk_ctrl"
+    ], 
+    "middle_l_003_fk": [
+        "middle_L_02_fk_ctrl"
+    ], 
+    "middle_l_004_fk": [
+        "middle_L_03_fk_ctrl"
+    ], 
+    "ring_l_002_fk": [
+        "ring_L_01_fk_ctrl"
+    ], 
+    "ring_l_003_fk": [
+        "ring_L_02_fk_ctrl"
+    ], 
+    "ring_l_004_fk": [
+        "ring_L_03_fk_ctrl"
+    ], 
+    "pinky_l_001_fk": [
+        "aux_L_fk_ctrl"
+    ], 
+    "pinky_l_003_fk": [
+        "pinky_L_02_fk_ctrl"
+    ], 
+    "pinky_l_002_fk": [
+        "pinky_L_01_fk_ctrl"
+    ], 
+    "pinky_l_004_fk": [
+        "pinky_L_03_fk_ctrl"
+    ], 
+    "middle_l_001_fk": [
+        "aux_L_fk_ctrl"
+    ], 
+    "ring_l_001_fk": [
+        "aux_L_fk_ctrl"
+    ], 
+    "thumb_l_001_fk_all": [
+        "thumb_L_01_fk_ctrl", 
+        "thumb_L_02_fk_ctrl", 
+        "thumb_L_03_fk_ctrl"
+    ], 
+    "index_l_001_fk_all": [
+        "index_L_01_fk_ctrl", 
+        "index_L_02_fk_ctrl", 
+        "index_L_03_fk_ctrl"
+    ], 
+    "middle_l_001_fk_all": [
+        "middle_L_01_fk_ctrl", 
+        "middle_L_02_fk_ctrl", 
+        "middle_L_03_fk_ctrl"
+    ], 
+    "ring_l_001_fk_all": [
+        "ring_L_01_fk_ctrl", 
+        "ring_L_02_fk_ctrl", 
+        "ring_L_03_fk_ctrl"
+    ], 
+    "pinky_l_001_fk_all": [
+        "pinky_L_01_fk_ctrl", 
+        "pinky_L_02_fk_ctrl", 
+        "pinky_L_03_fk_ctrl"
+    ], 
+    "thumb_r_002_fk": [
+        "thumb_R_01_fk_ctrl"
+    ], 
+    "thumb_r_003_fk": [
+        "thumb_R_02_fk_ctrl"
+    ], 
+    "thumb_r_004_fk": [
+        "thumb_R_03_fk_ctrl"
+    ], 
+    "index_r_002_fk": [
+        "index_R_01_fk_ctrl"
+    ], 
+    "index_r_003_fk": [
+        "index_R_02_fk_ctrl"
+    ], 
+    "index_r_004_fk": [
+        "index_R_03_fk_ctrl"
+    ], 
+    "middle_r_002_fk": [
+        "middle_R_01_fk_ctrl"
+    ], 
+    "middle_r_003_fk": [
+        "middle_R_02_fk_ctrl"
+    ], 
+    "middle_r_004_fk": [
+        "middle_R_03_fk_ctrl"
+    ], 
+    "ring_r_002_fk": [
+        "ring_R_01_fk_ctrl"
+    ], 
+    "ring_r_003_fk": [
+        "ring_R_02_fk_ctrl"
+    ], 
+    "ring_r_004_fk": [
+        "ring_R_03_fk_ctrl"
+    ], 
+    "pinky_r_002_fk": [
+        "pinky_R_01_fk_ctrl"
+    ], 
+    "pinky_r_003_fk": [
+        "pinky_R_02_fk_ctrl"
+    ], 
+    "pinky_r_004_fk": [
+        "pinky_R_03_fk_ctrl"
+    ], 
+    "arms_l_fkToikJoints": [
+        "hand_L_ik_jnt_ikHandle"
+    ], 
+    "arms_r_fkToikJoints": [
+        "hand_R_ik_jnt_ikHandle"
+    ], 
+    "legs_l_fkToikJoints": [
+        "foot_L_ik_jnt_ikHandle"
+    ], 
+    "legs_r_fkToikJoints": [
+        "foot_R_ik_jnt_ikHandle"
+    ], 
+    "pinky_r_001_fk": [
+        "aux_R_fk_ctrl"
+    ], 
+    "ring_r_001_fk": [
+        "aux_R_fk_ctrl"
+    ], 
+    "middle_r_001_fk": [
+        "aux_R_fk_ctrl"
+    ], 
+    "thumb_r_001_fk_all": [
+        "thumb_R_01_fk_ctrl", 
+        "thumb_R_02_fk_ctrl", 
+        "thumb_R_03_fk_ctrl"
+    ], 
+    "index_r_001_fk_all": [
+        "index_R_01_fk_ctrl", 
+        "index_R_02_fk_ctrl", 
+        "index_R_03_fk_ctrl"
+    ], 
+    "middle_r_001_fk_all": [
+        "middle_R_01_fk_ctrl", 
+        "middle_R_02_fk_ctrl", 
+        "middle_R_03_fk_ctrl"
+    ], 
+    "ring_r_001_fk_all": [
+        "ring_R_01_fk_ctrl", 
+        "ring_R_02_fk_ctrl", 
+        "ring_R_03_fk_ctrl"
+    ], 
+    "pinky_r_001_fk_all": [
+        "pinky_R_01_fk_ctrl", 
+        "pinky_R_02_fk_ctrl", 
+        "pinky_R_03_fk_ctrl"
+    ]
+}

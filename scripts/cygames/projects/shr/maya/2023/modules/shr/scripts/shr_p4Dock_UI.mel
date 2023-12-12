@@ -1,0 +1,23 @@
+//===============================================
+//
+// Perforce ëÄçÏÉhÉbÉN
+//
+//===============================================
+
+global proc shr_p4Dock_UI()
+{
+    if(`workspaceControl -ex uWsc_shr_p4Dock`)
+    {
+        // NOTE:
+        return;
+        // workspaceControl -e -close uWsc_shr_p4Dock;
+    }
+
+    workspaceControl
+        -retain false
+        -iw 200
+        -ih 200
+        -uiScript "shr_p4Dock();"
+        -label "Perforce"
+        uWsc_shr_p4Dock;
+}

@@ -1,0 +1,171 @@
+//===============================================
+//
+//  UERemoteClient
+//
+//===============================================
+
+///////////////////////////////////////
+// UE5 が起動しているか
+///////////////////////////////////////
+global proc int shr_ueRemoteClient_isUE5Running()
+{
+    if(catchQuiet(shr_ueRemoteClient_runCommand("import unreal", 0)))
+    {
+        return false;
+    }
+
+    return true;
+}
+
+///////////////////////////////////////
+// 対象プロジェクトか
+///////////////////////////////////////
+global proc int shr_ueRemoteClient_isValidProject()
+{
+    string $valid_project_names[] = {
+        "ShenronProto"
+    };
+
+    string $cmd;
+    $cmd += "import os;import unreal;";
+    $cmd += "print(os.path.splitext(os.path.basename(unreal.Paths.get_project_file_path()))[0])";
+
+    string $remote_result[] = shr_ueRemoteClient_runCommand($cmd, 0);
+
+    string $project_name = $remote_result[2];
+
+    return stringArrayContains($project_name, $valid_project_names);
+}
+
+///////////////////////////////////////
+// run_file を実行
+///////////////////////////////////////
+global proc string[] shr_ueRemoteClient_runFile(string $job_name, string $job_info_list[], int $print_result)
+{
+
+    string $job_info = stringArrayToString($job_info_list, ", ");
+
+    // リモートに送るコマンド
+    string $cmd = `format -s $job_name -s $job_info "'^1s', [{^2s}]"`;
+
+    // UE5 で実行
+    python("from ueremoteclient import Client");
+    python("result = Client().run_file(" + $cmd + ")");
+
+    // 実行結果を取得
+    $remote_result = shr_ueRemoteClient_getRemoteResult($print_result);
+
+    return $remote_result;
+}
+
+///////////////////////////////////////
+// run_command を実行
+///////////////////////////////////////
+global proc string[] shr_ueRemoteClient_runCommand(string $cmd, int $print_result)
+{
+    // UE5 で実行
+    python("from ueremoteclient import Client");
+    python("result = Client().run_command('" + $cmd + "')");
+
+    // 実行結果を取得
+    $remote_result = shr_ueRemoteClient_getRemoteResult($print_result);
+
+    return $remote_result;
+}
+
+///////////////////////////////////////
+// 実行結果を取得
+///////////////////////////////////////
+global proc string[] shr_ueRemoteClient_getRemoteResult(int $print_result)
+{
+    // 実行結果を取得
+    string $success = python("result['success']");
+    string $result = python("result['result']");
+    string $outputs[] = python("outputs = []; [outputs.append(a['output']) for a in result['output']]; outputs");
+    // string $outputs[] = python("result['output']");
+
+    string $remote_result[] = {
+        $success,
+        $result
+    };
+
+    $remote_result = stringArrayCatenate($remote_result, $outputs);
+
+    // 結果表示
+    if($print_result)
+    {
+        print "\n// success: ";
+        print $success;
+        print "\n// result: ";
+        print $result;
+
+        string $output;
+        int $index;
+
+        for($output in $outputs)
+        {
+            print ("\n// outputs[" + $index + "]: ");
+            print $output;
+
+            $index += 1;
+        }
+
+        print "\n";
+    }
+
+    return $remote_result;
+}
+
+///////////////////////////////////////
+// ジョブインフォリストに文字列値を追加
+///////////////////////////////////////
+global proc string[] shr_ueRemoteClient_appendStrValueToJobInfoList(string $job_info_list[], string $key, string $value)
+{
+    string $job_info = "'" + $key +  "': '" + $value + "'";
+
+    $job_info_list[`size($job_info_list)`] = $job_info;
+
+    return $job_info_list;
+}
+
+///////////////////////////////////////
+// ジョブインフォリストに整数値を追加
+///////////////////////////////////////
+global proc string[] shr_ueRemoteClient_appendIntValueToJobInfoList(string $job_info_list[], string $key, int $value)
+{
+    string $job_info = "'" + $key +  "': " + $value;
+
+    $job_info_list[`size($job_info_list)`] = $job_info;
+
+    return $job_info_list;
+}
+
+///////////////////////////////////////
+// ジョブインフォリストに文字列配列を追加
+///////////////////////////////////////
+global proc string[] shr_ueRemoteClient_appendStrArrayToJobInfoList(string $job_info_list[], string $key, string $values[])
+{
+    string $job_info = "'" + $key +  "': ['";
+
+    string $value = stringArrayToString($values, "', '");
+
+    $job_info += $value + "']";
+
+    $job_info_list[`size($job_info_list)`] = $job_info;
+
+    return $job_info_list;
+}
+
+///////////////////////////////////////
+// リモートジョブが成功したか
+///////////////////////////////////////
+global proc int shr_ueRemoteClient_isSuccess(string $remote_result[])
+{
+    if(($remote_result[0] == "1") && ($remote_result[1] == "None"))
+    {
+        return true;
+    }
+
+    return false;
+}
+

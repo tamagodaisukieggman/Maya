@@ -1,0 +1,269 @@
+//===============================================
+//
+// 複製 Ex
+//
+// Fujita Yukihiro
+//
+//===============================================
+
+global proc shr_duplicateEx()
+{
+    // TA ツールログ送信
+    shr_toolLog("Duplicate Ex", "1.0.0", "launched.");
+
+    string $selctionList[] = `ls -sl`;
+    string $hiliteList[] = `ls -hl`;
+
+    int $c_history = `constructionHistory -q -tgl`;
+
+    // 何も選択されていなければ終了
+    if (`size($selctionList)` == 0)
+    {
+        print "オブジェクトが選択されていません。";
+        return;
+    }
+
+    string $selVertex[] = `filterExpand -sm 31`;
+    string $selEdge[] = `filterExpand -sm 32`;
+    string $selPolygon[] = `filterExpand -sm 34`;
+
+    // コンポーネントが選択されていなければ
+    if (`size($selPolygon)`+`size($selVertex)`+`size($selEdge)` == 0)
+    {
+        // デフォルトの複製コマンド実行
+        duplicate -smartTransform;
+        return;
+    }
+
+    // 複製されたコンポーネント
+    string $newComponents[];
+
+    // 複製されたすべてのコンポーネント
+    string $newComponentsAll[];
+
+    // 作成されたpolyExtrude ノード
+    string $newPolyExtrudeNode[];
+
+    // 作成されたすべてのpolyExtrude ノード
+    string $newPolyExtrudeNodeAll[];
+
+    // 分類後の配列要素数
+    int $num;
+
+    ///////////////////////////////////////////////
+    // フェースの処理
+    ///////////////////////////////////////////////
+    if (`size($selPolygon)` != 0)
+    {
+        // ポリゴン複製オプションを選択
+        string $dupePolyOption = (`layoutDialog -title "Duplicate Ex" -ui "shr_duplicateEx_Prompt"`);
+
+        if(($dupePolyOption == "キャンセル") || ($dupePolyOption == "却下") || ($dupePolyOption == "dismiss"))
+        {
+            return;
+        }
+
+        // ポリゴン選択リストを分類
+        string $classifyPolygonList[] = `shr_duplicateEx_classifyWithObj($selPolygon)`;
+        $num = `size($classifyPolygonList)`;
+
+        for($j = 0; $j < $num; $j += 2)
+        {
+            // 適用するポリゴンを選択
+            select -r (stringToStringArray($classifyPolygonList[$j+1], " "));
+
+            if ($dupePolyOption == "押し出し")
+            {
+                // ポリゴンを押し出し
+                $newPolyExtrudeNode = `polyExtrudeFacet -ch $c_history -kft 1 -d 1 -twist 0 -taper 1 -off 0 -smoothingAngle 30`;
+
+                $newPolyExtrudeNode[0] = `rename $newPolyExtrudeNode[0] "duplicateEx"`;
+            }
+            else if ($dupePolyOption == "複製")
+            {
+                // ポリゴンを複製
+                polyChipOff -ch $c_history -kft 1 -dup 1 -off 0;
+
+                // 現在のすべてのポリゴンを取得
+                string $currentAllFaces[] = `ls -flatten ($classifyPolygonList[$j] + ".f[*]")`;
+
+                // ポリゴンを押し出し
+                $newPolyExtrudeNode = `polyExtrudeFacet -ch $c_history -kft 1 -d 1 -twist 0 -taper 1 -off 0 -smoothingAngle 30`;
+
+                $newPolyExtrudeNode[0] = `rename $newPolyExtrudeNode[0] "duplicateEx"`;
+
+                // 押し出されたサイドのポリゴンを取得
+                string $newFaces[] = stringArrayRemove($currentAllFaces, `ls -flatten ($classifyPolygonList[$j] + ".f[*]")`);
+
+                // サイドのポリゴンを削除
+                delete $newFaces;
+            }
+
+            $newPolyExtrudeNodeAll[`size($newPolyExtrudeNodeAll)`] = $newPolyExtrudeNode[0];
+
+            $newComponents = `ls -sl`;
+            appendStringArray($newComponentsAll, $newComponents, `size($newComponents)`);
+        }
+    }
+
+    ///////////////////////////////////////////////
+    // 頂点の処理
+    ///////////////////////////////////////////////
+    if (`size($selVertex)` != 0)
+    {
+        // 頂点選択リストを分類
+        string $classifyVertexList[] = `shr_duplicateEx_classifyWithObj($selVertex)`;
+        $num = `size($classifyVertexList)`;
+
+        for($j = 0; $j < $num; $j += 2)
+        {
+            // 適用する頂点を選択
+            select -r (stringToStringArray($classifyVertexList[$j+1], " "));
+
+            // 頂点を押し出し
+            $newPolyExtrudeNode = `polyExtrudeVertex -ch $c_history -w 0.25 -l 0 -d 1`;
+
+            $newPolyExtrudeNode[0] = `rename $newPolyExtrudeNode[0] "duplicateEx"`;
+
+            $newPolyExtrudeNodeAll[`size($newPolyExtrudeNodeAll)`] = $newPolyExtrudeNode[0];
+
+            $newComponents = `ls -sl`;
+            appendStringArray($newComponentsAll, $newComponents, `size($newComponents)`);
+        }
+    }
+
+    ///////////////////////////////////////////////
+    // エッジの処理
+    ///////////////////////////////////////////////
+    if (`size($selEdge)` != 0)
+    {
+        // エッジ選択リストを分類
+        string $classifyEdgeList[] = `shr_duplicateEx_classifyWithObj($selEdge)`;
+        $num = `size($classifyEdgeList)`;
+
+        for($j = 0; $j < $num; $j += 2)
+        {
+            // 適用する頂点を選択
+            select -r (stringToStringArray($classifyEdgeList[$j+1], " "));
+
+            // エッジを押し出し
+            $newPolyExtrudeNode = `polyExtrudeEdge -ch $c_history -kft 1 -d 1 -twist 0 -taper 1 -smoothingAngle 180`;
+
+            $newPolyExtrudeNode[0] = `rename $newPolyExtrudeNode[0] "duplicateEx"`;
+
+            $newPolyExtrudeNodeAll[`size($newPolyExtrudeNodeAll)`] = $newPolyExtrudeNode[0];
+
+            $newComponents = `ls -sl`;
+            appendStringArray($newComponentsAll, $newComponents, `size($newComponents)`);
+        }
+    }
+
+    select -r $newComponentsAll;
+
+    select -addFirst $newPolyExtrudeNodeAll;
+
+    // コンポーネントのトランスフォームを実行
+    if (`optionVar -q shr_duplicateEx_doTransform` == 1)
+    {
+        // ポリゴンのトランスフォーム実行
+        //MovePolygonComponent;
+        setToolTo "ShowManips";
+    }
+
+}
+
+global proc shr_duplicateEx_Prompt()
+{
+    string $form = `setParent -q`;
+
+    formLayout -e -width 280 -h 110 $form;
+
+    string $t = "";
+
+	string $b1 = "";
+	string $b2 = "";
+	string $b3 = "";
+
+	$t = `text -l "フェースの複製方法を選択して下さい。"`;
+	$b1 = `button -l "複製" -c "layoutDialog -dismiss \"複製\"" -ann "選択フェースを複製します"`;
+	$b2 = `button -l "押し出し" -c "layoutDialog -dismiss \"押し出し\"" -ann "選択フェースを押し出します"`;
+	$b3 = `button -l "キャンセル" -c "layoutDialog -dismiss \"キャンセル\""`;
+
+    int $cb1_value = `optionVar -q "shr_duplicateEx_doTransform"`;
+
+    string $cb1 = `checkBox -onc "optionVar -iv shr_duplicateEx_doTransform 1" -ofc "optionVar -iv shr_duplicateEx_doTransform 0" -v $cb1_value -label "コンポーネントのトランスフォームを実行" -ann "複製後にコンポーネントのトランスフォームを実行します"`;
+
+    formLayout -edit
+        -attachForm            $t   "top"    16
+        -attachForm            $t   "left"   5
+        -attachNone            $t   "bottom"
+        -attachForm            $t   "right"  5
+
+        -attachControl         $b1  "top"    10 $t
+        -attachForm            $b1  "left"   10
+        -attachNone            $b1  "bottom"
+        -attachPosition        $b1  "right"  5 33
+
+        -attachControl         $b2  "top"    10 $t
+        -attachPosition        $b2  "left"   5 33
+        -attachNone            $b2  "bottom"
+        -attachPosition        $b2  "right"  5 66
+
+        -attachControl         $b3  "top"    10 $t
+        -attachPosition        $b3  "left"   5 66
+        -attachNone            $b3  "bottom"
+        -attachForm            $b3  "right"  10
+
+        -attachControl         $cb1 "top"    16 $b1
+        -attachForm            $cb1 "left"   80
+        -attachNone            $cb1 "bottom"
+        -attachNone            $cb1 "right"
+
+    $form;
+
+    setFocus $b1;
+}
+
+///////////////////////////////////////
+// 配列の中の要素をオブジェごとの配列にする
+//
+// @param 要素の配列 $slist {string[]}
+// @return オブジェごとの配列　{string[]}
+///////////////////////////////////////
+global proc string[] shr_duplicateEx_classifyWithObj(string $slist[])
+{
+    //戻り値が入る
+    string $Res[];
+
+    //頂点コンポーネントでフィルタリング＆ソート
+    string $sArr[] = sort($slist);
+
+    //オブジェ名が入る
+    string $sObjName = "";
+
+    //
+    string $sCrntObjName[];
+    int $i=-1;
+    string $sNameArray[];
+
+    if(size($sArr))
+    {
+        for($sElm in $sArr)
+        {
+            $sNameArray = stringToStringArray($sElm, ".");
+
+            if($sNameArray[0] != $sObjName)
+            {
+                $i++;
+                $sObjName = $sNameArray[0];
+                $Res[$i*2]= $sNameArray[0];
+                $Res[$i*2+1]= $sElm;
+            }
+            else
+            {
+                $Res[$i*2+1] = $Res[$i*2+1] + " " + $sElm;
+            }
+        }
+    }
+        return($Res);
+}

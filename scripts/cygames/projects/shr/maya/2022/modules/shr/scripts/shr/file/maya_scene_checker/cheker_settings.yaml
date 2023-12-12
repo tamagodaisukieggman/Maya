@@ -1,0 +1,79 @@
+﻿DEV_MODE: false
+WEB_SITE: https://wisdom.cygames.jp/display/shenron/Maya:+Scene+File+Checker
+
+PROJRCT_NAME: Shenron
+
+CHARACTER_PATHS:
+  - c:/cygames/shrdev/shr_art/resources/characters
+ENV_PATHS:
+  - c:/cygames/shrdev/shr_art/resources/environments
+
+IGNORE_ROOT_NODE_START_NAMES:
+  - "|persp"
+  - "|top"
+  - "|front"
+  - "|side"
+  - "|bottom"
+  - "|left"
+  - "|scale_ref"
+  - "|mdl_"
+  - "|high_"
+  - "|_"
+
+MODULE_ROOT: shr.file.maya_scene_checker
+
+SHENRON_ASSET_PATH:
+  CHARACTER:
+  - c:/cygames/shrdev/shr_art/resources/characters
+  ENVIRONMENT:
+  - c:/cygames/shrdev/shr_art/resources/environments
+  RIG:
+  - c:/cygames/shrdev/shr_art/resources/rigs
+
+DATA_TYPE_CATEGORY:
+  ENVIRONMENT: env
+  CHARACTER:   chara
+  PROP:        prop
+  ANIMATION:   anim
+  RIG:         rig
+
+MAYA_EXT:
+  .ma: mayaAscii
+  .mb: mayaBinary
+
+DELETE_TARGET_NODE_TYPE:
+  - ilrBakeLayerManager
+  - ilrBakeLayer
+  - ilrOptionsNode
+  - ilrUIOptionsNode
+  - polyBlindData
+  - blindDataTemplate
+  - ngst2SkinLayerData
+  - ngst2MeshDisplay
+
+DELETE_TARGET_NODE_NAME_START:
+  - false
+
+DELETE_TARGET_NODE_NAME_END:
+  - cyllista_config
+
+CHECK_SKIP_NODE:
+  - MayaNodeEditorSavedTabsInfo
+  - hyperShadePrimaryNodeEditorSavedTabsInfo
+  - nodeGraphEditorInfo
+
+NOT_DELETE_PLUGIN_NODE:
+  - stereoCamera
+  - mtoa
+
+DEFAULT_LAYER_NAME: defaultLayer
+
+NOT_DELETE_DISPLAY_LAYER:
+  - model_objLay
+  - bind_joints_objLay
+  - rig_objLay
+
+CHECKER_CATEGORY:
+  scene:          C:/cygames/shrdev/shr/tools/in/ext/maya/2022/modules/shr/scripts/shr/file/maya_scene_checker/scene
+  node_hierarchy: C:/cygames/shrdev/shr/tools/in/ext/maya/2022/modules/shr/scripts/shr/file/maya_scene_checker/node_hierarchy
+  component:      C:/cygames/shrdev/shr/tools/in/ext/maya/2022/modules/shr/scripts/shr/file/maya_scene_checker/component

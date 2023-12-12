@@ -1,0 +1,22 @@
+﻿!!python/object:publish_files_maya.ui_maya.MayaPublishFilesPreferences
+column_to_sort_by: 0
+commit_to_engine: true
+filter_histories:
+- ''
+last_set_definitions:
+- C:\cygames\shrshare\tools\config\publish_files\operator_template.ma
+last_target_directories: []
+layout_settings: !!python/object:wmutils.user_preference_interface.LayoutSettingsConfigObject
+  headers: {}
+  splitters: {}
+  ui_visibility: !!python/object:wmutils.user_preference_interface.UIVisibilityConfigObject
+    subgroup: true
+    tags: {}
+    tasks: {}
+local_splitters: {}
+lock_set_definition: 2
+number_of_processes: 1
+position_size: null
+preset_if_no_sets: 0
+sort_order: 0
+use_set_definition: 0

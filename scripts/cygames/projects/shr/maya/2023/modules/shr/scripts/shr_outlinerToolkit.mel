@@ -1,0 +1,246 @@
+//===============================================
+// UI 作成
+//===============================================
+global proc shr_outlinerToolkit()
+{
+    source "shr_instaLodModelCreateTool";
+
+    // InstaLOD Model Create Tool 用プリセットカラー取得
+    float $INSTALOD_EXCLUDE_COLOR[] = shr_instaLodModelCreateTool_getColorSettingsForInstaLOD("exclude");
+    float $INSTALOD_LONGHAIR_COLOR[] = shr_instaLodModelCreateTool_getColorSettingsForInstaLOD("long_hair");
+    float $INSTALOD_SHORTHAIR_COLOR[] = shr_instaLodModelCreateTool_getColorSettingsForInstaLOD("short_hair");
+
+    // プリファレンスがなければデフォルトを設定
+    if (`optionVar -ex "shr_outlinerToolkit_colorValues"` == 0)
+    {
+        optionVar -fva "shr_outlinerToolkit_colorValues" 1.0;
+        optionVar -fva "shr_outlinerToolkit_colorValues" 1.0;
+        optionVar -fva "shr_outlinerToolkit_colorValues" 1.0;
+    }
+
+    // カラー値
+    float $colorValues[] = `optionVar -q "shr_outlinerToolkit_colorValues"`;
+
+    // AriSortOutliner が存在するか
+    int $isAriExists = `exists AriSortOutliner`;
+
+    // ヘルプメニュー追加
+    menuBarLayout;
+        menu -l "Help" -helpMenu on;
+
+            string $helpCmd = "showHelp -absolute \"https://wisdom.cygames.jp/pages/viewpage.action?pageId=434085109\"";
+
+            menuItem
+                -l "Outliner Toolkit のヘルプ"
+                -c $helpCmd
+               ;
+
+    frameLayout -lv off -mw 4 -mh 4;
+
+        columnLayout -adj on FL_shr_outlinerToolkit;
+
+            colorSliderGrp
+                -label "アウトライナ カラー : "
+                -rgb $colorValues[0] $colorValues[1] $colorValues[2]
+                -adjustableColumn 3
+                -columnWidth 1 90
+                -columnWidth 2 50
+                -columnWidth 3 50
+                -changeCommand "shr_outlinerToolkit_CSG_callback"
+                CSG_shr_outlinerToolkit;
+
+            text -l "" -h 8;
+
+            rowLayout -nc 2 -columnAlign 2 right;
+
+                button
+                    -l "セット"
+                    -bgc 0.5 0.6 0.5
+                    -w 120
+                    -c "shr_outlinerToolkit_cmdButtonClickedCallback(1)"
+                    ;
+                button
+                    -l "解除"
+                    -bgc 0.6 0.5 0.5
+                    -w 120
+                    -c "shr_outlinerToolkit_cmdButtonClickedCallback(0)"
+                    ;
+
+                setParent FL_shr_outlinerToolkit;
+
+            separator -st "in" -h 16;
+
+            rowLayout -nc 4;
+
+                text
+                    -l "InstaLOD 設定用 : "
+                    -ann "アウトライナカラープリセット（InstaLOD Model Create Tool 設定用）"
+                    ;
+
+                // InstaLOD カラーボタン用コマンドフォーマット
+                string $cmdFormat = "shr_outlinerToolkit_setOutlinerColor(1,{^1s, ^2s, ^3s})";
+
+                button
+                    -l "除外"
+                    -ann "リダクション対象から除外する"
+                    -w 45
+                    -bgc $INSTALOD_EXCLUDE_COLOR[0] $INSTALOD_EXCLUDE_COLOR[1] $INSTALOD_EXCLUDE_COLOR[2]
+                    -c `format -s $INSTALOD_EXCLUDE_COLOR[0] -s $INSTALOD_EXCLUDE_COLOR[1] -s $INSTALOD_EXCLUDE_COLOR[2] $cmdFormat`
+                    ;
+
+                button
+                    -l "long"
+                    -ann "長い毛用のリダクション設定を適用する"
+                    -w 45
+                    -bgc $INSTALOD_LONGHAIR_COLOR[0] $INSTALOD_LONGHAIR_COLOR[1] $INSTALOD_LONGHAIR_COLOR[2]
+                    -c `format -s $INSTALOD_LONGHAIR_COLOR[0] -s $INSTALOD_LONGHAIR_COLOR[1] -s $INSTALOD_LONGHAIR_COLOR[2] $cmdFormat`
+                    ;
+
+                button
+                    -l "short"
+                    -ann "短い毛用のリダクション設定を適用する"
+                    -w 45
+                    -bgc $INSTALOD_SHORTHAIR_COLOR[0] $INSTALOD_SHORTHAIR_COLOR[1] $INSTALOD_SHORTHAIR_COLOR[2]
+                    -c `format -s $INSTALOD_SHORTHAIR_COLOR[0] -s $INSTALOD_SHORTHAIR_COLOR[1] -s $INSTALOD_SHORTHAIR_COLOR[2] $cmdFormat`
+                    ;
+
+                setParent..;
+
+            separator -st "in" -h 16;
+
+        columnLayout -adj on -en $isAriExists;
+            rowColumnLayout -nc 2;
+                text -l "選択ノード並べ替え : ";
+
+                optionMenu -w 140 -cc "shr_outlinerToolkit_OM_callback" OM_shr_outlinerToolkit;
+                    menuItem -l "名前順";
+
+                    menuItem -l "種類順 / 名前順";
+
+                    menuItem -l "選択順";
+
+                int $sortMode = `optionVar -q "AriSortOutliner_type"`;
+
+                optionMenu -e -select ($sortMode + 1) OM_shr_outlinerToolkit;
+
+                text -l "";
+
+                rowLayout -nc 3;
+                    text -l "        ";
+                    radioCollection;
+                        radioButton -l "昇順    " -onCommand "optionVar -iv AriSortOutliner_reverse 0" RB_shr_outlinerToolkit_a;
+                        radioButton -l "降順" -onCommand "optionVar -iv AriSortOutliner_reverse 1" RB_shr_outlinerToolkit_d;
+
+                        if(`optionVar -q "AriSortOutliner_reverse"` == false)
+                        {
+                            radioButton -e -select RB_shr_outlinerToolkit_a;
+                        }
+                        else
+                        {
+                            radioButton -e -select RB_shr_outlinerToolkit_d;
+                        }
+
+                    setParent ..;
+                setParent ..;
+
+            button
+                -l "並べ替え"
+                -bgc 0.5 0.6 0.5
+                -w 120
+                -c "shr_outlinerToolkit_AriSortOutliner"
+                ;
+}
+
+//===============================================
+// colorSliderGrp コールバック
+//===============================================
+global proc shr_outlinerToolkit_CSG_callback()
+{
+    float $col[] = `colorSliderGrp -q -rgbValue CSG_shr_outlinerToolkit`;
+
+    optionVar -clearArray "shr_outlinerToolkit_colorValues";
+
+    optionVar -fva "shr_outlinerToolkit_colorValues" $col[0];
+    optionVar -fva "shr_outlinerToolkit_colorValues" $col[1];
+    optionVar -fva "shr_outlinerToolkit_colorValues" $col[2];
+}
+
+//===============================================
+// アウトライナカラー ボタンコールバック
+//===============================================
+global proc shr_outlinerToolkit_cmdButtonClickedCallback(int $set)
+{
+    // セットする場合
+    if($set)
+    {
+        // カラースライダの色を取得
+        float $color[] = `colorSliderGrp -q -rgbValue CSG_shr_outlinerToolkit`;
+
+        // アウトライナカラーを設定
+        shr_outlinerToolkit_setOutlinerColor($set, $color);
+    }
+    // 解除する場合
+    else
+    {
+        // アウトライナカラーを解除
+        shr_outlinerToolkit_setOutlinerColor($set, {0.0, 0.0, 0.0});
+    }
+}
+
+//===============================================
+// アウトライナカラーをセット
+//===============================================
+global proc shr_outlinerToolkit_setOutlinerColor(int $set, float $color[])
+{
+    // 選択しているトランスフォームノード
+    string $selNodes[] = `ls -sl -tr`;
+
+    if(`size($selNodes)` == 0)
+    {
+        print "// トランスフォームノードが選択されていません。\n";
+        return;
+    }
+
+    string $selNode;
+
+    for($selNode in $selNodes)
+    {
+        //アウトライナの色変更を有効・無効化
+        setAttr ($selNode +".useOutlinerColor") $set;
+
+        //アウトライナの色を指定
+        setAttr ($selNode +".outlinerColorR") $color[0];
+        setAttr ($selNode +".outlinerColorG") $color[1];
+        setAttr ($selNode +".outlinerColorB") $color[2];
+    }
+}
+
+//===============================================
+// optionMenu コールバック
+//===============================================
+global proc shr_outlinerToolkit_OM_callback()
+{
+    int $selItem = `optionMenu -q -sl OM_shr_outlinerToolkit`;
+
+    optionVar -iv AriSortOutliner_type ($selItem - 1);
+}
+
+//===============================================
+// 並べ替え実行
+//===============================================
+global proc shr_outlinerToolkit_AriSortOutliner()
+{
+    string $selNodes[] = `ls -sl -tr`;
+
+    if(`size($selNodes)` == 0)
+    {
+        confirmDialog -title "確認" -message "ノードが選択されていません。" -button "確認";
+
+        return;
+    }
+
+    AriSortOutliner;
+}
+
+// NOTE:
+// shr_outlinerToolkit_UI;

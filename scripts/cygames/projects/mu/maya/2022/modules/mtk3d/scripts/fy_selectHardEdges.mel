@@ -1,0 +1,62 @@
+//===============================================
+//
+// ハードエッジを選択
+//
+// Fujita Yukihiro
+//
+//===============================================
+
+global proc fy_selectHardEdges()
+{
+    // 選択オブジェクト
+    //string $sel[] = `ls -sl -tr`;
+    string $sel[] = `ls -sl -dag -tr`;
+    
+    // エッジ情報
+    string $edgeInfos[];
+    
+    // エッジ情報の要素
+    string $elm[];
+    
+    // ハードエッジリスト
+    string $hardEdges[];
+    
+    string $i;
+    string $j;
+
+    for($i in $sel)
+    {
+        select -r $i;
+        
+        // 選択オブジェクトのエッジ情報を取得
+        $edgeInfos = `polyInfo -edgeToVertex $i`;
+
+        for ($j in $edgeInfos)
+        {
+            // ハードエッジなら（エッジ情報の最後に Hard がついていれば）
+            if(endsWith($j, "Hard\n") == 1)
+            {
+                // エッジ情報を分割
+                tokenizeList($j, $elm);
+
+                // エッジ番号を取得
+                $elm[1] = substituteAllString($elm[1], ":", "");
+
+                // ハードエッジリストに追加
+                $hardEdges[`size($hardEdges)`] = ($i + ".e[" + $elm[1] + "]");
+            }
+        }
+    }
+
+    if(`size($hardEdges)` != 0)
+    {
+        select $sel;
+
+        // エッジ選択モードに
+        setSelectMode components Components;
+        selectType -smp 0 -sme 1 -smf 0 -smu 0 -pv 0 -pe 1 -pf 0 -puv 0;
+    
+        select -r $hardEdges;
+    }
+}
+

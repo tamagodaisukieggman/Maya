@@ -1,0 +1,57 @@
+import yaml
+
+try:
+    import maya.cmds as cmds
+except:
+    pass
+
+from workfile_manager.plugin_utils import PluginType, PostProcBase, Application
+
+class Plugin(PostProcBase):
+    def application(self):
+        return Application.Maya
+
+    def apps_executable_on(self):
+        return (
+            Application.Maya,
+        )
+
+    def is_asset_eligible(self, asset):
+        if asset.task == 'material':
+            return True
+        else:
+            return False
+
+    def order(self):
+        return 99
+
+    def execute(self, args):
+        outfile = args['outfile']
+        exportname = outfile[:outfile.rfind('.')] + '.material_info'
+
+        with open(exportname, 'w') as export_hdl:
+            ignores = ['initialParticleSE', 'initialShadingGroup']
+            assign = {}
+            for se in cmds.ls(type='shadingEngine'):
+                if se in ignores:
+                    continue
+                cmds.select(se)
+                members = cmds.ls(sl=True)
+                assign[se] = ' '.join(members)
+            info = {}
+            info['assignment'] = assign
+            export_hdl.write(yaml.safe_dump(info, encoding='utf-8', allow_unicode=True, default_flow_style=False))
+            self.set_outputs([exportname])
+        
+
+        return True
+
+    def getlabel(self):
+        return 'Export Material Assignment'
+
+    def default_checked(self):
+        return True
+
+    def is_editable(self):
+        return False
+        

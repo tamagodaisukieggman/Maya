@@ -1,0 +1,123 @@
+//===============================================
+//
+// 階層構造を保ったままで、通常結合・選択ノードごとの結合
+//
+//===============================================
+
+// $type:
+//    0 : 通常結合
+//    1 : 選択ノードごとの結合
+
+global proc string[] shr_polyUnite(int $type)
+{
+    string $resultNode;
+    string $resultNodeAll[];
+
+    string $i;
+
+    // 選択ノードを取得
+    string $sel[] = `ls -sl`;
+
+    // 選択に含まれるメッシュノード
+    string $meshNodes[] = `listRelatives -ad -path -type "mesh" $sel`;
+
+    // メッシュノードのうち、中間ノードを除く
+    $meshNodes = `ls -noIntermediate $meshNodes`;
+
+    if(`size($meshNodes)` == 0)
+    {
+        print "// 選択にメッシュノードが含まれていないため、処理をスキップしました。\n";
+
+        return $resultNodeAll;
+    }
+
+    // 通常結合の場合
+    if($type == 0)
+    {
+        $resultNodeAll[0] = `shr_polyUnite_exec($sel)`;
+    }
+    // 選択ノードごとの結合
+    else
+    {
+        for($i in $sel)
+        {
+            // ポリゴン結合
+            $resultNode = shr_polyUnite_exec({$i});
+
+            // 結合結果オブジェクトリストに追加
+            stringArrayInsertAtIndex(`size($resultNodeAll)`, $resultNodeAll, $resultNode);
+        }
+    }
+
+    // 結合結果オブジェクトを選択
+    select $resultNodeAll;
+
+    return $resultNodeAll;
+}
+
+
+global proc string shr_polyUnite_exec(string $target[])
+{
+    string $resultNode[];
+
+    string $i;
+
+    // 親ノード名を取得
+    string $parentNode[] = `listRelatives -parent -path $target`;
+
+    // ターゲットに含まれるメッシュノードを取得（中間ノードは除く）
+    string $meshNodes[] = `listRelatives -ad -path -type "mesh"  $target`;
+
+    // メッシュノードのうち、中間ノードを除く
+    $meshNodes = `ls -noIntermediate $meshNodes`;
+
+    // メッシュノードが一つしかない場合
+    if(`size($meshNodes)` == 1)
+    {
+        // ノードのリストを取得
+        string $nodes[] = `ls -dag -objectsOnly -tr $target`;
+
+        // ノードの個数が一つなら何もせず終了
+        if(`size($nodes)` <= 1)
+        {
+            return $target[0];
+        }
+
+        // ターゲットノード数が１つの場合
+        if(`size($target)` == 1)
+        {
+            // メッシュノードが属するトランスフォームノード
+            string $trNode[] = `listRelatives -p -path $meshNodes`;
+
+            // ワールドの子に
+            $resultNode = `parent -w $trNode[0]`;
+        }
+    }
+    else
+    {
+        // 結合
+        $resultNode = `polyUnite -ch 1 -mergeUVSets 1 $target`;
+    }
+
+    // 親が world じゃない場合
+    if ($parentNode[0] != "")
+    {
+        // 結合結果オブジェクトを元の親ノードの子供に
+        $resultNode = `parent $resultNode[0] $parentNode[0]`;
+    }
+
+    delete -ch $resultNode;
+
+    // トランスフォームノードが残っていれば削除
+    for ($i in $target)
+    {
+        if (`objExists $i`)
+        {
+            delete $i;
+        }
+    }
+
+    return $resultNode[0];
+}
+
+

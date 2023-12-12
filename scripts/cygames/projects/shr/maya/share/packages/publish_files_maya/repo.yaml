@@ -1,0 +1,10 @@
+﻿version: "2022.7.6"
+
+book:
+  append:
+    - key: PYTHONPATH
+      values:
+        - .
+      relative: true
+
+    

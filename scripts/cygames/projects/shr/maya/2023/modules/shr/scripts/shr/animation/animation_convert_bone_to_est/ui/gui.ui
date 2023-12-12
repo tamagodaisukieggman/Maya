@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>698</width>
+    <height>146</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="2,5">
+      <item>
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>namespace</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="namespace_text"/>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="2,4,1">
+      <item>
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>animation_path(fbx)</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="fbx_path_txt"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="get_fbx_path_btn">
+        <property name="text">
+         <string>get_path</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="2,4,1">
+      <item>
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>default_scene_path(mb)</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="defaultscene_path_txt"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="get_defaultscene_path_btn">
+        <property name="text">
+         <string>get_path</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QPushButton" name="convert_btn">
+      <property name="text">
+       <string>convert_animation</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

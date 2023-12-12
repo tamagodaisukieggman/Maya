@@ -1,0 +1,72 @@
+﻿commands:
+  - name: bake Animation
+    label: bake Animation
+    tooltip: ベースレイヤへ高速アニメーションベイク
+    command: import shr.animation.bakesimulation as bs;bs.main()
+    enable: True
+    category: Utility
+
+  - name: Local World Tool
+    label: Local World Tool
+    tooltip: 人型用 Local / World 切り替えツール
+    command: import mtk3d.maya.rig.localtoworld as localtoworld;reload(localtoworld);ltw = localtoworld.UI();ltw.show()
+    enable : True
+    category: Utility
+
+  - name: FK/IK Match Tool
+    label: FK/IK Match Tool
+    tooltip: 人型用 FKIKマッチツール
+    command: from mtk3d.maya.rig.ikfk.ikfkmatch import ui as ikfk_ui;ui = ikfk_ui.UI();ui.show()
+    enable : True
+    category: Utility
+
+  - name: Prop Space Dialog
+    label: Prop Space Dialog
+    tooltip: プロップ調整ツール
+    command: from mtk3d.maya.rig.props import ui as props_ui;reload(props_ui);ui = props_ui.PropSpaceDialog();ui.show_dialog()
+    enable : True
+    category: Utility
+
+  - name: nobikiri tool
+    label: 伸び切り調整ツール
+    tooltip: 人型用 腕の伸び切りなどを調整するツール
+    command: import mtk3d.maya.rig.preventoverstretching.prevent_overstretching as nobikiri;nobikiri.create()
+    enable : True
+    category: Utility
+
+  - name: waitPoseMatch
+    label: waitPoseMatch
+    tooltip: 4足用 待機ポーズとの差分修正ツール
+    command: import mtk3d.maya.rig.animUtilTools.waitPoseMatch  as UI; reload(UI);UI.main()
+    enable : True
+    category: Utility
+
+  - name: rakuraku time editor
+    label: らくらくTimeEditor
+    tooltip: タイムエディタクリップ便利ツール
+    command: import mtk3d.maya.anim.timeeditortools.timeeditortools as tet;tet.createUI()
+    enable : True
+    category: Utility
+
+  - name: cyShake Make UI
+    label: cyShake Make UI
+    tooltip: アニメーションカーブノイズジェネレーター
+    command: import mtk3d.maya.rig.cyShakeMake.ui.makeShakeUI as UI;UI.main()
+    enable : True
+    category: Utility
+
+  - name: mp4 playblast
+    label: mp4 プレイブラスト
+    tooltip: プレイブラスト動画をmp4で作成
+    command: import shr.animation.ffmpeg_playblast.app as mp4blast; mp4blast.main()
+    enable : True
+    category: Utility
+    option: import maya.mel as mel;mel.eval('performPlayblast 4;')
+
+  - name: AnimSchool Picker
+    label: AnimSchool Picker
+    tooltip: AnimSchool Pickerの実行
+    command: import maya.mel as mel;mel.eval("AnimSchoolPicker();")
+    enable : True
+    category: Utility
+    

@@ -1,0 +1,32 @@
+{
+    "creature": [
+        "cre"
+    ],
+    "enemy": [
+        "enm",
+        "efc"
+    ],
+    "mob": [
+        "mob",
+        "mfc",
+        "mhr"
+    ],
+    "npc": [
+        "npc",
+        "nfc",
+        "nhr"
+    ],
+    "player": [
+        "ply",
+        "pfc",
+        "phr"
+    ],
+    "prop": [
+        "prp"
+    ],
+    "weapon": [
+        "wbo",
+        "wpy",
+        "wsd"
+    ]
+}

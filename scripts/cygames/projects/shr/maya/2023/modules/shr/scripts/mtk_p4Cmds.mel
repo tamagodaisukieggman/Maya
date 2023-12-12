@@ -1,0 +1,240 @@
+//===============================================
+//
+// p4 コマンド実行
+//
+//===============================================
+
+//===============================================
+// ファイル情報取得
+//===============================================
+global proc string[] mtk_p4Cmds_getFileStatusFlags(string $path)
+{
+    string $result[];
+
+    // perforce 管理のパスかつ、ファイルが存在する場合
+    if(startsWith($path, "Z:/") && `filetest -f $path`)
+    {
+
+    }
+    else
+    {
+        return $result;
+    }
+
+    // ファイル情報取得
+    string $fstat = system("p4 fstat " + $path);
+    //print $fstat;
+
+    // perforce 未登録の場合
+    if(gmatch($fstat, "*- no such file(s).\r\n"))
+    {
+        $result[`size($result)`] = "NONE";
+    }
+    // 追加マーキング状態の場合
+    else if(gmatch($fstat, "*... action add\r\n*"))
+    {
+        $result[`size($result)`] = "ADDED";
+    }
+    // 削除マーキング状態の場合
+    else if(gmatch($fstat, "*... action delete\r\n*"))
+    {
+        $result[`size($result)`] = "DELETED";
+        $result[`size($result)`] = "REGISTERED";
+    }
+    // 削除済みの場合
+    else if(gmatch($fstat, "*... headAction delete\r\n*"))
+    {
+        $result[`size($result)`] = "DELETED";
+    }
+    else
+    {
+        // チェックアウト中の場合
+        if(gmatch($fstat, "*... action edit\r\n*"))
+        {
+            $result[`size($result)`] = "CHECKED_OUT";
+            $result[`size($result)`] = "REGISTERED";
+        }
+
+        // 他の人がチェックアウト中の場合
+        if(gmatch($fstat, "*... ... otherOpen *"))
+        {
+            $result[`size($result)`] = "OTHER_OPENED";
+            $result[`size($result)`] = "REGISTERED";
+        }
+
+        // コンフリクト状態の場合
+        if(gmatch($fstat, "*... unresolved*"))
+        {
+            $result[`size($result)`] = "CONFLICTED";
+            $result[`size($result)`] = "REGISTERED";
+        }
+        // 最新リビジョンか確認
+        else
+        {
+            $result[`size($result)`] = "REGISTERED";
+
+            string $lines[] = stringToStringArray($fstat, "\r\n");
+
+            int $headRev;
+            int $haveRev;
+
+            string $line;
+
+            for($line in $lines)
+            {
+                // 最新のリビジョン番号を取得
+                if(startsWith($line, "... headRev"))
+                {
+                    string $tokens[] = stringToStringArray($line, " ");
+                    $headRev = $tokens[`size($tokens)` - 1];
+                }
+
+                // ローカルのリビジョン番号を取得
+                if(startsWith($line, "... haveRev"))
+                {
+                    string $tokens[] = stringToStringArray($line, " ");
+                    $haveRev = $tokens[`size($tokens)` - 1];
+                }
+            }
+
+            if($headRev > $haveRev)
+            {
+                $result[`size($result)`] = "UNCURRENT";
+            }
+        }
+    }
+
+    // 重複項目を削除
+    $result = `stringArrayRemoveDuplicates($result)`;
+
+    return $result;
+}
+
+//===============================================
+// 追加マーキング
+//===============================================
+global proc mtk_p4Cmds_add(string $path)
+{
+    string $typeOption;
+
+    // mel, py ファイルの場合ファイルタイプをtext に
+    if(endsWith($path, ".mel") || endsWith($path, ".py"))
+    {
+        $typeOption = "-t text ";
+    }
+
+    string $result = system("p4 add " + $typeOption + $path);
+    print $result;
+}
+
+//===============================================
+// 最新リビジョンを取得
+//===============================================
+global proc mtk_p4Cmds_sync(string $path)
+{
+    string $result = system("p4 sync " + $path);
+    print $result;
+}
+
+//===============================================
+// チェックアウト
+//===============================================
+global proc mtk_p4Cmds_checkout(string $path)
+{
+    string $result = system("p4 edit " + $path);
+    print $result;
+}
+
+//===============================================
+// リバート
+//===============================================
+global proc mtk_p4Cmds_revert(string $path)
+{
+    string $result = system("p4 revert " + $path);
+    print $result;
+}
+
+//===============================================
+// サブミット
+//===============================================
+global proc int mtk_p4Cmds_submit(string $path, string $comment)
+{
+    // コメントが空の場合
+    if($comment == "")
+    {
+        confirmDialog -t "サブミット" -m "コメントが入力されていません。 処理を中止します。" -b "OK";
+
+        return false;
+    }
+
+    // Maya からだと、コメントにマルチバイト文字含まれているとうまくいかないので日本語は禁止に）
+    if(containsMultibyte($comment))
+    {
+        confirmDialog -t "サブミット" -m "コメントに日本語が含まれています。処理を中止します。" -b "OK";
+
+        return false;
+    }
+
+    string $result = system("p4 submit -d \"" + $comment + "\" " + $path);
+    print $result;
+
+    return true;
+}
+
+//===============================================
+// 編集中ファイルに変更があるか
+//===============================================
+global proc int mtk_p4Cmds_isModified(string $path)
+{
+    string $result = system("p4 diff -sa " + $path);
+
+    // 編集中ファイルに変更なし
+    if($result == "")
+    {
+        return false;
+    }
+    // 編集中ファイルに変更あり
+    else if($result == (substituteAllString($path, "/", "\\") + "\r\n"))
+    {
+        return true;
+    }
+
+    // それ以外の場合、編集中ファイルではない
+    print $result;
+
+    return false;
+}
+
+//===============================================
+// 他にチェックアウトしているユーザーを取得
+//===============================================
+global proc string[] mtk_p4Cmds_getOtherCheckoutUser(string $path)
+{
+    string $users[];
+
+    string $result = system("p4 fstat -T otherOpen " + $path);
+
+    if(startsWith($result, "... ... otherOpen"))
+    {
+        string $tokens[] = stringToStringArray($result, " ");
+
+        int $num = int($tokens[`size($tokens)` - 1]);
+
+        int $i;
+
+        for($i = 0; $i < $num; $i++)
+        {
+            string $cmd = "p4 fstat -T otherOpen" + $i + " " + $path;
+
+            $result = system($cmd);
+
+            $tokens = stringToStringArray($result, " ");
+            $tokens = stringToStringArray($tokens[3], "@");
+
+            $users[`size($users)`] = $tokens[0];
+        }
+    }
+
+    return $users;
+}
+

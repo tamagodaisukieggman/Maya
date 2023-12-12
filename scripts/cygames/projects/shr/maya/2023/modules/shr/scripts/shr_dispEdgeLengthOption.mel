@@ -1,0 +1,72 @@
+//===============================================
+// 設定ダイアログ開く
+//===============================================
+global proc shr_dispEdgeLengthOption()
+{
+    layoutDialog
+        -t "Disp Edge Length Options"
+        -ui "shr_dispEdgeLengthOption_dialog";
+}
+
+//===============================================
+// 設定ダイアログ作成
+//===============================================
+global proc shr_dispEdgeLengthOption_dialog()
+{
+    //プリファレンスに値が無ければデフォルト値を設定
+    if (`optionVar -ex "shr_dispEdgeLength_unitsPerMeter"` == 0)
+    {
+        optionVar -fv "shr_dispEdgeLength_unitsPerMeter" 100.0;
+    }
+    if (`optionVar -ex "shr_dispEdgeLength_pixelsPerMeter"` == 0)
+    {
+        optionVar -iv "shr_dispEdgeLength_pixelsPerMeter" 256;
+    }
+
+    // 1m あたりのMayaユニット数
+    float $unitsPerMeter = `optionVar -q "shr_dispEdgeLength_unitsPerMeter"`;
+
+    // 1m あたりのピクセル数
+    int $pixelsPerMeter = `optionVar -q "shr_dispEdgeLength_pixelsPerMeter"`;
+
+
+    // ダイアログのformLayout を取得
+    string $form = `setParent -q`;
+
+    formLayout -e -width 270 $form;
+
+    string $rcl = `rowColumnLayout -nc 3 -cw 2 75 -rs 2 8`;
+
+    string $t1 = `text -l "1 m = "`;
+    string $fField = `floatField -min 0.0001 -v $unitsPerMeter -pre 1`;
+    string $t2 = `text -l " units"`;
+
+    string $t3 = `text -l "1 m = "`;
+    string $iField = `intField -min 1 -v $pixelsPerMeter`;
+    string $t4 = `text -l " pixels"`;
+
+    setParent ..;
+
+    string $b = `button -l "OK" -c "layoutDialog -dismiss \"ok\""`;
+
+    formLayout -e
+        -attachForm    $rcl   "top"    10
+        -attachForm    $rcl   "left"   64
+        -attachNone    $rcl   "bottom"
+        -attachForm    $rcl   "right"  1
+
+        -attachControl    $b   "top"    16 $rcl
+        -attachForm    $b   "left"   1
+        -attachNone    $b   "bottom"
+        -attachForm    $b   "right"  1
+    $form;
+
+    string $cmd = "optionVar -fv shr_dispEdgeLength_unitsPerMeter `floatField -q -v " + $fField + "`";
+
+    floatField -e -cc $cmd $fField;
+
+    $cmd = "optionVar -iv shr_dispEdgeLength_pixelsPerMeter `intField -q -v " + $iField + "`";
+
+    intField -e -cc $cmd $iField;
+
+}

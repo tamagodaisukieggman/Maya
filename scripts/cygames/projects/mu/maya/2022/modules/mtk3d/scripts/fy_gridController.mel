@@ -1,0 +1,859 @@
+//===============================================
+//
+// グリッドコントローラ
+// 
+// Fujita Yukihiro
+//
+//===============================================
+
+global proc fy_gridController()
+{
+    if (`optionVar -ex "ov_numOfPresetButtons_fy_gridController"` == 0)
+    {
+        // プリセットボタン数
+        optionVar -iv "ov_numOfPresetButtons_fy_gridController" 5;
+        
+        // 1m あたりのMaya unit 数
+        optionVar -fv "ov_unitsPerMeter_fy_gridController" 100;
+        
+        // 長さと幅の単位
+        optionVar -sv "ov_unitOfLengthAndWidth_fy_gridController" "units";
+        
+        // グリッド間隔の単位
+        optionVar -sv "ov_unitOfGridSpacing_fy_gridController" "units";
+        
+        // 長さと幅のプリセット値
+        optionVar -clearArray "ov_lengthAndWidthPresetValues_fy_gridController";
+        optionVar -floatValueAppend "ov_lengthAndWidthPresetValues_fy_gridController" 1;
+        optionVar -floatValueAppend "ov_lengthAndWidthPresetValues_fy_gridController" 5;
+        optionVar -floatValueAppend "ov_lengthAndWidthPresetValues_fy_gridController" 10;
+        optionVar -floatValueAppend "ov_lengthAndWidthPresetValues_fy_gridController" 50;
+        optionVar -floatValueAppend "ov_lengthAndWidthPresetValues_fy_gridController" 100;
+        
+        // グリッド間隔のプリセット値
+        optionVar -clearArray "ov_gridSpacingPresetValues_fy_gridController";
+        optionVar -floatValueAppend "ov_gridSpacingPresetValues_fy_gridController" 1;
+        optionVar -floatValueAppend "ov_gridSpacingPresetValues_fy_gridController" 5;
+        optionVar -floatValueAppend "ov_gridSpacingPresetValues_fy_gridController" 10;
+        optionVar -floatValueAppend "ov_gridSpacingPresetValues_fy_gridController" 50;
+        optionVar -floatValueAppend "ov_gridSpacingPresetValues_fy_gridController" 100;
+        
+        // グリッド分割数のプリセット値
+        optionVar -clearArray "ov_gridSubdivisionsPresetValues_fy_gridController";
+        optionVar -intValueAppend "ov_gridSubdivisionsPresetValues_fy_gridController" 1;
+        optionVar -intValueAppend "ov_gridSubdivisionsPresetValues_fy_gridController" 2;
+        optionVar -intValueAppend "ov_gridSubdivisionsPresetValues_fy_gridController" 4;
+        optionVar -intValueAppend "ov_gridSubdivisionsPresetValues_fy_gridController" 8;
+        optionVar -intValueAppend "ov_gridSubdivisionsPresetValues_fy_gridController" 10;
+    }
+
+/*
+    // ウィンドウ作成
+    if (`window -exists uWnd_fy_gridController` == 1)
+    {
+        deleteUI uWnd_fy_gridController;
+    }
+
+    window
+        -title "Grid Controller"
+        -resizeToFitChildren on
+        -sizeable on
+        -toolbox on
+        -maximizeButton off
+        -mb on
+        uWnd_fy_gridController;
+*/
+
+    menuBarLayout;
+
+        menu -l "オプション";
+            menuItem
+                -l "単位の設定..."
+                -c "layoutDialog -t \"Grid Controller\" -ui fy_gridController_unitOptionDialogUI; fy_gridController_createLengthAndWidthButtons; fy_gridController_createGridSpacingButtons;"
+               ;
+            menuItem
+                -l "プリセットボタン数の変更..."
+                -c "layoutDialog -t \"Grid Controller\" -ui fy_gridController_changeNumOfPresetButtonsDialogUI; fy_gridController_createLengthAndWidthButtons; fy_gridController_createGridSpacingButtons; fy_gridController_createGridSubdivisionsButtons;"
+               ;
+
+        string $helpCmd = "python(\"import webbrowser\\nwebbrowser.open('https://wisdom.cygames.jp/pages/viewpage.action?pageId=145866028')\")";
+
+        menu -l "ヘルプ" -helpMenu on;
+            menuItem
+                -l "Grid Controller のヘルプ"
+                -c $helpCmd
+               ;
+               
+        int $buttonWidth = 48;
+        int $rowHeight = 18;
+               
+        frameLayout -lv off -mw 4 -mh 4;
+        
+            rowColumnLayout
+                -nc 5
+                -rowSpacing 1 2
+                -columnAlign 1 "right"
+                -columnWidth 2 70
+                -columnWidth 3 70
+                uRcl_main_fy_gridController;
+                
+                text -l "長さと幅 : " -h $rowHeight;
+
+                // 長さと幅 入力フィールド
+                floatField 
+                    -h $rowHeight
+                    -pre 3
+                    -step 10
+                    -cc "fy_gridController_fieldValueOfLengthAndWidthChangeCommand"
+                    uFf_lengthAndWidthValue_fy_gridController;
+
+                // 長さと幅 単位オプションメニュー
+                optionMenu -h $rowHeight uOm_unitOfLengthAndWidth_fy_gridController;
+                    menuItem -l "units";
+                    menuItem -l "m";
+                    menuItem -l "cm";
+                    menuItem -l "mm";
+
+                // 長さと幅 単位取得
+                string $unitOfLengthAndWidth = `optionVar -q "ov_unitOfLengthAndWidth_fy_gridController"`;
+
+                optionMenu -e
+                    -value $unitOfLengthAndWidth
+                    -cc "fy_gridController_unitOfLengthAndWidthChangeCommand(\"#1\")"
+                    uOm_unitOfLengthAndWidth_fy_gridController;
+
+                text -w 8 -l "";
+
+                // 現在のグリッドのサイズ
+                float $currentValue = fy_gridController_convertToOtherUnitValue(`grid -q -size`, $unitOfLengthAndWidth);
+                
+                // 長さと幅 入力フィールド の値セット
+                floatField -e -v $currentValue uFf_lengthAndWidthValue_fy_gridController;
+
+                // 長さと幅 入力フィールド の最小値設定
+                fy_gridController_setLengthAndWidthFieldMinValue;
+
+                // 長さと幅 プリセットボタン親レイアウト
+                columnLayout -adj on uCl_lengthAndWidthButtons_fy_gridController;
+
+                    // 長さと幅 プリセットボタン作成
+                    fy_gridController_createLengthAndWidthButtons;
+
+                    setParent uRcl_main_fy_gridController;
+
+                text -l "グリッド間隔 : ";
+               
+                // グリッド間隔 入力フィールド
+                floatField
+                    -v 1
+                    -min 0.001
+                    -pre 3
+                    -step 10
+                    -cc "fy_gridController_fieldValueOfGridSpacingChangeCommand"
+                    uFf_gridSpacingValue_fy_gridController;
+
+                // グリッド間隔 単位オプションメニュー
+                optionMenu -h $rowHeight uOm_unitOfGridSpacing_fy_gridController;
+                   menuItem -l "units";
+                   menuItem -l "m";
+                   menuItem -l "cm";
+                   menuItem -l "mm";
+                
+                // グリッド間隔 単位取得
+                string $unitOfGridSpacing = `optionVar -q "ov_unitOfGridSpacing_fy_gridController"`;
+
+                optionMenu -e
+                    -value $unitOfGridSpacing
+                    -cc "fy_gridController_unitOfGridSpacingChangeCommand(\"#1\")"
+                    uOm_unitOfGridSpacing_fy_gridController;
+
+                text -l "";
+
+                // 現在のグリッド間隔
+                $currentValue = fy_gridController_convertToOtherUnitValue(`grid -q -spacing`, $unitOfGridSpacing);
+                
+                // グリッド間隔 入力フィールド の値セット
+                floatField -e -v $currentValue uFf_gridSpacingValue_fy_gridController;
+
+                // グリッド間隔 プリセットボタン親レイアウト
+                columnLayout -adj on uCl_gridSpacingButtons_fy_gridController;
+
+                    // グリッド間隔 プリセットボタン作成
+                    fy_gridController_createGridSpacingButtons;
+
+                    setParent uRcl_main_fy_gridController;
+
+                text -l "グリッド分割数 : ";
+               
+                // グリッド分割数 入力フィールド
+                intField
+                    -v `grid -q -divisions`
+                    -min 1
+                    -max 32
+                    -cc "fy_gridController_fieldValueOfGridSubdivisionsChangeCommand"
+                    uIf_gridSubdivisionsValue_fy_gridController;
+               
+                text -l "";
+
+                text -l "";
+               
+                // グリッド分割数 プリセットボタン親レイアウト
+                columnLayout -adj on uCl_gridSubdivisionsButtons_fy_gridController;
+
+                    // グリッド分割数 プリセットボタン作成
+                    fy_gridController_createGridSubdivisionsButtons;
+
+                    setParent uRcl_main_fy_gridController;
+                   
+//    showWindow;
+}
+
+//===============================================
+// 「長さと幅」 フィールドの最小値を設定
+//===============================================
+global proc fy_gridController_setLengthAndWidthFieldMinValue()
+{
+    // 単位
+    string $unit = `optionMenu -q -v "uOm_unitOfLengthAndWidth_fy_gridController"`;
+
+    // 1m あたりのMaya unit 数
+    float $unitsPerMeter = `optionVar -q "ov_unitsPerMeter_fy_gridController"`;
+    
+    // 最小値（Maya 単位）
+    float $minValue = 1;
+    
+    // 単位変換
+    $minValue = fy_gridController_convertToOtherUnitValue($minValue, $unit);
+    
+    // 現在の値を取得
+    float $currentValue = `floatField -q -v uFf_lengthAndWidthValue_fy_gridController`;
+    
+    // 新しい最小値より小さければ値を最小値に変更
+    if($currentValue < $minValue)
+    {
+        floatField -e -v $minValue uFf_lengthAndWidthValue_fy_gridController;
+    }
+    
+    // 長さと幅 入力フィールドの最小値を設定
+    floatField -e -min $minValue uFf_lengthAndWidthValue_fy_gridController;
+}
+
+
+//===============================================
+// 「長さと幅」プリセットボタン作成
+//===============================================
+global proc fy_gridController_createLengthAndWidthButtons()
+{
+    // プリセット数
+    int $nc = `optionVar -q "ov_numOfPresetButtons_fy_gridController"`;
+
+    // レイアウトをいったん削除
+    if (`rowLayout -exists uRl_lengthAndWidthButtons_fy_gridController` == true)
+    {
+        deleteUI uRl_lengthAndWidthButtons_fy_gridController;
+    }
+    
+    rowLayout -p uCl_lengthAndWidthButtons_fy_gridController -nc $nc uRl_lengthAndWidthButtons_fy_gridController;
+
+    // プリセット値を取得
+    float $values[] = `optionVar -q "ov_lengthAndWidthPresetValues_fy_gridController"`;
+
+    int $buttonWidth = 48;
+    int $buttonHeight = 18;
+
+    // 長さと幅の単位を取得
+    string $unitOfLengthAndWidth = `optionVar -q "ov_unitOfLengthAndWidth_fy_gridController"`;
+
+    int $i;
+
+    for($i = 0; $i<$nc; $i++)
+    {
+        string $label;
+        
+        if($unitOfLengthAndWidth != "units")
+        {
+            $label = $values[$i] + " " + $unitOfLengthAndWidth;
+        }
+        else
+        {
+            $label = $values[$i];
+        }
+
+        // ボタンコマンド
+        string $cmd = "floatField -e -v " + $values[$i] + " uFf_lengthAndWidthValue_fy_gridController;";
+        $cmd = $cmd + "fy_gridController_fieldValueOfLengthAndWidthChangeCommand;";
+
+        string $buttonName = `button
+            -w $buttonWidth
+            -h $buttonHeight
+            -l $label
+            -ann $label
+            -bgc 0.6 0.5 0.5
+            -c $cmd
+            `;
+
+        // 右クリックメニューコマンド
+        $cmd = "fy_gridController_changePresetButtonValue(0, \"" + $buttonName + "\"," + $i + ");";
+
+        // 右クリックメニュー
+        popupMenu;
+            menuItem 
+            -label "プリセット値の変更"
+            -c $cmd
+            ;
+    }
+}
+
+//===============================================
+// 「グリッド間隔」プリセットボタン作成
+//===============================================
+global proc fy_gridController_createGridSpacingButtons()
+{
+    // プリセット数
+    int $nc = `optionVar -q "ov_numOfPresetButtons_fy_gridController"`;
+
+    // レイアウトをいったん削除
+    if (`rowLayout -exists uRl_gridSpacingButtons_fy_gridController` == true)
+    {
+        deleteUI uRl_gridSpacingButtons_fy_gridController;
+    }
+    
+    rowLayout -p uCl_gridSpacingButtons_fy_gridController -nc $nc uRl_gridSpacingButtons_fy_gridController;
+
+    // プリセット値を取得
+    float $values[] = `optionVar -q "ov_gridSpacingPresetValues_fy_gridController"`;
+
+    int $buttonWidth = 48;
+    int $buttonHeight = 18;
+
+    // グリッド間隔の単位を取得
+    string $unitOfGridSpacing = `optionVar -q "ov_unitOfGridSpacing_fy_gridController"`;
+
+    int $i;
+
+    for($i = 0; $i<$nc; $i++)
+    {
+        string $label;
+        
+        if($unitOfGridSpacing != "units")
+        {
+            $label = $values[$i] + " " + $unitOfGridSpacing;
+        }
+        else
+        {
+            $label = $values[$i];
+        }
+
+        // ボタンコマンド
+        string $cmd = " floatField -e -v " + $values[$i] + " uFf_gridSpacingValue_fy_gridController;";
+        $cmd = $cmd + "fy_gridController_fieldValueOfGridSpacingChangeCommand;";
+
+        string $buttonName = `button
+            -w $buttonWidth
+            -h $buttonHeight
+            -l $label
+            -ann $label
+            -bgc 0.5 0.6 0.5
+            -c $cmd
+            `;
+
+        // 右クリックメニューコマンド
+        $cmd = "fy_gridController_changePresetButtonValue(1, \"" + $buttonName + "\"," + $i + ");";
+
+        // 右クリックメニュー
+        popupMenu;
+            menuItem 
+            -label "プリセット値の変更"
+            -c $cmd
+            ;
+    }
+}
+
+//===============================================
+// 「グリッド分割数」プリセットボタン作成
+//===============================================
+global proc fy_gridController_createGridSubdivisionsButtons()
+{
+    // プリセット数
+    int $nc = `optionVar -q "ov_numOfPresetButtons_fy_gridController"`;
+
+    // レイアウトをいったん削除
+    if (`rowLayout -exists uRl_gridSubdivisionsButtons_fy_gridController` == true)
+    {
+        deleteUI uRl_gridSubdivisionsButtons_fy_gridController;
+    }
+    
+    rowLayout -p uCl_gridSubdivisionsButtons_fy_gridController -nc $nc uRl_gridSubdivisionsButtons_fy_gridController;
+
+    // プリセット値を取得
+    int $values[] = `optionVar -q "ov_gridSubdivisionsPresetValues_fy_gridController"`;
+
+    int $buttonWidth = 48;
+    int $buttonHeight = 18;
+
+    int $i;
+
+    for($i = 0; $i<$nc; $i++)
+    {
+        // ボタンコマンド
+        string $cmd = "intField -e -v " + $values[$i] + " uIf_gridSubdivisionsValue_fy_gridController;";
+        $cmd = $cmd + "fy_gridController_fieldValueOfGridSubdivisionsChangeCommand;";
+
+        string $buttonName = `button
+            -w $buttonWidth
+            -h $buttonHeight
+            -l $values[$i]
+            -ann $values[$i]
+            -bgc 0.5 0.5 0.6
+            -c $cmd
+            `;
+
+        // 右クリックメニューコマンド
+        $cmd = "fy_gridController_changePresetButtonValue(2, \"" + $buttonName + "\"," + $i + ");";
+
+        // 右クリックメニュー
+        popupMenu;
+            menuItem 
+            -label "プリセット値の変更"
+            -c $cmd
+            ;
+    }
+}
+
+
+
+//===============================================
+// 「長さと幅」単位オプションメニュー チェンジコマンド
+//===============================================
+global proc fy_gridController_unitOfLengthAndWidthChangeCommand(string $value)
+{
+    // プリファレンスに保存
+    optionVar -sv "ov_unitOfLengthAndWidth_fy_gridController" $value;
+
+    // 「長さと幅」フィールドの最小値を設定
+    fy_gridController_setLengthAndWidthFieldMinValue;
+
+    // 「長さと幅」のプリセットボタン更新
+    fy_gridController_createLengthAndWidthButtons;
+    
+    fy_gridController_fieldValueOfLengthAndWidthChangeCommand;
+}
+
+//===============================================
+// 「グリッド間隔」単位オプションメニュー チェンジコマンド
+//===============================================
+global proc fy_gridController_unitOfGridSpacingChangeCommand(string $value)
+{
+    // プリファレンスに保存
+    optionVar -sv "ov_unitOfGridSpacing_fy_gridController" $value;
+
+    // 「グリッド間隔」のプリセットボタン更新
+    fy_gridController_createGridSpacingButtons;
+    
+    fy_gridController_fieldValueOfGridSpacingChangeCommand;
+}
+
+//===============================================
+// 「長さと幅」 floatField チェンジコマンド
+//===============================================
+global proc fy_gridController_fieldValueOfLengthAndWidthChangeCommand()
+{
+    // 入力値
+    float $value = `floatField -q -v "uFf_lengthAndWidthValue_fy_gridController"`;
+    
+    // 単位
+    string $unit = `optionMenu -q -v "uOm_unitOfLengthAndWidth_fy_gridController"`;
+
+    // Maya 単位に変換
+    $value = fy_gridController_convertToMayaUnitsValue($value, $unit);
+
+    // プリファレンスに値を保存
+    optionVar -fv "gridSize" $value;
+
+    grid -size $value;
+}
+
+//===============================================
+// 「グリッド間隔」 floatField チェンジコマンド
+//===============================================
+global proc fy_gridController_fieldValueOfGridSpacingChangeCommand()
+{
+    // 入力値
+    float $value = `floatField -q -v "uFf_gridSpacingValue_fy_gridController"`;
+    
+    // 単位
+    string $unit = `optionMenu -q -v "uOm_unitOfGridSpacing_fy_gridController"`;
+
+    // Maya 単位に変換
+    $value = fy_gridController_convertToMayaUnitsValue($value, $unit);
+
+    // プリファレンスに値を保存
+    optionVar -fv "gridSpacing" $value;
+
+    grid -spacing $value;
+}
+
+//===============================================
+// 「グリッド分割数」 floatField チェンジコマンド
+//===============================================
+global proc fy_gridController_fieldValueOfGridSubdivisionsChangeCommand()
+{
+    // 入力値
+    int $value = `intField -q -v "uIf_gridSubdivisionsValue_fy_gridController"`;
+    
+    // プリファレンスに値を保存
+    optionVar -fv "gridDivisions" $value;
+    
+    grid -divisions $value;
+}
+
+
+//===============================================
+// 入力値をMaya 単位に変更
+//===============================================
+global proc float fy_gridController_convertToMayaUnitsValue(float $value, string $unit)
+{
+    // 1m あたりのMaya unit 数
+    float $unitsPerMeter = `optionVar -q "ov_unitsPerMeter_fy_gridController"`;
+
+    // 単位によって数値を変換
+    if($unit == "m")
+    {
+        $value = $value * $unitsPerMeter;
+    }
+    else if($unit == "cm")
+    {
+        $value = $value * $unitsPerMeter / 100;
+    }
+    else if($unit == "mm")
+    {
+        $value = $value * $unitsPerMeter / 1000;
+    }
+
+    return $value;
+}
+
+//===============================================
+// 入力値（Maya 単位）を各単位値に変更
+//===============================================
+global proc float fy_gridController_convertToOtherUnitValue(float $value, string $unit)
+{
+    // 1m あたりのMaya unit 数
+    float $unitsPerMeter = `optionVar -q "ov_unitsPerMeter_fy_gridController"`;
+
+    // 単位によって数値を変換
+    if($unit == "m")
+    {
+        $value = $value / $unitsPerMeter;
+    }
+    else if($unit == "cm")
+    {
+        $value = $value / $unitsPerMeter * 100;
+    }
+    else if($unit == "mm")
+    {
+        $value = $value / $unitsPerMeter * 1000;
+    }
+
+    return $value;
+}
+
+//===============================================
+// プリセットボタン 数値変更
+//===============================================
+global proc fy_gridController_changePresetButtonValue(int $type, string $buttonName, int $index)
+{
+    string $optionManuNames[] =
+    {
+        "uOm_unitOfLengthAndWidth_fy_gridController",
+        "uOm_unitOfGridSpacing_fy_gridController"
+    };
+    
+    string $inputFieldNames[] =
+    {
+        "uFf_lengthAndWidthValue_fy_gridController",
+        "uFf_gridSpacingValue_fy_gridController",
+        "uIf_gridSubdivisionsValue_fy_gridController"
+    };
+    
+    string $varNames[] =
+    {
+        "ov_lengthAndWidthPresetValues_fy_gridController",
+        "ov_gridSpacingPresetValues_fy_gridController",
+        "ov_gridSubdivisionsPresetValues_fy_gridController"
+    };
+    
+    string $buttonCommands[] =
+    {
+        "fy_gridController_fieldValueOfLengthAndWidthChangeCommand",
+        "fy_gridController_fieldValueOfGridSpacingChangeCommand",
+        "fy_gridController_fieldValueOfGridSubdivisionsChangeCommand"
+    };
+
+    float $values[];
+    float $value;
+
+    if($type == 2)
+    {
+        // プリセット値を取得
+        int $tempValues[] = `optionVar -q $varNames[$type]`;
+        int $tempValue;
+        
+        // 値をint にキャスト
+        for($tempValue in $tempValues)
+        {
+            $values[`size($values)`] = int($tempValue);
+        }
+    }
+    else
+    {
+        // プリセット値を取得
+        $values = `optionVar -q $varNames[$type]`;
+    }
+
+    string $message = "新しいプリセット値を入力してください。";
+
+    //移動値入力ダイアログ
+	string $resault =
+    	`promptDialog 
+        	-title "プリセット値の変更"
+        	-message $message
+        	-text $values[$index]
+        	-button "決定"
+        	-button "キャンセル"
+        	-defaultButton "決定"
+        	-cancelButton "キャンセル"
+        	-dismissString "キャンセル"`;
+
+    //入力確定したら
+    if($resault == "決定")
+    {
+        // 入力値を取得
+        string $inputText = `promptDialog -q -text`;
+
+        // 入力値をfloat にキャスト
+        float $inputValue = float($inputText);
+
+        // 入力値が有効か
+        int $isValidValue = true;
+        string $m;
+
+        // 入力値チェック
+        if($type == 2)
+        {
+            if($inputValue < 1)
+            {
+                $isValidValue = false;
+                
+                $m = "1 以上の整数値を入力してください。";
+            }
+        }
+        else if($type == 1)
+        {
+            if($inputValue <= 0)
+            {
+                $isValidValue = false;
+                
+                $m = "0 より大きい数値を入力してください。";
+            }
+        }
+        else
+        {
+            float $minValue = fy_gridController_convertToOtherUnitValue(1, `optionMenu -q -v $optionManuNames[$type]`);
+            
+            if($inputValue < $minValue)
+            {
+                $isValidValue = false;
+                
+                $m = $minValue + " " + `optionMenu -q -v $optionManuNames[$type]` + " 以上の数値を入力してください。";
+            }
+        }
+        
+        // 入力値が有効でなければ終了
+        if($isValidValue == false)
+        {
+            confirmDialog -t "Grid Controller" -m $m -icon "critical" -b "OK";
+            
+            return;
+        }
+
+        // プリセット値リストを更新
+        $values[$index] = $inputValue;
+        
+        // プリファレンス値を一旦クリア
+        optionVar -clearArray $varNames[$type];
+        
+        // プリファレンスに保存
+        for($value in $values)
+        {
+            if($type == 2)
+            {
+                int $intValue = int($value);
+                optionVar -intValueAppend $varNames[$type] $intValue;
+            }
+            else
+            {
+                optionVar -floatValueAppend $varNames[$type] $value;
+            }
+        }
+
+        // ボタンラベル設定
+        string $label;
+
+        string $cmd;
+
+        if($type == 2)
+        {
+            $label = int($inputValue);
+            
+            // ボタンコマンド設定
+            $cmd = "intField -e -v " + int($inputValue) + " " + $inputFieldNames[$type] + ";";
+        }
+        else
+        {
+            $label = $inputValue;
+            
+            // 現在の単位を取得
+            string $unit = `optionMenu -q -v $optionManuNames[$type]`;
+    
+            if($unit != "units")
+            {
+                $label = $label + " " + $unit;
+            }
+            
+            // ボタンコマンド設定
+            $cmd = "floatField -e -v " + $inputValue + " " + $inputFieldNames[$type] + ";";
+        }
+
+        // ボタンコマンド設定
+        $cmd = $cmd + $buttonCommands[$type];
+
+        // ボタン更新
+        button -e -l $label -ann $label -c $cmd $buttonName;
+    }
+}
+
+//===============================================
+// 単位設定ダイアログ作成
+//===============================================
+global proc fy_gridController_unitOptionDialogUI()
+{
+    // 1m あたりのMayaユニット数
+    float $unitsPerMeter = `optionVar -q "ov_unitsPerMeter_fy_gridController"`;
+    
+    // ダイアログのformLayout を取得
+    string $form = `setParent -q`;
+
+    formLayout -e -width 270 $form;
+    
+    string $rcl = `rowColumnLayout -nc 3 -cw 2 75 -rs 2 8`;
+    
+    string $t1 = `text -l "1 m = "`;
+    string $fField = `floatField -min 0.0001 -v $unitsPerMeter -pre 1`;
+    string $t2 = `text -l " units"`;
+
+    setParent ..;
+
+    // 決定ボタンコマンド
+    string $cmd = "optionVar -fv ov_unitsPerMeter_fy_gridController `floatField -q -v " + $fField + "`; layoutDialog -dismiss \"決定\"";
+
+    string $b1 = `button -l "決定" -c $cmd`;
+    string $b2 = `button -l "キャンセル" -c "layoutDialog -dismiss \"キャンセル\""`;
+
+    formLayout -e
+        -attachForm    $rcl   "top"    20
+        -attachForm    $rcl   "left"   64
+        -attachNone    $rcl   "bottom"
+        -attachForm    $rcl   "right"  1
+
+        -attachNone     $b1   "top"
+        -attachForm     $b1   "left"   12
+        -attachForm     $b1   "bottom" 12
+        -attachPosition $b1   "right"  2 50
+
+        -attachNone     $b2   "top"
+        -attachPosition $b2   "left"   2 50
+        -attachForm     $b2   "bottom" 12
+        -attachForm     $b2   "right"  12
+    $form;
+}
+
+//===============================================
+// プリセットボタン数 変更ダイアログ作成
+//===============================================
+global proc fy_gridController_changeNumOfPresetButtonsDialogUI()
+{
+    // 現在のボタン数を取得
+    int $number = `optionVar -q "ov_numOfPresetButtons_fy_gridController"`;
+    
+    // ダイアログのformLayout を取得
+    string $form = `setParent -q`;
+
+    string $message = `text -l "各プリセットボタンの個数を入力してください。"`;
+    string $intField = `intField -min 2 -max 10 -step 1 -v $number`;
+
+    // 決定ボタンコマンド
+    string $cmd = "fy_gridController_changeNumOfPresetButtons `intField -q -v " + $intField + "`; layoutDialog -dismiss \"決定\"";
+
+    string $b1 = `button -l "決定" -c $cmd`;
+    string $b2 = `button -l "キャンセル" -c "layoutDialog -dismiss \"キャンセル\""`;
+    string $space = `text -l ""`;
+
+    formLayout -e
+        -attachForm     $message   "top"    20
+        -attachForm     $message   "left"   12
+        -attachNone     $message   "bottom"
+        -attachForm     $message   "right"  12
+
+        -attachControl  $intField   "top"    16 $message
+        -attachForm     $intField   "left"   60
+        -attachNone     $intField   "bottom"
+        -attachForm     $intField   "right"  60
+
+        -attachControl  $space   "top"    16 $intField
+        -attachForm     $space   "left"   60
+        -attachNone     $space   "bottom"
+        -attachForm     $space   "right"  60
+        
+        -attachNone     $b1   "top"
+        -attachForm     $b1   "left"   12
+        -attachForm     $b1   "bottom" 12
+        -attachPosition $b1   "right"  2  50
+
+        -attachNone     $b2   "top"
+        -attachPosition $b2   "left"   2  50
+        -attachForm     $b2   "bottom" 12
+        -attachForm     $b2   "right"   12
+    $form;
+}
+
+//===============================================
+// プリセットボタン数 変更
+//===============================================
+global proc fy_gridController_changeNumOfPresetButtons(int $number)
+{
+    // プリファレンスに保存
+    optionVar -iv "ov_numOfPresetButtons_fy_gridController" $number;
+    
+    // プリセット値の配列サイズを取得
+    int $arraySize = `optionVar -arraySize "ov_lengthAndWidthPresetValues_fy_gridController"`;
+    
+    // 個数が保存されているプリセット値の個数より大きい場合
+    if($number > $arraySize)
+    {
+        int $diff = $number - $arraySize;
+        
+        int $i;
+        
+        // プリセット値の配列に足りない分の値を追加
+        for($i=0; $i<$diff; $i++)
+        {
+            optionVar -floatValueAppend "ov_lengthAndWidthPresetValues_fy_gridController" 1;
+            optionVar -floatValueAppend "ov_gridSpacingPresetValues_fy_gridController" 1;
+            optionVar -intValueAppend "ov_gridSubdivisionsPresetValues_fy_gridController" 1;
+        }
+    }
+}
+
+
+//fy_gridController;

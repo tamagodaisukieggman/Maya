@@ -1,0 +1,198 @@
+//===============================================
+// UI 作成
+//===============================================
+global proc fy_outlinerToolkit()
+{
+
+    // プリファレンスがなければデフォルトを設定
+    if (`optionVar -ex "fy_outlinerToolkit_colorValues"` == 0)
+    {
+        optionVar -fva "fy_outlinerToolkit_colorValues" 1.0;
+        optionVar -fva "fy_outlinerToolkit_colorValues" 1.0;
+        optionVar -fva "fy_outlinerToolkit_colorValues" 1.0;
+    }
+
+    // カラー値
+    float $colorValues[] = `optionVar -q "fy_outlinerToolkit_colorValues"`;
+
+    // AriSortOutliner が存在するか
+    int $isAriExists = `exists AriSortOutliner`;
+
+    // ヘルプメニュー追加
+    menuBarLayout;
+        menu -l "Help" -helpMenu on;
+
+            string $helpCmd = "python(\"import webbrowser\\nwebbrowser.open('https://wisdom.cygames.jp/pages/viewpage.action?pageId=107154715')\")";
+
+            menuItem
+                -l "Outliner Toolkit のヘルプ"
+                -c $helpCmd
+               ;
+
+
+    frameLayout -lv off -mw 4 -mh 4;
+       
+        columnLayout -adj on FL_fy_outlinerToolkit;
+    
+            colorSliderGrp
+                -label "アウトライナ カラー : "
+                -rgb $colorValues[0] $colorValues[1] $colorValues[2]
+                -adjustableColumn 3
+                -columnWidth 1 90
+                -columnWidth 2 50
+                -columnWidth 3 50
+                -changeCommand "fy_outlinerToolkit_CSG_callback"
+                CSG_fy_outlinerToolkit;
+
+            text -l "" -h 8;
+
+            rowLayout -nc 2 -columnAlign 2 right;
+
+                button
+                    -l "セット"
+                    -bgc 0.5 0.6 0.5
+                    -w 120
+                    -c "fy_outlinerToolkit_cmd(1)"
+                    ;
+                button
+                    -l "解除"
+                    -bgc 0.6 0.5 0.5
+                    -w 120
+                    -c "fy_outlinerToolkit_cmd(0)"
+                    ;
+                    
+                setParent FL_fy_outlinerToolkit;
+                
+            separator -st "in" -h 16;
+
+
+        columnLayout -adj on -en $isAriExists;
+            rowColumnLayout -nc 2;
+                text -l "選択ノード並べ替え : ";
+        
+                optionMenu -w 140 -cc "fy_outlinerToolkit_OM_callback" OM_fy_outlinerToolkit;
+                    menuItem -l "名前順";
+                        
+                    menuItem -l "種類順 / 名前順";
+                        
+                    menuItem -l "選択順";
+
+                int $sortMode = `optionVar -q "AriSortOutliner_type"`;
+                
+                optionMenu -e -select ($sortMode + 1) OM_fy_outlinerToolkit;
+
+                text -l "";
+            
+                rowLayout -nc 3;
+                    text -l "        ";
+                    radioCollection;
+                        radioButton -l "昇順    " -onCommand "optionVar -iv AriSortOutliner_reverse 0" RB_fy_outlinerToolkit_a;
+                        radioButton -l "降順" -onCommand "optionVar -iv AriSortOutliner_reverse 1" RB_fy_outlinerToolkit_d;
+
+                        if(`optionVar -q "AriSortOutliner_reverse"` == false)
+                        {
+                            radioButton -e -select RB_fy_outlinerToolkit_a;
+                        }
+                        else
+                        {
+                            radioButton -e -select RB_fy_outlinerToolkit_d;
+                        }
+
+                    setParent ..;
+                setParent ..;
+            
+            button
+                -l "並べ替え"
+                -bgc 0.5 0.6 0.5
+                -w 120
+                -c "fy_outlinerToolkit_AriSortOutliner"
+                ;
+}
+
+
+//===============================================
+// colorSliderGrp コールバック
+//===============================================
+global proc fy_outlinerToolkit_CSG_callback()
+{
+    float $col[] = `colorSliderGrp -q -rgbValue CSG_fy_outlinerToolkit`;
+    
+    optionVar -clearArray "fy_outlinerToolkit_colorValues";
+    
+    optionVar -fva "fy_outlinerToolkit_colorValues" $col[0];
+    optionVar -fva "fy_outlinerToolkit_colorValues" $col[1];
+    optionVar -fva "fy_outlinerToolkit_colorValues" $col[2];
+}
+
+
+//===============================================
+// アウトライナカラー 設定
+//===============================================
+global proc fy_outlinerToolkit_cmd(int $set)
+{
+    // 選択しているトランスフォームノード
+    string $sel[] = `ls -sl -tr`;
+
+    if(`size($sel)` == 0)
+    {
+        print "// トランスフォームノードが選択されていません。\n";
+        return;
+    }
+
+    string $i;
+
+    float $col[] = `colorSliderGrp -q -rgbValue CSG_fy_outlinerToolkit`;
+
+    for($i in $sel)
+    {
+        if($set)
+        {
+            //アウトライナの色変更を有効に
+            setAttr ($i +".useOutlinerColor") 1;
+            
+            //アウトライナの色を指定
+            setAttr ($i +".outlinerColorR") $col[0];
+            setAttr ($i +".outlinerColorG") $col[1];
+            setAttr ($i +".outlinerColorB") $col[2];
+        }
+        else
+        {
+            //アウトライナの色変更を無効に
+            setAttr ($i +".useOutlinerColor") 0;
+
+            //アウトライナの色を指定
+            setAttr ($i +".outlinerColorR") 0;
+            setAttr ($i +".outlinerColorG") 0;
+            setAttr ($i +".outlinerColorB") 0;
+        }
+    }
+
+}
+
+//===============================================
+// optionMenu コールバック
+//===============================================
+global proc fy_outlinerToolkit_OM_callback()
+{
+    int $selItem = `optionMenu -q -sl OM_fy_outlinerToolkit`;
+    
+    optionVar -iv AriSortOutliner_type ($selItem - 1);
+}
+
+//===============================================
+// 並べ替え実行
+//===============================================
+global proc fy_outlinerToolkit_AriSortOutliner()
+{
+    string $sel[] = `ls -sl -tr`;
+    
+    if(`size($sel)` == 0)
+    {
+        confirmDialog -title "確認" -message "ノードが選択されていません。" -button "確認";
+        
+        return;
+    }
+
+    AriSortOutliner;
+
+}

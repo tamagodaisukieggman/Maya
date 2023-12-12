@@ -1,0 +1,493 @@
+name: mutsunokami # メニュータイトル
+tearoff: True # このメニューを分離できるように
+
+menus:
+  # File Menu
+  - label: File
+    type: submenu
+    icon: menu_file.png
+    children:
+      # Exporter
+      - label: Exporter
+        type: divider
+
+      - label: Mutsunokami Exporter Window
+        type: command
+        command: from mtk.file.new_checker import gui;gui.main()
+
+      # TODO: 残すべきかヒヤリング
+      # - label: ' '
+      #   type: divider
+
+      # - label: FBX Exporter (Chara)
+      #   type: command
+      #   command: from mtk.file.exporter import chara_exporter;chara_exporter()
+
+      # - label: FBX Exporter (Env)
+      #   type: command
+      #   command: from mtk.file.exporter import env_exporter;env_exporter()
+
+      # Checker
+      # - label: Checker
+      #   type: divider
+
+      # - label: Checker
+      #   type: command
+      #   annotation: プロジェクト全体で使用するチェッカーです。
+      #   command: from mtk.file.checker import checker;checker()
+
+      - label: "Parts Split Exporter ... : パーツ分割保存"
+        type: command
+        command: import mtk.file.partssplitexporter.gui as parts_spliter;parts_spliter.main()
+
+      # Explorer
+      - label: Explorer
+        type: divider
+
+      - label: Mtk Explorer
+        type: command
+        command: import mtk.file.explorer as explorer;explorer.main()
+
+  # Selection
+  - label: Selection
+    type: submenu
+    icon: menu_select.png
+    children:
+      - label: "Selection List: ノード選択情報の記憶ツール"
+        type: command
+        command: import mtk.select.selectionlist as selectionlist;selectionlist.main()
+
+  # Modeling Menu
+  - label: Modeling
+    type: submenu
+    icon: menu_modeling.png
+    children:
+      # General
+      - label: General
+        type: divider
+
+      - label: "LOD Create Tool: LOD 作成ツール"
+        type: command
+        command: import mtk.model.lod_create.gui as lod_tool;lod_tool.main()
+
+      - label: "LOD Model Create Tool: LOD モデル作成ツール"
+        type: command
+        annotation: "InstaLOD を使用したLOD モデルの作成をサポートするツール"
+        icon: menu_instalod.png
+        command: maya.mel.eval("mtk_instaLodModelCreateTool;")
+
+      # TODO: 安藤さんの提案から、不必要と判定。削除予定
+      # - label: "Duplicate Face Plus: 選択フェースの複製"
+      #   type: command
+      #   command: import mtk.model.duplicate_face_plus as duplicate_face_plus;duplicate_face_plus.duplicate_face_plus()
+
+      # - label: "ClosestVertex: メッシュの近傍頂点へ各頂点を移動"
+      #   type: command
+      #   command: import mtk.modeling.closestvertex as closestvertex;closestvertex.main()
+
+      # - label: "InsertEdges: 選択したエッジの隣接ポリゴンを分割"
+      #   type: command
+      #   command: import mtk.model.insertedges as insertedges;insertedges.main()
+
+      - label: "Tool Settiongs: モデリングサポートツール"
+        type: command
+        command: import mtk.model.tool_settings as tool_settings;tool_settings.main()
+
+      - label: Joint Geometrizer
+        type: command
+        command: import mtk.model.jointgeometrizer as jointgeometrizer;jointgeometrizer.gui.main()
+
+      # UV
+      - label: UV
+        type: divider
+
+      - label: "UV Set Editor Plus: 拡張UV セットエディタ"
+        type: command
+        command: import mtk.model.uv_set_editor_plus as useplus;useplus.main()
+
+      # Character
+      - label: Character
+        type: divider
+
+      # TODO: 安藤さんの提案から、不必要と判定。削除予定
+      # - label: "CharaTools: キャラツール"
+      #   type: command
+      #   command: import mtk.model.charatools.gui as charatools;charatools.main()
+
+      - label: "Character Variation Editor: キャラバリエーション作成"
+        type: command
+        icon: menu_variation_editor.png
+        command: import mtk.model.variationeditor.gui as v_editor_gui;v_editor_gui.main()
+
+      # Hair
+      - label: Hair
+        type: divider
+
+      # TODO: 安藤さんの提案から、不必要と判定。削除予定
+      # - label: "ReductEdgeRing: 髪の毛リダクション"
+      #   type: command
+      #   command: import mtk.model.reductedgering as reductedgering;reductedgering.main()
+
+      - label: "Hair Tool Set: ヘアカードツールセット"
+        type: command
+        command: import mtk.model.mtk_hair_tools.gui as hair_tools;hair_tools.main()
+
+      # TODO: 安藤さんの提案から、不必要と判定。削除予定
+      # - label: "CopyHairWeight: ヘアーポリゴンのウェイトコピー"
+      #   type: command
+      #   command: import mtk.model.copyhairweight as copyhairweight;copyhairweight.main()
+
+      - label: "Spherical Normal: 選択したメッシュの法線を球状に"
+        type: command
+        command: import mtk.model.spherical_normal as spherical_normal;spherical_normal.main()
+
+      - label: "Edit Normal: 選択したメッシュの法線を編集"
+        type: command
+        command: import mtk.model.edit_normal as edit_normal;edit_normal.main()
+
+      # TODO: 安藤さんの提案から、不必要と判定。削除予定
+      # - label: "Resurf Tool: リサーフ用ツール"
+      #   type: command
+      #   command: import mtk.model.resurf as resurf;resurf.main()
+
+      # Environment
+      # - label: Environment
+      #   type: divider
+
+      # Checker
+      # - label: Checker
+      #   type: divider
+
+      # TODO: 安藤さんの提案から、不必要と判定。削除予定
+      # - label: "MeshChecker: メッシュチェッカー"
+      #   type: command
+      #   command: import mtk.model.meshchecker as meshchecker;meshchecker.main()
+
+  # Rigging Menu
+  - label: Rigging
+    type: submenu
+    icon: menu_rigging.png
+    children:
+      - label: Skinning
+        type: divider
+
+      # Maya2022移行済
+      - label: "Easy Bind: スキニングサポートツール"
+        type: command
+        command: import mtk.rig.easy_bind.gui as eb;eb.main()
+
+      # Maya2022移行済
+      # TODO: 安藤さんの提案から、不必要と判定。削除予定
+      # - label: Merge Skinclusters
+      #   type: command
+      #   command: import mtk.rig.mergeskinclusters as msclusters;msclusters.main()
+
+      # Weight
+      # Maya2022移行済
+      - label: Weight
+        type: divider
+
+      # Maya2022移行済
+      # TODO: 安藤さんの提案から、不必要と判定。削除予定
+      # - label: "Skin Weight: スキンウェイトツール"
+      #   type: command
+      #   command: import mtk.rig.skinweight as skinweight;skinweight.main()
+
+      # Maya2022移行済
+      - label: "Weight Editor: ウェイト編集ツール"
+        type: command
+        command: import mtk.rig.weight_editor as weight_editor;weight_editor.main()
+
+      # Utilities
+      - label: Utilities
+        type: divider
+
+      # Maya2022移行済
+      - label: "Variation Model Changer : キャラバリエーション切り替え"
+        type: command
+        command: "import mtk.animation.variation_changer.gui as vc;vc.main()"
+
+      # Maya2018から動いてないので、要確認。
+      # TODO: 安藤さんの提案から、不必要と判定。削除予定
+      # - label: Rig Compare
+      #   type: command
+      #   command: from mtk.extern.rigcompare import rig_compare;rig_compare()
+
+      # Maya2022移行済
+      - label: Joint Motion Manager
+        type: command
+        command: from mtk.rig.joint_motion_manager.gui import main;main()
+
+      # Checker
+      - label: Checker
+        type: divider
+
+      # Maya2022移行済
+      - label: Rig Scene Check and Save
+        type: command
+        command: from mtk.file.new_checker.rig_gui import main;main()
+
+  # Animation Menu
+  # Maya2022移行済
+  - label: Animation
+    type: submenu
+    icon: menu_animation.png
+    children:
+      - label: モーション反転ツール # Bossbattle
+        type: command
+        command: import mtk.animation.reversemotion as reversemotion;reversemotion.main()
+
+      - label: Bake Animation # Bossbattle
+        type: command
+        command: import mtk.animation.bakesimulation as bs;bs.main()
+
+      - label: Bake Move Ctrl # Bossbattle
+        type: command
+        command: import mtk.animation.bakemovectrl as bakemovectrl;bakemovectrl.main()
+
+      - label: Anim Copy && Paste # Bossbattle
+        type: command
+        command: import mtk.animation.animstore as animstore;animstore.anim_copy_paste()
+
+      - label: "Variation Model Changer: キャラバリエーション切り替え"
+        type: command
+        command: import mtk.animation.variation_changer.gui as vc;vc.main()
+
+      - label: AnimSchool Picker
+        type: command
+        command: from maya import cmds;from maya import mel;cmds.loadPlugin("Z:/mtk/tools/maya/{}/modules/animschool_picker/plug-ins/AnimSchoolPicker.mll".format(cmds.about(version=True)),qt=True);mel.eval("AnimSchoolPicker();")
+
+      - label: Cyllista
+        type: divider
+
+      - label: プレイヤーのステルスキルモーション事前計算データを埋め込み
+        type: command
+        command: import mtk.animation.impprecalc.main as impprecalc;impprecalc.main()
+
+      # Facial
+      # - label: Facial
+      #   type: divider
+
+      # 石川さんが2年で1回だけ起動。
+      # 石川さんに確認し不要と判断。
+      # - label: Retarget Scene Setup
+      #   type: command
+      #   command: import mtk.animation.retargetscenesetup as retargetscenesetup;retargetscenesetup.main()
+
+      # Pose
+      - label: Pose
+        type: divider
+
+      - label: Studio Library
+        type: command
+        command: from mtk.animation import studiolibrary;studiolibrary.main()
+        # command: import studiolibrary;studiolibrary.main()
+
+  # Effects
+  - label: Effects
+    type: submenu
+    icon: menu_effects.png
+    children:
+      # 石川さんに確認し不要と判断。
+      # - label: Submit Simulation Job
+      #   type: command
+      #   command: import mtk.simulation.backgroundjob as backgroundjob;backgroundjob.main()
+
+      # Setup
+      # - label: Setup
+      #   type: divider
+
+      # 石川さんが2年で1回だけ起動。
+      # TODO: [山城] 残すべきかヒヤリング
+      # 石川さんに確認し不要と判断。
+      # - label: Setup Ply Simulation Roll
+      #   type: command
+      #   command: from mtk.simulation import setup_ply_sim_roll_ui;setup_ply_sim_roll_ui()
+
+      # Bake
+      - label: Bake
+        type: divider
+
+      - label: "Bake Simulated Bone: シムを骨に焼き付け"
+        type: command
+        command: import mtk.effects.bakesimulatedbone as bakesimulatedbone;bakesimulatedbone.main()
+
+      # Convert
+      # - label: Convert
+      #   type: divider
+
+      # - label: SSDR Convert
+      #   type: command
+      #   command: from mtk.effects import ssdr_convert_gui;ssdr_convert_gui()
+
+      # nCloth
+      # - label: nCloth
+      #   type: divider
+
+      # 石川さんが2年で2回だけ起動。
+      # TODO: [山城] 残すべきかヒヤリング
+      # 石川さんに確認し不要と判断。
+      # - label: Apply Field Weight
+      #   type: command
+      #   command: from mtk.effects.cloth import apply_fieldweight_gui;apply_fieldweight_gui()
+
+      # 石川さんが2年で1回だけ起動。
+      # 石川さんに確認し不要と判断。
+      # - label: Create Local Wind Controller
+      #   annotation: nClothが設定されているジオメトリを選択して下さい
+      #   command: from mtk.effects.cloth import create_localwind_controller;create_localwind_controller()
+
+      # Hair
+      # 石川さんが2年で1回だけ起動。
+      # 石川さんに確認し不要と判断。
+      # - label: Hair Sim Utils
+      #   type: command
+      #   command: import mtk.model.hair as hair;hair.main()
+
+  # Cutscene Menu
+  # Maya2022移行済
+  - label: Cutscene
+    type: submenu
+    icon: menu_cutscene.png
+    children:
+      - label: CameraSequencer
+        type: divider
+
+      - label: "CameraSequencer: カット班用のレイアウトにする"
+        type: command
+        command: import mtk.cutscene.editor as editor;editor.CutsceneEditorRegister.viewport_controller.change_cutscene_layout()
+
+      - label: "CameraSequencer: 拡張機能を追加する"
+        type: command
+        command: import mtk.cutscene.editor as editor;editor.CutsceneEditorRegister.register()
+
+      - label: "CameraSequencer: 拡張機能を削除する"
+        type: command
+        command: import mtk.cutscene.editor as editor;editor.CutsceneEditorRegister.unregister()
+
+      - label: Sequencer
+        type: divider
+
+      - label: "Sequencer: サンプル起動"
+        type: command
+        command: from mtk.cutscene import sequencer_sample;sequencer_sample.main()
+
+      - label: "Sequencer: 起動"
+        type: command
+        command: from mtk.cutscene import sequencer;sequencer.main()
+
+  # Rendering Menu
+  # Maya2022移行済
+  - label: Rendering
+    type: submenu
+    icon: menu_rendering.png
+    children:
+      # Texture
+      - label: Texture
+        type: divider
+
+      - label: "Map Baker: マップベイカー"
+        type: command
+        command: import mtk.render.turtle_baker.gui as map_baker;map_baker.main()
+
+      - label: "Map Baker Arnold: マップベイカー Arnold版"
+        type: command
+        command: import mtk.render.arnold_baker.gui as map_baker_ar;map_baker_ar.main()
+
+      # - label: 'Atlas Texture Maker: アトラステクスチャ作成'
+      #   type: command
+      #   command: import mtk.render.atlas_maker.gui as atlas_maker;atlas_maker.main()
+
+      # Playblast
+      - label: Playblast
+        type: divider
+
+      - label: Playblast with MP4
+        type: command
+        command: import mtk.render.ffmpeg_playblast as playblast;playblast.main()
+
+  # General Utilities Menu
+  - label: Utilities
+    type: submenu
+    icon: menu_utilities.png
+    children:
+      - label: HDA読み込みツール
+        type: command
+        command: import mtk.utils.hda_loader.gui as hda_loader;hda_loader.main()
+
+      - label: "measuring: 計測ツール"
+        type: command
+        command: import mtk.utils.measuring as measuring;measuring.main()
+
+      # 使わないのでオミットしました（安藤）
+      # - label: MDL Freeze Un Freeze
+      #   type: command
+      #   command: from mtk.model.move_root_nodes import main;main()
+
+      - label: "Node Hierarchy Assistant: ノード階層アシスタント"
+        type: command
+        annotation: ノード階層の作成をサポートするツール。
+        command: maya.mel.eval("mtk_nodeHierarchyAssistant_UI;")
+
+      - label: "Show/Hide Node: ノード表示/非表示ツール"
+        type: command
+        command: maya.mel.eval("mtk_showHideNodeTool_UI;")
+
+      - label: "Scale Reference Model Import Tool: スケール参照用モデル インポートツール"
+        type: command
+        annotation: 各種スケール参照用のモデルをインポートするツール。
+        command: maya.mel.eval("mtk_scaleRefImportTool;")
+
+      # Environment
+      - label: Environment
+        type: divider
+
+      - label: "Material Create and Assign Tool: マテリアル作成・割り当てツール"
+        type: command
+        annotation: 規約に沿ったマテリアル名の生成、割り当てをサポートするツール。
+        command: maya.mel.eval("mtk_materialCreateAssignTool;")
+
+      - label: "Collision Setting Tool: コリジョン・物理マテリアル設定ツール"
+        type: command
+        annotation: コリジョンアトリビュートの自動設定、物理マテリアルの設定サポートを行うツール。
+        command: maya.mel.eval("mtk_collisionSettingTool;")
+
+  # Divider
+  - type: divider
+
+  # Develop Menu
+  - label: Develop
+    type: submenu
+    tearoff: False
+    children:
+      - label: Reload menus
+        type: command
+        icon: menu_refresh.png
+        annotation: Reloadした際に、メニューの位置がずれる事があります。
+        command: "import mtk;from importlib import reload;reload(mtk);import mtk.menu as menu;menu.reload_menus()"
+
+      - type: divider
+
+      - label: Open Command Port
+        type: command
+        icon: menu_ocport.png
+        command: import mtk.utils.develop as dev;dev.ocport(open_port=True)
+
+      - label: Close Command Port
+        type: command
+        icon: menu_ocport.png
+        command: import mtk.utils.develop as dev;dev.ocport(open_port=False)
+
+  # Divider
+  - type: divider
+
+  # Documents Menus
+  - label: "About Project: mutsunokami"
+    type: document
+    icon: menu_confluence.png
+    document: https://wisdom.cygames.jp/x/aPB8
+
+  - label: About mutsunokami tools
+    type: document
+    icon: menu_confluence.png
+    document: https://wisdom.cygames.jp/x/BA3d

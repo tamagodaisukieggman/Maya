@@ -1,0 +1,51 @@
+//===============================================
+//
+// アウトライナ Ex
+// 
+// Fujita Yukihiro
+//
+//===============================================
+
+global proc fy_outlinerEx_UI()
+{
+    // ワークスペースコントロールの基本名
+    string $wscBaseName = "uWsc_fy_outlinerEx";
+    
+    // 枝番
+    int $num = 1;
+    
+    // ワークスペースコントロール名
+    string $wscName = $wscBaseName + $num;
+    
+    // すでに存在すれば枝番増やす
+    while(`workspaceControl -ex $wscName`)
+    {
+        $num += 1;
+        
+        $wscName = $wscBaseName + $num;
+    }
+    
+    
+    // 作成するパネル名
+    string $panel = substituteAllString($wscName, "uWsc_", "uPnl_");
+    
+    // UI 作成スクリプト
+    string $cmd = "fy_outlinerEx(\"" + $panel + "\")";
+
+/*
+    if(`workspaceControlState -exists $wscName`)
+    {
+        workspaceControlState -remove $wscName;
+    }
+*/
+
+    workspaceControl
+        -retain false
+        -ih 500
+        -iw 300
+        -uiScript $cmd
+        -label ("Outliner Ex" + " #" + $num)
+        $wscName;
+
+}
+//workspaceControlState -remove uWsc_fy_outlinerEx1

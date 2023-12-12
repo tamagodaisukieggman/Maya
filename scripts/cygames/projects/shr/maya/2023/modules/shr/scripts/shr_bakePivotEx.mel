@@ -1,0 +1,151 @@
+//===============================================
+//
+// ロックされた法線を壊さずにbakePivot
+//
+//===============================================
+
+/////////////////////////////////////////////////
+// メイン
+/////////////////////////////////////////////////
+global proc shr_bakePivotEx()
+{
+    source "shr_rebuildHdaOutputMeshes";
+
+    // ツールログ送信
+    shr_toolLog("Bake Pivot Ex", "", "launched.");
+
+    undoInfo -openChunk;
+
+    string $sel_nodes[] = `ls -sl -transforms`;
+
+    if(`size($sel_nodes)` == 0)
+    {
+        return;
+    }
+
+    // マニピュレータピボット固定オプションの現在の設定を取得
+    int $pin_pivot = `manipPivot -q -pin`;
+
+    if($pin_pivot)
+    {
+        // マニピュレータピボット固定オプションを一旦オフに
+        manipPivot -pin 0;
+    }
+
+    // マニピュレータの回転値を取得
+    vector $manip_rot = `manipPivot -q -o`;
+
+    // マニピュレータの回転に変更がなければ、通常のbakePivot を実行
+    if($manip_rot.x == 0 && $manip_rot.y == 0 && $manip_rot.z == 0)
+    {
+        bakeCustomToolPivot(1, 1);
+        return;
+    }
+
+    string $sel_node;
+
+    for($sel_node in $sel_nodes)
+    {
+        // 頂点法線を維持したピボットベイクを実行
+        shr_bakePivotEx_execute($sel_node, $manip_rot);
+    }
+
+    // 選択を復元
+    select -r $sel_nodes;
+
+    if($pin_pivot)
+    {
+        // マニピュレータピボット固定オプションをオンに
+        manipPivot -pin 1;
+    }
+
+    undoInfo -closeChunk;
+}
+
+/////////////////////////////////////////////////
+// 頂点法線を維持したピボットベイクを実行
+/////////////////////////////////////////////////
+global proc shr_bakePivotEx_execute(string $node, vector $manip_rot)
+{
+    //-------------------------------------------------
+    // 階層を一時的に変更
+    //-------------------------------------------------
+    // 対象ノードの親ノードを取得
+    string $parent[] = `listRelatives -p -pa $node`;
+    int $parent_exists = `size($parent)`;
+
+    // 階層内での順番（1始まり）
+    int $child_num;
+
+    string $temp_parent;
+
+    if($parent_exists)
+    {
+        // 階層内での順番を取得
+        $child_num = shr_rebuildHdaOutputMeshes_getOrderInHierarchy($node);
+
+        // 対象ノードを仮のグループノードの子に
+        $temp_parent = `createNode "transform"`;
+        string $parent_result[] = `parent $node $temp_parent`;
+        $node = $parent_result[0];
+    }
+
+    // 対象ノードの子ノードを取得
+    string $child_nodes[] = `listRelatives -pa -type "transform" $node `;
+    int $child_exists = `size($child_nodes)`;
+
+    string $temp_parent2;
+
+    // 対象ノードの子ノードを仮のグループノードの子に
+    if($child_exists)
+    {
+        $temp_parent2 = `createNode "transform"`;
+        $child_nodes = `parent $child_nodes $temp_parent2`;
+    }
+
+    //-------------------------------------------------
+    // 頂点法線を維持したピボットベイク
+    //-------------------------------------------------
+    // 回転をフリーズ
+    makeIdentity -apply true -t 1 -r 1 -s 0 -n 0 $node;
+
+    // マニピュレータの逆回転値
+    vector $manip_rot_rev = $manip_rot * -1;
+
+    // ノードをマニピュレータと逆に回転
+    xform -ws -roo zyx -ro ($manip_rot_rev.x) ($manip_rot_rev.y) ($manip_rot_rev.z) $node;
+
+    // 回転をフリーズ
+    makeIdentity -apply true -t 1 -r 1 -s 0 -n 0 $node;
+
+    // ノードをマニピュレータの方向に回転
+    xform -ws -roo xyz -ro ($manip_rot.x) ($manip_rot.y) ($manip_rot.z) $node;
+
+    //-------------------------------------------------
+    // 元の階層に戻す
+    //-------------------------------------------------
+    // 対象ノードの子ノードを対象ノードの子に戻す
+    if($child_exists )
+    {
+        parent $child_nodes $node;
+        delete $temp_parent2;
+    }
+
+    // 対象ノードを元の親の子に戻す
+    if($parent_exists)
+    {
+        string $parent_result[] = `parent $node $parent[0]`;
+        $node = $parent_result[0];
+
+        // 対象ノードを元のノード順に戻す
+        reorder -r $child_num $node;
+
+        delete $temp_parent;
+    }
+
+    // ピボット位置で移動をフリーズするために通常のBake Pivot を実行
+    select -r $node;
+    bakeCustomToolPivot(1, 1);
+}
+
+// shr_bakePivotEx;

@@ -1,0 +1,309 @@
+<?xml version="1.0"?>
+<deformerWeight>
+  <headerInfo fileName="C:\cygames\shrdev\shr_art\resources\characters\player\pfc\pfc2000_jd\work\maya\easy_bind/__pfc2000__mesh__lod4__head_lod4_grp__eyeshell_lod4__eyeshell_lod4Shape.xml" worldMatrix="1.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 0.000000 1.000000 "/>
+  <shape name="eyeshell_lod4Shape" group="0" stride="3" size="66" max="65">
+    <point index="0" value=" -4.339478 -9.720576 171.052643"/>
+    <point index="1" value=" -4.100803 -10.031446 170.965195"/>
+    <point index="2" value=" -3.997922 -10.023262 171.049561"/>
+    <point index="3" value=" -4.142563 -9.794311 171.131409"/>
+    <point index="4" value=" -3.953819 -10.114907 171.313522"/>
+    <point index="5" value=" -4.052155 -10.202560 171.363342"/>
+    <point index="6" value=" -3.752311 -10.360427 170.861694"/>
+    <point index="7" value=" -3.164905 -10.610448 170.836548"/>
+    <point index="8" value=" -3.681731 -10.350180 170.979172"/>
+    <point index="9" value=" -2.134648 -10.274287 171.045868"/>
+    <point index="10" value=" -2.518040 -10.494941 170.964401"/>
+    <point index="11" value=" -3.163153 -10.563386 170.962738"/>
+    <point index="12" value=" -2.558692 -10.418882 171.045883"/>
+    <point index="13" value=" -3.012568 -10.576124 171.645432"/>
+    <point index="14" value=" -3.577857 -10.447509 171.544968"/>
+    <point index="15" value=" -3.034971 -10.680212 171.722641"/>
+    <point index="16" value=" -2.163498 -10.152701 171.101593"/>
+    <point index="17" value=" -1.863057 -10.095374 171.088715"/>
+    <point index="18" value=" -1.728388 -10.054206 171.113037"/>
+    <point index="19" value=" -1.817264 -10.134624 171.039688"/>
+    <point index="20" value=" -1.604514 -10.048263 171.069031"/>
+    <point index="21" value=" -2.468085 -10.369061 171.510559"/>
+    <point index="22" value=" -2.450599 -10.502259 171.597046"/>
+    <point index="23" value=" -2.064416 -10.178999 171.393509"/>
+    <point index="24" value=" -3.617148 -10.549909 171.628784"/>
+    <point index="25" value=" -2.113191 -10.043468 171.315887"/>
+    <point index="26" value=" -1.771142 -10.061418 171.219452"/>
+    <point index="27" value=" -1.830398 -10.015596 171.175949"/>
+    <point index="28" value=" -2.167240 -10.068208 171.203537"/>
+    <point index="29" value=" -2.510013 -10.461022 171.268555"/>
+    <point index="30" value=" -3.090797 -10.682746 171.249069"/>
+    <point index="31" value=" -3.675949 -10.504436 171.203354"/>
+    <point index="32" value=" -3.947208 -10.098259 171.159592"/>
+    <point index="33" value=" 4.139834 -9.872064 171.116364"/>
+    <point index="34" value=" 3.902646 -10.129356 171.081970"/>
+    <point index="35" value=" 3.799037 -10.129397 171.166641"/>
+    <point index="36" value=" 3.937647 -9.916633 171.199936"/>
+    <point index="37" value=" 3.755506 -10.197883 171.382797"/>
+    <point index="38" value=" 3.825419 -10.250670 171.428757"/>
+    <point index="39" value=" 3.595905 -10.462633 171.021851"/>
+    <point index="40" value=" 3.066668 -10.708783 170.991074"/>
+    <point index="41" value=" 3.514248 -10.458133 171.163605"/>
+    <point index="42" value=" 2.068092 -10.430415 171.169098"/>
+    <point index="43" value=" 2.446723 -10.592257 171.123352"/>
+    <point index="44" value=" 3.053762 -10.664664 171.123245"/>
+    <point index="45" value=" 2.482827 -10.521530 171.210342"/>
+    <point index="46" value=" 2.867754 -10.699872 171.626984"/>
+    <point index="47" value=" 3.393296 -10.556914 171.542526"/>
+    <point index="48" value=" 2.889335 -10.775493 171.695755"/>
+    <point index="49" value=" 2.097385 -10.323776 171.227661"/>
+    <point index="50" value=" 1.799442 -10.288688 171.156967"/>
+    <point index="51" value=" 1.672578 -10.271502 171.150879"/>
+    <point index="52" value=" 1.752957 -10.333633 171.117798"/>
+    <point index="53" value=" 1.557624 -10.273061 171.096436"/>
+    <point index="54" value=" 2.371763 -10.494216 171.528992"/>
+    <point index="55" value=" 2.350022 -10.620419 171.591858"/>
+    <point index="56" value=" 1.985397 -10.375675 171.415329"/>
+    <point index="57" value=" 3.424403 -10.615810 171.635864"/>
+    <point index="58" value=" 2.048395 -10.243525 171.368317"/>
+    <point index="59" value=" 1.704721 -10.284614 171.235611"/>
+    <point index="60" value=" 1.765869 -10.226746 171.221786"/>
+    <point index="61" value=" 2.108653 -10.242176 171.290512"/>
+    <point index="62" value=" 2.417315 -10.591512 171.380127"/>
+    <point index="63" value=" 2.952177 -10.810267 171.306778"/>
+    <point index="64" value=" 3.518431 -10.610117 171.285278"/>
+    <point index="65" value=" 3.748502 -10.204069 171.257614"/>
+    <polygonCounts size="52" polygonCounts="4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 3 3 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 3 3 "/>
+    <polygonConnects size="204" polygonConnects="0 1 2 3 2 1 6 8 24 5 4 14 8 6 7 11 11 7 10 12 13 15 24 14 12 10 9 16 16 9 19 17 17 19 20 18 21 22 15 13 26 23 25 27 25 23 22 21 20 26 27 18 4 5 0 3 32 2 8 31 31 8 11 30 30 11 12 29 29 12 16 28 28 16 17 18 27 25 28 18 29 28 25 21 30 29 21 13 31 30 13 14 4 32 31 14 3 32 4 3 2 32 33 36 35 34 35 41 39 34 57 47 37 38 41 44 40 39 44 45 43 40 46 47 57 48 45 49 42 43 49 50 52 42 50 51 53 52 54 46 48 55 59 60 58 56 58 54 55 56 53 51 60 59 37 36 33 38 65 64 41 35 64 63 44 41 63 62 45 44 62 61 49 45 61 51 50 49 60 51 61 58 62 54 58 61 63 46 54 62 64 47 46 63 37 47 64 65 36 37 65 36 65 35 "/>
+  </shape>
+  <weights deformer="eyeshell_lod4_mesh_skinCluster" source="head_jnt" shape="eyeshell_lod4Shape" layer="0" defaultValue="0.000" size="66" max="65">
+    <point index="0" value="0.386"/>
+    <point index="1" value="0.253"/>
+    <point index="2" value="0.304"/>
+    <point index="3" value="0.362"/>
+    <point index="4" value="0.072"/>
+    <point index="5" value="0.053"/>
+    <point index="6" value="0.156"/>
+    <point index="7" value="0.072"/>
+    <point index="8" value="0.157"/>
+    <point index="9" value="0.183"/>
+    <point index="10" value="0.094"/>
+    <point index="11" value="0.078"/>
+    <point index="12" value="0.069"/>
+    <point index="13" value="0.079"/>
+    <point index="14" value="0.052"/>
+    <point index="15" value="0.074"/>
+    <point index="16" value="0.090"/>
+    <point index="17" value="0.254"/>
+    <point index="18" value="0.409"/>
+    <point index="19" value="0.352"/>
+    <point index="20" value="0.499"/>
+    <point index="21" value="0.138"/>
+    <point index="22" value="0.137"/>
+    <point index="23" value="0.255"/>
+    <point index="24" value="0.029"/>
+    <point index="25" value="0.283"/>
+    <point index="26" value="0.379"/>
+    <point index="27" value="0.389"/>
+    <point index="28" value="0.215"/>
+    <point index="29" value="0.154"/>
+    <point index="30" value="0.117"/>
+    <point index="31" value="0.071"/>
+    <point index="32" value="0.228"/>
+    <point index="33" value="0.387"/>
+    <point index="34" value="0.253"/>
+    <point index="35" value="0.292"/>
+    <point index="36" value="0.354"/>
+    <point index="37" value="0.122"/>
+    <point index="38" value="0.072"/>
+    <point index="39" value="0.156"/>
+    <point index="40" value="0.072"/>
+    <point index="41" value="0.156"/>
+    <point index="42" value="0.183"/>
+    <point index="43" value="0.093"/>
+    <point index="44" value="0.080"/>
+    <point index="45" value="0.070"/>
+    <point index="46" value="0.046"/>
+    <point index="47" value="0.073"/>
+    <point index="48" value="0.064"/>
+    <point index="49" value="0.109"/>
+    <point index="50" value="0.245"/>
+    <point index="51" value="0.394"/>
+    <point index="52" value="0.349"/>
+    <point index="53" value="0.499"/>
+    <point index="54" value="0.084"/>
+    <point index="55" value="0.101"/>
+    <point index="56" value="0.207"/>
+    <point index="57" value="0.045"/>
+    <point index="58" value="0.256"/>
+    <point index="59" value="0.344"/>
+    <point index="60" value="0.340"/>
+    <point index="61" value="0.179"/>
+    <point index="62" value="0.136"/>
+    <point index="63" value="0.132"/>
+    <point index="64" value="0.151"/>
+    <point index="65" value="0.237"/>
+  </weights>
+  <weights deformer="eyeshell_lod4_mesh_skinCluster" source="FACIAL_L_EyelidUpperA" shape="eyeshell_lod4Shape" layer="1" defaultValue="0.000" size="24" max="65">
+    <point index="33" value="0.089"/>
+    <point index="36" value="0.106"/>
+    <point index="37" value="0.696"/>
+    <point index="38" value="0.750"/>
+    <point index="45" value="0.001"/>
+    <point index="46" value="0.954"/>
+    <point index="47" value="0.916"/>
+    <point index="48" value="0.936"/>
+    <point index="49" value="0.001"/>
+    <point index="50" value="0.008"/>
+    <point index="51" value="0.087"/>
+    <point index="53" value="0.059"/>
+    <point index="54" value="0.791"/>
+    <point index="55" value="0.781"/>
+    <point index="56" value="0.550"/>
+    <point index="57" value="0.948"/>
+    <point index="58" value="0.456"/>
+    <point index="59" value="0.313"/>
+    <point index="60" value="0.279"/>
+    <point index="61" value="0.243"/>
+    <point index="62" value="0.365"/>
+    <point index="63" value="0.431"/>
+    <point index="64" value="0.393"/>
+    <point index="65" value="0.285"/>
+  </weights>
+  <weights deformer="eyeshell_lod4_mesh_skinCluster" source="FACIAL_R_EyelidUpperA" shape="eyeshell_lod4Shape" layer="2" defaultValue="0.000" size="24" max="32">
+    <point index="0" value="0.086"/>
+    <point index="3" value="0.124"/>
+    <point index="4" value="0.744"/>
+    <point index="5" value="0.769"/>
+    <point index="12" value="0.001"/>
+    <point index="13" value="0.921"/>
+    <point index="14" value="0.935"/>
+    <point index="15" value="0.926"/>
+    <point index="16" value="0.033"/>
+    <point index="17" value="0.004"/>
+    <point index="18" value="0.081"/>
+    <point index="20" value="0.059"/>
+    <point index="21" value="0.737"/>
+    <point index="22" value="0.745"/>
+    <point index="23" value="0.503"/>
+    <point index="24" value="0.964"/>
+    <point index="25" value="0.423"/>
+    <point index="26" value="0.278"/>
+    <point index="27" value="0.230"/>
+    <point index="28" value="0.227"/>
+    <point index="29" value="0.353"/>
+    <point index="30" value="0.447"/>
+    <point index="31" value="0.477"/>
+    <point index="32" value="0.321"/>
+  </weights>
+  <weights deformer="eyeshell_lod4_mesh_skinCluster" source="FACIAL_L_EyelidLowerA" shape="eyeshell_lod4Shape" layer="3" defaultValue="0.000" size="22" max="65">
+    <point index="33" value="0.119"/>
+    <point index="34" value="0.524"/>
+    <point index="35" value="0.502"/>
+    <point index="36" value="0.198"/>
+    <point index="39" value="0.803"/>
+    <point index="40" value="0.928"/>
+    <point index="41" value="0.799"/>
+    <point index="42" value="0.618"/>
+    <point index="43" value="0.853"/>
+    <point index="44" value="0.920"/>
+    <point index="45" value="0.883"/>
+    <point index="49" value="0.683"/>
+    <point index="50" value="0.391"/>
+    <point index="51" value="0.096"/>
+    <point index="52" value="0.280"/>
+    <point index="53" value="0.014"/>
+    <point index="60" value="0.008"/>
+    <point index="61" value="0.329"/>
+    <point index="62" value="0.373"/>
+    <point index="63" value="0.430"/>
+    <point index="64" value="0.395"/>
+    <point index="65" value="0.280"/>
+  </weights>
+  <weights deformer="eyeshell_lod4_mesh_skinCluster" source="FACIAL_R_EyelidLowerA" shape="eyeshell_lod4Shape" layer="4" defaultValue="0.000" size="23" max="32">
+    <point index="0" value="0.125"/>
+    <point index="1" value="0.524"/>
+    <point index="2" value="0.488"/>
+    <point index="3" value="0.184"/>
+    <point index="6" value="0.803"/>
+    <point index="7" value="0.928"/>
+    <point index="8" value="0.796"/>
+    <point index="9" value="0.618"/>
+    <point index="10" value="0.853"/>
+    <point index="11" value="0.922"/>
+    <point index="12" value="0.883"/>
+    <point index="16" value="0.666"/>
+    <point index="17" value="0.373"/>
+    <point index="18" value="0.083"/>
+    <point index="19" value="0.274"/>
+    <point index="20" value="0.014"/>
+    <point index="25" value="0.008"/>
+    <point index="27" value="0.010"/>
+    <point index="28" value="0.313"/>
+    <point index="29" value="0.361"/>
+    <point index="30" value="0.428"/>
+    <point index="31" value="0.389"/>
+    <point index="32" value="0.249"/>
+  </weights>
+  <weights deformer="eyeshell_lod4_mesh_skinCluster" source="FACIAL_L_EyeCornerInner" shape="eyeshell_lod4Shape" layer="5" defaultValue="0.000" size="17" max="63">
+    <point index="42" value="0.199"/>
+    <point index="43" value="0.053"/>
+    <point index="45" value="0.047"/>
+    <point index="49" value="0.206"/>
+    <point index="50" value="0.355"/>
+    <point index="51" value="0.423"/>
+    <point index="52" value="0.372"/>
+    <point index="53" value="0.428"/>
+    <point index="54" value="0.126"/>
+    <point index="55" value="0.118"/>
+    <point index="56" value="0.243"/>
+    <point index="58" value="0.288"/>
+    <point index="59" value="0.343"/>
+    <point index="60" value="0.372"/>
+    <point index="61" value="0.249"/>
+    <point index="62" value="0.127"/>
+    <point index="63" value="0.007"/>
+  </weights>
+  <weights deformer="eyeshell_lod4_mesh_skinCluster" source="FACIAL_R_EyeCornerInner" shape="eyeshell_lod4Shape" layer="6" defaultValue="0.000" size="17" max="30">
+    <point index="9" value="0.200"/>
+    <point index="10" value="0.053"/>
+    <point index="12" value="0.047"/>
+    <point index="16" value="0.210"/>
+    <point index="17" value="0.369"/>
+    <point index="18" value="0.427"/>
+    <point index="19" value="0.374"/>
+    <point index="20" value="0.428"/>
+    <point index="21" value="0.125"/>
+    <point index="22" value="0.118"/>
+    <point index="23" value="0.242"/>
+    <point index="25" value="0.286"/>
+    <point index="26" value="0.343"/>
+    <point index="27" value="0.371"/>
+    <point index="28" value="0.244"/>
+    <point index="29" value="0.131"/>
+    <point index="30" value="0.009"/>
+  </weights>
+  <weights deformer="eyeshell_lod4_mesh_skinCluster" source="FACIAL_L_EyeCornerOuter" shape="eyeshell_lod4Shape" layer="7" defaultValue="0.000" size="12" max="65">
+    <point index="33" value="0.404"/>
+    <point index="34" value="0.223"/>
+    <point index="35" value="0.205"/>
+    <point index="36" value="0.341"/>
+    <point index="37" value="0.183"/>
+    <point index="38" value="0.178"/>
+    <point index="39" value="0.041"/>
+    <point index="41" value="0.045"/>
+    <point index="47" value="0.011"/>
+    <point index="57" value="0.007"/>
+    <point index="64" value="0.061"/>
+    <point index="65" value="0.198"/>
+  </weights>
+  <weights deformer="eyeshell_lod4_mesh_skinCluster" source="FACIAL_R_EyeCornerOuter" shape="eyeshell_lod4Shape" layer="8" defaultValue="0.000" size="12" max="32">
+    <point index="0" value="0.403"/>
+    <point index="1" value="0.222"/>
+    <point index="2" value="0.208"/>
+    <point index="3" value="0.330"/>
+    <point index="4" value="0.185"/>
+    <point index="5" value="0.178"/>
+    <point index="6" value="0.041"/>
+    <point index="8" value="0.047"/>
+    <point index="14" value="0.013"/>
+    <point index="24" value="0.007"/>
+    <point index="31" value="0.063"/>
+    <point index="32" value="0.202"/>
+  </weights>
+</deformerWeight>

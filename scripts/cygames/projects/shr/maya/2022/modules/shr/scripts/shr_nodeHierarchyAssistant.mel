@@ -1,0 +1,1098 @@
+//===============================================
+//
+//  ノード階層アシスタント
+//
+//===============================================
+
+global proc shr_nodeHierarchyAssistant()
+{
+    // NOTE: TA ツールログ送信
+    shr_toolLog("Node Hierarchy Assistant", "", "launched.");
+
+    source "shr_fixHierarchy";
+
+    //プリファレンスに値が無ければデフォルト値を設定
+    if (`optionVar -ex "ov_selTabIndex_shr_nodeHierarchyAssistant"` == 0)
+    {
+        optionVar -iv "ov_selTabIndex_shr_nodeHierarchyAssistant" 1;
+    }
+
+    menuBarLayout;
+
+        menu -label "ツール";
+            menuItem
+                -label "シーン内アセットの階層構造を修正..."
+                -c "shr_nodeHierarchyAssistant_fixHierarchyMenuCallback()"
+                ;
+
+        menu -l "ヘルプ" -helpMenu on;
+            menuItem
+                -l "Node Hierarchy Assistant のヘルプ"
+                -c "showHelp -absolute \"https://wisdom.cygames.jp/pages/viewpage.action?pageId=478142112\""
+               ;
+
+    tabLayout -selectCommand "shr_nodeHierarchyAssistant_selectTabCallBack" uTbl_shr_nodeHierarchyAssistant;
+
+        // 階層作成タブ
+        frameLayout
+            -mw 8 -mh 8
+            -lv off
+            uFl_create_shr_nodeHierarchyAssistant;
+
+
+            formLayout -w 250 -h 350 uFml_shr_nodeHierarchyAssistant;
+
+                string $row1 = `rowLayout -nc 2 -adj 2 -cw 1 60 -cat 1 "right" 0`;
+
+                    text -l "プリセット :";
+
+                    optionMenu -cc "shr_nodeHierarchyAssistant_updateTreeView" uOm_shr_nodeHierarchyAssistant;
+                    shr_nodeHierarchyAssistant_createOptionMenu;
+
+                    setParent..;
+
+                string $sep1 = `separator -st "in" -h 16`;
+
+                string $row2 = `rowLayout -nc 2 -adj 2 -cw 1 60 -cat 1 "right" 0`;
+
+                    text -l "アセット名 : ";
+
+                    rowLayout -nc 2 -adj 1;
+                        textField uTf_shr_nodeHierarchyAssistant;
+                        button -l "シーン名から取得" -h 16 -c "shr_nodeHierarchyAssistant_getAssetIdFromSceneName";
+
+                        setParent..;
+                    setParent..;
+
+                string $sep2 = `separator -st "in" -h 16`;
+
+                string $row3 = `frameLayout -l "作成ノード"`;
+
+                    treeView
+                        -numberOfButtons 1
+                        -attachButtonRight false
+                        -allowMultiSelection true
+                        -allowReparenting false
+                        -pressCommand 1 "shr_nodeHierarchyAssistant_buttonCallBack"
+                        -selectCommand ""
+                        -itemDblClickCommand2 "shr_nodeHierarchyAssistant_dblClickCallBack"
+                        -flatButton 1
+                        uTrv_shr_nodeHierarchyAssistant;
+
+                    // ツリー作成
+                    shr_nodeHierarchyAssistant_updateTreeView;
+
+                    setParent..;
+
+                string $btn = `button -l "階層構造を作成" -bgc 0.5 0.6 0.5 -c "shr_nodeHierarchyAssistant_createHierarchy"`;
+
+                setParent..;
+
+                formLayout -e
+                    -attachForm  $row1 "top" 0
+                    -attachForm  $row1 "left" 0
+                    -attachNone  $row1 "bottom"
+                    -attachForm  $row1 "right" 0
+
+                    -attachControl  $sep1 "top" 0 $row1
+                    -attachForm  $sep1 "left" 0
+                    -attachNone  $sep1 "bottom"
+                    -attachForm  $sep1 "right" 0
+
+                    -attachControl  $row2 "top" 0 $sep1
+                    -attachForm  $row2 "left" 0
+                    -attachNone  $row2 "bottom"
+                    -attachForm  $row2 "right" 0
+
+                    -attachControl  $sep2 "top" 0 $row2
+                    -attachForm  $sep2 "left" 0
+                    -attachNone  $sep2 "bottom"
+                    -attachForm  $sep2 "right" 0
+
+                    -attachControl  $row3 "top" 0 $sep2
+                    -attachForm  $row3 "left" 0
+                    -attachControl  $row3 "bottom" 8 $btn
+                    -attachForm  $row3 "right" 0
+
+                    -attachNone  $btn "top"
+                    -attachForm  $btn "left" 0
+                    -attachForm  $btn "bottom" 0
+                    -attachForm  $btn "right" 0
+
+                    uFml_shr_nodeHierarchyAssistant;
+
+            setParent..;
+
+        // ノード追加タブ
+        frameLayout
+            -mw 8 -mh 8
+            -lv off
+            uFl_add_shr_nodeHierarchyAssistant;
+
+            columnLayout -adj on;
+                rowColumnLayout -nc 2 -cal 1 "right";
+
+                    int $colWidth = 100;
+
+                    text -l "固有名 :  ";
+                    rowColumnLayout -nc 2 -columnWidth 1 $colWidth -cal 2 "left" uRcl_fixedName_shr_nodeHierarchyAssistant;
+                        radioCollection uRc_fixedName_shr_nodeHierarchyAssistant;
+                        setParent ..;
+
+                    text -l "" -h 4;
+                    text -l "" -h 4;
+
+
+                    text -l "" ;
+                    int $buttonWidth = 100;
+
+                        button
+                             -l "選択したアセットの階層に追加"
+                            //  -w $buttonWidth
+                             -ann "選択ノード以下に追加"
+                             -c "shr_nodeHierarchyAssistant_nodeButtonsCallBack(\"fixedName\", \"addToHierarchy\")"
+                             -bgc 0.5 0.6 0.5
+                             ;
+
+                    text -l "";
+                    int $separatorHeight = 24;
+                    separator -st "in" -h $separatorHeight;
+
+                    text -l "サフィックス :  ";
+                    rowColumnLayout -nc 2 -columnWidth 1 $colWidth -cal 2 "left" uRcl_suffix_shr_nodeHierarchyAssistant;
+                        radioCollection uRc_suffix_shr_nodeHierarchyAssistant;
+                        setParent ..;
+
+                    text -l "" -h 4;
+                    text -l "" -h 4;
+
+                    text -l "" ;
+                    $buttonWidth = 100;
+                    rowLayout -nc 2;
+                        button
+                            -l "suffix 追加"
+                            -w $buttonWidth
+                            -ann "選択ノードにサフィックス追加"
+                            -c "shr_nodeHierarchyAssistant_nodeButtonsCallBack(\"suffix\", \"addSuffix\")"
+                            -bgc 0.5 0.6 0.5
+                            ;
+                        button
+                            -l "リネーム"
+                            -w $buttonWidth
+                            -ann "選択ノードをリネーム"
+                            -c "shr_nodeHierarchyAssistant_nodeButtonsCallBack(\"suffix\", \"rename\")"
+                            -bgc 0.5 0.5 0.6
+                            ;
+                        setParent ..;
+
+
+                    text -l "";
+                    separator -st "in" -h $separatorHeight;
+
+                    text -l "プリフィックス :  ";
+                    rowColumnLayout -nc 2 -columnWidth 1 $colWidth -cal 2 "left" uRcl_prefix_shr_nodeHierarchyAssistant;
+                        radioCollection uRc_prefix_shr_nodeHierarchyAssistant;
+                        setParent ..;
+
+                    text -l "" -h 4;
+                    text -l "" -h 4;
+
+                    text -l "" ;
+                    $buttonWidth = 100;
+                    rowLayout -nc 2;
+                        button
+                            -l "prefix 追加"
+                            -w $buttonWidth
+                            -ann "選択ノードにプリフィックス追加"
+                            -c "shr_nodeHierarchyAssistant_nodeButtonsCallBack(\"prefix\", \"addPrefix\")"
+                            -bgc 0.5 0.6 0.5
+                            ;
+                        button
+                            -l "リネーム"
+                            -w $buttonWidth
+                            -ann "選択ノードをリネーム"
+                            -c "shr_nodeHierarchyAssistant_nodeButtonsCallBack(\"prefix\", \"rename\")"
+                            -bgc 0.5 0.5 0.6
+                            ;
+                        setParent ..;
+
+                    setParent ..;
+                setParent ..;
+
+            // ラジオボタン作成
+            shr_nodeHierarchyAssistant_createRadioButtons;
+
+            setParent ..;
+
+    tabLayout -e
+        -tabLabelIndex 1 "階層作成"
+        -tabLabelIndex 2 "ノード追加"
+        -selectTabIndex `optionVar -q ov_selTabIndex_shr_nodeHierarchyAssistant`
+        uTbl_shr_nodeHierarchyAssistant;
+
+    // シーン名からアセット名 を取得
+    shr_nodeHierarchyAssistant_getAssetIdFromSceneName();
+
+    // アセット階層構造をチェック
+    shr_fixHierarchy({});
+
+    //showWindow;
+}
+
+////////////////////////////////////
+// オプションメニューの項目作成
+///////////////////////////////////
+global proc shr_nodeHierarchyAssistant_createOptionMenu()
+{
+    // csv パス
+    string $csvFolderPath = "C:/cygames/shrdev/shr/tools/in/ext/maya/2022/modules/shr/scripts";
+
+    string $csvFiles[] = `getFileList -folder $csvFolderPath -filespec "hierarchyPreset_*.csv"`;
+
+    string $file;
+
+    for($file in $csvFiles)
+    {
+        string $csvFile = $csvFolderPath + "/" + $file;
+
+        // csv ファイル読み込み
+        string $lines[] = shr_nodeHierarchyAssistant_readCsvFile($csvFile);
+
+        // 改行コード削除
+        string $label = startString($lines[0], `size($lines[0])` - 1);
+
+        // メニュー項目追加 docTag にファイルパスを格納
+        menuItem -parent uOm_shr_nodeHierarchyAssistant -l $label -docTag $csvFile;
+    }
+
+    // 前回選択されていたプリセット名
+    string $selPreset = `optionVar -q "ov_selPreset_shr_nodeHierarchyAssistant"`;
+
+    // メニューアイテム名を取得
+    string $items[] = `optionMenu -q -itemListLong uOm_shr_nodeHierarchyAssistant`;
+
+    string $item;
+
+    // メニューアイテムのラベル名
+    string $values[];
+
+    for($item in $items)
+    {
+        $values[`size($values)`] = `menuItem -q -l $item`;
+    }
+
+    // 前回選択していたプリセット名があれば選択
+    if(stringArrayContains($selPreset, $values))
+    {
+        optionMenu -e -v $selPreset uOm_shr_nodeHierarchyAssistant;
+    }
+    // 背景デフォルトを選択
+    else if (stringArrayContains("背景 デフォルト", $values))
+    {
+        optionMenu -e -v "背景 デフォルト" uOm_shr_nodeHierarchyAssistant;
+    }
+}
+
+////////////////////////////////////
+// ツリービューの項目作成
+///////////////////////////////////
+global proc shr_nodeHierarchyAssistant_updateTreeView()
+{
+    // オプションメニュー項目の配列を取得
+    string $itemList[] = `optionMenu -q -itemListLong uOm_shr_nodeHierarchyAssistant`;
+
+    // 現在選択しているオプションメニュー項目のインデックス
+    int $selIndex = `optionMenu -q -select uOm_shr_nodeHierarchyAssistant`;
+
+    // オプションメニュー項目のdocTag からcsv ファイルのパスを取得
+    string $csvPath = `menuItem -q -docTag $itemList[$selIndex - 1]`;
+
+    // 選択しているプリセット項目
+    string $selPreset = `optionMenu -q -v uOm_shr_nodeHierarchyAssistant`;
+
+    // 選択しているプリセット項目を保存
+    optionVar -sv "ov_selPreset_shr_nodeHierarchyAssistant" $selPreset;
+
+    // csv ファイル読み込み
+    string $lines[] = `shr_nodeHierarchyAssistant_readCsvFile($csvPath)`;
+
+    // ヘッダ行削除
+    stringArrayRemoveAtIndex(0, $lines);
+    stringArrayRemoveAtIndex(0, $lines);
+
+    string $line;
+
+    // ツリー項目の各種設定値
+    string $buttonState[] = {"buttonUp", "buttonDown"};
+    string $icon[] = {"checkboxOff.png", "checkboxOn.png"};
+    float $labelCol[] ={0.165, 0.165, 0.165};
+
+    // ツリーをいったん削除
+    treeView -e -removeAll uTrv_shr_nodeHierarchyAssistant;
+
+    // ツリー項目作成
+    for($line in $lines)
+    {
+        string $elms[];
+
+        tokenizeList($line, $elms);
+
+        int $isChecked = int($elms[0]);
+
+        treeView
+            -e -addItem $elms[1] $elms[2]
+            uTrv_shr_nodeHierarchyAssistant;
+
+        treeView -e
+            -displayLabel $elms[1] ($elms[1] + "    ( " + $elms[3] + " )")
+            -buttonStyle $elms[1] 1 "2StateButton"
+            -buttonState $elms[1] 1 $buttonState[$isChecked]
+            -image $elms[1] 1 $icon[$isChecked]
+            -selectItem $elms[1] $isChecked
+            -labelBackgroundColor $elms[1] $labelCol[0] $labelCol[1] $labelCol[2]
+            -selectionColor $elms[1] 0.2 0.2 0.2
+            uTrv_shr_nodeHierarchyAssistant;
+    }
+}
+
+////////////////////////////////////
+// ラジオボタン作成
+///////////////////////////////////
+global proc shr_nodeHierarchyAssistant_createRadioButtons()
+{
+    // csv パス
+    string $csvPath = "C:/cygames/shrdev/shr/tools/in/ext/maya/2022/modules/shr/scripts/nodeNames.csv";
+
+    // csv ファイル読み込み
+    string $lines[] = `shr_nodeHierarchyAssistant_readCsvFile($csvPath)`;
+
+    // ヘッダ行削除
+    stringArrayRemoveAtIndex(0, $lines);
+
+    string $line;
+
+    for($line in $lines)
+    {
+        string $elms[];
+        tokenizeList($line, $elms);
+
+        // ラジオボタンの親レイアウト指定
+        setParent ("uRcl_" + $elms[0] + "_shr_nodeHierarchyAssistant");
+
+        // 親コレクションを指定してラジオボタン作成
+        radioButton -label $elms[1] -collection ("uRc_" + $elms[0] + "_shr_nodeHierarchyAssistant");
+
+        text -l $elms[2];
+    }
+
+    string $types[] = {"fixedName", "suffix", "prefix"};
+
+    string $type;
+
+    // 各コレクションの一つ目の項目を選択
+    for($type in $types)
+    {
+        string $uRcName = "uRc_" + $type + "_shr_nodeHierarchyAssistant";
+
+        string $collectionItems[] = `radioCollection -q -collectionItemArray $uRcName`;
+
+        if(`size($collectionItems)`)
+        {
+        radioCollection -e -select $collectionItems[0] $uRcName;
+
+        }
+
+    }
+}
+
+////////////////////////////////////
+// treeView ボタン コールバック
+///////////////////////////////////
+global proc shr_nodeHierarchyAssistant_buttonCallBack(string $item, int $onoff)
+{
+    string $buttonState[] = {"buttonUp", "buttonDown"};
+    string $icon[] = {"checkboxOff.png", "checkboxOn.png"};
+
+	// treeView ボタン エディット
+    treeView -e
+        -image $item 1 $icon[$onoff]
+        -buttonState $item 1 $buttonState[$onoff]
+        -selectItem $item $onoff
+        uTrv_shr_nodeHierarchyAssistant;
+
+    // オンにした時
+    if($onoff)
+    {
+        // 親項目取得
+        string $parent = `treeView -q -itemParent $item uTrv_shr_nodeHierarchyAssistant`;
+
+        // 親がいれば
+        if($parent != "")
+        {
+            // 親項目もオンに（再帰呼び出し）
+            shr_nodeHierarchyAssistant_buttonCallBack($parent, 1);
+        }
+    }
+    // オフにしたとき
+    else
+    {
+        // 子項目取得
+        string $children[] = `treeView -q -children $item uTrv_shr_nodeHierarchyAssistant`;
+
+        // 自分自身を配列から削除
+        stringArrayRemoveAtIndex(0, $children);
+
+        string $elm;
+
+        // 子ノードもオフに
+        for($elm in $children)
+        {
+            treeView -e
+                -image $elm 1 $icon[$onoff]
+                -buttonState $elm 1 "buttonUp"
+                -selectItem $elm $onoff
+                uTrv_shr_nodeHierarchyAssistant;
+        }
+    }
+}
+
+////////////////////////////////////
+// treeView ダブルクリック コールバック
+///////////////////////////////////
+global proc shr_nodeHierarchyAssistant_dblClickCallBack(string $item, int $label)
+{
+    // ダブルクリックによるリネーム処理をふさぐため、何もしない
+}
+
+////////////////////////////////////
+// タブ選択 コールバック
+///////////////////////////////////
+global proc shr_nodeHierarchyAssistant_selectTabCallBack()
+{
+    int $selTabIndex = `tabLayout -q -selectTabIndex uTbl_shr_nodeHierarchyAssistant`;
+
+    // 選択タブのインデックスをプリファレンスに保存
+    optionVar -iv "ov_selTabIndex_shr_nodeHierarchyAssistant" $selTabIndex;
+}
+
+////////////////////////////////////
+// 階層構造作成
+///////////////////////////////////
+global proc shr_nodeHierarchyAssistant_createHierarchy()
+{
+    string $assetName = `textField -q -text uTf_shr_nodeHierarchyAssistant`;
+
+    // アセット名が仕様に沿っていなければ終了
+    if(shr_fixHierarchy_checkRootNodeName($assetName) != 1)
+    {
+        confirmDialog -m "入力されたアセット名が仕様に沿っていません。" -t "確認" -button "確認";
+        return;
+    }
+
+    if($assetName == "")
+    {
+        confirmDialog -m "アセット名が入力されていません。" -t "確認" -button "確認";
+
+        return;
+    }
+
+    string $selNodes[] = `treeView -q -selectItem uTrv_shr_nodeHierarchyAssistant`;
+
+    if(`size($selNodes)` == 0)
+    {
+        confirmDialog -m "作成するノードが選択されていません。" -t "確認" -button "確認";
+
+        return;
+    }
+
+    string $elm;
+
+    string $rootNode;
+
+    string $meshNode;
+
+    for($elm in $selNodes)
+    {
+        string $parentNode = `treeView -q -itemParent $elm uTrv_shr_nodeHierarchyAssistant`;
+
+        string $nodeName;
+
+        // ルートノードの場合
+        if($parentNode == "")
+        {
+            $nodeName = $assetName;
+
+            // すでに存在する場合
+            if(`objExists ($nodeName)`)
+            {
+                // 新しい名前の候補を取得
+                string $newAssetName = shr_nodeHierarchyAssistant_createNewAssetId($nodeName);
+
+                string $message = $nodeName + " はすでに存在します。";
+
+                if($newAssetName == "")
+                {
+                    confirmDialog -m $message -t "確認"  -button "確認";
+                    return;
+                }
+                else
+                {
+                    $message = $message + "\n\n" + $newAssetName + " を作成しますか？";
+
+                    // 確認ダイアログ
+                    string $result =
+                    `confirmDialog
+                        -title "確認"
+                        -message $message
+                        -button "はい"
+                        -button "いいえ"
+                        -defaultButton "はい"
+                        -cancelButton "いいえ"
+                        -dismissString "いいえ"`
+                        ;
+
+                    // キャンセルしたら終了
+                    if ($result == "いいえ")
+                    {
+                        return;
+                    }
+
+                    $nodeName = $newAssetName;
+
+                    textField -e -text $nodeName uTf_shr_nodeHierarchyAssistant;
+                }
+            }
+
+            $rootNode = `createNode "transform" -name $nodeName`;
+
+        }
+        // ルートノード以外
+        else
+        {
+            // アセット階層にノード追加
+            shr_nodeHierarchyAssistant_addNode($elm, $rootNode);
+        }
+    }
+
+    select -r $rootNode;
+}
+
+////////////////////////////////////
+// ノード追加ボタン コールバック
+///////////////////////////////////
+global proc shr_nodeHierarchyAssistant_nodeButtonsCallBack(string $type, string $mode)
+{
+    // モード一覧
+    // addToHierarchy
+    // rename
+    // addSuffix
+    // addPrefix
+
+    string $radioCollectionName = `radioCollection -q -select ("uRc_" + $type + "_shr_nodeHierarchyAssistant")`;
+
+    if($radioCollectionName == "NONE")
+    {
+        return;
+    }
+
+    // 追加するノード名
+    string $nodeName = `radioButton -q -l $radioCollectionName`;
+
+    string $selNodes[] = `ls -sl -tr -long`;
+
+    if(`size($selNodes)` == 0)
+    {
+        confirmDialog -t "確認" -m "ノードを選択してから実行してください。" -button "確認";
+
+        return;
+    }
+
+    string $message;
+
+    // 作成ノード
+    string $createdNode;
+
+    // 作成ノードリスト
+    string $createdNodes[];
+
+    string $sel;
+
+    // 選択したアセットの階層に追加
+    if($mode == "addToHierarchy")
+    {
+        for($sel in $selNodes)
+        {
+            string $rootNode = shr_nodeHierarchyAssistant_getRootNodeName($sel);
+
+            // アセットノードでない場合はスキップ
+            if(shr_fixHierarchy_checkRootNodeName($rootNode) == 0)
+            {
+                $message = $rootNode + " はアセットのノード階層ではありません。\n";
+
+                print ("// " + $message);
+                confirmDialog -m $message -t "確認" -button "確認";
+
+                continue;
+            }
+
+            shr_nodeHierarchyAssistant_addNode($nodeName, $rootNode);
+        }
+
+        select -r $selNodes;
+    }
+
+    // リネーム
+    if($mode == "rename")
+    {
+        for($sel in $selNodes)
+        {
+            if(shr_nodeHierarchyAssistant_checkSiblingNodes($sel, $nodeName))
+            {
+                $message = $sel + " と同階層に、すでに" + $nodeName + " ノードが存在します。\n";
+
+                print ("// " + $message);
+                confirmDialog -m $message -t "確認" -button "確認";
+            }
+            else
+            {
+                $createdNode = `rename $sel $nodeName`;
+                $createdNodes[`size($createdNodes)`] = longNameOf($createdNode);
+
+                print ("// " + $sel + " を" + $nodeName + " にリネームしました。\n");
+            }
+        }
+    }
+
+    // suffix 追加
+    if($mode == "addSuffix")
+    {
+        for($sel in $selNodes)
+        {
+            string $baseName = `shr_nodeHierarchyAssistant_basename($sel)`;
+
+            if(endsWith($baseName, $nodeName))
+            {
+                $message = $baseName + " には、すでに" + $nodeName + " サフィックスが付いています。\n";
+
+                print ("// " + $message);
+                confirmDialog -m $message -t "確認" -button "確認";
+            }
+            else
+            {
+                string $newName = $baseName + $nodeName;
+
+                if(shr_nodeHierarchyAssistant_checkSiblingNodes($sel, $newName))
+                {
+                    $message = $sel + " と同階層に、すでに" + $newName + " ノードが存在します。\n";
+
+                    print ("// " + $message);
+                    confirmDialog -m $message -t "確認" -button "確認";
+                }
+                else
+                {
+                    rename $sel $newName;
+                    print ("// " + $sel + " を" + $newName + " にリネームしました。\n");
+                }
+            }
+        }
+    }
+
+    // prefix 追加
+    if($mode == "addPrefix")
+    {
+        for($sel in $selNodes)
+        {
+            string $baseName = `shr_nodeHierarchyAssistant_basename($sel)`;
+
+            if(startsWith($baseName, $nodeName))
+            {
+                $message = $baseName + " には、すでに" + $nodeName + " プリフィックスが付いています。\n";
+
+                print ("// " + $message);
+                confirmDialog -m $message -t "確認" -button "確認";
+            }
+            else
+            {
+                string $newName = $nodeName + $baseName;
+
+                if(shr_nodeHierarchyAssistant_checkSiblingNodes($sel, $newName))
+                {
+                    $message = $sel + " と同階層に、すでに" + $newName + " ノードが存在します。\n";
+
+                    print ("// " + $message);
+                    confirmDialog -m $message -t "確認" -button "確認";
+                }
+                else
+                {
+                    rename $sel $newName;
+                    print ("// " + $sel + " を" + $newName + " にリネームしました。\n");
+                }
+            }
+        }
+    }
+}
+
+////////////////////////////////////
+// アセット階層にノード追加
+///////////////////////////////////
+global proc string shr_nodeHierarchyAssistant_addNode(string $nodeToAdd, string $rootNode)
+{
+
+    string $createdNode;
+
+    // mesh ノードの場合はlodGroup 作成
+    if($nodeToAdd == "mesh")
+    {
+        if(shr_nodeHierarchyAssistant_checkChildNodes($rootNode, $nodeToAdd))
+        {
+            // ダイアログ表示
+            shr_nodeHierarchyAssistant_nodeExistsConfirmDialog($rootNode, $nodeToAdd);
+
+            return "";
+        }
+
+        // 現在の選択をクリア
+        select -clear;
+
+        // lodGroup を作成(createNode コマンドで作ると挙動がおかしくなる)
+        LevelOfDetailGroup;
+
+        // 作成したlodGroup ノード
+        string $createdNodes[] = `ls -sl`;
+        string $lodGroupNode = $createdNodes[0];
+
+        // lodGroup ノードのThreshold Type を変更
+        setAttr ($lodGroupNode + ".useScreenHeightPercentage") 1;
+
+        // デフォルトで付いているlod ノードを削除
+        string $defaultLodNodes[] = `listRelatives -c -f $lodGroupNode`;
+        delete $defaultLodNodes;
+
+        // lodGroup ノードをルートノードの子に
+        string $parentedLodGroupNode[] = `parent $lodGroupNode $rootNode`;
+
+        // lodGroup ノード名をmesh にリネーム
+        $createdNode = `rename $parentedLodGroupNode[0] $nodeToAdd`;
+    }
+    // ルートジョイントノードの場合はjoint 作成
+    else if($nodeToAdd == "jnt_0000_skl_root")
+    {
+        if(shr_nodeHierarchyAssistant_checkChildNodes($rootNode, $nodeToAdd))
+        {
+            // ダイアログ表示
+            shr_nodeHierarchyAssistant_nodeExistsConfirmDialog($rootNode, $nodeToAdd);
+
+            return "";
+        }
+
+        select -r $rootNode;
+        $createdNode = `joint -a -p 0 0 0 -name $nodeToAdd`;
+    }
+    // lod ノード
+    else if(startsWith($nodeToAdd, "lod"))
+    {
+        // mesh ノードが存在しない場合
+        if(shr_nodeHierarchyAssistant_checkChildNodes($rootNode, "mesh") == false)
+        {
+            string $message = $rootNode + " ノード以下に、mesh ノードがありません。\n";
+
+            confirmDialog -m $message -t "確認" -button "確認";
+
+            print ("// " + $message);
+
+            return "";
+        }
+
+        string $meshNode = $rootNode + "|mesh";
+
+        // mesh ノードがlodGroup ではない場合
+        if(`nodeType $meshNode` != "lodGroup")
+        {
+            string $message = " mesh ノードがLOD Group ではありません。\n";
+
+            confirmDialog -m $message -t "確認" -button "確認";
+
+            print ("// " + $message);
+
+            return "";
+        }
+
+        // lod ノードがすでに存在する場合
+        if(shr_nodeHierarchyAssistant_checkChildNodes($meshNode, $nodeToAdd) == true)
+        {
+            // ダイアログ表示
+            shr_nodeHierarchyAssistant_nodeExistsConfirmDialog($rootNode, $nodeToAdd);
+
+            return "";
+        }
+
+        // createNode でlodGroup に親子付けするとlod のパラメータがなぜか付かないので、作ってから親子付け
+        $createdNode = `createNode "transform"`;
+        string $temp[] = `parent $createdNode $meshNode`;
+        $createdNode = `rename $temp[0] $nodeToAdd`;
+
+        // mesh ノードのlod 表示をすべてshow に
+        shr_nodeHierarchyAssistant_setLodDisplayLevelToShow($meshNode);
+    }
+    // その他のノード
+    else
+    {
+        if(shr_nodeHierarchyAssistant_checkChildNodes($rootNode, $nodeToAdd))
+        {
+            // ダイアログ表示
+            shr_nodeHierarchyAssistant_nodeExistsConfirmDialog($rootNode, $nodeToAdd);
+
+            return "";
+        }
+
+        $createdNode = `createNode "transform" -parent $rootNode -name $nodeToAdd`;
+    }
+
+    return $createdNode;
+}
+
+////////////////////////////////////
+// mesh ノードのlod 表示をすべてshow に
+///////////////////////////////////
+global proc shr_nodeHierarchyAssistant_setLodDisplayLevelToShow(string $meshNode)
+{
+    int $indices[] = `getAttr -multiIndices ($meshNode + ".displayLevel")`;
+
+    int $index;
+
+    for($index in $indices)
+    {
+        // lod の表示レベルをshow に
+        setAttr ($meshNode + ".displayLevel[" + $index + "]") 1;
+    }
+}
+
+////////////////////////////////////
+// ノードがすでに存在しますダイアログ
+///////////////////////////////////
+global proc shr_nodeHierarchyAssistant_nodeExistsConfirmDialog(string $parentNode, string $node)
+{
+    string $message = $parentNode + " ノード以下に、すでに" + $node + " ノードが存在します。\n";
+
+    confirmDialog -m $message -t "確認" -button "確認";
+
+    print ("// " + $message);
+}
+
+////////////////////////////////////
+// ベースノードネーム
+///////////////////////////////////
+global proc string shr_nodeHierarchyAssistant_basename(string $name)
+{
+    string $elms[];
+
+    tokenize $name "|" $elms;
+    return $elms[`size($elms)` - 1];
+}
+
+////////////////////////////////////
+// 子ノードに特定の名前のノードが存在するかチェック
+///////////////////////////////////
+global proc int shr_nodeHierarchyAssistant_checkChildNodes(string $parentNode, string $checkNode)
+{
+    string $children[] = `listRelatives -children $parentNode`;
+
+    if(stringArrayContains($checkNode, $children))
+    {
+        return true;
+    }
+    else if(stringArrayContains( ("|" + $checkNode), $children))
+    {
+        return true;
+    }
+    return false;
+}
+
+////////////////////////////////////
+// 同階層に特定の名前のノードが存在するかチェック
+///////////////////////////////////
+global proc int shr_nodeHierarchyAssistant_checkSiblingNodes(string $currentNode, string $checkNode)
+{
+    string $parent[] = `listRelatives -parent -pa $currentNode`;
+
+    if(`size($parent)` == 0)
+    {
+        string $rootNodes[] = `ls -tr "|*"`;
+
+        if(stringArrayContains($checkNode, $rootNodes))
+        {
+            return true;
+        }
+        else if(stringArrayContains( ("|" + $checkNode), $rootNodes))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    string $children[] = `listRelatives -children $parent[0]`;
+
+    string $child;
+
+    if(stringArrayContains($checkNode, $children) )
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+////////////////////////////////////
+// csv ファイル読み込み
+///////////////////////////////////
+global proc string[] shr_nodeHierarchyAssistant_readCsvFile(string $filePath)
+{
+    // 戻り値
+    string $result[];
+
+    if(`filetest -r $filePath` == false)
+    {
+        return $result;
+    }
+
+    string $line;
+
+    int $fpid = `fopen $filePath "r"`;
+
+    // ヘッダ行 捨て読み
+    //fgetline $fpid;
+
+    for( $line = `fgetline $fpid`; size($line) > 0; $line = `fgetline $fpid`)
+    {
+    	stringArrayInsertAtIndex(`size($result)`, $result, $line);
+    }
+
+    fclose $fpid;
+
+    return $result;
+}
+
+////////////////////////////////////
+// シーン名からアセット名 を取得
+///////////////////////////////////
+global proc shr_nodeHierarchyAssistant_getAssetIdFromSceneName()
+{
+    // シーン名を取得（拡張子なし）
+    string $sceneName = basenameEx(`file -q -shortName -sceneName`);
+
+    // シーン名が取得できなければ
+    if($sceneName == "")
+    {
+        return;
+    }
+    else
+    {
+        textField -e -text $sceneName uTf_shr_nodeHierarchyAssistant;
+    }
+}
+
+////////////////////////////////////
+// アセット名 候補作成
+///////////////////////////////////
+global proc string shr_nodeHierarchyAssistant_createNewAssetId(string $assetName)
+{
+    string $tokens[];
+
+    // アセット名を分解
+    int $numTokens = `tokenize $assetName "_" $tokens`;
+
+    // カテゴリの枝番を取得
+    string $varNumStr = `match "[0-9][0-9]$" $tokens[$numTokens - 2]`;
+    int $varNum = (int) $varNumStr;
+
+    // カテゴリ名を取得
+    string $categoryName = `substitute "[0-9][0-9]$" $tokens[$numTokens - 2] ""`;
+
+    while(`objExists ($assetName)`)
+    {
+        // バリエーション番号をカウントアップ
+        $varNum += 1;
+
+        $varNumStr = (string) $varNum;
+
+        // バリエーション番号の桁数
+        int $wordCount = `size($varNumStr)`;
+
+        // 桁数に応じて、前に"0"を追加
+        if($wordCount == 1)
+        {
+            $varNumStr = "0" + $varNumStr;
+        }
+
+        $tokens[$numTokens - 2] = $categoryName + $varNumStr;
+
+        // トークンを結合してアセット名に
+        $assetName = stringArrayToString($tokens, "_");
+    }
+
+    return $assetName;
+}
+
+////////////////////////////////////
+// 選択ノードからルートノード名を取得
+///////////////////////////////////
+global proc string shr_nodeHierarchyAssistant_getRootNodeName(string $nodeName)
+{
+    // ノードネームが空なら終了
+    if($nodeName == "")
+    {
+        return "";
+    }
+
+    // ノードが存在しなければ終了
+    if(`objExists $nodeName` == false)
+    {
+        print("// " + $nodeName + " が見つかりません。");
+
+        return "";
+    }
+
+    // ノードのフルパス名を取得
+    string $fullPathName[] = `ls -long $nodeName`;
+
+    // フルパス名を分割
+    string $tokens[] = stringToStringArray($fullPathName[0], "|");
+
+    // ワールドの子の場合
+    if($nodeName == $tokens[0])
+    {
+        return $nodeName;
+    }
+    else
+    {
+        return $tokens[0];
+    }
+}
+
+//===============================================
+// 階層構造を修正
+//===============================================
+global proc shr_nodeHierarchyAssistant_fixHierarchyMenuCallback()
+{
+    // 階層構造チェック
+    int $fix_hierarchy_result = `shr_fixHierarchy({})`;
+
+    if($fix_hierarchy_result == 0)
+    {
+        confirmDialog
+            -title "確認"
+            -icon "information"
+            -message "修正が必要な内容はありません。"
+            -button "確認";
+
+        return;
+    }
+}
+
+// NOTE:
+// shr_nodeHierarchyAssistant_UI;
