@@ -1,0 +1,16 @@
+@echo off
+
+cd /d %~dp0\..
+
+set PYTHONDONTWRITEBYTECODE=1
+
+set MAYA_UI_LANGUAGE=en_US
+set MAYA_MODULE_PATH=%MAYA_MODULE_PATH%;%CD%\modules
+set MAYA_PLUG_IN_PATH=%MAYA_PLUG_IN_PATH%;%CD%\plug-ins
+set MAYA_SCRIPT_PATH=%MAYA_SCRIPT_PATH%;%CD%\scripts
+set MAYA_PRESET_PATH=%MAYA_PRESET_PATH%;%CD%\presets
+set XBMLANGPATH=%XBMLANGPATH%;%CD%\prefs\icons
+
+set PYTHONPATH=%PYTHONPATH%;%CD%\python
+
+cd /d %~dp0

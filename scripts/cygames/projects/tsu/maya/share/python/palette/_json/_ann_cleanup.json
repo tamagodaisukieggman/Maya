@@ -1,0 +1,12 @@
+{
+    "setUnit" : ["Set Default Unit: Grid, Camera, Joint Size, Time Range, and Unit", "環境設定を行います。 グリッドサイズ, カメラ設定, ジョイントサイズ, タイムレンジ, 単位系"],
+    "delAnimKey" : ["Delete Animation Key in the scene.", "シーン内のアニメーションキーを削除"],
+    "delSkin" : ["Delete SkinCluster, Move pivot to origin.", "スキンクラスタの削除、メッシュのピボットを原点に設定"],
+    "delJoint" : ["Delete Skeleton Hierarchy.", "スケルトン階層の削除"],
+    "resetDisplay" : ["Freeze mesh vertexes.", "メッシュ表示のリセット"],
+    "freezeMesh" : ["Freeze mesh vertexes.", "メッシュの頂点をフリーズ"],
+    "checkShape" : ["Check nodes have multiple unnecessary shape.", "複数のシェイプを持つノードのチェック/セットの作成"],
+    "checkName" : ["Check Overlapping Name,", "名前の重複したノードの検出"],
+    "checkTexture" : ["Check invalid texture path.", "無効なテクスチャのパスのチェック"],
+    "dataCleaning" : ["Data Cleaning. Unload plugins, Delete unnecessary nodes, Check script nodes.", "データのクリーニングを行います。 プラグインのアンロード, スクリプトノードのチェック, 不要ノードの削除"]
+}
