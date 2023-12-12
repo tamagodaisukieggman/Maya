@@ -43,10 +43,10 @@ from imp import reload
 from stat import S_IREAD, S_IRGRP, S_IROTH, S_IWUSR
 from timeit import default_timer as timer
 
-import tkgfile.avatarReferenceTool.commands as avatarReferenceTool
+import rig.avatarReferenceTool.commands as avatarReferenceTool
 reload(avatarReferenceTool)
 
-import tkgfile.avatarReferenceTool.simple_picker.ui as avatarReferenceToolPicker
+import rig.avatarReferenceTool.simple_picker.ui as avatarReferenceToolPicker
 reload(avatarReferenceToolPicker)
 
 maya_version = cmds.about(v=True)
@@ -76,14 +76,14 @@ except:
     print(traceback.format_exc())
 
 """
-import tkgfile.avatarReferenceTool.ui as avatarReferenceToolUI
+import rig.avatarReferenceTool.ui as avatarReferenceToolUI
 reload(avatarReferenceToolUI)
 fbx_mxui = avatarReferenceToolUI.AvatarReferenceTool()
 fbx_mxui.buildUI()
 fbx_mxui.show(dockable=True)
 
 # ファイル捜査で設定を書き出し
-import tkgfile.avatarReferenceTool.commands as avatarReferenceToolCmd
+import rig.avatarReferenceTool.commands as avatarReferenceToolCmd
 reload(avatarReferenceToolCmd)
 avatarReferenceToolCmd.export_avatar_collection()
 """
@@ -488,10 +488,6 @@ class AvatarReferenceTool(MayaQWidgetDockableMixin, QMainWindow):
                         basename_without_ext = os.path.splitext(os.path.basename(file_name))[0]
                         btn = self.reference_btn_dict[ex_nss]
                         btn.setText(basename_without_ext)
-                        print('ex_nss', ex_nss)
-
-        print('self.reference_set_dict, self.reference_cbox_dict')
-        print(self.reference_set_dict, self.reference_cbox_dict)
 
         if ret_no_files:
             pick_files = avatarReferenceTool.in_line_for_files(ret_no_files)
@@ -591,7 +587,7 @@ class AvatarReferenceTool(MayaQWidgetDockableMixin, QMainWindow):
                 self.prop_dialog.close()
 
             self.prop_dialog = PropDialog()
-            self.prop_dialog.prop_objects = sel
+            self.prop_dialog.prop_ctrls = sel
             self.prop_dialog.build()
             self.prop_dialog.show(dockable=True)
 
@@ -888,7 +884,7 @@ class PropDialog(MayaQWidgetDockableMixin, QMainWindow):
 
         self.setWindowTitle('Prop Dialog')
 
-        self.prop_objects = list()
+        self.prop_ctrls = list()
         self.prop_collection = avatarReferenceTool.prop_collection()
         self.prop_part_list = [part for part in self.prop_collection.keys()]
         default_id_path = self.prop_collection[self.prop_part_list[0]]
@@ -928,348 +924,410 @@ class PropDialog(MayaQWidgetDockableMixin, QMainWindow):
         self.resize(1250, 600)
 
     def add_selection(self):
-        nss_ql = QLabel('Namespace_{}: '.format('#' * self.nss_pad))
-        pad_ql = QLabel('Padding')
-        main_nss_pad_cmbox = QComboBox(self)
-        nss_num_ql = QLabel('Num')
-        main_nss_num_cmbox = QComboBox(self)
-        nss_text_base_ql = QLabel('Text Namespace >> ')
-        text_nss_qle = QLineEdit(self)
-
         main_nss_layout = QHBoxLayout(self)
         self.main_v_layout.addLayout(main_nss_layout)
 
+        ##################
+        # Namespaceのレイアウト
+        nss_ql = QLabel('Namespace_{}: '.format('#' * self.nss_pad))
         main_nss_layout.addWidget(nss_ql)
-        main_nss_layout.addWidget(pad_ql)
-        main_nss_layout.addWidget(main_nss_pad_cmbox)
+
+        nss_pad_ql = QLabel('Padding')
+        main_nss_layout.addWidget(nss_pad_ql)
+
+        nss_pad_cmbox = QComboBox(self)
+        main_nss_layout.addWidget(nss_pad_cmbox)
+
+        nss_num_ql = QLabel('Num')
         main_nss_layout.addWidget(nss_num_ql)
-        main_nss_layout.addWidget(main_nss_num_cmbox)
-        main_nss_layout.addWidget(nss_text_base_ql)
-        main_nss_layout.addWidget(text_nss_qle)
+
+        nss_num_cmbox = QComboBox(self)
+        main_nss_layout.addWidget(nss_num_cmbox)
+
+        nss_text_ql = QLabel('Text Namespace >> ')
+        main_nss_layout.addWidget(nss_text_ql)
+
+        nss_text_qle = QLineEdit(self)
+        main_nss_layout.addWidget(nss_text_qle)
 
         main_nss_layout.setAlignment(Qt.AlignLeft)
 
-        main_nss_pad_cmbox.addItems([str(i+1) for i in range(self.nss_pad)])
-        main_nss_pad_cmbox.currentTextChanged.connect(partial(self.prop_nss_from_pad, main_nss_pad_cmbox, main_nss_num_cmbox))
+        ##################
+        # Namespaceのアイテム設定
+        nss_pad_cmbox.addItems([str(i+1) for i in range(self.nss_pad)])
         num_list = ['pro_' + str(i).zfill(1) for i in range(self.nss_num) if not cmds.objExists('pro_' + str(i).zfill(1) + ':Root')]
         for i, n in enumerate(num_list):
             self.nss_num_dict[i] = n
+        nss_num_cmbox.addItems(num_list)
 
-        main_nss_num_cmbox.addItems(num_list)
+        ##################
+        # Namespaceのシグナル
+        nss_pad_cmbox.currentTextChanged.connect(partial(self.prop_nss_from_pad, nss_pad_cmbox, nss_num_cmbox))
+        nss_text_qle.textChanged.connect(partial(self.nss_sts_changing, nss_text_qle, nss_pad_ql, nss_pad_cmbox, nss_num_ql, nss_num_cmbox))
 
-        text_nss_qle.textChanged.connect(partial(self.nss_sts_changing, text_nss_qle, pad_ql, main_nss_pad_cmbox, nss_num_ql, main_nss_num_cmbox))
-
+        # シーン内にpropを設定したノードがあるか確認
         prop_has_dict = None
         try:
             prop_has_dict = self.set_from_prop_network()
-            # self.prop_objects =
         except Exception as e:
             print(traceback.format_exc())
 
         if prop_has_dict:
             prop_has_dict_ctrls = [k for k in prop_has_dict.keys()]
-            [self.prop_objects.append(c) for c in prop_has_dict_ctrls if not c in self.prop_objects]
+            [self.prop_ctrls.append(c) for c in prop_has_dict_ctrls if not c in self.prop_ctrls]
 
-        for arg in self.prop_objects:
-            self.prop_ui_object_dict[arg] = {}
+        # self.prop_ctrlsはプロップ用のコントローラを代入している
+        for prop_ctrl in self.prop_ctrls:
+            self.prop_ui_object_dict[prop_ctrl] = {}
 
-            main_h_layout = QHBoxLayout(self)
-            self.main_v_layout.addLayout(main_h_layout)
+            ################
+            # propに関連するオブジェクト用のレイアウト
+            prop_items_layout = QHBoxLayout(self)
+            self.main_v_layout.addLayout(prop_items_layout)
 
-            sel_v_layout = QVBoxLayout(self)
-            sel_ql = QLabel('Controller: ')
-            main_ctrl_sel_btn = QPushButton('Select Controller')
-            set_ctrl_h_layout = QHBoxLayout(self)
-            main_ctrl_qle = FlexLineEdit(self)
-            set_ctrl_btn = QPushButton('<< Set')
-            prop_space_h_layout = QHBoxLayout(self)
-            prop_space_ql = QLabel('Space:')
-            prop_space_cmbox = QComboBox(self)
-            self.prop_ui_object_dict[arg]['name'] = main_ctrl_qle
-            self.prop_ui_object_dict[arg]['space'] = prop_space_cmbox
+            # Controllerレイアウト
+            prop_ctrl_ql = QLabel('Controller: ')
+            prop_items_layout.addWidget(prop_ctrl_ql)
 
-            prop_rot_h_layout = QHBoxLayout(self)
-            prop_rot_ql = QLabel('Rotate:')
-            prop_rot_cmbox = QComboBox(self)
-            # prop_rot_btn = QPushButton('Set')
+            # Controllerレイアウトに色々追加するようのレイアウト
+            prop_ctrl_layout = QVBoxLayout(self)
+            prop_items_layout.addLayout(prop_ctrl_layout)
 
-            pro_ql = QLabel('Prop: ')
+            # コントローラ選択ボタン
+            prop_ctrl_sel_btn = QPushButton('Select Controller')
+            prop_ctrl_layout.addWidget(prop_ctrl_sel_btn)
 
-            func_pro_v_layout = QVBoxLayout(self)
-            match_pro_cbox = QCheckBox('Match')
-            con_pro_cbox = QCheckBox('Connect')
+            # コントローラ操作用レイアウト
+            prop_ctrl_set_layout = QHBoxLayout(self)
+            prop_ctrl_layout.addLayout(prop_ctrl_set_layout)
 
-            pro_v_layout = QVBoxLayout(self)
-            main_part_cmbox = QComboBox(self)
-            main_id_cmbox = QComboBox(self)
-            # main_nss_cmbox = QComboBox(self)
+            # コントローラのlineEdit
+            prop_ctrl_qle = FlexLineEdit(self)
+            prop_ctrl_qle.setText(prop_ctrl)
+            prop_ctrl_qle.setToolTip(prop_ctrl)
+            # prop_ctrl_qle.setReadOnly(True)
 
-            self.prop_ui_object_dict[arg]['propPart'] = main_part_cmbox
-            self.prop_ui_object_dict[arg]['propID'] = main_id_cmbox
+            # コントローラを選択するボタンのシグナル
+            prop_ctrl_sel_btn.clicked.connect(partial(self.select_object, prop_ctrl_qle))
 
-            ref_v_layout = QVBoxLayout(self)
-            main_ref_btn = QPushButton('Reference')
-            main_rem_ref_ref_btn = QPushButton('RemoveReference')
-            main_refEdr_ref_btn = QPushButton('ReferenceEditor')
-            prop_picker_qbtn = QPushButton('Picker')
+            # コントローラsetボタン
+            prop_ctrl_set_btn = QPushButton('<< Set')
 
-            sel_pro_v_layout = QVBoxLayout(self)
-            main_ref_sel_btn = QPushButton('Select Root')
-            set_sel_h_layout = QHBoxLayout(self)
-            main_ref_qle = FlexLineEdit(self)
-            set_sel_pro_btn = QPushButton('<< Set')
-            self.prop_ui_object_dict[arg]['Root'] = main_ref_qle
+            prop_ctrl_set_layout.addWidget(prop_ctrl_qle)
+            prop_ctrl_set_layout.addWidget(prop_ctrl_set_btn)
 
-            # rootCtrl_sel_pro_v_layout = QVBoxLayout(self)
-            rootCtrl_main_ref_sel_btn = QPushButton('Select Root Ctrl')
-            rootCtrl_set_sel_h_layout = QHBoxLayout(self)
-            rootCtrl_main_ref_qle = FlexLineEdit(self)
-            rootCtrl_set_sel_pro_btn = QPushButton('<< Set')
-            fbx_to_rig_pro_btn = QPushButton('FBX to Rig')
-            self.prop_ui_object_dict[arg]['RootCtrl'] = rootCtrl_main_ref_qle
+            # コントローラのSpace用レイアウト
+            prop_ctrl_space_layout = QHBoxLayout(self)
+            prop_ctrl_layout.addLayout(prop_ctrl_space_layout)
+            prop_ctrl_space_ql = QLabel('Space:')
+            prop_ctrl_space_layout.addWidget(prop_ctrl_space_ql)
 
-            atc_v_layout = QVBoxLayout(self)
-            atc_ql = QLabel('Attach Node: ')
-            main_attach_sel_btn = QPushButton('Select Attach Node')
-            set_attach_h_layout = QHBoxLayout(self)
-            main_atc_qle = FlexLineEdit(self)
-            set_attach_pro_btn = QPushButton('<< Set')
-            attach_match_h_layout = QHBoxLayout(self)
-            attach_ctrl_match_btn = QPushButton('Controller Match')
-            attach_root_match_btn = QPushButton('Root Match')
-            self.prop_ui_object_dict[arg]['attachNode'] = main_atc_qle
+            # コントローラのspace用ComboBox
+            prop_ctrl_space_cmbox = QComboBox(self)
+            prop_ctrl_space_layout.addWidget(prop_ctrl_space_cmbox)
+            prop_ctrl_space_cmbox.currentTextChanged.connect(partial(self.switch_prop_space, prop_ctrl_qle, prop_ctrl_space_cmbox))
 
-            tools_ql = QLabel('Tools: ')
-            space_match_bake_v_layout = QVBoxLayout(self)
-            set_match_space_ql = QLabel('Set Match Space')
-            space_match_bake_cmbox = QComboBox(self)
-            space_match_bake_btn = QPushButton('Space Match Bake')
+            self.prop_ui_object_dict[prop_ctrl]['name'] = prop_ctrl_qle
+            self.prop_ui_object_dict[prop_ctrl]['space'] = prop_ctrl_space_cmbox
 
-            main_h_layout.addWidget(sel_ql)
-            main_h_layout.addLayout(sel_v_layout)
-            sel_v_layout.addWidget(main_ctrl_sel_btn)
-            sel_v_layout.addLayout(set_ctrl_h_layout)
-            set_ctrl_h_layout.addWidget(main_ctrl_qle)
-            set_ctrl_h_layout.addWidget(set_ctrl_btn)
-            sel_v_layout.addLayout(prop_space_h_layout)
-            prop_space_h_layout.addWidget(prop_space_ql)
-            prop_space_h_layout.addWidget(prop_space_cmbox)
+            # コントローラのrotate用レイアウト
+            prop_ctrl_rot_layout = QHBoxLayout(self)
+            prop_ctrl_layout.addLayout(prop_ctrl_rot_layout)
+            prop_ctrl_rot_ql = QLabel('Rotate:')
+            prop_ctrl_rot_cmbox = QComboBox(self)
 
-            sel_v_layout.addLayout(prop_rot_h_layout)
-            prop_rot_h_layout.addWidget(prop_rot_ql)
-            prop_rot_h_layout.addWidget(prop_rot_cmbox)
-            # prop_rot_h_layout.addWidget(prop_rot_btn)
+            prop_ctrl_rot_layout.addWidget(prop_ctrl_rot_ql)
+            prop_ctrl_rot_layout.addWidget(prop_ctrl_rot_cmbox)
 
+            prop_ctrl_rot_cmbox.currentTextChanged.connect(partial(self.prop_rotate_from, prop_ctrl_qle, prop_ctrl_rot_cmbox))
+
+            # 区切り用のSplitter
             v_splitter = QSplitter(Qt.Vertical)
             v_bottom = QFrame()
             v_bottom.setFrameShape(QFrame.VLine)
             v_splitter.addWidget(v_bottom)
-            main_h_layout.addWidget(v_splitter)
+            prop_items_layout.addWidget(v_splitter)
 
-            main_h_layout.addWidget(pro_ql)
-            main_h_layout.addLayout(func_pro_v_layout)
-            func_pro_v_layout.addWidget(match_pro_cbox)
-            func_pro_v_layout.addWidget(con_pro_cbox)
+            # 読み込むprop用のレイアウト
+            prop_layout = QVBoxLayout(self)
+            prop_ql = QLabel('Prop: ')
+            prop_items_layout.addWidget(prop_ql)
+            prop_items_layout.addLayout(prop_layout)
 
-            main_h_layout.addLayout(pro_v_layout)
-            pro_v_layout.addWidget(main_part_cmbox)
-            pro_v_layout.addWidget(main_id_cmbox)
-            # main_h_layout.addWidget(main_nss_cmbox)
+            # propとコントローラのマッチ用チェックボックス
+            prop_match_cbox = QCheckBox('Match')
+            prop_layout.addWidget(prop_match_cbox)
+            prop_match_cbox.setChecked(True)
 
-            main_h_layout.addLayout(ref_v_layout)
-            ref_v_layout.addWidget(main_ref_btn)
-            ref_v_layout.addWidget(main_rem_ref_ref_btn)
-            ref_v_layout.addWidget(main_refEdr_ref_btn)
-            ref_v_layout.addWidget(prop_picker_qbtn)
+            # propとコントローラの接続用チェックボックス
+            prop_connect_cbox = QCheckBox('Connect')
+            prop_layout.addWidget(prop_connect_cbox)
+            prop_connect_cbox.setChecked(True)
 
-            main_h_layout.addLayout(sel_pro_v_layout)
-            sel_pro_v_layout.addWidget(main_ref_sel_btn)
-            sel_pro_v_layout.addLayout(set_sel_h_layout)
-            set_sel_h_layout.addWidget(main_ref_qle)
-            set_sel_h_layout.addWidget(set_sel_pro_btn)
+            # リファレンスするprop用のレイアウト
+            prop_ref_layout = QVBoxLayout(self)
+            prop_items_layout.addLayout(prop_ref_layout)
 
-            # main_h_layout.addLayout(rootCtrl_sel_pro_v_layout)
-            sel_pro_v_layout.addWidget(rootCtrl_main_ref_sel_btn)
-            sel_pro_v_layout.addLayout(rootCtrl_set_sel_h_layout)
-            rootCtrl_set_sel_h_layout.addWidget(rootCtrl_main_ref_qle)
-            rootCtrl_set_sel_h_layout.addWidget(rootCtrl_set_sel_pro_btn)
-            sel_pro_v_layout.addWidget(fbx_to_rig_pro_btn)
+            # propのパートのComboBox
+            prop_ref_part_cmbox = QComboBox(self)
+            prop_ref_layout.addWidget(prop_ref_part_cmbox)
+            prop_ref_id_cmbox = QComboBox(self)
+            prop_ref_layout.addWidget(prop_ref_id_cmbox)
 
+            # アイテムの追加
+            prop_ref_part_cmbox.addItems(self.prop_part_list)
+            prop_ref_id_cmbox.addItems(self.prop_id_list)
+
+            # リファレンスを読み込むComboBoxのシグナル
+            prop_ref_part_cmbox.currentTextChanged.connect(partial(self.prop_list, prop_ref_part_cmbox, prop_ref_id_cmbox))
+
+            self.prop_ui_object_dict[prop_ctrl]['propPart'] = prop_ref_part_cmbox
+            self.prop_ui_object_dict[prop_ctrl]['propID'] = prop_ref_id_cmbox
+
+            # 読み込むpropの操作用レイアウト
+            prop_ref_func_layout = QVBoxLayout(self)
+            prop_items_layout.addLayout(prop_ref_func_layout)
+
+            # リファレンスのボタン群
+            prop_ref_func_ref_btn = QPushButton('Reference')
+            prop_ref_func_layout.addWidget(prop_ref_func_ref_btn)
+
+            prop_ref_func_remref_btn = QPushButton('RemoveReference')
+            prop_ref_func_layout.addWidget(prop_ref_func_remref_btn)
+
+            prop_ref_func_editor_btn = QPushButton('ReferenceEditor')
+            prop_ref_func_layout.addWidget(prop_ref_func_editor_btn)
+            prop_ref_func_editor_btn.clicked.connect(cmds.ReferenceEditor)
+
+            prop_ref_func_picker_btn = QPushButton('Picker')
+            prop_ref_func_layout.addWidget(prop_ref_func_picker_btn)
+
+            # propの選択用のレイアウト
+            prop_ref_sel_layout = QVBoxLayout(self)
+            prop_items_layout.addLayout(prop_ref_sel_layout)
+
+            # propのroot選択用のレイアウト
+            prop_ref_sel_root_btn = QPushButton('Select Root')
+            prop_ref_sel_layout.addWidget(prop_ref_sel_root_btn)
+
+            prop_ref_sel_root_layout = QHBoxLayout(self)
+            prop_ref_sel_layout.addLayout(prop_ref_sel_root_layout)
+
+            prop_ref_sel_qle = FlexLineEdit(self)
+            prop_ref_sel_root_layout.addWidget(prop_ref_sel_qle)
+            prop_ref_sel_root_btn.clicked.connect(partial(self.select_object, prop_ref_sel_qle))
+
+            # pickerを起動するシグナル
+            prop_ref_func_picker_btn.clicked.connect(partial(self.show_picker, prop_ref_sel_qle))
+
+            # propのRootをsetするボタン
+            prop_ref_sel_btn = QPushButton('<< Set')
+            prop_ref_sel_root_layout.addWidget(prop_ref_sel_btn)
+            prop_ref_sel_btn.clicked.connect(partial(self.set_selection, prop_ref_sel_qle))
+
+            self.prop_ui_object_dict[prop_ctrl]['Root'] = prop_ref_sel_qle
+
+            # propのroot_ctrl選択用のレイアウト
+            prop_ref_sel_root_ctrl_btn = QPushButton('Select Root Ctrl')
+            prop_ref_sel_layout.addWidget(prop_ref_sel_root_ctrl_btn)
+
+            prop_ref_sel_root_ctrl_layout = QHBoxLayout(self)
+            prop_ref_sel_layout.addLayout(prop_ref_sel_root_ctrl_layout)
+
+            prop_ref_sel_root_ctrl_qle = FlexLineEdit(self)
+            prop_ref_sel_root_ctrl_layout.addWidget(prop_ref_sel_root_ctrl_qle)
+            prop_ref_sel_root_ctrl_btn.clicked.connect(partial(self.select_object, prop_ref_sel_root_ctrl_qle))
+
+            prop_ref_set_root_ctrl_btn = QPushButton('<< Set')
+            prop_ref_sel_root_ctrl_layout.addWidget(prop_ref_set_root_ctrl_btn)
+            prop_ref_set_root_ctrl_btn.clicked.connect(partial(self.set_selection, prop_ref_sel_root_ctrl_qle))
+
+            prop_fbx_to_rig_btn = QPushButton('FBX to Rig')
+            prop_ref_sel_layout.addWidget(prop_fbx_to_rig_btn)
+            prop_fbx_to_rig_btn.clicked.connect(partial(self.fbx_to_rig, prop_ctrl_qle, prop_ref_sel_qle))
+
+            self.prop_ui_object_dict[prop_ctrl]['RootCtrl'] = prop_ref_sel_root_ctrl_qle
+
+            # 区切り用のSplitter
             v_splitter = QSplitter(Qt.Vertical)
             v_bottom = QFrame()
             v_bottom.setFrameShape(QFrame.VLine)
             v_splitter.addWidget(v_bottom)
-            main_h_layout.addWidget(v_splitter)
+            prop_items_layout.addWidget(v_splitter)
 
-            main_h_layout.addWidget(atc_ql)
-            main_h_layout.addLayout(atc_v_layout)
-            atc_v_layout.addWidget(main_attach_sel_btn)
-            atc_v_layout.addLayout(set_attach_h_layout)
-            set_attach_h_layout.addWidget(main_atc_qle)
-            set_attach_h_layout.addWidget(set_attach_pro_btn)
-            atc_v_layout.addLayout(attach_match_h_layout)
-            attach_match_h_layout.addWidget(attach_ctrl_match_btn)
-            attach_match_h_layout.addWidget(attach_root_match_btn)
+            # propのattachNode用のレイアウト
+            prop_attach_layout = QVBoxLayout(self)
+            prop_attach_ql = QLabel('Attach Node: ')
+            prop_items_layout.addWidget(prop_attach_ql)
+            prop_items_layout.addLayout(prop_attach_layout)
 
+            prop_attach_sel_btn = QPushButton('Select Attach Node')
+            prop_attach_layout.addWidget(prop_attach_sel_btn)
+
+            prop_attach_sel_layout = QHBoxLayout(self)
+            prop_attach_layout.addLayout(prop_attach_sel_layout)
+
+            prop_attach_sel_qle = FlexLineEdit(self)
+            prop_attach_sel_layout.addWidget(prop_attach_sel_qle)
+            prop_attach_sel_btn.clicked.connect(partial(self.select_object, prop_attach_sel_qle))
+
+            prop_attach_set_btn = QPushButton('<< Set')
+            prop_attach_sel_layout.addWidget(prop_attach_set_btn)
+
+            prop_attach_func_layout = QHBoxLayout(self)
+            prop_attach_layout.addLayout(prop_attach_func_layout)
+
+            prop_attach_ctrl_match_btn = QPushButton('Controller Match')
+            prop_attach_func_layout.addWidget(prop_attach_ctrl_match_btn)
+            prop_attach_ctrl_match_btn.clicked.connect(partial(self.match_transform, prop_ctrl_qle, prop_ref_sel_qle, prop_attach_sel_qle, 1))
+
+            prop_attach_root_match_btn = QPushButton('Root Match')
+            prop_attach_func_layout.addWidget(prop_attach_root_match_btn)
+            prop_attach_root_match_btn.clicked.connect(partial(self.match_transform, prop_ctrl_qle, prop_ref_sel_qle, prop_attach_sel_qle, 0))
+
+            self.prop_ui_object_dict[prop_ctrl]['attachNode'] = prop_attach_sel_qle
+
+            # 区切り用のSplitter
             v_splitter = QSplitter(Qt.Vertical)
             v_bottom = QFrame()
             v_bottom.setFrameShape(QFrame.VLine)
             v_splitter.addWidget(v_bottom)
-            main_h_layout.addWidget(v_splitter)
+            prop_items_layout.addWidget(v_splitter)
 
-            main_h_layout.addWidget(tools_ql)
-            main_h_layout.addLayout(space_match_bake_v_layout)
-            space_match_bake_v_layout.addWidget(set_match_space_ql)
-            space_match_bake_v_layout.addWidget(space_match_bake_cmbox)
-            space_match_bake_v_layout.addWidget(space_match_bake_btn)
-            self.prop_ui_object_dict[arg]['spaceMatchBake'] = space_match_bake_cmbox
+            # tools
+            prop_tools_ql = QLabel('Tools: ')
+            prop_items_layout.addWidget(prop_tools_ql)
 
+            # Space Match Bake
+            prop_tools_space_match_bake_layout = QVBoxLayout(self)
+            prop_items_layout.addLayout(prop_tools_space_match_bake_layout)
+
+            prop_tools_set_match_space_ql = QLabel('Set Match Space')
+            prop_tools_space_match_bake_layout.addWidget(prop_tools_set_match_space_ql)
+
+            prop_tools_space_match_bake_cmbox = QComboBox(self)
+            prop_tools_space_match_bake_layout.addWidget(prop_tools_space_match_bake_cmbox)
+
+            prop_tools_space_match_bake_btn = QPushButton('Space Match Bake')
+            prop_tools_space_match_bake_layout.addWidget(prop_tools_space_match_bake_btn)
+            prop_tools_space_match_bake_btn.clicked.connect(partial(self.space_match_bake, prop_ctrl_qle, prop_ctrl_space_cmbox, prop_tools_space_match_bake_cmbox))
+
+            self.prop_ui_object_dict[prop_ctrl]['spaceMatchBake'] = prop_tools_space_match_bake_cmbox
+
+            # コントローラごとの区切り用のSplitter
             h_splitter = QSplitter(Qt.Horizontal)
             h_bottom = QFrame()
             h_bottom.setFrameShape(QFrame.HLine)
             h_splitter.addWidget(h_bottom)
             self.main_v_layout.addWidget(h_splitter)
 
-            match_pro_cbox.setChecked(True)
-            con_pro_cbox.setChecked(True)
+            # prop更新用のシグナル
+            prop_ref_func_ref_btn.clicked.connect(partial(self.ref_prop, prop_ctrl_qle, prop_ref_part_cmbox, prop_ref_id_cmbox, nss_num_cmbox, nss_text_qle, prop_ref_sel_qle, prop_ref_sel_root_ctrl_qle, 'ref', prop_match_cbox, prop_connect_cbox, prop_attach_sel_qle, prop_ctrl_space_cmbox, prop_tools_space_match_bake_cmbox))
+            prop_ref_func_remref_btn.clicked.connect(partial(self.ref_prop, prop_ctrl_qle, prop_ref_part_cmbox, prop_ref_id_cmbox, nss_num_cmbox, nss_text_qle, prop_ref_sel_qle, prop_ref_sel_root_ctrl_qle, 'remove_ref', prop_match_cbox, prop_connect_cbox, prop_attach_sel_qle, prop_ctrl_space_cmbox, prop_tools_space_match_bake_cmbox))
 
-            main_ctrl_qle.setText(arg)
-            main_ctrl_qle.setToolTip(arg)
-            # main_ctrl_qle.setReadOnly(True)
+            #
+            prop_ctrl_set_btn.clicked.connect(partial(self.set_selection, prop_ctrl_qle, prop_ctrl_space_cmbox, prop_tools_space_match_bake_cmbox))
+            prop_attach_set_btn.clicked.connect(partial(self.set_selection, prop_attach_sel_qle, prop_ctrl_space_cmbox, prop_tools_space_match_bake_cmbox))
 
-            set_ctrl_btn.clicked.connect(partial(self.set_selection, main_ctrl_qle, prop_space_cmbox, space_match_bake_cmbox))
+            # spaceの更新
+            self.set_spaces(prop_ctrl_qle=prop_ctrl_qle, prop_ctrl_space_cmbox=prop_tools_space_match_bake_cmbox, dum=None)
+            self.set_spaces(prop_ctrl_qle=prop_ctrl_qle, prop_ctrl_space_cmbox=prop_ctrl_space_cmbox, dum=None)
 
-            self.set_spaces(main_ctrl_qle=main_ctrl_qle, prop_space_cmbox=space_match_bake_cmbox, dum=None)
-
-            self.set_spaces(main_ctrl_qle=main_ctrl_qle, prop_space_cmbox=prop_space_cmbox, dum=None)
-            prop_space_cmbox.currentTextChanged.connect(partial(self.switch_prop_space, main_ctrl_qle, prop_space_cmbox))
-
-            self.add_prop_rotate_values(main_ctrl_qle, prop_rot_cmbox)
-            # prop_rot_btn.clicked.connect(partial(self.prop_rotate_from, main_ctrl_qle, prop_rot_cmbox))
-            prop_rot_cmbox.currentTextChanged.connect(partial(self.prop_rotate_from, main_ctrl_qle, prop_rot_cmbox))
-            # prop_reload_space_btn.clicked.connect(partial(self.reload_space, prop_space_cmbox))
-
-            main_part_cmbox.addItems(self.prop_part_list)
-            main_id_cmbox.addItems(self.prop_id_list)
-
-            main_ctrl_sel_btn.clicked.connect(partial(self.select_object, main_ctrl_qle))
-            main_part_cmbox.currentTextChanged.connect(partial(self.prop_list, main_part_cmbox, main_id_cmbox))
-
-            main_ref_btn.clicked.connect(partial(self.ref_prop, main_ctrl_qle, main_part_cmbox, main_id_cmbox, main_nss_num_cmbox, text_nss_qle, main_ref_qle, rootCtrl_main_ref_qle, 'ref', match_pro_cbox, con_pro_cbox, main_atc_qle, prop_space_cmbox, space_match_bake_cmbox))
-            main_rem_ref_ref_btn.clicked.connect(partial(self.ref_prop, main_ctrl_qle, main_part_cmbox, main_id_cmbox, main_nss_num_cmbox, text_nss_qle, main_ref_qle, rootCtrl_main_ref_qle, 'remove_ref', match_pro_cbox, con_pro_cbox, main_atc_qle, prop_space_cmbox, space_match_bake_cmbox))
-            # main_refEdr_ref_btn.clicked.connect(partial(self.ref_prop, main_ctrl_qle, main_part_cmbox, main_id_cmbox, main_nss_num_cmbox, text_nss_qle, main_ref_qle, 'remove_ref', match_pro_cbox, con_pro_cbox, main_atc_qle, prop_space_cmbox))
-            main_refEdr_ref_btn.clicked.connect(cmds.ReferenceEditor)
-
-            set_sel_pro_btn.clicked.connect(partial(self.set_selection, main_ref_qle))
-            rootCtrl_set_sel_pro_btn.clicked.connect(partial(self.set_selection, rootCtrl_main_ref_qle))
-
-            main_ref_sel_btn.clicked.connect(partial(self.select_object, main_ref_qle))
-            rootCtrl_main_ref_sel_btn.clicked.connect(partial(self.select_object, rootCtrl_main_ref_qle))
-            main_attach_sel_btn.clicked.connect(partial(self.select_object, main_atc_qle))
-            fbx_to_rig_pro_btn.clicked.connect(partial(self.fbx_to_rig, main_ctrl_qle, main_ref_qle))
-
-            set_attach_pro_btn.clicked.connect(partial(self.set_selection, main_atc_qle, prop_space_cmbox, space_match_bake_cmbox))
-
-            attach_root_match_btn.clicked.connect(partial(self.match_transform, main_ctrl_qle, main_ref_qle, main_atc_qle, 0))
-            attach_ctrl_match_btn.clicked.connect(partial(self.match_transform, main_ctrl_qle, main_ref_qle, main_atc_qle, 1))
-
-            space_match_bake_btn.clicked.connect(partial(self.space_match_bake, main_ctrl_qle, prop_space_cmbox, space_match_bake_cmbox))
-
-            prop_picker_qbtn.clicked.connect(partial(self.show_picker, main_ref_qle))
-
+            # rotateの更新
+            self.add_prop_rotate_values(prop_ctrl_qle, prop_ctrl_rot_cmbox)
 
         if prop_has_dict:
             for i, src_ui_objects in enumerate(self.prop_ui_object_dict.values()):
-                prop_space_cmbox = src_ui_objects['space']
-                space_match_bake_cmbox = src_ui_objects['spaceMatchBake']
-                main_part_cmbox = src_ui_objects['propPart']
-                main_id_cmbox = src_ui_objects['propID']
+                prop_ctrl_space_cmbox = src_ui_objects['space']
+                prop_tools_space_match_bake_cmbox = src_ui_objects['spaceMatchBake']
+                prop_ref_part_cmbox = src_ui_objects['propPart']
+                prop_ref_id_cmbox = src_ui_objects['propID']
 
-                main_ctrl_qle = src_ui_objects['name']
-                main_ref_qle = src_ui_objects['Root']
-                rootCtrl_main_ref_qle = src_ui_objects['RootCtrl']
-                main_atc_qle = src_ui_objects['attachNode']
+                prop_ctrl_qle = src_ui_objects['name']
+                prop_ref_sel_qle = src_ui_objects['Root']
+                prop_ref_sel_root_ctrl_qle = src_ui_objects['RootCtrl']
+                prop_attach_sel_qle = src_ui_objects['attachNode']
 
                 prop_has_list = [p for p in prop_has_dict.values()]
                 # ui_values = prop_has_dict.values():
 
                 try:
                     space = prop_has_list[i]['space']
-                    prop_space_cmbox.setCurrentText(space)
+                    prop_ctrl_space_cmbox.setCurrentText(space)
                 except Exception as e:
                     print(traceback.format_exc())
 
                 try:
                     part = prop_has_list[i]['propPart']
-                    main_part_cmbox.setCurrentText(part)
+                    prop_ref_part_cmbox.setCurrentText(part)
                 except Exception as e:
                     print(traceback.format_exc())
 
                 try:
                     id = prop_has_list[i]['propID']
-                    main_id_cmbox.setCurrentText(id)
+                    prop_ref_id_cmbox.setCurrentText(id)
                 except Exception as e:
                     print(traceback.format_exc())
 
                 try:
                     searched_ctrl = prop_has_list[i]['name']
-                    main_ctrl_qle.setText(searched_ctrl)
+                    prop_ctrl_qle.setText(searched_ctrl)
                 except Exception as e:
                     print(traceback.format_exc())
 
                 try:
                     jnt = prop_has_list[i]['Root']
-                    main_ref_qle.setText(jnt)
+                    prop_ref_sel_qle.setText(jnt)
                 except Exception as e:
                     print(traceback.format_exc())
 
                 try:
                     root_ctrl = prop_has_list[i]['RootCtrl']
-                    rootCtrl_main_ref_qle.setText(root_ctrl)
+                    prop_ref_sel_root_ctrl_qle.setText(root_ctrl)
                 except Exception as e:
                     print(traceback.format_exc())
 
                 try:
                     attach_node = prop_has_list[i]['attachNode']
-                    main_atc_qle.setText(attach_node)
+                    prop_attach_sel_qle.setText(attach_node)
                 except Exception as e:
                     print(traceback.format_exc())
 
                 try:
-                    self.set_spaces(main_ctrl_qle=main_ctrl_qle, prop_space_cmbox=prop_space_cmbox, dum=None)
-                    self.set_spaces(main_ctrl_qle=main_ctrl_qle, prop_space_cmbox=space_match_bake_cmbox, dum=None)
+                    self.set_spaces(prop_ctrl_qle=prop_ctrl_qle, prop_ctrl_space_cmbox=prop_ctrl_space_cmbox, dum=None)
+                    self.set_spaces(prop_ctrl_qle=prop_ctrl_qle, prop_ctrl_space_cmbox=prop_tools_space_match_bake_cmbox, dum=None)
 
                     path = self.prop_collection[part][id]
                     avatarReferenceTool.create_prop_network(searched_ctrl, jnt, root_ctrl, attach_node, part, id, space, path)
                 except Exception as e:
                     print(traceback.format_exc())
 
-    def set_selection(self, qle=None, prop_space_cmbox=None, space_match_bake_cmbox=None):
+    def set_selection(self, qle=None, prop_ctrl_space_cmbox=None, prop_tools_space_match_bake_cmbox=None):
         sel = cmds.ls(os=True)
         if sel:
             qle.setText(sel[0])
             qle.setToolTip(sel[0])
 
-        if prop_space_cmbox:
-            self.set_spaces(main_ctrl_qle=qle, prop_space_cmbox=prop_space_cmbox, dum=None)
-            self.set_spaces(main_ctrl_qle=qle, prop_space_cmbox=space_match_bake_cmbox, dum=None)
+        if prop_ctrl_space_cmbox:
+            self.set_spaces(prop_ctrl_qle=qle, prop_ctrl_space_cmbox=prop_ctrl_space_cmbox, dum=None)
+            self.set_spaces(prop_ctrl_qle=qle, prop_ctrl_space_cmbox=prop_tools_space_match_bake_cmbox, dum=None)
 
 
-    def set_spaces(self, main_ctrl_qle=None, prop_space_cmbox=None, dum=None):
-        prop_space_cmbox.clear()
-        ctrl = main_ctrl_qle.text()
+    def set_spaces(self, prop_ctrl_qle=None, prop_ctrl_space_cmbox=None, dum=None):
+        prop_ctrl_space_cmbox.clear()
+        ctrl = prop_ctrl_qle.text()
         ctrl_enums_list, current = avatarReferenceTool.get_prop_enum_spaces(ctrl)
-        prop_space_cmbox.addItems(ctrl_enums_list)
-        prop_space_cmbox.setCurrentText(ctrl_enums_list[current])
+        prop_ctrl_space_cmbox.addItems(ctrl_enums_list)
+        prop_ctrl_space_cmbox.setCurrentText(ctrl_enums_list[current])
 
     def select_object(self, qle_object=None):
         text = qle_object.text()
         if cmds.objExists(text):
             cmds.select(text, r=True)
 
-    def fbx_to_rig(self, main_ctrl_qle=None, main_ref_qle=None):
-        attach_ctrl = main_ctrl_qle.text()
-        jnt = main_ref_qle.text()
+    def fbx_to_rig(self, prop_ctrl_qle=None, prop_ref_sel_qle=None):
+        attach_ctrl = prop_ctrl_qle.text()
+        jnt = prop_ref_sel_qle.text()
         ref_name = '{}'.format(':'.join(jnt.split(':')[0:-1]))
         avatarReferenceTool.fbx_to_rig_for_prop(attach_ctrl=attach_ctrl, ref_name=ref_name)
 
@@ -1286,64 +1344,72 @@ class PropDialog(MayaQWidgetDockableMixin, QMainWindow):
         id_cmbox.clear()
         id_cmbox.addItems(prop_id_list)
 
-    def prop_nss_from_pad(self, main_nss_pad_cmbox=None, main_nss_num_cmbox=None, dum=None):
-        cur_nss_num = main_nss_num_cmbox.currentText()
+    def prop_nss_from_pad(self, nss_pad_cmbox=None, nss_num_cmbox=None, dum=None):
+        cur_nss_num = nss_num_cmbox.currentText()
         cur_num_key = None
         for key, val in self.nss_num_dict.items():
             if val == cur_nss_num:
                 cur_num_key = key
 
-        nss_pad = int(main_nss_pad_cmbox.currentText())
+        nss_pad = int(nss_pad_cmbox.currentText())
         num_list = ['pro_' + str(i).zfill(nss_pad) for i in range(self.nss_num) if not cmds.objExists('pro_' + str(i).zfill(nss_pad) + ':Root')]
         for i, n in enumerate(num_list):
             self.nss_num_dict[i] = n
 
-        main_nss_num_cmbox.clear()
-        main_nss_num_cmbox.addItems(num_list)
-        main_nss_num_cmbox.setCurrentText(self.nss_num_dict[cur_num_key])
+        nss_num_cmbox.clear()
+        nss_num_cmbox.addItems(num_list)
+        nss_num_cmbox.setCurrentText(self.nss_num_dict[cur_num_key])
 
-    def nss_sts_changing(self, text_nss_qle, pad_ql, main_nss_pad_cmbox, nss_num_ql, main_nss_num_cmbox, dum):
-        if text_nss_qle.text():
-            pad_ql.setVisible(False)
-            main_nss_pad_cmbox.setVisible(False)
+    def nss_sts_changing(self, nss_text_qle, nss_pad_ql, nss_pad_cmbox, nss_num_ql, nss_num_cmbox, dum):
+        if nss_text_qle.text():
+            nss_pad_ql.setVisible(False)
+            nss_pad_cmbox.setVisible(False)
             nss_num_ql.setVisible(False)
-            main_nss_num_cmbox.setVisible(False)
+            nss_num_cmbox.setVisible(False)
         else:
-            pad_ql.setVisible(True)
-            main_nss_pad_cmbox.setVisible(True)
+            nss_pad_ql.setVisible(True)
+            nss_pad_cmbox.setVisible(True)
             nss_num_ql.setVisible(True)
-            main_nss_num_cmbox.setVisible(True)
+            nss_num_cmbox.setVisible(True)
 
-    def match_transform(self, main_ctrl_qle=None, main_ref_qle=None, main_atc_qle=None, type=0):
-        ctrl = main_ctrl_qle.text()
-        jnt = main_ref_qle.text()
-        attach_node = main_atc_qle.text()
+    def match_transform(self, prop_ctrl_qle=None, prop_ref_sel_qle=None, prop_attach_sel_qle=None, type=0):
+        ctrl = prop_ctrl_qle.text()
+        jnt = prop_ref_sel_qle.text()
+        attach_node = prop_attach_sel_qle.text()
 
         if type == 0:
             avatarReferenceTool.match_transform(jnt, attach_node)
         elif type == 1:
             avatarReferenceTool.match_transform(ctrl, attach_node)
 
-    def switch_prop_space(self, main_ctrl_qle=None, prop_space_cmbox=None, dum=None):
-        ctrl = main_ctrl_qle.text()
-        space = prop_space_cmbox.currentText()
+    def switch_prop_space(self, prop_ctrl_qle=None, prop_ctrl_space_cmbox=None, dum=None):
+        ctrl = prop_ctrl_qle.text()
+        space = prop_ctrl_space_cmbox.currentText()
         avatarReferenceTool.switch_prop_space(ctrl, space)
 
+    # リファレンスさせる際にthe worldしているが、
+    # UIの処理もthe worldしないといけない
     @avatarReferenceTool.the_world
-    def ref_prop(self, main_ctrl_qle=None, main_part_cmbox=None, main_id_cmbox=None, main_nss_num_cmbox=None,
-                 text_nss_qle=None, main_ref_qle=None, rootCtrl_main_ref_qle=None, type='ref', match_pro_cbox=None,
-                 con_pro_cbox=None, main_atc_qle=None, prop_space_cmbox=None, space_match_bake_cmbox=None):
-        part = main_part_cmbox.currentText()
-        id = main_id_cmbox.currentText()
+    def ref_prop(self, prop_ctrl_qle=None, prop_ref_part_cmbox=None, prop_ref_id_cmbox=None, nss_num_cmbox=None,
+                 nss_text_qle=None, prop_ref_sel_qle=None, prop_ref_sel_root_ctrl_qle=None, type='ref', prop_match_cbox=None,
+                 prop_connect_cbox=None, prop_attach_sel_qle=None, prop_ctrl_space_cmbox=None, prop_tools_space_match_bake_cmbox=None):
+
+        # カレント値の取得
+        part = prop_ref_part_cmbox.currentText()
+        id = prop_ref_id_cmbox.currentText()
+        ctrl = prop_ctrl_qle.text()
+        ctrl_nss = '{}:'.format(':'.join(ctrl.split(':')[0:-1]))
+        jnt = prop_ref_sel_qle.text()
+        ref_name = '{}'.format(':'.join(jnt.split(':')[0:-1]))
+        root_ctrl = prop_ref_sel_root_ctrl_qle.text()
+
+        # カレント値からfbxのパスを取得
         path = self.prop_collection[part][id]
 
-        ctrl = main_ctrl_qle.text()
-        ctrl_nss = '{}:'.format(':'.join(ctrl.split(':')[0:-1]))
-        jnt = main_ref_qle.text()
-        root_ctrl = rootCtrl_main_ref_qle.text()
+        # 数字ベースのNamespaceの数を取得する
+        nss_num_items = [nss_num_cmbox.itemText(i) for i in range(nss_num_cmbox.count())]
 
         if type == 'remove_ref':
-            ref_name = '{}'.format(':'.join(jnt.split(':')[0:-1]))
             if cmds.objExists(ref_name + '_prop_temp_grp'):
                 cmds.delete(ref_name + '_prop_temp_grp')
 
@@ -1354,72 +1420,74 @@ class PropDialog(MayaQWidgetDockableMixin, QMainWindow):
                     cmds.delete(cnst)
             if cmds.objExists(ctrl_prop_network):
                 cmds.delete(ctrl_prop_network)
-            # main_ref_qle.setText('')
-            avatarReferenceTool.prop_update(path, ref_name, True)
+            # prop_ref_sel_qle.setText('')
+            avatarReferenceTool.prop_update(ref_name, path, True, ctrl_nss)
 
-            all_items = [main_nss_num_cmbox.itemText(i) for i in range(main_nss_num_cmbox.count())]
             ref_name = ''.join(ref_name.split(':'))
-            all_items.append(ref_name)
-            all_items.sort()
-            main_nss_num_cmbox.clear()
-            main_nss_num_cmbox.addItems(all_items)
-            main_ref_qle.setText('')
-            rootCtrl_main_ref_qle.setText('')
-            main_atc_qle.setText('')
+            nss_num_items.append(ref_name)
+            nss_num_items.sort()
+
+            nss_num_cmbox.clear()
+            nss_num_cmbox.addItems(nss_num_items)
+            prop_ref_sel_qle.setText('')
+            prop_ref_sel_root_ctrl_qle.setText('')
+            prop_attach_sel_qle.setText('')
 
             return
 
-        if text_nss_qle.text():
-            ref_name = '{}'.format(text_nss_qle.text())
+        # 数字ベースのpropのNamespaceの取得
+        if nss_text_qle.text():
+            ref_name = '{}'.format(nss_text_qle.text())
         else:
-            ref_name = '{}'.format(main_nss_num_cmbox.currentText())
+            ref_name = '{}'.format(nss_num_cmbox.currentText())
 
-        all_items = [main_nss_num_cmbox.itemText(i) for i in range(main_nss_num_cmbox.count())]
-        all_items.remove(ref_name)
+        # 使われているNamespaceとして削除して入れ直す
+        nss_num_items.remove(ref_name)
+        nss_num_cmbox.clear()
+        nss_num_cmbox.addItems(nss_num_items)
 
-        main_nss_num_cmbox.clear()
-        main_nss_num_cmbox.addItems(all_items)
-        # main_nss_num_cmbox.setCurrentText(self.nss_num_dict[cur_num_key])
+        # Namespaceを元に設定
+        prop_ref_sel_qle.setText('{}:{}'.format(ref_name, 'Root'))
+        prop_ref_sel_root_ctrl_qle.setText('{}:{}'.format(ref_name, 'Root_ctrl'))
 
-        main_ref_qle.setText('{}:{}'.format(ref_name, 'Root'))
-        rootCtrl_main_ref_qle.setText('{}:{}'.format(ref_name, 'Root_ctrl'))
-
-        ctrl = main_ctrl_qle.text()
-        space = prop_space_cmbox.currentText()
-        jnt = main_ref_qle.text()
-        root_ctrl = rootCtrl_main_ref_qle.text()
-        attach_node = main_atc_qle.text()
-
+        # 再度カレント値の取得
+        ctrl = prop_ctrl_qle.text()
         ctrl_nss = '{}:'.format(':'.join(ctrl.split(':')[0:-1]))
+        jnt = prop_ref_sel_qle.text()
+        ref_name = '{}'.format(':'.join(jnt.split(':')[0:-1]))
+        root_ctrl = prop_ref_sel_root_ctrl_qle.text()
 
+        # propの更新
         if type == 'ref':
-            avatarReferenceTool.prop_update(path, ref_name, False)
+            avatarReferenceTool.prop_update(ref_name, path, False, ctrl_nss)
             avatarReferenceTool.prop_scale_connection(ctrl, ctrl_nss, ref_name)
 
-        offSet_Root = avatarReferenceTool.get_offSet_Root(attach_node='*{}*'.format(self.attach_node), filter=ref_name+':')
-        main_atc_qle.setText('{}'.format(offSet_Root))
-        # main_atc_qle.setText('{}:{}'.format(ref_name, self.attach_node))
+            # offsetRootのgetとSet
+            offSet_Root = avatarReferenceTool.get_offSet_Root(attach_node='*{}*'.format(self.attach_node), filter=ref_name+':')
+            prop_attach_sel_qle.setText('{}'.format(offSet_Root))
 
-        self.set_spaces(main_ctrl_qle=main_ctrl_qle, prop_space_cmbox=space_match_bake_cmbox, dum=None)
+            attach_node = prop_attach_sel_qle.text()
+            space = prop_ctrl_space_cmbox.currentText()
 
-        self.set_spaces(main_ctrl_qle=main_ctrl_qle, prop_space_cmbox=prop_space_cmbox, dum=None)
+            self.set_spaces(prop_ctrl_qle=prop_ctrl_qle, prop_ctrl_space_cmbox=prop_tools_space_match_bake_cmbox, dum=None)
+            self.set_spaces(prop_ctrl_qle=prop_ctrl_qle, prop_ctrl_space_cmbox=prop_ctrl_space_cmbox, dum=None)
 
-        avatarReferenceTool.go_to_bindPose_for_rig(namespace=ctrl_nss)
-
-        if match_pro_cbox.isChecked():
+        # マッチするかしないか
+        if prop_match_cbox.isChecked():
             avatarReferenceTool.match_transform(jnt, attach_node)
             avatarReferenceTool.match_transform(ctrl, attach_node)
 
-        if con_pro_cbox.isChecked():
+        # コンストレイントするかしないか
+        if prop_connect_cbox.isChecked():
             pos_con, ori_con = avatarReferenceTool.parent_constraint(ctrl, ref_name+':Root_ctrl_grp')
 
         avatarReferenceTool.switch_prop_space(ctrl, space)
-        prop_space_cmbox.setCurrentText(space)
+        prop_ctrl_space_cmbox.setCurrentText(space)
 
         avatarReferenceTool.create_prop_network(ctrl, jnt, root_ctrl, attach_node, part, id, space, path, pos_con, ori_con)
 
-    def show_picker(self, main_ref_qle):
-        jnt = main_ref_qle.text()
+    def show_picker(self, prop_ref_sel_qle):
+        jnt = prop_ref_sel_qle.text()
 
         ref_name = '{}'.format(':'.join(jnt.split(':')[0:-1]))
 
@@ -1530,12 +1598,12 @@ class PropDialog(MayaQWidgetDockableMixin, QMainWindow):
                 picker.show(dockable=True)
 
 
-    def space_match_bake(self, main_ctrl_qle=None, prop_space_cmbox=None, space_match_bake_cmbox=None):
-        ctrl = main_ctrl_qle.text()
-        space = prop_space_cmbox.currentText()
-        match_space = space_match_bake_cmbox.currentText()
+    def space_match_bake(self, prop_ctrl_qle=None, prop_ctrl_space_cmbox=None, prop_tools_space_match_bake_cmbox=None):
+        ctrl = prop_ctrl_qle.text()
+        space = prop_ctrl_space_cmbox.currentText()
+        match_space = prop_tools_space_match_bake_cmbox.currentText()
         avatarReferenceTool.space_match_bake(ctrl, space, match_space)
-        prop_space_cmbox.setCurrentText(match_space)
+        prop_ctrl_space_cmbox.setCurrentText(match_space)
 
     def set_from_prop_network(self):
         prop_network_sets = 'prop_network_sets'
@@ -1596,27 +1664,9 @@ class PropDialog(MayaQWidgetDockableMixin, QMainWindow):
                 except Exception as e:
                     print(traceback.format_exc())
 
-                # prop_space_cmbox = self.prop_ui_object_dict[ctrl]['space']
-                # main_part_cmbox = self.prop_ui_object_dict[ctrl]['propPart']
-                # main_id_cmbox = self.prop_ui_object_dict[ctrl]['propID']
-                #
-                # main_ctrl_qle = self.prop_ui_object_dict[ctrl]['name']
-                # main_ref_qle = self.prop_ui_object_dict[ctrl]['Root']
-                # main_atc_qle = self.prop_ui_object_dict[ctrl]['attachNode']
-
-
-
-                # prop_space_cmbox.setCurrentText(space)
-                # main_part_cmbox.setCurrentText(part)
-                # main_id_cmbox.setCurrentText(id)
-                #
-                # main_ctrl_qle.setText(searched_ctrl)
-                # main_ref_qle.setText(jnt)
-                # main_atc_qle.setText(attach_node)
-
         return prop_has_dict
 
-    def add_prop_rotate_values(self, main_ctrl_qle, prop_rot_cmbox):
+    def add_prop_rotate_values(self, prop_ctrl_qle, prop_ctrl_rot_cmbox):
         # rot_values = [
         #     'default',
         #     'X_90_Y_90',
@@ -1653,16 +1703,16 @@ class PropDialog(MayaQWidgetDockableMixin, QMainWindow):
             ]
 
 
-        prop_rot_cmbox.addItems(rot_values)
+        prop_ctrl_rot_cmbox.addItems(rot_values)
 
-        ctrl = main_ctrl_qle.text()
+        ctrl = prop_ctrl_qle.text()
         ro = tuple([int(n) for n in cmds.getAttr(ctrl+'.r')[0]])
         if str(ro) in rot_values:
-            prop_rot_cmbox.setCurrentText(str(ro))
+            prop_ctrl_rot_cmbox.setCurrentText(str(ro))
 
-    def prop_rotate_from(self, main_ctrl_qle, prop_rot_cmbox, dum=None):
-        ctrl = main_ctrl_qle.text()
-        rot_val = prop_rot_cmbox.currentText()
+    def prop_rotate_from(self, prop_ctrl_qle, prop_ctrl_rot_cmbox, dum=None):
+        ctrl = prop_ctrl_qle.text()
+        rot_val = prop_ctrl_rot_cmbox.currentText()
 
         avatarReferenceTool.prop_rotate_from(ctrl, rot_val)
 

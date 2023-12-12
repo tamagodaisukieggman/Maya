@@ -11,6 +11,7 @@ import os
 import re
 import traceback
 
+# プラグインのロード
 plugins = [
     'fbxmaya' # ここに追加
 ]
@@ -19,19 +20,24 @@ for plugin in plugins:
     plugin_result = cmds.loadPlugin(plugin) if not cmds.pluginInfo(plugin, q=True, l=True) else False
     plugin_results.append(plugin_result)
 
+# fbxを読み込む際の値をoptionVarから取得
 FILE_DIALOG_STYLE = cmds.optionVar(q='FileDialogStyle')
 if FILE_DIALOG_STYLE == 1:
     FBX_TYPE = 'Fbx'
 elif FILE_DIALOG_STYLE == 2:
     FBX_TYPE = 'FBX'
 
+# このファイルのパスの取得
 try:
     DIR_PATH = '/'.join(__file__.replace('\\', '/').split('/')[0:-1])
 except:
     DIR_PATH = ''
 
+# このファイル同階層のdataパスの取得
 DATA_PATH = DIR_PATH + '/data/'
 
+###########################
+# p4vの設定
 P4_MODULE_IMPORT = None
 try:
     from P4 import P4, P4Exception
@@ -78,24 +84,99 @@ if P4_MODULE_IMPORT:
         except:
             print(traceback.format_exc())
             P4V_CONNECT_STATUS = False
+###########################
 
 def avatar_collection():
+    # 着せ替えリストの読み込み
     return json_transfer(DATA_PATH + 'avatar_collection.json', 'import')
 
-def prop_collection():
-    return json_transfer(DATA_PATH + 'prop_collection.json', 'import')
-
 def avatar_parts():
+    # 着せ替えのIDと名称を読み込み
     return json_transfer(DATA_PATH + 'avatar_parts.json', 'import')
 
-def replace_ref(ref_name=None, path=None):
+def prop_collection():
+    # プロップのリストの読み込み
+    return json_transfer(DATA_PATH + 'prop_collection.json', 'import')
+
+def get_animation_status():
+    # アニメーションの設定の取得
     start = cmds.playbackOptions(q=True, min=True)
     end = cmds.playbackOptions(q=True, max=True)
-
     animstart = cmds.playbackOptions(q=True, ast=True)
     animend = cmds.playbackOptions(q=True, aet=True)
-
     curtime = cmds.currentTime(q=True)
+    if cmds.autoKeyframe(q=True, st=True):
+        autoKeyState = True
+    else:
+        autoKeyState = False
+    return start, end, animstart, animend, curtime, autoKeyState
+
+def set_animation_status(start, end, animstart, animend, curtime, autoKeyState):
+    # get_animation_statusで取得した値の設定
+    cmds.playbackOptions(min=start)
+    cmds.playbackOptions(max=end)
+    cmds.playbackOptions(ast=animstart)
+    cmds.playbackOptions(aet=animend)
+    cmds.currentTime(curtime)
+    cmds.autoKeyframe(st=autoKeyState)
+
+def the_world(func):
+    # ファイルのインポート、リファレンス時に状態を保持するデコレータ
+    def wrapper(*args, **kwargs):
+        try:
+            cmds.refresh(su=1)
+
+            # get
+            start, end, animstart, animend, curtime, autoKeyState = get_animation_status()
+
+            # 処理
+            func(*args, **kwargs)
+
+            # set
+            set_animation_status(start, end, animstart, animend, curtime, autoKeyState)
+
+            cmds.refresh(su=0)
+
+        except:
+            cmds.refresh(su=0)
+            print(traceback.format_exc())
+
+    return wrapper
+
+@the_world
+def create_ref(ref_name=None, path=None, type='avatar'):
+    # 着せ替えの作成
+    cmds.autoKeyframe(state=False)
+
+    if path:
+        if os.path.isfile(path):
+            cmds.file(
+                path,
+                namespace=ref_name,
+                r=True,
+                type=FBX_TYPE,
+                ignoreVersion=True,
+                gl=True,
+                mergeNamespacesOnClash=False,
+            )
+
+        cmds.currentTime(0.0)
+
+        cmds.joint(ref_name+':Root', e=True, apa=True, ch=True)
+
+        force_displaylayer_on(ref_name)
+
+        if type == 'avatar':
+            joint_connection(namespace=ref_name, connect=True)
+            delete_sim_temps(sim_namespace=ref_name)
+            create_sim_temp_ctrls(sim_namespace=ref_name, path=path)
+        elif type == 'prop':
+            create_prop_temp_ctrls(prop_namespace=ref_name, path=path)
+
+@the_world
+def replace_ref(ref_name=None, path=None, type='avatar'):
+    # 着せ替えの更新
+    cmds.autoKeyframe(state=False)
 
     if path:
         if os.path.isfile(path):
@@ -110,125 +191,28 @@ def replace_ref(ref_name=None, path=None):
         cmds.joint(ref_name+':Root', e=True, apa=True, ch=True)
 
         force_displaylayer_on(ref_name)
-        joint_connection(namespace=ref_name, connect=True)
 
-        delete_sim_temps(sim_namespace=ref_name)
-        create_sim_temp_ctrls(sim_namespace=ref_name, path=path)
+        if type == 'avatar':
+            joint_connection(namespace=ref_name, connect=True)
+            delete_sim_temps(sim_namespace=ref_name)
+            create_sim_temp_ctrls(sim_namespace=ref_name, path=path)
+        elif type == 'prop':
+            create_prop_temp_ctrls(prop_namespace=ref_name, path=path)
 
-    cmds.playbackOptions(min=start)
-    cmds.playbackOptions(max=end)
-
-    cmds.playbackOptions(ast=animstart)
-    cmds.playbackOptions(aet=animend)
-
-    cmds.currentTime(curtime)
-
+@the_world
 def delete_ref(ref_name=None):
+    # 着せ替えの削除
     joint_connection(namespace=ref_name, connect=False)
     cmds.file(rr=True, referenceNode=ref_name+'RN')
     try:
         cmds.namespace(mergeNamespaceWithParent=True, removeNamespace=ref_name)
     except:
-        # print(traceback.format_exc())
         print(traceback.format_exc())
 
     delete_sim_temps(sim_namespace=ref_name)
 
-
-def avatar_update(reference_set_dict, reference_cbox_dict):
-    start = cmds.playbackOptions(q=True, min=True)
-    end = cmds.playbackOptions(q=True, max=True)
-
-    animstart = cmds.playbackOptions(q=True, ast=True)
-    animend = cmds.playbackOptions(q=True, aet=True)
-
-    curtime = cmds.currentTime(q=True)
-
-    ref_info, ret_no_files = get_reference_info()
-    print('#'*20)
-    for ref_name, type_path in reference_set_dict.items():
-        # print('ReferenceName: {}, Path: {}'.format(ref_name, type_path))
-        cbox = reference_cbox_dict[ref_name]
-        path = type_path[1]
-        parts_type = type_path[0]
-
-        try:
-            anim_temp_save(ref_name=ref_name, parts_type=parts_type, operation='export')
-        except:
-            print(traceback.format_exc())
-
-        if cbox.isChecked():
-            print('Check:', ref_name)
-            if path:
-                if os.path.isfile(path):
-                    print('Update: {}, Path: {}'.format(ref_name, type_path))
-
-                    # Delete
-                    joint_connection(namespace=ref_name, connect=False)
-                    if cmds.objExists(ref_name+'RN'):
-                        cmds.file(rr=True, referenceNode=ref_name+'RN')
-                        try:
-                            cmds.namespace(mergeNamespaceWithParent=True, removeNamespace=ref_name)
-                        except:
-                            # print(traceback.format_exc())
-                            print(traceback.format_exc())
-
-                    delete_sim_temps(sim_namespace=ref_name)
-
-                    # Create
-                    cmds.file(
-                        path,
-                        namespace=ref_name,
-                        r=True,
-                        type=FBX_TYPE,
-                        ignoreVersion=True,
-                        gl=True,
-                        mergeNamespacesOnClash=False,
-                    )
-
-                    cmds.currentTime(0.0)
-
-                    cmds.joint(ref_name+':Root', e=True, apa=True, ch=True)
-
-                    force_displaylayer_on(ref_name)
-                    joint_connection(namespace=ref_name, connect=True)
-
-                    delete_sim_temps(sim_namespace=ref_name)
-                    create_sim_temp_ctrls(sim_namespace=ref_name, path=path)
-
-                else:
-                    print('#'*50)
-                    print('{} part is not exist'.format(ref_name))
-                    print('#'*50)
-
-            # anim_temp_save(parts_type=parts_type, operation='import')
-
-        else:
-            # anim_temp_save(parts_type=parts_type, operation='export')
-            print('Uncheck:', ref_name)
-            # if ex_nss:
-            joint_connection(namespace=ref_name, connect=False)
-            if cmds.objExists(ref_name+'RN'):
-                cmds.file(rr=True, referenceNode=ref_name+'RN')
-                try:
-                    cmds.namespace(mergeNamespaceWithParent=True, removeNamespace=ref_name)
-                except:
-                    print(traceback.format_exc())
-
-            delete_sim_temps(sim_namespace=ref_name)
-
-        # anim_temp_save(parts_type=parts_type, operation='import')
-
-    print('#'*20)
-    cmds.playbackOptions(min=start)
-    cmds.playbackOptions(max=end)
-
-    cmds.playbackOptions(ast=animstart)
-    cmds.playbackOptions(aet=animend)
-
-    cmds.currentTime(curtime)
-
 def order_dags(dags=None):
+    # アウトライナでベースでリストを整理する
     parent_dag = cmds.ls(dags[0], l=1, type='transform')[0].split('|')[1]
 
     all_hir = cmds.listRelatives(parent_dag, ad=True, f=True)
@@ -243,60 +227,8 @@ def order_dags(dags=None):
     all_ordered_dags = cmds.ls(sorted_joint_list)
     return [dag for dag in all_ordered_dags if dag in dags]
 
-
-def the_world(func):
-    def wrapper(*args, **kwargs):
-        try:
-            cmds.refresh(su=1)
-
-            all_items = cmds.ls(type='transform')
-            all_items = order_dags(all_items)
-            all_items_dict = OrderedDict()
-            for item in all_items:
-                wt = cmds.xform(item, q=True, t=True, ws=True)
-                wr = cmds.xform(item, q=True, ro=True, ws=True)
-                all_items_dict[item] = [wt, wr]
-
-            cur_time=cmds.currentTime(q=1)
-            if cmds.autoKeyframe(q=True, st=True):
-                autoKeyState = True
-            else:
-                autoKeyState = False
-
-            cmds.autoKeyframe(state=False)
-
-            start = cmds.playbackOptions(q=True, min=True)
-            end = cmds.playbackOptions(q=True, max=True)
-
-            animstart = cmds.playbackOptions(q=True, ast=True)
-            animend = cmds.playbackOptions(q=True, aet=True)
-
-            func(*args, **kwargs)
-
-            cmds.currentTime(cur_time)
-            cmds.autoKeyframe(state=autoKeyState)
-
-            cmds.playbackOptions(min=start)
-            cmds.playbackOptions(max=end)
-
-            cmds.playbackOptions(ast=animstart)
-            cmds.playbackOptions(aet=animend)
-
-            for item, value in all_items_dict.items():
-                cmds.xform(item, t=value[0], ws=True, p=True)
-                cmds.xform(item, ro=value[1], ws=True, p=True)
-
-            cmds.refresh(su=0)
-
-        except:
-            cmds.refresh(su=0)
-            print(traceback.format_exc())
-
-    return wrapper
-
-# @the_world
 def go_to_bindPose_for_rig(namespace=None):
-
+    # コントローラをbindPoseにする
     cmds.select(namespace + 'ctrl_sets', r=True, ne=True)
     ctrls = cmds.pickWalk(d='down')
 
@@ -306,6 +238,90 @@ def go_to_bindPose_for_rig(namespace=None):
         bt = cmds.getAttr(ctrl + '.bindPoseTranslate')[0]
         br = cmds.getAttr(ctrl + '.bindPoseRotate')[0]
         cmds.xform(ctrl, t=bt, ro=br, ws=True, p=True, a=True)
+
+def joint_connection(namespace=None, connect=None):
+    # 読み込んだ着せ替えとキャラの骨を拘束する
+    avatar_types_sets = 'avatar_types_sets'
+    if not cmds.objExists(avatar_types_sets): cmds.sets(em=True, n=avatar_types_sets)
+
+    type_sets = 'avatar_{}_sets'.format(namespace)
+
+    if connect:
+        if not cmds.objExists(type_sets): cmds.sets(em=True, n=type_sets)
+        cmds.sets(type_sets, add=avatar_types_sets)
+
+        chr_joints = cmds.ls('*:chr:Root', dag=True, type='joint')
+        if not chr_joints:
+            return
+
+        chr_nss = chr_joints[0].replace(':Root', '')
+        # print('chr_nss', chr_nss)
+        # print('namespace', namespace)
+
+        pa_cons = list()
+        for chr_j in chr_joints:
+            ty_j = chr_j.replace(chr_nss, namespace)
+            try:
+                print('joint_connection', chr_j, ty_j)
+                pa_cons.append(cmds.parentConstraint(chr_j, ty_j, w=True)[0])
+            except:
+                print(traceback.format_exc())
+
+        [cmds.sets(p, add=type_sets) for p in pa_cons]
+
+    else:
+        if cmds.objExists(type_sets):
+            cmds.select(type_sets, r=True)
+            pa_cons = cmds.pickWalk(d='down')
+            cmds.delete(pa_cons)
+
+
+def avatar_update(reference_set_dict, reference_cbox_dict):
+    # 着せ替えの更新
+    ref_info, ret_no_files = get_reference_info()
+    for ref_name, type_path in reference_set_dict.items():
+        print('ReferenceName: {}, Path: {}'.format(ref_name, type_path))
+
+        cbox = reference_cbox_dict[ref_name]
+        path = type_path[1]
+        parts_type = type_path[0]
+
+        try:
+            anim_temp_save(ref_name=ref_name, parts_type=parts_type, operation='export')
+        except:
+            print(traceback.format_exc())
+
+        if cbox.isChecked():
+            if path:
+                if os.path.isfile(path):
+                    # replace
+                    # replaceはやめて、delete > createにしてみる
+                    # replace_ref(ref_name=ref_name, path=path)
+
+                    # delete
+                    delete_ref(ref_name=ref_name)
+
+                    # create
+                    create_ref(ref_name=ref_name, path=path)
+
+                else:
+                    print('#'*50)
+                    print('{} part is not exist'.format(ref_name))
+                    print('{}'.format(path))
+                    print('#'*50)
+
+        else:
+            delete_ref(ref_name=ref_name)
+
+def prop_update(ref_name, path, unload, chr_nss):
+    # プロップの更新をする
+    if unload:
+        delete_ref(ref_name=ref_name)
+        return
+
+    create_ref(ref_name=ref_name, path=path, type='prop')
+    go_to_bindPose_for_rig(namespace=chr_nss)
+
 
 def get_offSet_Root(attach_node=None, filter=None):
     oft_roots = cmds.ls(attach_node, r=True)
@@ -321,50 +337,6 @@ def get_offSet_Root(attach_node=None, filter=None):
         return offSet_Root
 
 
-def prop_update(path, ref_name, unload):
-    if unload:
-        cmds.file(rr=True, referenceNode=ref_name+'RN')
-        try:
-            cmds.namespace(mergeNamespaceWithParent=True, removeNamespace=ref_name)
-        except:
-            # print(traceback.format_exc())
-            print(traceback.format_exc())
-
-        return
-
-    start = cmds.playbackOptions(q=True, min=True)
-    end = cmds.playbackOptions(q=True, max=True)
-
-    animstart = cmds.playbackOptions(q=True, ast=True)
-    animend = cmds.playbackOptions(q=True, aet=True)
-
-    curtime = cmds.currentTime(q=True)
-
-    cmds.currentTime(0.0)
-
-    if path:
-        if os.path.isfile(path):
-            cmds.file(
-                path,
-                namespace=ref_name,
-                r=True,
-                type=FBX_TYPE,
-                ignoreVersion=True,
-                gl=True,
-                mergeNamespacesOnClash=False,
-            )
-
-            force_displaylayer_on(ref_name)
-            cmds.joint(ref_name+':Root', e=True, apa=True, ch=True)
-            create_prop_temp_ctrls(prop_namespace=ref_name, path=path)
-
-    cmds.playbackOptions(min=start)
-    cmds.playbackOptions(max=end)
-
-    cmds.playbackOptions(ast=animstart)
-    cmds.playbackOptions(aet=animend)
-
-    cmds.currentTime(curtime)
 
 def force_constraint(src=None, tgt=None):
     cnsts = []
@@ -580,42 +552,6 @@ def force_displaylayer_on(namespace=None):
     disp_lays = cmds.ls(type='displayLayer')
     [cmds.setAttr(dl+'.displayType', 2) for dl in disp_lays if namespace+':' in dl]
 
-def joint_connection(namespace=None, connect=None):
-    avatar_types_sets = 'avatar_types_sets'
-    if not cmds.objExists(avatar_types_sets): cmds.sets(em=True, n=avatar_types_sets)
-
-    type_sets = 'avatar_{}_sets'.format(namespace)
-
-    if connect:
-        if not cmds.objExists(type_sets): cmds.sets(em=True, n=type_sets)
-        cmds.sets(type_sets, add=avatar_types_sets)
-
-        chr_joints = cmds.ls('*:chr:Root', dag=True, type='joint')
-        # chr_joints.sort()
-        # type_joints = cmds.ls('{}:Root'.format(namespace), dag=True, type='joint')
-        # type_joints.sort()
-        if not chr_joints:
-            return
-
-        chr_nss = chr_joints[0].replace(':Root', '')
-        # print('chr_nss', chr_nss)
-        # print('namespace', namespace)
-
-        pa_cons = list()
-        for chr_j in chr_joints:
-            ty_j = chr_j.replace(chr_nss, namespace)
-            try:
-                pa_cons.append(cmds.parentConstraint(chr_j, ty_j, w=True)[0])
-            except:
-                print(traceback.format_exc())
-
-        [cmds.sets(p, add=type_sets) for p in pa_cons]
-
-    else:
-        if cmds.objExists(type_sets):
-            cmds.select(type_sets, r=True)
-            pa_cons = cmds.pickWalk(d='down')
-            cmds.delete(pa_cons)
 
 def truncate(f, n):
     return math.floor(f * 10 ** n) / 10 ** n
@@ -933,7 +869,7 @@ def export_avatar_collection(type='avatar'):
         export_path = 'C:/Users/'+os.getenv('USER')+'/Documents/maya/scripts/tkgTools/launchers/maya/tkgTools/python/tkgfile/avatarReferenceTool/data/{}_collection.json'.format(type)
         json_transfer(file_name=export_path, operation='export', export_values=files)
     except Exception as e:
-        print(traceback.format_exc())
+        pass
 
     p4v_status = True
     try:
