@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>474</width>
+    <height>326</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Edit Joint Map</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="1" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QListWidget" name="joint_list_widget">
+        <property name="selectionMode">
+         <enum>QAbstractItemView::ExtendedSelection</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Joint Name</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="joint_name_le">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="set_joint_name_btn">
+          <property name="toolTip">
+           <string>選択しているアイテムのペースト先のジョイントを入力したJoint名で置き換えます</string>
+          </property>
+          <property name="text">
+           <string>Set Joint Name</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QFrame" name="frame_4">
+          <property name="frameShape">
+           <enum>QFrame::HLine</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="select_item_from_maya_btn">
+          <property name="toolTip">
+           <string>Mayaで選択しているジョイントに対応するジョイントをリスト上でハイライト</string>
+          </property>
+          <property name="text">
+           <string>Select List By Selected Joint</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QFrame" name="frame">
+          <property name="frameShape">
+           <enum>QFrame::HLine</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="swap_joint_name_btn">
+          <property name="toolTip">
+           <string>リスト上で選択されている2つのアイテムのペースト先Joint名を入れ替えます</string>
+          </property>
+          <property name="text">
+           <string>Swap JointName</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="swap_item_from_maya_btn">
+          <property name="toolTip">
+           <string>Maya上で選択しているジョイント同士でペースト先Joint名を入れ替えます</string>
+          </property>
+          <property name="text">
+           <string>Swap JointNames
+ Between Selected Joint</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="set_selected_obj_btn">
+          <property name="toolTip">
+           <string>リストで選択しているアイテムのペースト先JointをMayaで選択しているJointにします</string>
+          </property>
+          <property name="text">
+           <string>Set Selected Object Name</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QFrame" name="frame_2">
+          <property name="frameShape">
+           <enum>QFrame::HLine</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="reset_btn">
+          <property name="toolTip">
+           <string>リストのペースト先のジョイントの設定を初期状態に戻します</string>
+          </property>
+          <property name="text">
+           <string>Reset</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QFrame" name="frame_3">
+          <property name="frameShape">
+           <enum>QFrame::HLine</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="continue_btn">
+          <property name="toolTip">
+           <string>ジョイントのリマップを完了して、ペースト処理を実行します</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">#continue_btn{background-color:#cc7f00;}</string>
+          </property>
+          <property name="text">
+           <string>Continues Processing</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

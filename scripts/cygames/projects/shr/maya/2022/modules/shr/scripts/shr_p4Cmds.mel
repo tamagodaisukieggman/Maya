@@ -1,0 +1,436 @@
+//===============================================
+//
+// p4 コマンド実行
+//
+//===============================================
+
+//===============================================
+// p4 コマンドを取得
+//===============================================
+global proc string shr_p4Cmds_getP4Command(string $command, string $path)
+{
+    $path = substituteAllString($path, "/", "\\");
+
+    // フォルダパスを取得
+    string $folderPath = dirname($path);
+
+    string $tokens[];
+
+    // パス分割数
+    int $num = `tokenize $folderPath "\\" $tokens`;
+
+    int $i;
+
+    // フォルダが存在するところまでパスを取得し、存在すれば実行コマンドにcd コマンドを追加
+    while($i < $num)
+    {
+        if(`filetest -d $folderPath`)
+        {
+            $command = "cd /d \"" + $folderPath + "\" & " + $command;
+
+            break;
+        }
+
+        $folderPath = dirname($path);
+
+        $i += 1;
+    }
+
+    return $command;
+}
+
+//===============================================
+// ファイル情報取得
+//===============================================
+global proc string[] shr_p4Cmds_getFileStatusFlags(string $path)
+{
+    string $result[];
+
+    // Perforce 管理フォルダ以下に存在しない場合
+    if(`shr_p4Cmds_isInPerforceFolder($path)` == false)
+    {
+        $result[`size($result)`] = "NOT_EXIST";
+        return $result;
+    }
+
+    // p4 コマンド
+    string $command = shr_p4Cmds_getP4Command("p4 fstat " + $path, $path);
+
+    // ファイル情報取得
+    string $fstat = system($command);
+
+    if(gmatch($fstat, "*- file(s) not in client view.\r\n"))
+    {
+        return $result;
+    }
+
+    // perforce 未登録の場合
+    if(gmatch($fstat, "*- no such file(s).\r\n"))
+    {
+        if(`filetest -f $path`)
+        {
+            $result[`size($result)`] = "NONE";
+        }
+        else
+        {
+            $result[`size($result)`] = "NOT_EXIST";
+        }
+    }
+
+    // 追加マーキング状態の場合
+    else if(gmatch($fstat, "*... action add\r\n*"))
+    {
+        $result[`size($result)`] = "ADDED";
+    }
+    // 削除マーキング状態の場合
+    else if(gmatch($fstat, "*... action delete\r\n*"))
+    {
+        $result[`size($result)`] = "DELETED";
+        $result[`size($result)`] = "REGISTERED";
+    }
+    // 削除済みの場合
+    else if(gmatch($fstat, "*... headAction delete\r\n*"))
+    {
+        $result[`size($result)`] = "DELETED";
+    }
+    else
+    {
+        $result[`size($result)`] = "REGISTERED";
+
+        // チェックアウト中の場合
+        if(gmatch($fstat, "*... action edit\r\n*"))
+        {
+            $result[`size($result)`] = "CHECKED_OUT";
+        }
+
+        // 他の人がチェックアウト中の場合
+        if(gmatch($fstat, "*... ... otherOpen *"))
+        {
+            $result[`size($result)`] = "OTHER_OPENED";
+        }
+
+        // コンフリクト状態の場合
+        if(gmatch($fstat, "*... unresolved*"))
+        {
+            $result[`size($result)`] = "CONFLICTED";
+        }
+        // 最新リビジョンか確認
+        else
+        {
+            string $lines[] = stringToStringArray($fstat, "\r\n");
+
+            int $headRev;
+            int $haveRev;
+
+            string $line;
+
+            for($line in $lines)
+            {
+                // 最新のリビジョン番号を取得
+                if(startsWith($line, "... headRev"))
+                {
+                    string $tokens[] = stringToStringArray($line, " ");
+                    $headRev = $tokens[`size($tokens)` - 1];
+                }
+
+                // ローカルのリビジョン番号を取得
+                if(startsWith($line, "... haveRev"))
+                {
+                    string $tokens[] = stringToStringArray($line, " ");
+                    $haveRev = $tokens[`size($tokens)` - 1];
+                }
+            }
+
+            if($headRev > $haveRev)
+            {
+                if(`filetest -f $path`)
+                {
+                    $result[`size($result)`] = "UNCURRENT";
+                }
+                else
+                {
+                    $result[`size($result)`] = "UNSYNCED";
+                }
+            }
+        }
+    }
+
+    // 重複項目を削除
+    $result = `stringArrayRemoveDuplicates($result)`;
+
+    return $result;
+}
+
+//===============================================
+// perforce の各種ファイル操作が可能かどうかを取得
+//===============================================
+global proc string[] shr_p4Cmds_getFileOperationAvailability(string $path)
+{
+    string $result[];
+
+    // p4v ファイル情報取得
+    string $fstat[] = `shr_p4Cmds_getFileStatusFlags($path)`;
+
+    // ローカルにもperforce にも存在しない場合
+    if(stringArrayContains("NOT_EXIST", $fstat))
+    {
+
+    }
+    // perforce 未登録の場合
+    else if(stringArrayContains("NONE", $fstat))
+    {
+        $result[`size($result)`] = "add_enabled";
+
+    }
+    // perforce 未取得の場合
+    else if(stringArrayContains("UNSYNCED", $fstat))
+    {
+        $result[`size($result)`] = "sync_enabled";
+
+    }
+    //  削除済みの場合
+    else if(stringArrayContains("DELETED", $fstat) && `size($fstat)` == 1)
+    {
+        $result[`size($result)`] = "add_enabled";
+
+    }
+    else
+    {
+        //  追加フラグが付いている場合
+        if(stringArrayContains("ADDED", $fstat))
+        {
+            $result[`size($result)`] = "submit_enabled";
+            $result[`size($result)`] = "revert_enabled";
+        }
+        // perforce 登録済みの場合
+        else if(stringArrayContains("REGISTERED", $fstat))
+        {
+            // コンフリクトしている場合
+            if(stringArrayContains("CONFLICTED", $fstat))
+            {
+
+            }
+            // コンフリクトしていない場合
+            else
+            {
+                // 最新リビジョンではない場合
+                if(stringArrayContains("UNCURRENT", $fstat))
+                {
+                    $result[`size($result)`] = "sync_enabled";
+                }
+                // 最新リビジョンの場合
+                else
+                {
+
+                }
+            }
+
+
+            // チェックアウトしている場合
+            if(stringArrayContains("CHECKED_OUT", $fstat))
+            {
+                $result[`size($result)`] = "submit_enabled";
+                $result[`size($result)`] = "revert_enabled";
+            }
+            // チェックアウトしていない場合
+            else
+            {
+                $result[`size($result)`] = "checkout_enabled";
+            }
+        }
+    }
+
+    // 重複項目を削除
+    $result = `stringArrayRemoveDuplicates($result)`;
+
+    return $result;
+}
+
+//===============================================
+// Perforce 管理フォルダ以下に存在するか
+//===============================================
+global proc int shr_p4Cmds_isInPerforceFolder(string $path)
+{
+    // p4 情報を取得コマンド
+    string $command = shr_p4Cmds_getP4Command("p4 -F %clientRoot% -ztag info ", $path);
+
+    // p4 コマンド実行
+    string $clientRoot = system($command);
+
+    // 改行削除
+    $clientRoot = substituteAllString($clientRoot, "\r\n", "");
+
+    $path = substituteAllString($path, "/", "\\");
+
+    if(startsWith(capitalizeString($path), capitalizeString($clientRoot)))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+//===============================================
+// 追加マーキング
+//===============================================
+global proc shr_p4Cmds_add(string $path)
+{
+    string $typeOption;
+
+    // mel, py ファイルの場合ファイルタイプをtext に
+    if(endsWith($path, ".mel") || endsWith($path, ".py"))
+    {
+        $typeOption = "-t text ";
+    }
+
+    // p4 コマンド
+    string $command = shr_p4Cmds_getP4Command("p4 add " + $typeOption + $path, $path);
+
+    // p4 コマンド実行
+    string $result = system($command);
+
+    print $result;
+}
+
+//===============================================
+// 最新リビジョンを取得
+//===============================================
+global proc shr_p4Cmds_sync(string $path)
+{
+    // p4 コマンド
+    string $command = shr_p4Cmds_getP4Command("p4 sync " + $path, $path);
+
+    // p4 コマンド実行
+    string $result = system($command);
+
+    print $result;
+}
+
+//===============================================
+// チェックアウト
+//===============================================
+global proc shr_p4Cmds_checkout(string $path)
+{
+    // p4 コマンド
+    string $command = shr_p4Cmds_getP4Command("p4 edit " + $path, $path);
+
+    // p4 コマンド実行
+    string $result = system($command);
+
+    print $result;
+}
+
+//===============================================
+// リバート
+//===============================================
+global proc shr_p4Cmds_revert(string $path)
+{
+    // p4 コマンド
+    string $command = shr_p4Cmds_getP4Command("p4 revert " + $path, $path);
+
+    // p4 コマンド実行
+    string $result = system($command);
+
+    print $result;
+}
+
+//===============================================
+// サブミット
+//===============================================
+global proc int shr_p4Cmds_submit(string $path, string $comment)
+{
+    // コメントが空の場合
+    if($comment == "")
+    {
+        confirmDialog -t "サブミット" -m "コメントが入力されていません。 処理を中止します。" -b "OK";
+
+        return false;
+    }
+
+    // Maya からだと、コメントにマルチバイト文字含まれているとうまくいかないので日本語は禁止に）
+    if(containsMultibyte($comment))
+    {
+        confirmDialog -t "サブミット" -m "コメントに日本語が含まれています。処理を中止します。" -b "OK";
+
+        return false;
+    }
+
+    // p4 コマンド
+    string $command = shr_p4Cmds_getP4Command("p4 submit -d \"" + $comment + "\" " + $path, $path);
+
+    // p4 コマンド実行
+    string $result = system($command);
+
+    print $result;
+
+    return true;
+}
+
+//===============================================
+// 編集中ファイルに変更があるか
+//===============================================
+global proc int shr_p4Cmds_isModified(string $path)
+{
+    // p4 コマンド
+    string $command = shr_p4Cmds_getP4Command("p4 diff -sa " + $path, $path);
+
+    // p4 コマンド実行
+    string $result = system($command);
+
+    // 編集中ファイルに変更なし
+    if($result == "")
+    {
+        return false;
+    }
+    // 編集中ファイルに変更あり
+    else if($result == (substituteAllString($path, "/", "\\") + "\r\n"))
+    {
+        return true;
+    }
+
+    // それ以外の場合、編集中ファイルではない
+    print $result;
+
+    return false;
+}
+
+//===============================================
+// 他にチェックアウトしているユーザーを取得
+//===============================================
+global proc string[] shr_p4Cmds_getOtherCheckoutUser(string $path)
+{
+    string $users[];
+
+    // p4 コマンド
+    string $command = shr_p4Cmds_getP4Command("p4 fstat -T otherOpen " + $path, $path);
+
+    // p4 コマンド実行
+    string $result = system($command);
+
+    if(startsWith($result, "... ... otherOpen"))
+    {
+        string $tokens[] = stringToStringArray($result, " ");
+
+        int $num = int($tokens[`size($tokens)` - 1]);
+
+        int $i;
+
+        for($i = 0; $i < $num; $i++)
+        {
+            // p4 コマンド
+            string $cmd = shr_p4Cmds_getP4Command("p4 fstat -T otherOpen" + $i + " " + $path, $path);
+
+            // p4 コマンド実行
+             $result = system($cmd);
+
+            $tokens = stringToStringArray($result, " ");
+            $tokens = stringToStringArray($tokens[3], "@");
+
+            $users[`size($users)`] = $tokens[0];
+        }
+    }
+
+    return $users;
+}

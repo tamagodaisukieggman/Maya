@@ -1,0 +1,707 @@
+//===============================================
+//
+// Perforce 操作ドック
+//
+//===============================================
+
+/////////////////////////////////////////////////
+// UI 作成
+/////////////////////////////////////////////////
+global proc shr_p4Dock()
+{
+    // TODO: TA ツールログ送信
+    shr_toolLog("Percorce Dock", "", "launched.");
+
+    source "shr_p4Cmds";
+
+    //プリファレンスに値が無ければデフォルト値を設定
+    if (`optionVar -ex "ov_confirmCheckout_shr_p4Dock"` == 0)
+    {
+        optionVar -iv "ov_confirmCheckout_shr_p4Dock" 1;
+    }
+    if (`optionVar -ex "ov_confirmSubmit_shr_p4Dock"` == 0)
+    {
+        optionVar -iv "ov_confirmSubmit_shr_p4Dock" 1;
+    }
+
+    columnLayout -adj on;
+        rowLayout -nc 3 -adj 2 -cat 3 "right" 0;
+            rowLayout -nc 4 -cat 1 "left" 6 uRl_sceneName_shr_p4Dock;
+
+                string $form = `formLayout uImg_p4Status_shr_p4Dock`;
+
+                    // Perforce ステータスアイコン
+                    string $iconBase = `image -vis off -i "shr_p4Dock/file_base.png" uImg_base_shr_p4Dock`;
+                    string $iconNone = `image -vis off -i "shr_p4Dock/file_none.png" uImg_none_shr_p4Dock`;
+                    string $iconRegistered = `image -vis off -i "shr_p4Dock/file_registered.png" uImg_registered_shr_p4Dock`;
+                    string $iconDeleted = `image -vis off -i "shr_p4Dock/file_deleted.png" uImg_deleted_shr_p4Dock`;
+                    string $iconAdded = `image -vis off -i "shr_p4Dock/file_added.png" uImg_added_shr_p4Dock`;
+                    string $iconCheckedOut = `image -vis off -i "shr_p4Dock/file_checked_out.png" uImg_checkedOut_shr_p4Dock`;
+                    string $iconOtherOpened = `image -vis off -i "shr_p4Dock/file_other_opened.png" uImg_otherOpened_shr_p4Dock`;
+                    string $iconUncurrent = `image -vis off -i "shr_p4Dock/file_uncurrent.png" uImg_uncurrent_shr_p4Dock`;
+                    string $iconConflicted = `image -vis off -i "shr_p4Dock/file_conflicted.png" uImg_conflicted_shr_p4Dock`;
+
+                    setParent ..;
+
+                text
+                    -l ""
+                    -ann ""
+                    -font "boldLabelFont"
+                    uTxt_sceneName_shr_p4Dock;
+
+                separator -hr off -h 16 -w 8;
+
+                symbolButton
+                    -image "refresh.png"
+                    -ann "ステータスを更新"
+                    -c "shr_p4Dock_refreshUI"
+                    uBtn_refresh_shr_p4Dock;
+
+                setParent ..;
+
+            text -l "";
+
+            symbolButton
+                -image "help.png"
+                -ann "Perforce Tools : Perforce ツールのヘルプ"
+                -c "showHelp -absolute \"https://wisdom.cygames.jp/pages/viewpage.action?pageId=569934544\""
+                ;
+
+            setParent ..;
+
+        separator -st "none" -h 8;
+
+        $form = `formLayout uFl_p4vButtonLayout_shr_p4Dock`;
+
+            int $topMargin = 0;
+            int $sideMargin = 4;
+
+            int $buttonHeight = 24;
+            int $buttonTopMargin = 2;
+
+            int $iconTopMargin = 3;
+            int $iconLeftMargin = 8;
+
+            // ボタンコマンド
+            string $cmd1 = "shr_p4Dock_onP4ButtonClickedCallback(\"add\")";
+            string $cmd2 = "shr_p4Dock_onP4ButtonClickedCallback(\"sync\")";
+            string $cmd3 = "shr_p4Dock_onP4ButtonClickedCallback(\"checkout\")";
+            string $cmd4 = "shr_p4Dock_onP4ButtonClickedCallback(\"submit\")";
+            string $cmd5 = "shr_p4Dock_onP4ButtonClickedCallback(\"revert\")";
+
+            // ボタン
+            string $b1 = `button -l "Perforce に追加" -h $buttonHeight -c $cmd1 uBtn_add_shr_p4Dock`;
+            string $b2 = `button -l "最新リビジョンを取得" -h $buttonHeight -c $cmd2 uBtn_sync_shr_p4Dock`;
+            string $b3 = `button -l "チェックアウト" -h $buttonHeight -c $cmd3 uBtn_checkout_shr_p4Dock`;
+            string $b4 = `button -l "サブミット" -h $buttonHeight -c $cmd4 uBtn_submit_shr_p4Dock`;
+            string $b5 = `button -l "リバート" -h $buttonHeight -c $cmd5 uBtn_revert_shr_p4Dock`;
+
+            // ボタンコマンド
+            button -e -c "shr_p4Dock_onP4ButtonClickedCallback(\"add\")" $b1;
+            button -e -c "shr_p4Dock_onP4ButtonClickedCallback(\"sync\")" $b2;
+            button -e -c "shr_p4Dock_onP4ButtonClickedCallback(\"checkout\")" $b3;
+            button -e -c "shr_p4Dock_onP4ButtonClickedCallback(\"submit\")" $b4;
+            button -e -c "shr_p4Dock_onP4ButtonClickedCallback(\"revert\")" $b5;
+
+            // アイコン
+            string $s1 = `symbolButton -i "shr_p4Dock/add.png" -c $cmd1 uSbtn_add_shr_p4Dock`;
+            string $s2 = `symbolButton -i "shr_p4Dock/sync.png" -c $cmd2 uSbtn_sync_shr_p4Dock`;
+            string $s3 = `symbolButton -i "shr_p4Dock/checkout.png" -c $cmd3 uSbtn_checkout_shr_p4Dock`;
+            string $s4 = `symbolButton -i "shr_p4Dock/submit.png" -c $cmd4 uSbtn_submit_shr_p4Dock`;
+            string $s5 = `symbolButton -i "shr_p4Dock/revert.png" -c $cmd5 uSbtn_revert_shr_p4Dock`;
+
+        formLayout -e
+            // Perforce に追加
+            -attachForm $b1 "top" $topMargin
+            -attachForm $b1 "right" $sideMargin
+            -attachNone $b1 "bottom"
+            -attachForm $b1 "left" $sideMargin
+
+            -attachOppositeControl $s1 "top" $iconTopMargin $b1
+            -attachNone $s1 "right"
+            -attachNone $s1 "bottom"
+            -attachOppositeControl $s1 "left" $iconLeftMargin $b1
+
+            // 最新リビジョンを取得
+            -attachControl $b2 "top" $buttonTopMargin $b1
+            -attachForm $b2 "right" $sideMargin
+            -attachNone $b2 "bottom"
+            -attachForm $b2 "left" $sideMargin
+
+            -attachOppositeControl $s2 "top" $iconTopMargin $b2
+            -attachNone $s2 "right"
+            -attachNone $s2 "bottom"
+            -attachOppositeControl $s2 "left" $iconLeftMargin $b2
+
+            // チェックアウト
+            -attachControl $b3 "top" $buttonTopMargin $b2
+            -attachForm $b3 "right" $sideMargin
+            -attachNone $b3 "bottom"
+            -attachForm $b3 "left" $sideMargin
+
+            -attachOppositeControl $s3 "top" $iconTopMargin $b3
+            -attachNone $s3 "right"
+            -attachNone $s3 "bottom"
+            -attachOppositeControl $s3 "left" $iconLeftMargin $b3
+
+            // サブミット
+            -attachControl $b4 "top" $buttonTopMargin $b3
+            -attachForm $b4 "right" $sideMargin
+            -attachNone $b4 "bottom"
+            -attachForm $b4 "left" $sideMargin
+
+            -attachOppositeControl $s4 "top" $iconTopMargin $b4
+            -attachNone $s4 "right"
+            -attachNone $s4 "bottom"
+            -attachOppositeControl $s4 "left" $iconLeftMargin $b4
+
+            // リバート
+            -attachControl $b5 "top" $buttonTopMargin $b4
+            -attachForm $b5 "right" $sideMargin
+            -attachNone $b5 "bottom"
+            -attachForm $b5 "left" $sideMargin
+
+            -attachOppositeControl $s5 "top" $iconTopMargin $b5
+            -attachNone $s5 "right"
+            -attachNone $s5 "bottom"
+            -attachOppositeControl $s5 "left" $iconLeftMargin $b5
+
+            $form;
+
+            setParent ..;
+
+        separator -st "none" -h 4;
+
+        columnLayout -co "left" 12;
+
+            // チェックボックス
+            checkBox
+                -l "開くときにチェックアウトを確認"
+                -v `optionVar -q "ov_confirmCheckout_shr_p4Dock"`
+                -onc "optionVar -iv ov_confirmCheckout_shr_p4Dock 1"
+                -ofc "optionVar -iv ov_confirmCheckout_shr_p4Dock 0"
+                ;
+
+            checkBox
+                -l "保存するときにサブミットを確認"
+                -v `optionVar -q "ov_confirmSubmit_shr_p4Dock"`
+                -onc "optionVar -iv ov_confirmSubmit_shr_p4Dock 1"
+                -ofc "optionVar -iv ov_confirmSubmit_shr_p4Dock 0"
+                ;
+
+    // UI を更新
+    shr_p4Dock_refreshUI;
+
+    // シーンオープン時にPerforce ステータスを更新
+    scriptJob -event "SceneOpened" "shr_p4Dock_onSceneOpendCallback" -parent uWsc_shr_p4Dock;
+
+    // シーン保存時にサブミットを確認
+    scriptJob -event "SceneSaved" "shr_p4Dock_onSceneSavedCallback" -parent uWsc_shr_p4Dock;
+
+    // スクリプトジョブの処理をスキップするか
+    global int $SHR_P4DOCK_SKIP_SCRIPT_JOB;
+    $SHR_P4DOCK_SKIP_SCRIPT_JOB = false;
+}
+
+/////////////////////////////////////////////////
+// Perforce 操作ボタンコールバック
+/////////////////////////////////////////////////
+global proc shr_p4Dock_onP4ButtonClickedCallback(string $operation)
+{
+    // ファイルパスを取得
+    string $sceneFilePath = `file -q -sceneName`;
+
+    // サブミットの場合はシーンの保存を確認
+    if($operation == "submit")
+    {
+        if(`file -q -modified`)
+        {
+            string $result = `confirmDialog
+                -title "確認"
+                -icon "question"
+                -message "シーンが変更されています。\n\n保存してサブミットしますか？"
+                -button "保存してサブミット"
+                -button "キャンセル"
+                -defaultButton "保存してサブミット"
+                -cancelButton "キャンセル"
+                -dismissString "キャンセル"`;
+
+            if($result == "キャンセル")
+            {
+                return;
+            }
+        }
+    }
+
+    // 最新リビジョンを取得の場合はシーン変更の破棄を確認
+    if($operation == "sync")
+    {
+        if(`file -q -modified`)
+        {
+            string $result = `confirmDialog
+                -title "確認"
+                -icon "question"
+                -message "現在のシーンの変更が破棄されます。\n\n最新リビジョンを取得しますか？"
+                -button "最新リビジョンを取得"
+                -button "キャンセル"
+                -defaultButton "最新リビジョンを取得"
+                -cancelButton "キャンセル"
+                -dismissString "キャンセル"`;
+
+            if($result == "キャンセル")
+            {
+                return;
+            }
+        }
+    }
+
+    // Perforce 操作を実行
+    int $result = shr_p4Cmds_performCommand($operation, $sceneFilePath);
+
+    if($result == 0)
+    {
+        return;
+    }
+
+    // シーンファイルの更新があった場合は再オープン
+    if($result == 2)
+    {
+        shr_p4Dock_reopenScene($sceneFilePath);
+    }
+
+    // UI を更新
+    shr_p4Dock_refreshUI;
+}
+
+/////////////////////////////////////////////////
+// シーンを開いたときのスクリプトジョブコマンド
+/////////////////////////////////////////////////
+global proc shr_p4Dock_onSceneOpendCallback()
+{
+    if(`optionVar -q ov_confirmCheckout_shr_p4Dock`)
+    {
+        // チェックアウトなどを確認
+        shr_p4Dock_confirmCheckout;
+    }
+
+    // UI を更新
+    shr_p4Dock_refreshUI;
+}
+
+/////////////////////////////////////////////////
+// シーンを保存した時のスクリプトジョブコマンド
+/////////////////////////////////////////////////
+global proc shr_p4Dock_onSceneSavedCallback()
+{
+    if(`optionVar -q ov_confirmSubmit_shr_p4Dock`)
+    {
+        // サブミットを確認
+        shr_p4Dock_confirmSubmit();
+    }
+}
+
+/////////////////////////////////////////////////
+// チェックアウトなど確認
+/////////////////////////////////////////////////
+global proc shr_p4Dock_confirmCheckout()
+{
+    // スクリプトジョブの処理をスキップするか
+    global int $SHR_P4DOCK_SKIP_SCRIPT_JOB;
+
+    if($SHR_P4DOCK_SKIP_SCRIPT_JOB)
+    {
+        $SHR_P4DOCK_SKIP_SCRIPT_JOB = false;
+
+        return;
+    }
+
+    // シーン名とファイルパスを取得
+    string $sceneFilePath = `file -q -sceneName`;
+
+    // シーンを開いていなければ終了
+    if($sceneFilePath == "")
+    {
+        return;
+    }
+
+    // Perforce 管理フォルダ以下に存在しなければ終了
+    if(shr_p4Cmds_isInPerforceFolder($sceneFilePath) == 0)
+    {
+        return;
+    }
+
+    // p4v ファイル情報取得
+    string $fstat[] = `shr_p4Cmds_getFileStatusFlags($sceneFilePath)`;
+
+    // perforce 登録ファイルの場合
+    if(`size($fstat)` != 0)
+    {
+        // コンフリクトしている場合
+        if(stringArrayContains("CONFLICTED", $fstat))
+        {
+            string $message = $sceneFilePath + "\n\n コンフリクトしています。 コンフリクトを解決してから作業を行ってください。";
+
+            confirmDialog -t "確認" -icn "warning" -m $message -b "OK";
+
+            return;
+        }
+
+        // 他にチェックアウトしているユーザーがいる場合
+        if(stringArrayContains("OTHER_OPENED", $fstat))
+        {
+            string $users[] = shr_p4Cmds_getOtherCheckoutUser($sceneFilePath);
+            string $user;
+
+            string $message = $sceneFilePath + "\n\n他にチェックアウトしているユーザーがいます。\n\n\n【 現在チェックアウトしているユーザー 】\n\n";
+
+            for($user in $users)
+            {
+                $message = $message + $user + ", ";
+            }
+
+            string $result = `confirmDialog -t "確認" -icn "information" -m $message -b "続行" -db "続行"`;
+        }
+
+        // 最新リビジョンじゃない場合
+        if(stringArrayContains("UNCURRENT", $fstat))
+        {
+            // チェックアウトしている場合
+            if(stringArrayContains("CHECKED_OUT", $fstat))
+            {
+                // リバートして最新リビジョンを取得してチェックアウトするか確認
+                string $message = $sceneFilePath + "\n\n最新リビジョンではない状態でチェックアウトされています。\n\nリバートと最新リビジョン取得を行い、チェックアウトし直しますか？";
+                string $result = `confirmDialog -t "確認" -icn "question" -m $message -b "最新リビジョンを取得してチェックアウト" -b "このまま開く" -db "最新リビジョンを取得してチェックアウト" -cb "このまま開く" -ds "このまま開く"`;
+
+                if($result == "最新リビジョンを取得してチェックアウト")
+                {
+                    // リバート
+                    shr_p4Cmds_revert($sceneFilePath);
+
+                    // 最新リビジョンを取得
+                    shr_p4Cmds_sync($sceneFilePath);
+
+                    // チェックアウト
+                    shr_p4Cmds_checkout($sceneFilePath);
+
+                    // シーンを再オープン
+                    shr_p4Dock_reopenScene($sceneFilePath);
+                }
+
+                return;
+            }
+            // チェックアウトしていない場合
+            else
+            {
+                // 最新リビジョンを取得するか確認
+                string $message = $sceneFilePath + "\n\n最新リビジョンではありません。\n\n最新リビジョンを取得しますか？";
+                string $result = `confirmDialog -t "確認" -icn "question" -m $message -b "最新リビジョンを取得する" -b "最新リビジョンを取得しない" -db "最新リビジョンを取得する" -cb "最新リビジョンを取得しない" -ds "最新リビジョンを取得しない"`;
+
+                if($result == "最新リビジョンを取得する")
+                {
+                    // 最新リビジョンを取得
+                    shr_p4Cmds_sync($sceneFilePath);
+
+                    // シーンを再オープン
+                    shr_p4Dock_reopenScene($sceneFilePath);
+                }
+
+                // チェックアウトするか確認
+                $message = $sceneFilePath + "\n\nシーンファイルをチェックアウトしますか？";
+                $result = `confirmDialog -t "確認" -icn "question" -m $message -b "チェックアウトする" -b "チェックアウトしない" -db "チェックアウトする" -cb "チェックアウトしない" -ds "チェックアウトしない"`;
+
+                if($result == "チェックアウトする")
+                {
+                    // チェックアウト
+                    shr_p4Cmds_checkout($sceneFilePath);
+                }
+
+                return;
+            }
+        }
+        // 最新リビジョンでチェックアウトしていない場合
+        else if(stringArrayContains("REGISTERED", $fstat) && stringArrayContains("CHECKED_OUT", $fstat) == false)
+        {
+            // チェックアウトするか確認
+            string $message = $sceneFilePath + "\n\nシーンファイルをチェックアウトしますか？";
+            string $result = `confirmDialog -t "確認" -icn "question" -m $message -b "チェックアウトする" -b "チェックアウトしない" -db "チェックアウトする" -cb "チェックアウトしない" -ds "チェックアウトしない"`;
+
+            if($result == "チェックアウトする")
+            {
+                // チェックアウト
+                shr_p4Cmds_checkout($sceneFilePath);
+            }
+
+            return;
+        }
+    }
+}
+
+/////////////////////////////////////////////////
+// サブミットなど確認
+/////////////////////////////////////////////////
+global proc shr_p4Dock_confirmSubmit()
+{
+    // シーン名とファイルパスを取得
+    string $sceneFilePath = `file -q -sceneName`;
+
+    // Perforce 管理フォルダ以下に存在しなければ終了
+    if(shr_p4Cmds_isInPerforceFolder($sceneFilePath) == 0)
+    {
+        return;
+    }
+
+    // p4v ファイル情報取得
+    string $fstat[] = `shr_p4Cmds_getFileStatusFlags($sceneFilePath)`;
+
+    // perforce の各種ファイル操作が可能かどうかを取得
+    string $p4OperationAvailability[] = shr_p4Cmds_getFileOperationAvailability($sceneFilePath);
+
+
+
+    // サブミット可能状態の場合
+    if(stringArrayContains("submit_enabled", $p4OperationAvailability))
+    {
+        string $message = $sceneFilePath + "\n\nシーンファイルをサブミットしますか？";
+
+        string $result = `confirmDialog
+            -title "確認"
+            -icon "question"
+            -message $message
+            -button "サブミット..."
+            -button "キャンセル"
+            -defaultButton "サブミット..."
+            -cancelButton "キャンセル"
+            -dismissString "キャンセル"`;
+
+        if($result == "キャンセル")
+        {
+            return;
+        }
+
+        // サブミット
+        shr_p4Dock_onP4ButtonClickedCallback("submit");
+
+        return;
+    }
+    // サブミット可能状態の場合
+    else if(stringArrayContains("add_enabled", $p4OperationAvailability))
+    {
+        string $message = $sceneFilePath + "\n\nシーンファイルをperforce に追加してサブミットしますか？";
+
+        string $result = `confirmDialog
+            -title "確認"
+            -icon "question"
+            -message $message
+            -button "追加してサブミット..."
+            -button "キャンセル"
+            -defaultButton "追加してサブミット..."
+            -cancelButton "キャンセル"
+            -dismissString "キャンセル"`;
+
+        if($result == "キャンセル")
+        {
+            return;
+        }
+
+        // 追加
+        shr_p4Dock_onP4ButtonClickedCallback("add");
+
+        // サブミット
+        shr_p4Dock_onP4ButtonClickedCallback("submit");
+    }
+}
+
+/////////////////////////////////////////////////
+// シーンファイルを再オープン
+/////////////////////////////////////////////////
+global proc shr_p4Dock_reopenScene(string $sceneFilePath)
+{
+    // スクリプトジョブの処理をスキップするか
+    global int $SHR_P4DOCK_SKIP_SCRIPT_JOB;
+
+    $SHR_P4DOCK_SKIP_SCRIPT_JOB = true;
+
+    // シーンを開く
+    file -f -options "v=0;" -ignoreVersion -o $sceneFilePath;
+}
+
+/////////////////////////////////////////////////
+// UI を更新
+/////////////////////////////////////////////////
+global proc shr_p4Dock_refreshUI()
+{
+    // シーン名とファイルパスを取得
+    string $sceneName = `file -q -shortName -sceneName`;
+    string $sceneFilePath = `file -q -sceneName`;
+
+    // シーン名ラベルを更新
+    text -e -l $sceneName -ann $sceneFilePath uTxt_sceneName_shr_p4Dock;
+
+    // シーンを開いているか
+    int $sceneOpened = ($sceneName != "");
+
+    // シーン名レイアウトを非表示
+    rowLayout -e -vis off uRl_sceneName_shr_p4Dock;
+
+    // Perforce コマンドボタンレイアウトを無効化
+    formLayout -e -en off uFl_p4vButtonLayout_shr_p4Dock;
+
+    // シーンを開いていなければ終了
+    if($sceneOpened == false)
+    {
+        return;
+    }
+
+    // Perforce 管理フォルダ以下に存在しなければ終了
+    if(shr_p4Cmds_isInPerforceFolder($sceneFilePath) == 0)
+    {
+        text -e -l "Perforce 管理外のシーン" -ann "" uTxt_sceneName_shr_p4Dock;
+
+        // Perforce ステータスアイコンを非表示
+        formLayout -e -vis off uImg_p4Status_shr_p4Dock;
+
+        // ステータス更新ボタンを無効化
+        symbolButton -e -en off uBtn_refresh_shr_p4Dock;
+
+        // シーン名レイアウトを表示
+        rowLayout -e -vis on uRl_sceneName_shr_p4Dock;
+
+        return;
+    }
+
+    // Perforce ステータスアイコンを更新
+    shr_p4Dock_updateP4StatusIcon($sceneFilePath);
+
+    // Perforce 操作ボタンの状態を更新
+    shr_p4Dock_updateP4Button($sceneFilePath);
+
+    // Perforce ステータスアイコンを表示
+    formLayout -e -vis on uImg_p4Status_shr_p4Dock;
+
+    // ステータス更新ボタンを有効化
+    symbolButton -e -en on uBtn_refresh_shr_p4Dock;
+
+    // シーン名レイアウトを表示
+    rowLayout -e -vis on uRl_sceneName_shr_p4Dock;
+
+    // Perforce コマンドボタンレイアウトを有効化
+    formLayout -e -en on uFl_p4vButtonLayout_shr_p4Dock;
+}
+
+/////////////////////////////////////////////////
+// Perforce ステータスアイコンを更新
+/////////////////////////////////////////////////
+global proc shr_p4Dock_updateP4StatusIcon(string $sceneFilePath)
+{
+    // ステータスアイコンを一旦非表示
+    image -e -vis off uImg_base_shr_p4Dock;
+    image -e -vis off uImg_none_shr_p4Dock;
+    image -e -vis off uImg_registered_shr_p4Dock;
+    image -e -vis off uImg_deleted_shr_p4Dock;
+    image -e -vis off uImg_added_shr_p4Dock;
+    image -e -vis off uImg_checkedOut_shr_p4Dock;
+    image -e -vis off uImg_otherOpened_shr_p4Dock;
+    image -e -vis off uImg_uncurrent_shr_p4Dock;
+    image -e -vis off uImg_conflicted_shr_p4Dock;
+
+    // p4v ファイル情報取得
+    string $fstat[] = `shr_p4Cmds_getFileStatusFlags($sceneFilePath)`;
+
+    // 未サブミットの場合
+    if(stringArrayContains("NONE", $fstat))
+    {
+        image -e -vis on uImg_none_shr_p4Dock;
+
+        return;
+    }
+
+    // 削除済みの場合
+    if(stringArrayContains("DELETED", $fstat) && `size($fstat)` == 1)
+    {
+        image -e -vis on uImg_deleted_shr_p4Dock;
+
+        return;
+    }
+
+    // 削除済みの場合
+    if(stringArrayContains("DELETED", $fstat))
+    {
+        image -e -vis on uImg_deleted_shr_p4Dock;
+    }
+    else
+    {
+        image -e -vis on uImg_base_shr_p4Dock;
+    }
+
+    // 追加フラグが付いている場合
+    if(stringArrayContains("ADDED", $fstat))
+    {
+        image -e -vis on uImg_added_shr_p4Dock;
+
+        return;
+    }
+
+    // perforce 登録済みの場合
+    if(stringArrayContains("REGISTERED", $fstat))
+    {
+        // コンフリクトしている場合
+        if(stringArrayContains("CONFLICTED", $fstat))
+        {
+            image -e -vis on uImg_conflicted_shr_p4Dock;
+        }
+        // コンフリクトしていない場合
+        else
+        {
+            // 最新リビジョンではない場合
+            if(stringArrayContains("UNCURRENT", $fstat))
+            {
+                image -e -vis on uImg_uncurrent_shr_p4Dock;
+            }
+            // 最新リビジョンの場合
+            else
+            {
+                image -e -vis on uImg_registered_shr_p4Dock;
+            }
+        }
+
+        // チェックアウトしている場合
+        if(stringArrayContains("CHECKED_OUT", $fstat))
+        {
+            image -e -vis on uImg_checkedOut_shr_p4Dock;
+
+        }
+
+        // 他の人がチェックアウトしている場合
+        if(stringArrayContains("OTHER_OPENED", $fstat))
+        {
+            image -e -vis on uImg_otherOpened_shr_p4Dock;
+        }
+    }
+}
+
+/////////////////////////////////////////////////
+// Perforce 操作ボタンの状態をPerfoce ステータスに応じて更新
+/////////////////////////////////////////////////
+global proc shr_p4Dock_updateP4Button(string $sceneFilePath)
+{
+    string $p4OperationAvailability[] = shr_p4Cmds_getFileOperationAvailability($sceneFilePath);
+
+    // ボタンの有効化を更新
+    shr_p4Dock_enableP4Button("add", stringArrayContains("add_enabled", $p4OperationAvailability));
+    shr_p4Dock_enableP4Button("sync", stringArrayContains("sync_enabled", $p4OperationAvailability));
+    shr_p4Dock_enableP4Button("checkout", stringArrayContains("checkout_enabled", $p4OperationAvailability));
+    shr_p4Dock_enableP4Button("submit", stringArrayContains("submit_enabled", $p4OperationAvailability));
+    shr_p4Dock_enableP4Button("revert", stringArrayContains("revert_enabled", $p4OperationAvailability));
+}
+
+/////////////////////////////////////////////////
+// Perforce 操作ボタンの有効化状態を変更
+/////////////////////////////////////////////////
+global proc shr_p4Dock_enableP4Button(string $operation, int $enabled)
+{
+    button -e -en $enabled ("uBtn_" + $operation + "_shr_p4Dock");
+    symbolButton -e -en $enabled ("uSbtn_" + $operation + "_shr_p4Dock");
+}
+
+// NOTE:
+// shr_p4Dock_UI;

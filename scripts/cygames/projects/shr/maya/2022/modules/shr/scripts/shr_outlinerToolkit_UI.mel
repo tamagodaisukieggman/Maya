@@ -1,0 +1,35 @@
+//===============================================
+//
+// outliner Toolkit
+//
+// Fujita Yukihiro
+//
+//===============================================
+
+global proc shr_outlinerToolkit_UI()
+{
+    // TA ツールログ送信
+    shr_toolLog("Outliner Toolkit", "1.0.0", "launched.");
+
+    if(`workspaceControl -ex uWsc_shr_outlinerToolkit`)
+    {
+        return;
+    }
+
+     if(`workspaceControlState -exists uWsc_shr_outlinerToolkit`)
+    {
+        workspaceControlState -remove uWsc_shr_outlinerToolkit;
+    }
+
+    workspaceControl
+        -retain false
+        -iw 100
+        -ih 100
+        -uiScript "shr_outlinerToolkit"
+        -label "Outliner Toolkit"
+        //-heightProperty "fixed"
+        //-widthProperty "fixed"
+        uWsc_shr_outlinerToolkit;
+
+}
+

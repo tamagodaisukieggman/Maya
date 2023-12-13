@@ -1,0 +1,433 @@
+﻿# 開発モード ture で開発中
+DEV_MODE: true
+
+# GUI の名前
+CHECKER_GUI_NAME: CheckerGUI
+CHECKER_RESULT_GUI_NAME: CheckerResultGUI
+CHECKER_ERROR_GUI_NAME: ChekerErrorGUI
+
+# Maya の拡張子を設定
+MAYA_EXT:
+  .ma: mayaAscii
+  .mb: mayaBinary
+
+# プロジェクトの名前を設定
+CURRENT_PROJECT: SENJIN
+CURRENT_PROJECT: SHENRON
+
+
+# UIカラー
+# エラー表示時のテキストバックグラウンドカラー
+ERROR_BG_COLOR: [130, 50, 50]
+WARNING_BG_COLOR: [120, 120, 50]
+
+# エラータイプのデフォルトカラー
+TYPE_BG_COLOR: [100, 100, 100]
+
+# チェックモジュールを読み込む順番（ディレクトリ）
+DIRECTORY_SORT_ORDER:
+ - scene
+ - node
+ - component
+
+# チェックモジュールを読み込む順番（ファイル）
+CHECKER_MODULE_SORT_ORDER:
+ - scene_name
+ - root_node
+ - node_setup
+ - no_polygon
+ - node_history
+ - intermediate_object
+ - material_name
+
+# パスによる分類わけが不可能な場合のカテゴリ
+UNKNOWN_SCENE_CATEGORY_NAME: UNKNOWN
+
+
+# プロジェクト固有の設定内容
+PROJECT_SETTINGS:
+  SENJIN:
+    PROJRCT_NAME: Senjin
+    DATA_TYPE_CATEGORY:
+      ENVIRONMENT: env
+      CHARACTER:   characters
+      # PROP:        prop
+      # WEAPON:      weapon
+      ANIMATION:   animations
+      RIG:         rigs
+    PATH:
+      CHARACTER:
+      - z:/snj/work/resources/characters
+      - z:/snj/work/noshipping/chr
+      - z:/mtk/work/resources/characters
+      - z:/mtk/work/noshipping/characters
+      # PROP:
+      # - z:/snj/work/resources/characters
+      # - z:/snj/work/noshipping/chr
+      # - z:/mtk/work/resources/characters
+      # - z:/mtk/work/noshipping/characters
+      # WEAPON:
+      # - z:/snj/work/resources/characters
+      # - z:/snj/work/noshipping/chr
+      # - z:/mtk/work/resources/characters
+      # - z:/mtk/work/noshipping/characters
+      ENVIRONMENT:
+      - z:/snj/work/resources/env
+      - z:/snj/work/noshipping/env
+      - z:/mtk/work/resources/env
+      - z:/mtk/work/noshipping/env
+      RIG:
+      - z:/snj/work/resources/rigs
+      - z:/snj/work/noshipping/rigs
+      - z:/mtk/work/resources/rigs
+      - z:/mtk/work/noshipping/rigs
+      ANIMATION:
+      - z:/snj/work/resources/animations
+      - z:/snj/work/noshipping/animations
+      - z:/mtk/work/resources/animations
+      - z:/mtk/work/noshipping/animations
+
+    # チェック対象のノードの頭文字
+    ROOT_NODE_START_NAMES:
+      UNKNOWN:
+        - '|mdl_'
+      CHARACTER:
+        - '|mdl_'
+      PROP:
+        - '|mdl_'
+      ENVIRONMENT:
+        - '|mdl_'
+      RIG:
+        - '|ROOT'
+      ANIMATION:
+        - '|anm_'
+
+    # チェック非対称のノードの頭文字
+    IGNORE_ROOT_NODE_START_NAMES:
+      - '|scale_ref'
+      - '|high_'
+
+    # 削除対象ではないディスプレイレイヤー名
+    NOT_DELETE_DISPLAY_LAYER:
+      - model_objLay
+      - bind_joints_objLay
+      - rig_objLay
+
+    # 存在しないといけないディスプレイレイヤー名
+    DEFAULT_LAYER_NAME: defaultLayer
+
+    # プロジェクトで使用可能なMaya の拡張子
+    MAYA_EXT:
+      # .mb: mayaBinary
+      .ma: mayaAscii
+
+    # unknown として引っ掛かってしまう
+    # 特に問題ないのでスキップする
+    CHECK_SKIP_NODE:
+      - MayaNodeEditorSavedTabsInfo
+      - hyperShadePrimaryNodeEditorSavedTabsInfo
+      - nodeGraphEditorInfo
+
+    # 削除しないプラグイン
+    NOT_DELETE_PLUGIN_NODE:
+      - stereoCamera
+      - mtoa
+
+    # 不要なヒストリーと判断しないノードタイプ
+    DO_NOT_JUDGE_UNNECESSARY_HISTORY:
+      - skinCluster
+      - tweak
+      - shadingEngine
+
+    # 削除するノードの種類
+    DELETE_TARGET_NODE_TYPE:
+      - ilrBakeLayerManager
+      - ilrBakeLayer
+      - ilrOptionsNode
+      - ilrUIOptionsNode
+      - polyBlindData
+      - blindDataTemplate
+      - ngst2SkinLayerData
+      - ngst2MeshDisplay
+
+    NEED_JOINT_NAME_STARTS:
+      - jnt_0000_skl
+      - jnt_2000_skl
+      - jnt_3000_skl
+      - jnt_mtp
+      - jnt_cnp
+      - jnt_move
+      - jnt_helper
+      - jnt_dyn
+
+    # スキンウェイトの桁数設定
+    WEIGHT_NUMBER_OF_DIGITS: 4
+
+    # スキンクラスタのインフルエンス数
+    WEIGHT_INFLUENCE_NUMBER: 4
+
+    # 移動値、回転値の丸める桁数
+    ATTRIBUTE_NUMBER_OF_DIGITS: 3
+
+    # インフルエンスに設定してはいけないジョイント
+    DO_NOT_USE_INFLUENCE: ''
+
+    # マテリアルに使用されるプレフィックス
+    MATERIAL_PREFIX: mtl_
+
+    # コリジョングループ名
+    COLLISION_GROUP_NAME: collision
+
+    # コリジョンマテリアルのプレフィックス
+    COLLISION_MATERIAL_NAME_PREFIX: phy_
+
+    # チェック対称から外す、ルート以下のグループ
+    # IGNORE_CHECK_GROUP_NAME:
+    #   - hkCloth
+
+    # 特殊な条件のチェックが必要なグループを保持する
+    SPECIAL_CONDITIONS_GROUP: hkCloth
+
+    # 特殊条件のグループ対象に適用するチェック項目
+    SPECIAL_CONDITIONS_GROUP_CHECKER:
+    - transform
+    - skin weights
+
+    # 第一階層にあるもの、これ以外はあってはいけない
+    SUBLEVELNAME:
+      - model
+      - collision
+      - jnt_0000_skl_root
+      - hkCloth
+
+    # 第一階層に絶対必要な名前チェック
+    MODEL_GROUP_NAME_TYPE:
+      model: transform
+
+    # LOD グループの名前
+    LOD_GROUP_NAME_STARTSWITH: lod
+
+    # コリジョングループの名前
+    COLLISION_GROUP_NAME_TYPE:
+      collision: transform
+
+    # ルートジョイントの名前
+    JOINT_TYPE_NAME:
+      joint: jnt_0000_skl_root
+
+    # 物理マテリアルのアトリビュート名
+    PHY_MATERIAL_ATTRIBUTE_NAME: phyMaterialName
+
+    # 保持するカラーセット名
+    KEEP_COLOR_SET_NAME: ''
+
+    # 保持するuv セット名
+    KEEP_UV_SET_NAME: map1
+
+
+  SHENRON:
+    PROJRCT_NAME: Shenron
+    DATA_TYPE_CATEGORY:
+      ENVIRONMENT: environments
+      VEGETATIONS: vagetations
+      CHARACTER:   characters
+      # PROP:        prop
+      # WEAPON:      weapon
+      ANIMATION:   animations
+      RIG:         rigs
+      FACIAL:      facial
+    PATH:
+      CHARACTER:
+      - C:/cygames/shrdev/shr_art/resources/characters
+      # PROP:
+      # - z:/snj/work/resources/characters
+      # - z:/snj/work/noshipping/chr
+      # - z:/mtk/work/resources/characters
+      # - z:/mtk/work/noshipping/characters
+      # WEAPON:
+      # - z:/snj/work/resources/characters
+      # - z:/snj/work/noshipping/chr
+      # - z:/mtk/work/resources/characters
+      # - z:/mtk/work/noshipping/characters
+      ENVIRONMENT:
+      - C:/cygames/shrdev/shr_art/resources/environments
+      VAGETATIONS:
+      - C:/cygames/shrdev/shr_art/resources/environments/vegetations
+      RIG:
+      - C:/cygames/shrdev/shr_art/resources/rigs
+
+      # ANIMATION:
+      # - z:/snj/work/resources/animations
+      # - z:/snj/work/noshipping/animations
+      # - z:/mtk/work/resources/animations
+      # - z:/mtk/work/noshipping/animations
+
+      FACIAL:
+      - C:/cygames/shrdev/shr_art/resources/facial
+
+    # チェック対象のノードの頭文字
+    ROOT_NODE_START_NAMES:
+      UNKNOWN:
+        - 'basename'
+      CHARACTER:
+        - 'basename'
+      PROP:
+        - 'basename'
+      ENVIRONMENT:
+        - 'basename'
+      RIG:
+        - 'basename'
+        - '|rig'
+      ANIMATION:
+        - '|anm_'
+
+    # チェック非対称のノードの頭文字
+    IGNORE_ROOT_NODE_START_NAMES:
+      - '|scale_ref'
+      - '|high_'
+
+    # 削除対象ではないディスプレイレイヤー名
+    NOT_DELETE_DISPLAY_LAYER:
+      - model_objLay
+      - bind_joints_objLay
+      - rig_objLay
+
+    # 存在しないといけないディスプレイレイヤー名
+    DEFAULT_LAYER_NAME: defaultLayer
+
+    # Maya の拡張子
+    MAYA_EXT:
+      .mb: mayaBinary
+
+    # unknown として引っ掛かってしまう
+    # 特に問題ないのでスキップする
+    CHECK_SKIP_NODE:
+      - MayaNodeEditorSavedTabsInfo
+      - hyperShadePrimaryNodeEditorSavedTabsInfo
+      - nodeGraphEditorInfo
+
+    # 削除しないプラグイン
+    NOT_DELETE_PLUGIN_NODE:
+      - stereoCamera
+      - mtoa
+
+    # 不要なヒストリーと判断しないノードタイプ
+    DO_NOT_JUDGE_UNNECESSARY_HISTORY:
+      - skinCluster
+      - tweak
+      - shadingEngine
+
+    # 削除するノードの種類
+    DELETE_TARGET_NODE_TYPE:
+      - ilrBakeLayerManager
+      - ilrBakeLayer
+      - ilrOptionsNode
+      - ilrUIOptionsNode
+      - polyBlindData
+      - blindDataTemplate
+      - ngst2SkinLayerData
+      - ngst2MeshDisplay
+
+    NEED_JOINT_NAME_STARTS:
+      - jnt_0000_skl
+      - jnt_2000_skl
+      - jnt_3000_skl
+      - jnt_mtp
+      - jnt_cnp
+      - jnt_move
+      - jnt_helper
+      - jnt_dyn
+
+    # スキンウェイトの桁数設定
+    WEIGHT_NUMBER_OF_DIGITS: 4
+
+    # スキンクラスタのインフルエンス数
+    WEIGHT_INFLUENCE_NUMBER: 4
+
+    # 移動値、回転値の丸める桁数
+    ATTRIBUTE_NUMBER_OF_DIGITS: 3
+
+    # インフルエンスに設定してはいけないジョイント
+    DO_NOT_USE_INFLUENCE: ''
+
+    # マテリアルに使用されるプレフィックス
+    MATERIAL_PREFIX: mi_
+
+    # コリジョングループ名
+    COLLISION_GROUP_NAME: collision
+
+    # コリジョンマテリアルのプレフィックス
+    COLLISION_MATERIAL_NAME_PREFIX: phy_
+
+    # チェック対称から外す、ルート以下のグループ
+    # IGNORE_CHECK_GROUP_NAME:
+    #   - hkCloth
+
+    # 特殊な条件のチェックが必要なグループを保持する
+    SPECIAL_CONDITIONS_GROUP: hkCloth
+
+    # 特殊条件のグループ対象に適用するチェック項目
+    SPECIAL_CONDITIONS_GROUP_CHECKER:
+    - transform
+    - skin weights
+
+    # チェックの必要がないルートノード
+    NO_CONFIRMATION_REQUIRED_ROOT_NODES:
+    - workbench
+    - rig
+
+    ROOT_LEVEL_NODE_TYPE: transform
+
+    # ルートにあっても問題ない名前
+    ROOT_LEVEL_NAME_RIG:
+     rig: transform
+     workbench: transform
+     all_set: objectSet
+     sets: objectSet
+
+    # 第一階層にあるもの、これ以外はあってはいけない
+    SUBLEVELNAME:
+      mesh: lodGroup
+      collision: transform
+
+    SUBLEVELNAME_RIG:
+       mesh: transform
+       root_jnt: joint
+       rig_grp: transform
+
+    SUBLEVELNAME_RIG_RIGGROUP:
+      animation_gp: transform
+      setup_gp: transform
+      unit_gp: transform
+      rigViewLayout: transform
+
+    # 第一階層に絶対必要な名前チェック
+    MODEL_GROUP_NODE_NAME: mesh
+    MODEL_GROUP_NODE_TYPE_CHARACTER:
+      mesh: transform
+
+    MODEL_GROUP_NODE_TYPE_ENVIRONMENT:
+      mesh: lodGroup
+
+    # LOD グループの名前
+    LOD_GROUP_NAME_STARTSWITH: lod
+    LOD_START_COUNT: 0
+    LOD_GROUP_TYPE_ENV: lodGroup
+    LOD_GROUP_TYPE_CHARA: transform
+
+    # コリジョングループの名前
+    COLLISION_GROUP_NAME_TYPE:
+      collision: transform
+
+    # ルートジョイントの名前
+    JOINT_TYPE_NAME:
+      joint: root_jnt
+
+    # 物理マテリアルのアトリビュート名
+    PHY_MATERIAL_ATTRIBUTE_NAME: phyMaterialName
+
+    # 保持するカラーセット名
+    KEEP_COLOR_SET_NAME: ''
+
+    # 保持するuv セット名
+    KEEP_UV_SET_NAME: map1

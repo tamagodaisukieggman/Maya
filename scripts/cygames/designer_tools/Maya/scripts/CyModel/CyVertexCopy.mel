@@ -1,0 +1,255 @@
+//■CyVertexCopy(kawamata_yasuyuki@cygames.co.jp) 
+//■2017/01/06　Version
+
+global proc CyVertexCopy_Cmd()
+{
+
+int $c1=`checkBox -q -v  CyVertexCopy_CHECK1`;
+int $c2=`checkBox -q -v  CyVertexCopy_CHECK2`;
+int $c3=`checkBox -q -v  CyVertexCopy_CHECK3`;
+if($c1==0 && $c2==0 && $c3==0){
+	confirmDialog -t "Confirm" -m " オプションが設定されていません " -b "OK" ;
+	return ;
+}
+
+string $sels[] = `filterExpand -sm 31`;
+string $sels_obj[] = `filterExpand -sm 12`;
+string $target[] , $xx , $v , $target_sels[];
+float $vzahyou[3] , $diff[], $min_diff[], $dist, $min_dist;
+
+if(((`size $sels`)>=2) || ((`size $sels_obj`)==2)){  //----モデル2個選択、頂点2個以上選択の時に処理をする
+
+if((`size $sels`)>=2){
+	$target_sels = $sels;  //----頂点選択の時はターゲット先も$selsにする
+}
+if((`size $sels_obj`)==2){  //----モデル選択の時はターゲット先を2番目に選択した頂点にする
+	clear $sels;
+
+	select $sels_obj[0];
+	ConvertSelectionToVertices;
+	SelectPolygonSelectionBoundary;
+	string $get1[] = `filterExpand -sm 31`;
+	$target_sels=$get1;  //----1番目に選択したモデルをターゲット先にする
+
+	select $sels_obj[1];
+	ConvertSelectionToVertices;
+	SelectPolygonSelectionBoundary;
+	string $get2[] = `filterExpand -sm 31`;
+	$sels=$get2;  //----2番目に選択したモデルのボーダー頂点をスナップさせる
+}
+
+float $offset=`floatField -q -v  CyVertexCopy_FIELD1`;
+
+/////////////////////////    
+int $amount = 0;
+int $size = `size  $sels`;
+/////////////////////////    
+
+$sels=`sort $sels`;  //----順番整理
+for($xx in $sels){
+
+	/////////////////////////    
+	progressWindow -t "Working" -progress $amount -min 0 -max $size -status "Completed : "-isInterruptable true;
+	progressWindow -e -progress $amount -status ( "Completed Vertex : "+$amount+" / "+ $size );
+	/////////////////////////  
+
+	float $selectedVert[] = `pointPosition $xx`;
+
+	int $ii , $flag=0 ,$c=0;
+
+	for($v in $target_sels){ //----ターゲット先に対するループ
+		if($v==$xx){  //----ターゲット先が自身の頂点の場合は処理しない
+			continue;
+		}
+		float $vert[] = `pointPosition $v`;  //----各頂点の値を取得し、選択頂点との距離を算出
+		$diff[0] = $vert[0] - $selectedVert[0];
+		$diff[1] = $vert[1] - $selectedVert[1];
+		$diff[2] = $vert[2] - $selectedVert[2];
+		$dist = `sqrt ($diff[0] * $diff[0] + $diff[1] * $diff[1] + $diff[2] * $diff[2])`;
+		if($c == 0 || $dist < $min_dist) {  //----最短距離の頂点を記録
+			if( $dist <= $offset ){  //----しきい値
+				$target[0] = $v;  //----最短のターゲット先(頂点名)を格納しておく
+				$min_dist = $dist;
+				$min_diff[0] = $diff[0];
+				$min_diff[1] = $diff[1];
+				$min_diff[2] = $diff[2];
+				$c++;
+			}
+		}
+	}
+	if((`size $target`)==0){  //----しきい値にあてはまらない場合はスルー
+		$amount += 1;
+		continue;
+	} 	 
+	else{  //----しきい値に1個でもあてはまった場合の処理
+		$sels = stringArrayRemove($target,$sels);  //----移動した先の頂点は$selsから除く
+	}
+
+	/////////////////////////  
+	if ( `progressWindow -q -isCancelled` ) break;
+	if ( `progressWindow -q -progress` >= $size) break;
+	$amount += 1;
+	//pause -seconds 1;
+	/////////////////////////  
+
+	if(`checkBox -q -v CyVertexCopy_CHECK1`){  //----選択頂点を、最短距離にある頂点に移動
+		move -ws -r $min_diff[0] $min_diff[1] $min_diff[2] $xx ;
+	}
+	if(`checkBox -q -v CyVertexCopy_CHECK2`){  //----頂点カラーのコピー
+		float $color[] = `polyColorPerVertex -q -rgb $target[0]`;
+		float $alfa[] = `polyColorPerVertex -q -a $target[0]`;
+		polyColorPerVertex -e -r $color[0] -g $color[1] -b $color[2] -a $alfa[0] $xx;
+	}
+	//▼法線グローバルコピー
+	if(`checkBox -q -v CyVertexCopy_CHECK3`){
+		float $vzahyou[3] = `polyNormalPerVertex -q -xyz $target[0]`;
+		vector $nzahyou = <<$vzahyou[0],$vzahyou[1],$vzahyou[2]>>;
+		$nzahyou = unit($nzahyou);
+		$selectone1 = `listRelatives -p -pa -ni $target[0]`;
+		$selectone1 = `listRelatives -p -pa -ni $selectone1`;
+
+		$wrotate = `xform -q -ws -ro $selectone1`;
+		float $vnx1 = $wrotate[0];
+		float $vny1 = $wrotate[1];
+		float $vnz1 = $wrotate[2];
+		$vnx1 = deg_to_rad($vnx1);
+		$vny1 = deg_to_rad($vny1);
+		$vnz1 = deg_to_rad($vnz1);
+
+		$nzahyou = rot($nzahyou,<<1,0,0>>,$vnx1);
+		$nzahyou = rot($nzahyou,<<0,1,0>>,$vny1);
+		$nzahyou = rot($nzahyou,<<0,0,1>>,$vnz1);
+		$nzahyou = unit($nzahyou);
+
+		float  $vnx =($nzahyou.x);
+		float  $vny =($nzahyou.y);
+		float  $vnz =($nzahyou.z);
+		//▲
+
+		//▼ 法線グローバルペースト
+		vector $nzahyou = <<$vnx , $vny , $vnz>>;
+		$selectone2 = `listRelatives -p -pa -ni $xx`;
+		$selectone2 = `listRelatives -p -pa -ni $selectone2`;
+		$wrotate = `xform -q -ws -ro $selectone2`;
+
+		$vnx1 = `CyVertexCopy_vnx $wrotate`;
+		$vny1 = `CyVertexCopy_vny $wrotate`;
+		$vnz1 = `CyVertexCopy_vnz $wrotate`;
+		vector $wY =`CyVertexCopy_wy $vnx1`;
+		vector $wZ =`CyVertexCopy_wz $vnx1 $vny1 $wY`;
+
+		$nzahyou = rot($nzahyou,<<1,0,0>>,$vnx1);
+		$nzahyou = rot($nzahyou,$wY,$vny1);
+		$nzahyou = rot($nzahyou,$wZ,$vnz1);
+		$nzahyou = unit($nzahyou);
+		polyNormalPerVertex -xyz ($nzahyou.x) ($nzahyou.y) ($nzahyou.z) $xx;  //----法線のコピー
+		//▲
+	}
+	clear $vzahyou ;
+	clear $min_diff;
+	clear $target;
+}
+
+progressWindow -endProgress;
+
+}
+
+else{
+	confirmDialog -t "Confirm" -m " 選択の仕方が違います " -b "OK" ;
+	return;	
+}
+
+if((`size $sels_obj`) > 0 && (`size $target[0]`) == 0){  //----1つもしきい値にひっかからない場合はモデルを選択して終了
+	select $sels_obj;
+}
+
+}
+
+//-----------------------------------------------------------------以下、座標補正計算
+
+global proc float CyVertexCopy_vnx(float $wrotate[])
+{
+
+float $vnx1 = 0.1;
+$vnx1 = $wrotate[0];
+$vnx1 = deg_to_rad($vnx1);
+$vnx1 = ($vnx1*-1);
+return $vnx1;
+
+}
+
+global proc float CyVertexCopy_vny(float $wrotate[])
+{
+
+float $vny1 = 0.1;
+$vny1 = $wrotate[1];
+$vny1 = deg_to_rad($vny1);
+$vny1 = ($vny1*-1);
+return $vny1;
+
+}
+
+global proc float CyVertexCopy_vnz(float $wrotate[])
+{
+
+float $vnz1 = 0.1;
+$vnz1 = $wrotate[2];
+$vnz1 = deg_to_rad($vnz1);
+$vnz1 = ($vnz1*-1);
+return $vnz1;
+
+}
+
+global proc vector CyVertexCopy_wy(float $vnx1)
+{
+
+vector $wY;
+$wY = rot(<<0,1,0>> , <<1,0,0>> , $vnx1);
+return $wY;
+
+}
+
+global proc vector CyVertexCopy_wz(float $vnx1 , float $vny1 , vector $wY)
+{
+
+vector $wZ;
+$wZ = rot(<<0,0,1>> , <<1,0,0>> , $vnx1);
+$wZ = rot($wZ , $wY , $vny1);
+return $wZ;
+
+}
+
+//------------------------------------------------------------------------------//WINDOW
+
+global proc CyVertexCopy()
+{
+
+if(`window -q -ex CyVertexCopy_WINDOW`){deleteUI CyVertexCopy_WINDOW;}
+
+window -width 100 -height 30 -title "CyVertexCopy" -toolbox 1 -s 0  CyVertexCopy_WINDOW;
+columnLayout -adjustableColumn true ;
+separator -height 5 -style "none";
+
+rowLayout -nc 6 -cw6 3 55 90 60 60 60  ;
+text -l "";
+checkBox -label "Snap" -v 1 CyVertexCopy_CHECK1;
+checkBox -label "Vertex Color" -v 1  CyVertexCopy_CHECK2;
+checkBox -label "Normal" -v 1  CyVertexCopy_CHECK3;
+setParent ..;
+
+separator -height 7 -style "none";
+
+rowLayout -nc 6 -cw6 5  45 65 50 50 50  ;
+text -l "";
+text -h 22 -l "Distance";
+floatField -w 50 -h 22 -v 0.01 -pre 3 -min 0 -max 10  -ann "アラインを適応する距離です" CyVertexCopy_FIELD1;
+button -w 91  -h 22  -l  "Apply" -c "CyVertexCopy_Cmd()" -ann "選択している頂点(2点以上)又はモデル(2個選択)のボーダーのアラインを実行します";
+setParent ..;
+
+showWindow CyVertexCopy_WINDOW;
+window -e -wh 218 63 CyVertexCopy_WINDOW;
+
+}
+
+
+

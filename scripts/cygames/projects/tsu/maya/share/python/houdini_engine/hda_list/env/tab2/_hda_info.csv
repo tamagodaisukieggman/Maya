@@ -1,0 +1,3 @@
+<Display Name>,<Operator Name>,<HDA Name>,<Help URL>,<Sample File>
+Snow Cover,Sop/snowcover,snowcover.hda,https://wisdom.cygames.jp/display/tsubasa/Snow+Cover,D:/cygames/tsubasa/tools/dcc_user/maya/share/python/houdini_engine/hda_list/env/tab2/sample/scenes/snowcover.mb
+Icicle,Sop/icicle,icicle.hda,https://wisdom.cygames.jp/display/tsubasa/Icicle,D:/cygames/tsubasa/tools/dcc_user/maya/share/python/houdini_engine/hda_list/env/tab2/sample/scenes/icicle.mb

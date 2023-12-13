@@ -1,0 +1,161 @@
+﻿DEV_MODE: true
+
+SHENRON_CHARACTOR_PATH: C:/cygames/shrdev/shr_art/resources/characters
+SHENRON_RIG_PATH: C:/cygames/shrdev/shr_art/resources/rigs
+
+need_nodes:
+  - '|DHIhead:spine_04'
+  - '|DHIbody:root'
+  - '|DHIbody:root|DHIbody:pelvis|DHIbody:spine_01|DHIbody:spine_02|DHIbody:spine_03'
+  - '|DHIbody:root|DHIbody:pelvis|DHIbody:spine_01|DHIbody:spine_02|DHIbody:spine_03|DHIbody:spine_04'
+  - '|DHIbody:root|DHIbody:pelvis|DHIbody:thigh_r'
+  - '|DHIbody:root|DHIbody:pelvis|DHIbody:thigh_l'
+  - '|root_drv'
+  - '|rig'
+  - '|rig|head_grp'
+  - '|rig|head_grp|geometry_grp'
+  - '|rig|body_grp'
+
+visible_nodes:
+  - '|DHIbody:root'
+
+delete_nodes:
+  - '|rig|body_grp'
+  - '|DHIbody:root|DHIbody:pelvis|DHIbody:thigh_l'
+  - '|DHIbody:root|DHIbody:pelvis|DHIbody:thigh_r'
+  - '|DHIbody:root|DHIbody:pelvis|DHIbody:spine_01|DHIbody:spine_02|DHIbody:spine_03|DHIbody:spine_04'
+
+parent_nodes:
+  child: '|DHIhead:spine_04'
+  parent: '|DHIbody:root|DHIbody:pelvis|DHIbody:spine_01|DHIbody:spine_02|DHIbody:spine_03'
+
+lod_root_node:
+  '|rig|head_grp|geometry_grp'
+
+lod_group_name:
+  'mesh'
+
+charactor_nodes:
+  - '|root'
+  - '|root_drv'
+  - '|rig'
+  - '|mesh'
+
+Rotation_Nodes:
+  - '|root_drv'
+  - '|rig|head_grp|headRig_grp'
+  - '|Lights'
+
+head_grp:
+  '|rig|head_grp'
+
+display_layers:
+  - head_lod0_layer
+  - head_lod1_layer
+  - head_lod2_layer
+  - head_lod3_layer
+  - head_lod4_layer
+  - head_lod5_layer
+  - head_lod6_layer
+  - head_lod7_layer
+
+export_selection_nodes:
+  - '|rig'
+  - 'DHIbody:root'
+
+Original_Texture_Names:
+  - head_color_map.tga
+  - head_cm1_color_map.tga
+  - head_cm2_color_map.tga
+  - head_cm3_color_map.tga
+  - head_normal_map.tga
+  - head_wm1_normal_map.tga
+  - head_wm2_normal_map.tga
+  - head_wm3_normal_map.tga
+
+Project_Texture_Names:
+  head_color_map: t_ID_head_alb
+  head_cm1_color_map: t_ID_head_cm1_alb
+  head_cm2_color_map: t_ID_head_cm2_alb
+  head_cm3_color_map: t_ID_head_cm3_alb
+  head_normal_map: t_ID_head_nrm
+  head_wm1_normal_map: t_ID_head_wm1_nrm
+  head_wm2_normal_map: t_ID_head_wm2_nrm
+  head_wm3_normal_map: t_ID_head_wm3_nrm
+
+Common_file_path: C:/cygames/shrdev/shr_art/resources/characters/Common
+
+Shenron_Add_Influence:
+  - 'neck0_jnt'
+  - 'head_jnt'
+  - 'R_shoulderTwist0_drv'
+  - 'chest_jnt'
+  - 'neck1_jnt'
+  - 'R_clavicleTwist_drv'
+  - 'L_clavicleTwist_drv'
+  - 'neckTwist_drv'
+  - 'L_shoulderTwist0_drv'
+
+Joint_Name_Replace:
+  neck0_jnt: neck_01
+  neck1_jnt: neck_02
+  head_jnt: head
+
+Import_File_Type:
+  .ma: MayaAscii
+  .mb: MayaBinary
+  .fbx: FBX
+
+Root_Node:
+  Metahuman:
+    joint:
+      - DHI:root
+      - root_div
+    mesh:
+      - rig
+  Shenron:
+    joint:
+      - root_jnt
+      - mesh
+
+Mesh_Groups:
+  - lod0
+  - lod1
+  - lod2
+  - lod3
+  - lod4
+  - lod5
+  - lod6
+  - lod7
+
+Shenron_weight_Filepath:
+  C:/cygames/shrdev/shr/tools/in/ext/maya/2023/modules/shr/scripts/shr/model/metahuman_support/metahuman_default_weights
+
+Metahuman_Weight_Filepath:
+  C:/cygames/shrdev/shr/tools/in/ext/maya/2023/modules/shr/scripts/shr/model/metahuman_support/metahuman_start_weights
+
+facial_delete_nodes:
+  '|export_geo_GRP': transform
+  '|mesh': lodGroup
+  '|root': joint
+  '|root_drv': joint
+  R_legTwist0_drv: joint
+  L_legTwist0_drv: joint
+  R_shoulder_jnt: joint
+  L_shoulder_jnt: joint
+  R_leg_jnt: joint
+  L_leg_jnt: joint
+  chest00_mtp: joint
+  chest01_mtp: joint
+  chest02_mtp: joint
+  pelvis00_mtp: joint
+  pelvis01_mtp: joint
+  pelvis02_mtp: joint
+  root00_mtp: joint
+  root01_mtp: joint
+  root02_mtp: joint
+  root03_mtp: joint
+  root04_mtp: joint
+
+web_site:
+  'https://wisdom.cygames.jp/display/shenron/Maya:+Metahuman+Support'

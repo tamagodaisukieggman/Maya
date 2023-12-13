@@ -1,0 +1,305 @@
+//===============================================
+//
+//  コリジョン関連
+//
+//===============================================
+
+/////////////////////////////////////////////////
+// 全てのコリジョンメッシュをUCX_, UBX_ で始まる命名にする
+/////////////////////////////////////////////////
+global proc int shr_collisionUtils_renameAllCollisionNodes(string $rootNode)
+{
+    /*
+    Returns
+    -------
+    処理結果:
+        -1: リネーム不可（命名元の表示メッシュノードがない）
+         0: リネーム不要
+         1: リネーム完了
+    */
+
+    // 命名対象のコリジョンメッシュノードを取得
+    string $targetNodes[] = shr_collisionUtils_getTargetCollisionNodes($rootNode);
+
+    if(`size($targetNodes)` == 0)
+    {
+        return 0;
+    }
+
+    // 命名元の表示メッシュノードを取得
+    string $nodeToNameFrom = shr_collisionUtils_getNodeToNameFrom($rootNode);
+
+    if($nodeToNameFrom == "")
+    {
+        return -1;
+    }
+
+    // 命名対象ノードをリネーム
+    int $renamed = shr_collisionUtils_renameTargetNodes($targetNodes, $nodeToNameFrom);
+
+    return $renamed;
+}
+
+/////////////////////////////////////////////////
+// 命名対象ノードをリネーム
+/////////////////////////////////////////////////
+global proc int shr_collisionUtils_renameTargetNodes(string $targetNodes[], string $nodeToNameFrom)
+{
+    /*
+    Returns
+    -------
+    処理結果:
+         0: リネーム不要
+         1: リネーム完了
+    */
+
+    int $renamed = false;
+
+    string $targetNode;
+
+    for($targetNode in $targetNodes)
+    {
+        // 有効なコリジョンノード名じゃなければリネーム
+        if(1)
+        // if(shr_collisionUtils_isValidTargetNodeName($targetNode, $nodeToNameFrom) == false)
+        {
+            string $prefix;
+
+            // ボックス形状ならUBX_
+            if(shr_collisionUtils_isBoxShape($targetNode))
+            {
+                $prefix = "UBX_";
+            }
+            // それ以外はUCX_
+            else
+            {
+                $prefix = "UCX_";
+            }
+
+            string $newName = $prefix + $nodeToNameFrom + "_00";
+
+            rename $targetNode $newName;
+
+            $renamed = true;
+        }
+    }
+
+    return $renamed;
+}
+
+/////////////////////////////////////////////////
+// 対象ノードがすでに有効な命名になっているか
+/////////////////////////////////////////////////
+global proc int shr_collisionUtils_isValidTargetNodeName(string $targetNode, string $nodeToNameFrom)
+{
+    // カスタムコリジョン用プレフィックス
+    string $COLLISION_PREFIX[]= {
+        "UCX_",
+        "UBX_"
+    };
+
+    string $prefix;
+
+    for($prefix in $COLLISION_PREFIX)
+    {
+        string $matchStr = `match ("|" + $prefix + $nodeToNameFrom + "_[0-9][0-9]$") $targetNode`;
+
+        if($matchStr != "")
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/////////////////////////////////////////////////
+// 対象ノードがボックス形状か
+/////////////////////////////////////////////////
+global proc int shr_collisionUtils_isBoxShape(string $targetNode)
+{
+    // 全ての頂点を取得
+    string $allVertices[] = `ls -flatten ($targetNode + ".vtx[*]")`;
+
+    // 頂点数が8 ではない
+    if(`size($allVertices)` != 8)
+    {
+        return false;
+    }
+
+    // 全てのフェースを取得
+    string $allFaces[] = `ls -flatten ($targetNode + ".f[*]")`;
+
+    // フェース数が6 未満、もしくは12 より多い
+    if(`size($allFaces)` < 6 || `size($allFaces)` > 12)
+    {
+        return false;
+    }
+
+    string $face;
+    string $checkedFaces[];
+    vector $allFaceNormals[];
+
+    // 全てのフェース法線を取得
+    for($face in $allFaces)
+    {
+	    //フェース法線を取得
+		vector $faceNormals = shr_collisionUtils_getFaceNormals($face);
+
+        $allFaceNormals[`size($allFaceNormals)`] = $faceNormals;
+    }
+
+    vector $faceNormals;
+
+    // 各フェースに反対向きのフェースが存在するかチェック
+    for($faceNormals in $allFaceNormals)
+    {
+        // 逆向きのフェース法線
+        vector $inverseFaceNormals = $faceNormals * -1;
+
+        // 逆向きのフェース法線が存在しない場合はボックス形状ではない
+        if(shr_collisionUtils_vectorArrayContains($inverseFaceNormals, $allFaceNormals) == false)
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/////////////////////////////////////////////////
+// フェース法線をベクトルで取得
+/////////////////////////////////////////////////
+global proc vector shr_collisionUtils_getFaceNormals(string $targetFace)
+{
+    // フェース法線情報を取得（文字列）
+    // 例）FACE_NORMAL      0: 0.888002 -0.250536 0.385596
+    string $polyInfoResult[] = `polyInfo -faceNormals $targetFace`;
+
+    //文字列をfloatに変換
+    string $tokens[];
+
+    // 取得したフェース法線情報を分割
+    tokenize $polyInfoResult[0] " " $tokens;
+
+    // フェース法線ベクトルを取得
+    vector $normalVector = <<(float)($tokens[2]), (float)($tokens[3]), (float)($tokens[3])>>;
+
+    return $normalVector;
+}
+
+/////////////////////////////////////////////////
+// ベクトル配列に含まれるか
+/////////////////////////////////////////////////
+global proc int shr_collisionUtils_vectorArrayContains(vector $vector, vector $vectorList[])
+{
+    int $result = false;
+
+    vector $elm;
+
+    for($elm in $vectorList)
+    {
+        if($vector == $elm)
+        {
+            $result = true;
+
+            break;
+        }
+    }
+
+    return $result;
+}
+
+/////////////////////////////////////////////////
+// 命名元にするノードを取得
+/////////////////////////////////////////////////
+global proc string shr_collisionUtils_getNodeToNameFrom(string $rootNode)
+{
+    string $nodeToNameFrom = "";
+
+    string $lod0Node = $rootNode + "|mesh|lod0";
+
+    if(`objExists $lod0Node`)
+    {
+        // lod0 ノード以下の全てのmesh ノードを取得
+        string $allMeshNodes[] = `listRelatives -ad -ni -f -type "mesh" $lod0Node`;
+
+        if(`size($allMeshNodes)` != 0)
+        {
+            string $parents[] = `listRelatives -parent $allMeshNodes[0]`;
+
+            $nodeToNameFrom = $parents[0];
+        }
+    }
+
+    // ネームスペースが付いている場合、ネームスペースを外した名前に
+    if(`gmatch $nodeToNameFrom "*:*"`)
+    {
+        string $tokens[] =  stringToStringArray($nodeToNameFrom, ":");
+
+        string $baseName = $tokens[`size($tokens)` - 1];
+
+        $nodeToNameFrom = `rename $nodeToNameFrom $baseName`;
+    }
+
+    return $nodeToNameFrom;
+}
+
+/////////////////////////////////////////////////
+// 命名対象のノードを取得
+/////////////////////////////////////////////////
+global proc string[] shr_collisionUtils_getTargetCollisionNodes(string $rootNode)
+{
+    // 命名対象のノード
+    string $targetNodes[];
+
+    // collision ノードを取得
+    string $collisionNode = shr_collisionUtils_getCollisionNode($rootNode);
+
+    if($collisionNode == "")
+    {
+        return $targetNodes;
+    }
+
+    // collision ノード以下の全てのmesh ノードを取得
+    string $allMeshNodes[] = `listRelatives -ad -ni -f -type "mesh" $collisionNode`;
+
+    string $meshNode;
+
+    // mesh ノードの親のトランスフォームノードを取得して配列に追加
+    for($meshNode in $allMeshNodes)
+    {
+        string $parent_nodes[] = `listRelatives -parent -f $meshNode`;
+        $targetNodes[`size($targetNodes)`] = $parent_nodes[0];
+    }
+
+    // 重複する項目を配列から削除
+    $targetNodes = stringArrayRemoveDuplicates($targetNodes);
+
+    return $targetNodes;
+}
+
+/////////////////////////////////////////////////
+// collision ノードを取得
+/////////////////////////////////////////////////
+global proc string shr_collisionUtils_getCollisionNode(string $rootNode)
+{
+    string $collisionNode;
+
+    // ルートノードの子ノードを取得
+    string $childNodes[] = `listRelatives -c -f -type "transform" $rootNode`;
+
+    string $childNode;
+
+    for($childNode in $childNodes)
+    {
+        if(endsWith($childNode, "|collision"))
+        {
+            $collisionNode = $childNode;
+
+            break;
+        }
+    }
+
+    return $collisionNode;
+}

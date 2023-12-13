@@ -1,0 +1,361 @@
+<?xml version="1.0"?>
+<deformerWeight>
+  <headerInfo fileName="C:\cygames\shrdev\shr_art\resources\characters\player\pfc\pfc1000_hero\work\maya\easy_bind/__rig__head_grp__mesh__lod5__teeth_lod5__teeth_lod5Shape.xml" worldMatrix="1.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 0.000000 1.000000 "/>
+  <shape name="teeth_lod5Shape" group="0" stride="3" size="140" max="139">
+    <point index="0" value=" -1.938842 -5.285629 163.382263"/>
+    <point index="1" value=" -1.884979 -3.757381 161.178864"/>
+    <point index="2" value=" -0.108994 -8.151747 162.577805"/>
+    <point index="3" value=" -0.361556 -5.457850 165.436584"/>
+    <point index="4" value=" -1.838073 -9.672796 163.348587"/>
+    <point index="5" value=" -1.710055 -8.253059 163.616760"/>
+    <point index="6" value=" -2.579299 -8.531118 164.067368"/>
+    <point index="7" value=" -1.756670 -8.414764 164.012070"/>
+    <point index="8" value=" -2.971355 -8.402036 164.808701"/>
+    <point index="9" value=" -1.555932 -9.077052 164.635666"/>
+    <point index="10" value=" -2.877429 -8.212110 164.091446"/>
+    <point index="11" value=" -2.131573 -7.982403 164.185074"/>
+    <point index="12" value=" -3.195346 -6.461549 164.303070"/>
+    <point index="13" value=" -2.715510 -6.417895 164.342987"/>
+    <point index="14" value=" -3.370736 -4.974580 164.605270"/>
+    <point index="15" value=" -3.411394 -5.026844 165.679779"/>
+    <point index="16" value=" -2.674287 -5.595875 164.533340"/>
+    <point index="17" value=" -3.302292 -5.569783 164.613770"/>
+    <point index="18" value=" -0.103256 -5.650856 165.525146"/>
+    <point index="19" value=" -1.324833 -10.573256 165.624725"/>
+    <point index="20" value=" -2.100434 -9.641747 164.349243"/>
+    <point index="21" value=" -0.104300 -7.823385 166.145538"/>
+    <point index="22" value=" -0.110367 -10.920392 164.299927"/>
+    <point index="23" value=" -2.121144 -9.663630 163.882065"/>
+    <point index="24" value=" -1.741155 -9.402045 163.901871"/>
+    <point index="25" value=" -0.109767 -10.852138 163.628601"/>
+    <point index="26" value=" -0.103653 -10.498399 163.430801"/>
+    <point index="27" value=" -0.642045 -10.440560 163.352798"/>
+    <point index="28" value=" -2.709944 -8.440854 163.418640"/>
+    <point index="29" value=" -3.549721 -5.077213 163.491943"/>
+    <point index="30" value=" -3.257152 -6.551744 164.350891"/>
+    <point index="31" value=" -2.330036 -6.304500 164.375854"/>
+    <point index="32" value=" -0.775095 -9.689284 163.326126"/>
+    <point index="33" value=" -0.105500 -10.023062 163.458557"/>
+    <point index="34" value=" -0.110713 -10.430258 164.334335"/>
+    <point index="35" value=" -0.430306 -5.472729 164.912384"/>
+    <point index="36" value=" -0.111355 -10.426220 162.207901"/>
+    <point index="37" value=" -0.102979 -5.202231 165.423325"/>
+    <point index="38" value=" -0.118389 -3.067908 161.263290"/>
+    <point index="39" value=" -0.107205 -5.157138 164.742615"/>
+    <point index="40" value=" -0.107580 -5.799423 164.815231"/>
+    <point index="41" value=" -0.088074 -11.111315 165.589203"/>
+    <point index="42" value=" -0.100827 -3.458689 164.702454"/>
+    <point index="43" value=" -1.424537 -9.260136 163.911057"/>
+    <point index="44" value=" -0.109204 -8.338092 163.265274"/>
+    <point index="45" value=" -2.046215 -7.370461 164.120193"/>
+    <point index="46" value=" -1.377188 -8.026755 164.908722"/>
+    <point index="47" value=" -0.107395 -9.306854 164.597107"/>
+    <point index="48" value=" -0.109246 -9.938289 163.747711"/>
+    <point index="49" value=" -0.107085 -8.002645 164.862640"/>
+    <point index="50" value=" -0.110284 -4.988404 164.262497"/>
+    <point index="51" value=" -0.102825 -4.286140 160.971008"/>
+    <point index="52" value=" -0.112261 -10.980544 163.646118"/>
+    <point index="53" value=" -0.103759 -10.584940 163.928131"/>
+    <point index="54" value=" -0.103404 -10.737415 163.910736"/>
+    <point index="55" value=" -2.409646 -8.773018 162.344986"/>
+    <point index="56" value=" -2.629231 -8.973631 165.730270"/>
+    <point index="57" value=" -1.319392 -4.993313 164.186630"/>
+    <point index="58" value=" -1.219907 -10.247258 163.434250"/>
+    <point index="59" value=" -1.254430 -10.398147 163.889709"/>
+    <point index="60" value=" -0.713270 -10.677715 163.912598"/>
+    <point index="61" value=" -1.697055 -9.709189 163.955338"/>
+    <point index="62" value=" -1.800413 -9.804314 163.919266"/>
+    <point index="63" value=" -1.635544 -10.099221 162.993958"/>
+    <point index="64" value=" -0.978745 -10.435398 162.966644"/>
+    <point index="65" value=" -0.379227 -10.569272 162.982605"/>
+    <point index="66" value=" -1.009182 -10.709477 164.323502"/>
+    <point index="67" value=" -1.070410 -10.838166 163.732635"/>
+    <point index="68" value=" -1.594475 -10.280972 164.355576"/>
+    <point index="69" value=" -1.662264 -10.394268 163.785507"/>
+    <point index="70" value=" -0.936503 -9.925498 164.471085"/>
+    <point index="71" value=" -2.125302 -10.163838 164.752655"/>
+    <point index="72" value=" -1.385816 -10.653466 164.667282"/>
+    <point index="73" value=" -0.607065 -11.025022 164.670822"/>
+    <point index="74" value=" -0.941827 -10.220514 162.214188"/>
+    <point index="75" value=" -0.105706 -11.080469 164.753571"/>
+    <point index="76" value=" -0.105486 -10.561666 163.024734"/>
+    <point index="77" value=" -2.540764 -9.484554 164.791931"/>
+    <point index="78" value=" -2.160170 -9.508620 163.111679"/>
+    <point index="79" value=" -1.388616 -10.171944 163.780624"/>
+    <point index="80" value=" -1.025062 -10.726864 163.714188"/>
+    <point index="81" value=" -1.193107 -10.242375 163.906937"/>
+    <point index="82" value=" -0.635263 -10.522054 163.906769"/>
+    <point index="83" value=" 1.725030 -5.290159 163.382950"/>
+    <point index="84" value=" 1.665608 -3.712615 161.195694"/>
+    <point index="85" value=" 0.155249 -5.457708 165.437088"/>
+    <point index="86" value=" 1.645678 -9.706103 163.351364"/>
+    <point index="87" value=" 1.504092 -8.268819 163.624741"/>
+    <point index="88" value=" 2.398947 -8.526048 164.055023"/>
+    <point index="89" value=" 1.543429 -8.419359 164.007843"/>
+    <point index="90" value=" 2.817259 -8.419232 164.782257"/>
+    <point index="91" value=" 1.348189 -9.086659 164.630814"/>
+    <point index="92" value=" 2.702700 -8.224608 164.069275"/>
+    <point index="93" value=" 1.942702 -7.997835 164.175308"/>
+    <point index="94" value=" 3.020557 -6.479451 164.281815"/>
+    <point index="95" value=" 2.543205 -6.430497 164.329056"/>
+    <point index="96" value=" 3.194937 -4.981398 164.598511"/>
+    <point index="97" value=" 3.247630 -5.030371 165.665146"/>
+    <point index="98" value=" 2.491685 -5.597034 164.517654"/>
+    <point index="99" value=" 3.115355 -5.569108 164.588333"/>
+    <point index="100" value=" 1.127936 -10.572965 165.624557"/>
+    <point index="101" value=" 1.904817 -9.650991 164.345779"/>
+    <point index="102" value=" 1.920184 -9.682208 163.871307"/>
+    <point index="103" value=" 1.545990 -9.395938 163.904495"/>
+    <point index="104" value=" 0.437143 -10.465795 163.349792"/>
+    <point index="105" value=" 2.545225 -8.470260 163.436432"/>
+    <point index="106" value=" 3.373990 -5.080708 163.492844"/>
+    <point index="107" value=" 3.112756 -6.541934 164.336472"/>
+    <point index="108" value=" 2.143427 -6.316796 164.388962"/>
+    <point index="109" value=" 0.561452 -9.707594 163.322571"/>
+    <point index="110" value=" 0.216152 -5.472506 164.913071"/>
+    <point index="111" value=" 1.204874 -9.269798 163.911850"/>
+    <point index="112" value=" 1.829710 -7.376366 164.120407"/>
+    <point index="113" value=" 1.159139 -8.023943 164.907120"/>
+    <point index="114" value=" 2.192567 -8.779331 162.358459"/>
+    <point index="115" value=" 2.469035 -8.987646 165.719147"/>
+    <point index="116" value=" 1.098734 -4.995790 164.186600"/>
+    <point index="117" value=" 1.002132 -10.269077 163.430725"/>
+    <point index="118" value=" 1.040018 -10.416616 163.893188"/>
+    <point index="119" value=" 0.509654 -10.694767 163.895950"/>
+    <point index="120" value=" 1.481872 -9.721313 163.960846"/>
+    <point index="121" value=" 1.592084 -9.812329 163.899643"/>
+    <point index="122" value=" 1.436754 -10.144143 162.988647"/>
+    <point index="123" value=" 0.773452 -10.472333 162.964752"/>
+    <point index="124" value=" 0.171534 -10.582782 162.974686"/>
+    <point index="125" value=" 0.784953 -10.724523 164.316895"/>
+    <point index="126" value=" 0.848462 -10.845632 163.726166"/>
+    <point index="127" value=" 1.387485 -10.296437 164.347321"/>
+    <point index="128" value=" 1.447919 -10.402256 163.781311"/>
+    <point index="129" value=" 0.719247 -9.931170 164.466904"/>
+    <point index="130" value=" 1.928316 -10.184931 164.749298"/>
+    <point index="131" value=" 1.174588 -10.669220 164.671677"/>
+    <point index="132" value=" 0.392261 -11.038087 164.666870"/>
+    <point index="133" value=" 0.724909 -10.258274 162.209183"/>
+    <point index="134" value=" 2.356066 -9.501811 164.778641"/>
+    <point index="135" value=" 1.978416 -9.547599 163.115173"/>
+    <point index="136" value=" 1.163477 -10.190048 163.785019"/>
+    <point index="137" value=" 0.804333 -10.734513 163.708679"/>
+    <point index="138" value=" 0.975539 -10.265574 163.908051"/>
+    <point index="139" value=" 0.407666 -10.530046 163.914093"/>
+    <polygonCounts size="198" polygonCounts="3 4 4 3 3 3 3 4 4 3 4 3 3 3 3 4 4 3 4 4 3 4 4 4 3 4 3 3 4 3 3 3 3 4 3 4 3 3 3 3 3 3 3 3 3 4 3 3 4 3 3 4 4 4 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 4 3 3 3 3 3 3 3 4 3 3 4 4 3 3 4 4 4 4 3 4 3 4 4 3 3 3 4 4 3 4 3 3 3 3 4 4 4 4 4 4 3 4 3 3 4 3 3 3 3 4 3 4 3 3 3 3 3 3 3 3 3 4 3 3 4 3 3 4 4 4 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 4 3 3 3 3 3 3 3 4 3 3 4 4 3 3 4 4 4 4 3 4 4 4 3 3 4 3 3 3 3 3 "/>
+    <polygonConnects size="656" polygonConnects="0 16 31 3 16 42 37 37 39 35 3 62 78 4 12 10 8 17 29 30 72 73 19 3 35 40 18 8 10 23 77 9 24 11 10 11 24 23 69 72 68 66 67 73 70 80 79 65 76 26 2 0 31 5 33 32 82 53 28 6 30 31 30 6 7 62 61 7 6 31 7 5 82 60 54 53 31 16 17 30 17 16 13 12 40 35 39 8 56 15 12 13 9 11 9 21 70 13 16 3 21 47 43 48 44 48 43 45 44 43 47 49 46 50 57 46 49 44 0 2 80 67 69 79 45 0 44 47 46 43 57 1 0 15 17 12 9 13 21 2 32 33 5 32 2 43 46 45 1 16 0 29 55 28 30 56 8 77 45 57 0 42 16 1 38 21 3 18 46 57 45 51 1 57 50 61 62 59 81 55 74 63 78 32 61 81 61 32 5 61 5 7 59 63 58 59 64 60 60 65 54 4 63 62 62 63 59 58 64 59 60 64 27 27 65 60 54 65 26 23 71 20 70 21 34 69 68 71 69 71 23 66 72 67 67 72 69 73 52 22 73 67 52 58 63 64 73 75 41 19 64 65 27 74 65 64 64 63 74 71 72 19 68 72 71 66 73 72 73 22 75 36 76 65 74 77 23 20 71 77 20 56 77 71 19 6 28 78 62 55 78 28 78 63 4 79 69 23 24 9 70 79 24 34 25 80 70 25 52 67 80 32 81 82 60 82 81 59 83 108 98 85 37 42 98 37 85 110 39 121 86 135 99 106 96 131 100 132 85 18 40 110 90 134 102 92 91 93 103 92 102 103 93 128 127 131 125 132 126 129 136 137 124 26 76 2 87 108 83 33 53 139 109 121 88 89 120 139 53 54 119 108 107 99 98 99 94 95 98 40 39 110 90 94 97 115 95 93 91 91 129 21 95 21 85 98 47 48 111 44 111 48 112 111 44 47 113 49 50 49 113 116 44 2 83 137 136 128 126 112 44 83 47 111 113 116 83 84 97 99 96 91 21 95 2 33 109 87 2 109 111 112 113 84 83 98 106 107 105 114 115 134 90 112 83 116 84 98 42 38 21 18 85 113 112 116 51 50 116 84 120 138 118 121 114 135 122 133 109 138 120 120 87 109 120 89 87 118 117 122 118 119 123 119 54 124 86 121 122 121 118 122 117 118 123 119 104 123 104 119 124 54 26 124 102 101 130 129 34 21 128 130 127 128 102 130 125 126 131 126 128 131 132 22 52 132 52 126 117 123 122 132 100 41 75 123 104 124 133 123 124 123 133 122 130 100 131 127 130 131 125 131 132 132 75 22 36 133 124 76 134 101 102 130 101 134 115 100 130 134 88 121 135 105 114 105 135 135 86 122 136 103 102 128 91 103 136 129 34 129 137 25 25 137 126 52 109 139 138 119 118 138 139 12 13 11 10 94 92 93 95 94 90 92 88 105 107 108 89 88 107 108 87 89 15 14 17 17 14 29 97 94 99 99 107 106 "/>
+  </shape>
+  <weights deformer="teeth_lod5_mesh_skinCluster" source="FACIAL_C_TeethUpper" shape="teeth_lod5Shape" layer="0" defaultValue="0.00000000" size="79" max="137">
+    <point index="0" value="0.24874826"/>
+    <point index="1" value="0.87072569"/>
+    <point index="3" value="1.00000000"/>
+    <point index="8" value="1.00000000"/>
+    <point index="9" value="1.00000000"/>
+    <point index="10" value="1.00000000"/>
+    <point index="11" value="1.00000000"/>
+    <point index="12" value="1.00000000"/>
+    <point index="13" value="1.00000000"/>
+    <point index="14" value="0.50228900"/>
+    <point index="15" value="0.95026588"/>
+    <point index="16" value="0.49971154"/>
+    <point index="17" value="0.49292919"/>
+    <point index="18" value="1.00000000"/>
+    <point index="19" value="0.99999994"/>
+    <point index="20" value="1.00000000"/>
+    <point index="21" value="1.00000000"/>
+    <point index="22" value="1.00000000"/>
+    <point index="23" value="1.00000000"/>
+    <point index="24" value="1.00000000"/>
+    <point index="25" value="1.00000000"/>
+    <point index="29" value="0.06052296"/>
+    <point index="34" value="1.00000000"/>
+    <point index="35" value="1.00000000"/>
+    <point index="37" value="1.00000000"/>
+    <point index="38" value="0.99879003"/>
+    <point index="39" value="1.00000000"/>
+    <point index="40" value="1.00000000"/>
+    <point index="41" value="0.99999994"/>
+    <point index="42" value="0.99931282"/>
+    <point index="50" value="0.16285947"/>
+    <point index="51" value="0.57180834"/>
+    <point index="52" value="1.00000000"/>
+    <point index="56" value="1.00000000"/>
+    <point index="57" value="0.20722167"/>
+    <point index="66" value="1.00000000"/>
+    <point index="67" value="1.00000000"/>
+    <point index="68" value="1.00000000"/>
+    <point index="69" value="1.00000000"/>
+    <point index="70" value="1.00000000"/>
+    <point index="71" value="1.00000000"/>
+    <point index="72" value="1.00000000"/>
+    <point index="73" value="1.00000000"/>
+    <point index="75" value="1.00000000"/>
+    <point index="77" value="1.00000000"/>
+    <point index="79" value="1.00000000"/>
+    <point index="80" value="1.00000000"/>
+    <point index="83" value="0.24868993"/>
+    <point index="84" value="0.87070119"/>
+    <point index="85" value="1.00000000"/>
+    <point index="90" value="1.00000000"/>
+    <point index="91" value="1.00000000"/>
+    <point index="92" value="1.00000000"/>
+    <point index="93" value="1.00000000"/>
+    <point index="94" value="1.00000000"/>
+    <point index="95" value="1.00000000"/>
+    <point index="96" value="0.50212121"/>
+    <point index="97" value="0.95026588"/>
+    <point index="98" value="0.50495976"/>
+    <point index="99" value="0.49237061"/>
+    <point index="100" value="1.00000000"/>
+    <point index="101" value="1.00000000"/>
+    <point index="102" value="1.00000000"/>
+    <point index="103" value="1.00000000"/>
+    <point index="106" value="0.06052301"/>
+    <point index="110" value="1.00000000"/>
+    <point index="115" value="1.00000000"/>
+    <point index="116" value="0.20561892"/>
+    <point index="125" value="1.00000000"/>
+    <point index="126" value="1.00000000"/>
+    <point index="127" value="1.00000000"/>
+    <point index="128" value="1.00000000"/>
+    <point index="129" value="1.00000000"/>
+    <point index="130" value="1.00000000"/>
+    <point index="131" value="1.00000000"/>
+    <point index="132" value="1.00000000"/>
+    <point index="134" value="1.00000000"/>
+    <point index="136" value="1.00000000"/>
+    <point index="137" value="1.00000000"/>
+  </weights>
+  <weights deformer="teeth_lod5_mesh_skinCluster" source="FACIAL_C_TeethLower" shape="teeth_lod5Shape" layer="1" defaultValue="0.00000000" size="77" max="139">
+    <point index="0" value="0.62254280"/>
+    <point index="1" value="0.12284841"/>
+    <point index="2" value="0.92229384"/>
+    <point index="4" value="1.00000000"/>
+    <point index="5" value="1.00000000"/>
+    <point index="6" value="1.00000000"/>
+    <point index="7" value="1.00000000"/>
+    <point index="14" value="0.49771112"/>
+    <point index="15" value="0.04973412"/>
+    <point index="16" value="0.50028843"/>
+    <point index="17" value="0.50707096"/>
+    <point index="26" value="1.00000000"/>
+    <point index="27" value="1.00000000"/>
+    <point index="28" value="1.00000000"/>
+    <point index="29" value="0.93947703"/>
+    <point index="30" value="1.00000000"/>
+    <point index="31" value="1.00000000"/>
+    <point index="32" value="1.00000000"/>
+    <point index="33" value="1.00000000"/>
+    <point index="36" value="1.00000000"/>
+    <point index="38" value="0.00120997"/>
+    <point index="42" value="0.00068718"/>
+    <point index="43" value="0.00324885"/>
+    <point index="44" value="0.65391499"/>
+    <point index="45" value="0.02646452"/>
+    <point index="48" value="0.00086724"/>
+    <point index="50" value="0.39232463"/>
+    <point index="51" value="0.39398292"/>
+    <point index="53" value="1.00000000"/>
+    <point index="54" value="1.00000000"/>
+    <point index="55" value="1.00000000"/>
+    <point index="57" value="0.37838405"/>
+    <point index="58" value="1.00000000"/>
+    <point index="59" value="1.00000000"/>
+    <point index="60" value="1.00000000"/>
+    <point index="61" value="1.00000000"/>
+    <point index="62" value="1.00000000"/>
+    <point index="63" value="1.00000000"/>
+    <point index="64" value="1.00000000"/>
+    <point index="65" value="1.00000000"/>
+    <point index="74" value="1.00000000"/>
+    <point index="76" value="1.00000000"/>
+    <point index="78" value="1.00000000"/>
+    <point index="81" value="1.00000000"/>
+    <point index="82" value="1.00000000"/>
+    <point index="83" value="0.61320001"/>
+    <point index="84" value="0.12384350"/>
+    <point index="86" value="1.00000000"/>
+    <point index="87" value="1.00000000"/>
+    <point index="88" value="1.00000000"/>
+    <point index="89" value="1.00000000"/>
+    <point index="96" value="0.49787891"/>
+    <point index="97" value="0.04973413"/>
+    <point index="98" value="0.49504018"/>
+    <point index="99" value="0.50762951"/>
+    <point index="104" value="1.00000000"/>
+    <point index="105" value="1.00000000"/>
+    <point index="106" value="0.93947697"/>
+    <point index="107" value="1.00000000"/>
+    <point index="108" value="1.00000000"/>
+    <point index="109" value="1.00000000"/>
+    <point index="111" value="0.00315020"/>
+    <point index="112" value="0.02696601"/>
+    <point index="114" value="1.00000000"/>
+    <point index="116" value="0.39515662"/>
+    <point index="117" value="1.00000000"/>
+    <point index="118" value="1.00000000"/>
+    <point index="119" value="1.00000000"/>
+    <point index="120" value="1.00000000"/>
+    <point index="121" value="1.00000000"/>
+    <point index="122" value="1.00000000"/>
+    <point index="123" value="1.00000000"/>
+    <point index="124" value="1.00000000"/>
+    <point index="133" value="1.00000000"/>
+    <point index="135" value="1.00000000"/>
+    <point index="138" value="1.00000000"/>
+    <point index="139" value="1.00000000"/>
+  </weights>
+  <weights deformer="teeth_lod5_mesh_skinCluster" source="FACIAL_C_Tongue1" shape="teeth_lod5Shape" layer="2" defaultValue="0.00000000" size="13" max="116">
+    <point index="0" value="0.11587111"/>
+    <point index="1" value="0.00642607"/>
+    <point index="45" value="0.11436325"/>
+    <point index="46" value="0.03564352"/>
+    <point index="49" value="0.02936713"/>
+    <point index="50" value="0.39506963"/>
+    <point index="51" value="0.03420877"/>
+    <point index="57" value="0.36740917"/>
+    <point index="83" value="0.12657341"/>
+    <point index="84" value="0.00545518"/>
+    <point index="112" value="0.11294693"/>
+    <point index="113" value="0.03571659"/>
+    <point index="116" value="0.35161760"/>
+  </weights>
+  <weights deformer="teeth_lod5_mesh_skinCluster" source="FACIAL_C_Tongue2" shape="teeth_lod5Shape" layer="3" defaultValue="0.00000000" size="13" max="116">
+    <point index="0" value="0.01283759"/>
+    <point index="43" value="0.00385657"/>
+    <point index="45" value="0.55574393"/>
+    <point index="46" value="0.40755707"/>
+    <point index="47" value="0.01893489"/>
+    <point index="49" value="0.40043861"/>
+    <point index="50" value="0.04974620"/>
+    <point index="57" value="0.04698506"/>
+    <point index="83" value="0.01153672"/>
+    <point index="111" value="0.00389137"/>
+    <point index="112" value="0.55705464"/>
+    <point index="113" value="0.40770581"/>
+    <point index="116" value="0.04760673"/>
+  </weights>
+  <weights deformer="teeth_lod5_mesh_skinCluster" source="FACIAL_C_Tongue3" shape="teeth_lod5Shape" layer="4" defaultValue="0.00000000" size="11" max="113">
+    <point index="2" value="0.07770623"/>
+    <point index="43" value="0.23422988"/>
+    <point index="44" value="0.18383507"/>
+    <point index="45" value="0.30342826"/>
+    <point index="46" value="0.48610741"/>
+    <point index="47" value="0.37866175"/>
+    <point index="48" value="0.01880085"/>
+    <point index="49" value="0.50409561"/>
+    <point index="111" value="0.24077523"/>
+    <point index="112" value="0.30303243"/>
+    <point index="113" value="0.48592904"/>
+  </weights>
+  <weights deformer="teeth_lod5_mesh_skinCluster" source="FACIAL_C_Tongue4" shape="teeth_lod5Shape" layer="5" defaultValue="0.00000000" size="8" max="113">
+    <point index="43" value="0.75866485"/>
+    <point index="44" value="0.16224983"/>
+    <point index="46" value="0.07069196"/>
+    <point index="47" value="0.60240340"/>
+    <point index="48" value="0.98033190"/>
+    <point index="49" value="0.06609866"/>
+    <point index="111" value="0.75218320"/>
+    <point index="113" value="0.07064858"/>
+  </weights>
+</deformerWeight>

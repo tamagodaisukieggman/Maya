@@ -1,0 +1,166 @@
+//===============================================
+//
+// 選択エッジの長さを表示
+// 選択2頂点間の距離を表示
+//
+// Fujita Yukihiro
+//
+//===============================================
+
+global proc shr_dispEdgeLength()
+{
+    // TA ツールログ送信
+    shr_toolLog("Display Edge Length", "1.0.0", "launched.");
+
+    // 選択エッジ取得
+    string $selEdges[] = `filterExpand -selectionMask 32`;
+
+    // 選択頂点取得
+    string $selVertex[] = `filterExpand -selectionMask 31`;
+
+    vector $pos1;
+    vector $pos2;
+
+    //合計エッジ長
+    float $TotalEdgeLength = 0.0;
+
+    //解像度
+    int $resolution = 0;
+
+    //プリファレンスに値が無ければデフォルト値を設定
+    if (`optionVar -ex "shr_dispEdgeLength_unitsPerMeter"` == 0)
+    {
+        optionVar -fv "shr_dispEdgeLength_unitsPerMeter" 100.0;
+    }
+    if (`optionVar -ex "shr_dispEdgeLength_pixelsPerMeter"` == 0)
+    {
+        optionVar -iv "shr_dispEdgeLength_pixelsPerMeter" 256;
+    }
+
+    // 1m あたりのMayaユニット数
+    float $unitsPerMeter = `optionVar -q "shr_dispEdgeLength_unitsPerMeter"`;
+
+    // 1m あたりのピクセル数
+    int $pixelsPerMeter = `optionVar -q "shr_dispEdgeLength_pixelsPerMeter"`;
+
+    //UVスケール値
+    float $uv_a;
+    float $uv_b;
+    float $uv_c;
+    float $uv_d;
+
+    //小数点以下の桁数
+    int $digits = 4;
+
+    if (size($selEdges) != 0)
+        {
+            //選択エッジの長さを一つずつ計算
+            for($currentEdge in $selEdges)
+                {
+                    //現在のエッジを頂点に変換
+                    $edgeVertex = `polyListComponentConversion -fromEdge -toVertex $currentEdge`;
+                    $currentVertex =`filterExpand -sm 31 $edgeVertex`;
+
+                    //現在のエッジの頂点座標を変数に格納
+                    $pos1 = `pointPosition -world $currentVertex[0]`;
+                    $pos2 = `pointPosition -world $currentVertex[1]`;
+
+                    //現在のエッジの長さを計算
+                    float $currentEdgeLength = mag($pos1 - $pos2);
+
+                    //現在のエッジの長さを合計エッジ長に加算
+                    $TotalEdgeLength += $currentEdgeLength;
+                }
+
+            string $message = "  Total Edge Length : " + $TotalEdgeLength + "  ";
+
+            //デバッグ表示（計算値）
+            print ($message + "\n");
+
+            //ビューに合計エッジ長表示
+            headsUpMessage
+                -verticalOffset -80
+                $message;
+        }
+    else if(size($selVertex) == 2)
+        {
+            $pos1 = `pointPosition -world $selVertex[0]`;
+            $pos2 = `pointPosition -world $selVertex[1]`;
+
+            $TotalEdgeLength = mag($pos1 - $pos2);
+
+            string $message = "  Distance ： " + $TotalEdgeLength + "  ";
+
+            //デバッグ表示（計算値）
+            print ($message + "\n");
+
+            //ビューに合計エッジ長表示
+            headsUpMessage
+                -verticalOffset -80
+                $message;
+        }
+    else
+        {
+            //エッジが選択されていない、ちょうど２頂点が選択されていない
+            headsUpMessage
+                -verticalOffset -80
+                "エッジ、もしくは2頂点が選択されていません。";
+            print ("エッジ、もしくは2頂点が選択されていません"+"\n");
+
+            return;
+        }
+
+            //解像度計算（１ｍあたり２５６ピクセル計算、四捨五入して整数値化）
+            $resolution = floor(($TotalEdgeLength/$unitsPerMeter*$pixelsPerMeter)+0.5);
+
+            //UVスケール値計算（指定小数点以下を切り捨て）
+            $uv_qt = shr_dispEdgeLength_digitsPrecision($TotalEdgeLength / ($unitsPerMeter / 4), $digits);
+            $uv_hf = shr_dispEdgeLength_digitsPrecision($TotalEdgeLength / ($unitsPerMeter / 2), $digits);
+            $uv_1x = shr_dispEdgeLength_digitsPrecision($TotalEdgeLength / $unitsPerMeter,       $digits);
+            $uv_2x = shr_dispEdgeLength_digitsPrecision($TotalEdgeLength / ($unitsPerMeter * 2), $digits);
+            $uv_4x = shr_dispEdgeLength_digitsPrecision($TotalEdgeLength / ($unitsPerMeter * 4), $digits);
+            $uv_8x = shr_dispEdgeLength_digitsPrecision($TotalEdgeLength / ($unitsPerMeter * 8), $digits);
+
+            //合計エッジ長（指定小数点以下を切り捨て）
+            $TotalEdgeLength = shr_dispEdgeLength_digitsPrecision($TotalEdgeLength / $unitsPerMeter, $digits);
+
+            //実寸エッジ長
+            string $log_m = $TotalEdgeLength + " m    ";
+            string $log_cm = ($TotalEdgeLength * 100) + " cm    ";
+            string $log_mm = ($TotalEdgeLength * 1000) + " mm    ";
+
+            //解像度
+            string $log2 = $resolution + " pixel        UV : ";
+
+            // UV 1/4
+            string $log3 = $uv_qt + " (" + ($pixelsPerMeter/4) + " tex)    ";
+
+            // UV 1/2
+            string $log4 = $uv_hf + " (" + ($pixelsPerMeter/2) + " tex)    ";
+
+            // UV 等倍
+            string $log5 = $uv_1x + " (" + $pixelsPerMeter + " tex)    ";
+
+            // UV *2
+            string $log6 = $uv_2x + " (" + ($pixelsPerMeter*2) + " tex)    ";
+
+            // UV *4
+            string $log7 = $uv_4x + " (" + ($pixelsPerMeter*4) + " tex)    ";
+
+            // UV *8
+            string $log8 = $uv_8x + " (" + ($pixelsPerMeter*8) + " tex)\n";
+
+            //メッセージラインに実寸エッジ長、解像度、UVスケール値を表示
+            print ($log_m + $log_cm + $log_mm + $log2 + $log3 + $log4 + $log5 + $log6 + $log7 + $log8);
+}
+
+//===============================================
+// 小数点以下の精度
+//===============================================
+global proc float shr_dispEdgeLength_digitsPrecision(float $input_value, int $digits)
+{
+    //桁を上げて小数点以下を切り捨てて、桁を戻す
+    $digits = `pow 10 $digits`;
+    $input_value = (floor($input_value * $digits)) / $digits;
+    return $input_value;
+}

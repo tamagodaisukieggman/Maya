@@ -1,0 +1,72 @@
+{
+	"Application" : "Maya",
+	"Version" : "4.1",
+	"Name" : "Maya",
+	"Operation" : "MeshOperation",
+	"CombineInputMeshes" : false,
+	"SmoothingGroupImport" : "None",
+	"Export" : {
+		"FBXEmbedMedia" : false,
+		"FBXGroupByMeshOperationEntry" : false,
+		"FBXGroupApplyLODGroupAttribute" : false,
+		"FBXGroupCreateInRoot" : true,
+		"FBXExportUVs" : true,
+		"FBXExportNormals" : true,
+		"FBXExportBinormalsAndTangents" : false,
+		"FBXExportSmoothingGroups" : true,
+		"FBXExportColors" : true,
+		"FBXExportEmptyMeshes" : true,
+		"FBXExportEmptyNodes" : true
+	},
+	"MeshOperation" : {
+		"UsePreviousOutputAsInput" : false,
+		"PreserveInputMesh" : false,
+		"GlobalScope" : false,
+		"Entries" : [
+			{
+				"Name" : "INSTALOD",
+				"MeshNameFilterRegEx" : ".*",
+				"Type" : "Optimize",
+				"ForceOptimization" : true,
+				"OptimizerWeightsColorSetNameRegEx" : "",
+				"OptimizerWeightsSelectionSetNameRegEx" : "",
+				"Settings" : {
+					"PercentTriangles" : 0.5,
+					"AbsoluteTriangles" : 0,
+					"ScreenSizeInPixels" : 0,
+					"MaxDeviation" : 0.0,
+					"WeldingThreshold" : 0.0,
+					"WeldingProtectDistinctUVShells" : true,
+					"WeldingNormalAngleThreshold" : 90.0,
+					"HealTJunctionThreshold" : 0.0,
+					"OptimizerVertexWeights" : false,
+					"OptimalPlacement" : true,
+					"RecalculateNormals" : false,
+					"HardAngleThreshold" : 80.0,
+					"WeightedNormals" : true,
+					"NormalHealingMode" : "Default",
+					"LockSplits" : false,
+					"LockBoundaries" : false,
+					"ProtectSplits" : true,
+					"ProtectBoundaries" : true,
+					"UnitScaleFactor" : 1.0,
+					"BoundaryImportance" : "Normal",
+					"TextureImportance" : "Normal",
+					"ShadingImportance" : "Normal",
+					"SilhouetteImportance" : "Normal",
+					"SkinningImportance" : "Normal",
+					"NormalizeMeshScale" : true,
+					"AlgorithmStrategy" : "Smart_v2",
+					"SkeletonOptimize" : {
+						"LeafBoneWeldDistance" : 0.0,
+						"MaximumBoneDepth" : 0,
+						"MaximumBoneInfluencesPerVertex" : 0,
+						"MinimumBoneInfluenceThreshold" : 0.0,
+						"IgnoreJointRegEx" : ""
+					}
+				}
+			}
+		]
+	}
+}
+

@@ -1,0 +1,71 @@
+global proc CyUVSnap()
+{
+
+string $sels[] = `ls -sl -fl -type float2`;
+string $hilite_model[]=`ls -hl`;
+string $tokens[] , $object , $vertex , $obj;
+if((`size $sels`)==0){return;}
+
+int $numTokens = `tokenize $sels[0] "." $tokens`;  //----コンポーネント名を省いたオブジェクト名を抽出
+if($numTokens > 0) {
+	$object = $tokens[0];
+}
+
+string $get[] , $obj; //----全UVを$getに格納
+int $cc=0 , $i=0;  //----$CCは全UV数をカウント、$iは1個に全UVを格納
+for($obj in $hilite_model) { 
+	int $sizeUV[] = `polyEvaluate -uv $obj `;  //----UV数を取得
+	for($i = 0 ; $i < ($sizeUV[0] ) ; $i++) { 
+		$get[$cc] = $obj + ".map[" + $i + "]";
+		$cc++;
+	}
+	$i=0;
+}
+
+string $diffs[] = stringArrayRemove($sels, $get);
+
+/////////////////////////    
+int $amount = 0;
+int $size = `size  $sels`;
+/////////////////////////    
+
+for($vertex in $sels){
+/////////////////////////    
+	progressWindow -t "Working" -progress $amount -min 0 -max $size -status "Completed : "-isInterruptable true;
+	progressWindow -e -progress $amount -status ( "Completed UV : "+$amount+" / "+ $size );
+/////////////////////////  
+
+	float $selectedUV[] = `polyEditUV -q $vertex`;  //----選択UV値を取得
+
+	float $diff[], $min_diff[], $dist, $min_dist;
+	int  $flag=0 ,$c=0;
+
+	string $v;
+	for($v in $diffs) {  //----メッシュUVに対するループ
+
+		float $UV[] = `polyEditUV -q $v`;  //----各UVの値を取得し、選択UVとの距離を算出
+		$diff[0] = $UV[0] - $selectedUV[0];
+		$diff[1] = $UV[1] - $selectedUV[1];
+		$dist = `sqrt ($diff[0] * $diff[0] + $diff[1] * $diff[1])`;
+		if($c == 0 || $dist < $min_dist) {  //----最短距離のUVを記録
+			$min_dist = $dist;
+			$min_diff[0] = $diff[0];
+			$min_diff[1] = $diff[1];
+			$c++;
+		}
+	}
+
+/////////////////////////  
+	if ( `progressWindow -q -isCancelled` ) break;
+	if ( `progressWindow -q -progress` >= $size) break;
+	$amount += 1;
+	//pause -seconds 1;
+/////////////////////////  
+
+	polyEditUV -r true -u $min_diff[0] -v $min_diff[1] $vertex ;  //----選択UVを、最短距離にあるUVに移動
+	clear $min_diff;
+}
+
+progressWindow -endProgress;
+
+}

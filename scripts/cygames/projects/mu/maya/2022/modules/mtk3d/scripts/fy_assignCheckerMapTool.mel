@@ -1,0 +1,354 @@
+//===============================================
+//
+// チェッカーテクスチャアサインツール
+//
+// Fujita Yukihiro
+//
+//===============================================
+
+global proc fy_assignCheckerMapTool()
+{
+    global string $CHECKERMAPPATH_FY_ASSIGNCHECKERMAP[];
+
+    $CHECKERMAPPATH_FY_ASSIGNCHECKERMAP = 
+    {
+        "//CGS-STR-PRI01-M/mutsunokami_storage/30_design/chara/04_common/checker/2048/checker_2048a.tif",
+        "//CGS-STR-PRI01-M/mutsunokami_storage/30_design/chara/04_common/checker/2048/checker_2048b.tif",
+        "//CGS-STR-PRI01-M/mutsunokami_storage/30_design/chara/04_common/checker/4096/checker_4096a.tif",
+        "//CGS-STR-PRI01-M/mutsunokami_storage/30_design/chara/04_common/checker/4096/checker_4096b.tif"
+    };
+
+    global string $CHECKERMAPFILENODE_FY_ASSIGNCHECKERMAP[];
+
+    $CHECKERMAPFILENODE_FY_ASSIGNCHECKERMAP = 
+    {
+        "checker_2048a_tif",
+        "checker_2048b_tif",
+        "checker_4096a_tif",
+        "checker_4096b_tif"
+    };  
+    
+    //すでにウィンドウがあれば終了
+    if (`window -exists uWnd_fy_assignCheckerMapTool` == 1)
+    {
+        deleteUI uWnd_fy_assignCheckerMapTool;
+        //return;
+    }
+    
+    window 
+        -title "Assign Checker Map"
+        -resizeToFitChildren on
+        -sizeable off
+        -maximizeButton off
+        -menuBar off
+        -toolbox on
+        uWnd_fy_assignCheckerMapTool;
+
+        string $form = `formLayout`;
+
+        
+        string $rl = `rowLayout -nc 4`;
+
+            iconTextButton  
+                -style "iconAndTextVertical"
+                -image "fy_assignCheckerMapTool/checker_2048a_icn.png"
+                -c "fy_assignCheckerMapTool_btnClickCallback(0)"
+                -l "解像度 : 2048";
+
+            iconTextButton  
+                -style "iconAndTextVertical"
+                -image "fy_assignCheckerMapTool/checker_2048b_icn.png"
+                -c "fy_assignCheckerMapTool_btnClickCallback(1)"
+                -l "解像度 : 2048";
+
+            iconTextButton  
+                -style "iconAndTextVertical"
+                -image "fy_assignCheckerMapTool/checker_4096a_icn.png"
+                -c "fy_assignCheckerMapTool_btnClickCallback(2)"
+                -l "解像度 : 4096";
+
+            iconTextButton  
+                -style "iconAndTextVertical"
+                -image "fy_assignCheckerMapTool/checker_4096b_icn.png"
+                -c "fy_assignCheckerMapTool_btnClickCallback(3)"
+                -l "解像度 : 4096";
+
+            setParent ..;
+            
+        string $b1 = `button -l "元に戻す" -bgc 0.5 0.6 0.5 -c "fy_assignCheckerMapTool_restoreConnections"`;
+        
+        string $cb = `iconTextCheckBox
+            -style "iconAndTextHorizontal"
+            -ann "イメージフィルタ オフ"
+            -l "イメージフィルタ オフ"
+            -image "filteredMode.png"
+            -onc "fy_assignCheckerMapTool_unfilterImages(0)"
+            -ofc "fy_assignCheckerMapTool_unfilterImages(3)"
+            uCb_unfilterImage_fy_assignCheckerMapTool`;
+
+        string $sp = `separator -hr false`;
+
+        string $helpCmd = "python(\"import webbrowser\\nwebbrowser.open('https://wisdom.cygames.jp/pages/viewpage.action?pageId=156635283')\")";
+
+        string $help = `iconTextButton 
+            -style "iconAndTextHorizontal"
+            -ann "Assign Checker Map Tool のヘルプ"
+            -l "ヘルプ"
+            -image "help.png"
+            -c $helpCmd
+            `;
+
+        formLayout -edit
+            -attachForm     $cb "top"   4
+            -attachForm $cb "left" 4
+            -attachNone  $cb "bottom"
+            -attachNone     $cb "right"
+
+            -attachForm     $sp "top"   4
+            -attachControl $sp "left" 4 $cb
+            -attachControl  $sp "bottom" 4 $rl
+            -attachNone     $sp "right" 
+
+            -attachForm     $help "top"   4
+            -attachControl $help "left" 4 $sp
+            -attachNone  $help "bottom"
+            -attachNone     $help "right" 
+
+            -attachControl $rl     "top"    4 $cb
+            -attachForm $rl     "left"   4
+            -attachNone $rl     "bottom"
+            -attachForm $rl     "right"  4
+        
+            -attachControl     $b1     "top" 12 $rl
+            -attachForm     $b1     "left"   4
+            -attachForm     $b1     "right" 4
+            -attachForm     $b1     "bottom"  4
+
+        $form;
+
+    showWindow;
+}
+
+
+///////////////////////////////////////////////////////
+// ボタンコールバック
+///////////////////////////////////////////////////////
+global proc fy_assignCheckerMapTool_btnClickCallback(int $checkerMapIndex)
+{
+    global string $CHECKERMAPFILENODE_FY_ASSIGNCHECKERMAP[];
+
+    // 対象マテリアルを取得
+    string $targetMaterials[] = `fy_assignCheckerMapTool_getTargetMaterials`;
+
+    // 対象マテリアルが無ければ終了
+    if(`size($targetMaterials)` == 0)
+    {
+        return;
+    }
+
+    // チェッカーテクスチャfile ノードを作成
+    string $fileNode = fy_assignCheckerMapTool_createCheckerMapFileNode($checkerMapIndex);
+    
+    // file ノードが作成できなければ終了
+    if($fileNode == "")
+    {
+        return;
+    }
+    
+    string $targetMaterial;
+    
+    for($targetMaterial in $targetMaterials)
+    {
+        // color アトリビュートが存在すれば
+        if(`attributeExists "color" $targetMaterial`)
+        {
+            // 現在のアサインを取得
+            string $currentFileNode[] = `listConnections -s true ($targetMaterial + ".color")`;
+            
+            // 同じチェッカーテクスチャの場合
+            if($fileNode == $currentFileNode[0])
+            {
+                continue;
+            }
+
+            // 現在のアサインがチェッカーテクスチャのいずれでもない場合
+            if(stringArrayContains($currentFileNode[0], $CHECKERMAPFILENODE_FY_ASSIGNCHECKERMAP) == false)
+            {
+                // 元のアサイン情報を保持するためのカスタムアトリビュートが無ければ作成
+                if(`attributeExists "previouslyConnectedNode" $targetMaterial` == false)
+                {
+                    addAttr -longName "previouslyConnectedNode" -dt "string" $targetMaterial;
+                } 
+                
+                // カスタムアトリビュートに値を設定
+                setAttr ($targetMaterial + ".previouslyConnectedNode") -type "string" $currentFileNode[0];
+            }
+            
+            // file ノードをcolor にアサイン
+            connectAttr -force ($fileNode + ".outColor") ($targetMaterial + ".color");
+        }
+    }
+}
+
+///////////////////////////////////////////////////////
+// 対象マテリアルを取得
+///////////////////////////////////////////////////////
+global proc string[] fy_assignCheckerMapTool_getTargetMaterials()
+{
+    // 現在の選択を取得
+    string $sel[] = `ls -sl`;
+    
+    // 直に選択しているマテリアルを取得
+    string $selMaterials[] = `ls -sl -mat`;
+    
+    // 選択モデルにアサインされているマテリアルを選択
+    hyperShade -smn;    
+
+    string $assignedMaterials[] = `ls -sl`;
+
+    // 選択を復元
+    select -r $sel;
+
+    string $targetMaterials[] = stringArrayCatenate($selMaterials, $assignedMaterials);
+    
+    // 重複を削除
+    $targetMaterials = stringArrayRemoveDuplicates($targetMaterials);
+
+    return $targetMaterials;
+}
+
+///////////////////////////////////////////////////////
+// チェッカーテクスチャfile ノードを作成
+///////////////////////////////////////////////////////
+global proc string fy_assignCheckerMapTool_createCheckerMapFileNode(int $checkerMapIndex)
+{
+    global string $CHECKERMAPPATH_FY_ASSIGNCHECKERMAP[];
+    global string $CHECKERMAPFILENODE_FY_ASSIGNCHECKERMAP[];
+
+    // チェッカーテクスチャが存在しなければ
+    if(`filetest -f $CHECKERMAPPATH_FY_ASSIGNCHECKERMAP[$checkerMapIndex]` == false)
+    {
+        confirmDialog
+            -icon "critical"
+            -t "Assign Checker Map"
+            -m ($CHECKERMAPPATH_FY_ASSIGNCHECKERMAP[$checkerMapIndex] + "\n\nチェッカーテクスチャが見つからないため、アサインできません。")
+            -b "OK";
+            
+        return "";
+    }
+    
+    // イメージフィルタ チェックボックス値
+    int $imageFilterOff = `iconTextCheckBox -q -v uCb_unfilterImage_fy_assignCheckerMapTool`;
+    
+    // チェッカーテクスチャのファイルノード名
+    string $fileNode = $CHECKERMAPFILENODE_FY_ASSIGNCHECKERMAP[$checkerMapIndex];
+    
+    // すでにファイルノードが存在するか
+    if(`objExists $fileNode`)
+    {
+        if($imageFilterOff)
+        {
+            setAttr ($fileNode + ".filterType") 0;
+        }
+        
+        return $fileNode;
+    }
+    
+    // 現在の選択を取得
+    string $sel[] = `ls -sl`;
+    
+    // fileノードを作成
+    $fileNode = `shadingNode -asTexture file -name $fileNode`;
+    
+    // 選択を復元
+    select -r $sel;
+    
+    // 作成したfileノードにテクスチャパスを設定
+    setAttr ($fileNode + ".fileTextureName") -type "string" $CHECKERMAPPATH_FY_ASSIGNCHECKERMAP[$checkerMapIndex];
+    
+    if($imageFilterOff)
+    {
+        setAttr ($fileNode + ".filterType") 0;
+    }
+    
+    return $fileNode;
+}
+
+
+///////////////////////////////////////////////////////
+// 接続を元に戻す
+///////////////////////////////////////////////////////
+global proc fy_assignCheckerMapTool_restoreConnections()
+{
+    // 対象マテリアルを取得
+    string $targetMaterials[] = `fy_assignCheckerMapTool_getTargetMaterials`;
+
+    // 対象マテリアルが無ければ終了
+    if(`size($targetMaterials)` == 0)
+    {
+        return;
+    }
+
+    string $targetMaterial;
+    
+    for($targetMaterial in $targetMaterials)
+    {
+        // カスタムアトリビュートが存在するか
+        if(`attributeExists "previouslyConnectedNode" $targetMaterial` == false)
+        {
+            continue;
+        }
+
+        // 現在の接続を取得
+        string $currentConnection[] = `listConnections -s true ($targetMaterial + ".color")`;
+
+        // もともと接続されていたノード名をカスタムアトリビュートから取得
+        string $previouslyConnectedNode = `getAttr ($targetMaterial + ".previouslyConnectedNode")`;
+        
+        // もともと何も接続されていなければ、チェッカーテクスチャの接続を解除
+        if($previouslyConnectedNode == "")
+        {
+            disconnectAttr ($currentConnection[0] + ".outColor") ($targetMaterial + ".color");
+        }
+        else
+        {
+            // file ノードをcolor にアサイン
+            connectAttr -force ($previouslyConnectedNode + ".outColor") ($targetMaterial + ".color");
+        }
+        
+        // カスタムアトリビュートを削除
+        deleteAttr -at "previouslyConnectedNode" $targetMaterial;
+        
+        // アサインされていたチェッカーテクスチャの接続を取得
+        string $connections[] = `listConnections -c 0 $currentConnection[0]`;
+        
+        // マテリアルへの接続を取得
+        string $mat[] = `ls -mat $connections`;
+        
+        // マテリアルへの接続が無ければ削除
+        if(`size($mat)` == 0)
+        {
+            delete $currentConnection[0];
+        }
+    }
+}
+
+///////////////////////////////////////////////////////
+// チェッカーテクスチャのイメージフィルタをオンオフ
+///////////////////////////////////////////////////////
+global proc fy_assignCheckerMapTool_unfilterImages(int $switch)
+{
+    global string $CHECKERMAPFILENODE_FY_ASSIGNCHECKERMAP[];
+    
+    string $elm;
+    
+    for($elm in $CHECKERMAPFILENODE_FY_ASSIGNCHECKERMAP)
+    {
+        if(`objExists $elm`)
+        {
+            setAttr ($elm + ".filterType") $switch;
+        }
+    }
+}
+
+//fy_assignCheckerMapTool;

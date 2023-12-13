@@ -1,0 +1,25 @@
+//===============================================
+//
+// シンプルマテリアルリスト
+//
+// Fujita Yukihiro
+//
+//===============================================
+
+global proc shr_simpleMaterialList_UI()
+{
+    if(`workspaceControl -ex uWsc_shr_simpleMaterialList`)
+    {
+        return;
+        // workspaceControl -e -close uWsc_shr_simpleMaterialList;
+    }
+
+    workspaceControl
+        -retain false
+        -iw 200
+        -ih 300
+        -uiScript "shr_simpleMaterialList();"
+        -label "Simple Material List"
+        uWsc_shr_simpleMaterialList;
+}
+

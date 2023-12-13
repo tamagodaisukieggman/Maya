@@ -1,0 +1,746 @@
+//===============================================
+//
+// プロジェクト作成ツール
+//
+// Fujita Yukihiro
+//
+//===============================================
+
+global proc fy_createProject()
+{
+    //すでにウィンドウがあれば終了
+    if (`window -exists WND_fy_createProject` == 1)
+    {
+        deleteUI WND_fy_createProject;
+        //return;
+    }
+
+    // ウィンドウのプリファレンスが存在すれば削除
+    if (`windowPref -ex WND_fy_createProject`)
+    {
+        windowPref -remove WND_fy_createProject;
+    }
+
+    //プリファレンスに値が無ければデフォルト値を設定
+    if (`optionVar -ex "OV_fy_createProject_model"` == 0)
+    {
+        optionVar -iv "OV_fy_createProject_model" 1;
+        optionVar -iv "OV_fy_createProject_material" 1;
+        optionVar -iv "OV_fy_createProject_texture" 1;
+
+        optionVar -iv "OV_fy_createProject_saveScene" 0;
+
+        optionVar -iv "OV_fy_createProject_copyDummyFiletoEmptyFolder" 0;
+    }
+
+    window
+        -title "Create Asset Folder"
+        -resizeToFitChildren on
+        -sizeable off
+        -maximizeButton off
+        -mb on
+        WND_fy_createProject;
+
+        string $helpCmd = "python(\"import webbrowser\\nwebbrowser.open('https://wisdom.cygames.jp/pages/viewpage.action?pageId=102673919')\")";
+
+        menu -l "Help" -helpMenu on;
+            menuItem
+                -l "Create Asset Folder のヘルプ"
+                -c $helpCmd
+               ;
+
+    frameLayout -mw 8 -mh 4 -lv off ;
+        columnLayout -adj on;
+
+    		rowColumnLayout -nc 2 -columnAlign 1 right -columnAlign 2 left -rs 1 4;
+    			text -label "アセットID : ";
+
+                rowLayout -nc 2;
+
+    			textField
+    			    -text ""
+    			    -w 210
+    			    TF_ID_fy_createProject;
+
+    			button -l "シーン名から取得" -h 18 -c "fy_createProject_getAssetIdFromSceneName";
+
+    			    setParent ..;
+    			setParent..;
+
+            separator -st "in" -h 16 SP_fy_createProject;
+
+        frameLayout -l "フォルダ設定" -mw 8;
+
+            rowColumnLayout -nc 4 -columnWidth 3 180 RCL_folder_fy_createProject;
+
+                string $csvPath = "Z:/mtk/tools/maya/modules/mtk3d/scripts/fy_createProject.csv";
+
+                if(`filetest -r $csvPath`)
+                {
+                    // ファイルオープン
+                    int $fpid = `fopen $csvPath "r"`;
+
+                    // ヘッダ行 捨て読み
+                    fgetline $fpid;
+
+                    string $line;
+
+                    for( $line = `fgetline $fpid`; size($line) > 0; $line = `fgetline $fpid`)
+                    {
+                        string $arr[];
+
+                        tokenize $line "," $arr;
+
+                        // 改行コード削除
+                        $arr[2] = startString($arr[2], `size($arr[2])` - 1);
+
+                        text -l "";
+                        checkBox
+                            -l $arr[0]
+                            -v `optionVar -q ("OV_fy_createProject_" + $arr[1])`
+                            -onc ("textField -e -en on TF_" + $arr[1] + "_fy_createProject; optionVar -iv OV_fy_createProject_" + $arr[1] + " 1")
+                            -ofc ("textField -e -en off TF_" + $arr[1] + "_fy_createProject; optionVar -iv OV_fy_createProject_" + $arr[1] + " 0")
+                            ("CB_" + $arr[1] + "_fy_createProject");
+                        textField
+                            -text $arr[2]
+                            -editable off
+                            -en `optionVar -q ("OV_fy_createProject_" + $arr[1])`
+                            ("TF_" + $arr[1] + "_fy_createProject");
+
+                        fy_createProject_createCopyButton($arr[0]);
+                    }
+
+                    // ファイルクローズ
+                    fclose $fpid;
+                }
+
+                setParent..;
+
+            rowLayout -nc 2;
+                text -l "" -w 230;
+                button -l "追加フォルダ..." -c "fy_createProject_addFolder";
+
+                setParent..;
+            setParent..;
+        separator -st "in" -h 16 ;
+
+    rowColumnLayout -nc 2;
+
+        radioCollection;
+
+        text -l "" -w 16;
+        radioButton
+            -l "フォルダを作成 + 現在のシーンをmodel フォルダに保存"
+            -onCommand "optionVar -iv OV_fy_createProject_saveScene 1"
+            RB_saveCurrentScene_fy_createProject;
+
+        text -l "";
+        radioButton
+            -l "フォルダを作成 + 新規シーンをmodel フォルダに保存"
+            -onCommand "optionVar -iv OV_fy_createProject_saveScene 2"
+            RB_saveNewScene_fy_createProject;
+
+        text -l "";
+        radioButton
+            -l "フォルダ作成のみ"
+            -onCommand "optionVar -iv OV_fy_createProject_saveScene 0"
+            RB_createProjectOnly_fy_createProject;
+
+        if (`optionVar -q "OV_fy_createProject_saveScene"` == 1)
+        {
+            radioButton -e -sl RB_saveCurrentScene_fy_createProject;
+        }
+        else if (`optionVar -q "OV_fy_createProject_saveScene"` == 2)
+        {
+            radioButton -e -sl RB_saveNewScene_fy_createProject;
+        }
+        else
+        {
+            radioButton -e -sl RB_createProjectOnly_fy_createProject;
+        }
+
+         text -l "";
+
+        separator -st "in" -h 16 ;
+
+        text -l "";
+
+        checkBox
+            -l "空のフォルダにダミーファイルを作成"
+            -v `optionVar -q "OV_fy_createProject_copyDummyFiletoEmptyFolder"`
+            -onCommand "optionVar -iv OV_fy_createProject_copyDummyFiletoEmptyFolder 1"
+            -offCommand "optionVar -iv OV_fy_createProject_copyDummyFiletoEmptyFolder 0"
+            ;
+
+        setParent..;
+    separator -st "in" -h 16 ;
+
+    button -label "作成" -bgc 0.5 0.6 0.5 -c "fy_createProject_create";
+
+    // シーン名からアセットID を取得
+    fy_createProject_getAssetIdFromSceneName();
+
+    showWindow;
+}
+
+
+///////////////////////////////////////
+// フォルダ追加
+///////////////////////////////////////
+global proc fy_createProject_addFolder()
+{
+    string $childArray[] = `rowColumnLayout -q -childArray RCL_folder_fy_createProject`;
+
+    int $count;
+
+    string $i;
+
+    for ($i in $childArray)
+    {
+        $count = $count + `gmatch $i "CB_fy_createProject_add_*"`;
+    }
+
+    string $chackBoxName = "CB_fy_createProject_add_" + $count;
+    string $textFieldName = "TF_fy_createProject_add_" + $count;
+
+    string $onCommand = "textField -e -en on " + $textFieldName;
+    string $offCommand = "textField -e -en off " + $textFieldName;
+
+    string $num = $count + 1;
+    string $labelName = "追加 " + $num;
+
+    text -l "" -p RCL_folder_fy_createProject;
+    checkBox
+        -l $labelName
+        -v on
+        -onc $onCommand
+        -ofc $offCommand
+        -p RCL_folder_fy_createProject
+        $chackBoxName;
+    textField
+        -text ""
+        -editable on
+        -en on
+        -p RCL_folder_fy_createProject
+        $textFieldName;
+
+    text -l "" -p RCL_folder_fy_createProject;
+}
+
+
+///////////////////////////////////////
+// プロジェクト作成
+///////////////////////////////////////
+global proc fy_createProject_create()
+{
+    string $assetID = `textField -q -text TF_ID_fy_createProject`;
+
+    // アセットID チェック ＆ プロジェクトパス取得
+    string $isValidID[] = fy_createProject_checkAssetID($assetID);
+
+    if($isValidID[0] != "true")
+    {
+        confirmDialog -title "確認" -m $isValidID[0] -button "確認";
+        return;
+    }
+
+    // プロジェクトパス
+    string $projectPath = $isValidID[1];
+
+    string $childArray[] = `rowColumnLayout -q -childArray RCL_folder_fy_createProject`;
+
+    string $addTF;
+
+    string $i;
+
+    for ($i in $childArray)
+    {
+        if (`gmatch $i "CB_fy_createProject_add_*"` && `checkBox -q -v $i`)
+        {
+            $addTF = substituteAllString($i, "CB", "TF");
+
+            if (`textField -q -text $addTF` == "")
+            {
+                confirmDialog -title "確認" -m "追加フォルダのフォルダ名が入力されていません。" -button "確認";
+                return;
+            }
+        }
+    }
+
+    // 確認ダイアログの結果
+    string $result;
+
+    if (`filetest -d $projectPath`)
+    {
+        // 確認ダイアログ
+        $result =
+        `confirmDialog
+            -title "確認"
+            -message ("すでにプロジェクトフォルダが存在します。続行しますか？\n\n※重複するフォルダはスキップします。\n\n" + $projectPath)
+            -button "続行"
+            -button "キャンセル"
+            -defaultButton "続行"
+            -cancelButton "キャンセル"
+            -dismissString "キャンセル"`
+            ;
+    }
+    else
+    {
+        // 確認ダイアログ
+        $result =
+        `confirmDialog
+            -title "確認"
+            -message ("以下のパスにプロジェクトを作成します。\n\nよろしいですか？\n\n" + $projectPath)
+            -button "作成"
+            -button "キャンセル"
+            -defaultButton "作成"
+            -cancelButton "キャンセル"
+            -dismissString "キャンセル"`
+            ;
+    }
+
+    // キャンセルしたら終了
+    if ($result == "キャンセル")
+    {
+        print "// キャンセルしました。\n";
+        return;
+    }
+
+    // プロジェクトフォルダ作成
+    workspace -create $projectPath;
+
+    string $csvPath = "Z:/mtk/tools/maya/modules/mtk3d/scripts/fy_createProject.csv";
+
+    if(`filetest -r $csvPath`)
+    {
+        // ファイルオープン
+        int $fpid = `fopen $csvPath "r"`;
+
+        // ヘッダ行 捨て読み
+        fgetline $fpid;
+
+        string $line;
+
+        for( $line = `fgetline $fpid`; size($line) > 0; $line = `fgetline $fpid`)
+        {
+            string $arr[];
+            tokenize $line "," $arr;
+
+            if (`optionVar -q ("OV_fy_createProject_" + $arr[1])`)
+            {
+                string $folderName = `textField -q -text ("TF_" + $arr[1] + "_fy_createProject")`;
+
+                string $folderPath = $projectPath + "/" + $folderName;
+
+                // フォルダ作成
+                fy_createProject_createFolder($folderPath);
+
+
+                if($arr[0] == "モデル")
+                {
+                    // Maya シーン保存
+                    if (`optionVar -q "OV_fy_createProject_model"`)
+                    {
+                        // シーン保存
+                        if (`optionVar -q "OV_fy_createProject_saveScene"` != 0)
+                        {
+                            if(`radioButton -q -sl RB_saveNewScene_fy_createProject`)
+                            {
+                                file -f -new;
+                            }
+
+                            // シーン名は mdl_ + アセットID が正しい
+                            string $fileName = $folderPath + "/mdl_" + $assetID + ".ma";
+
+                            int $doSave = true;
+
+                            if(`filetest -f $fileName`)
+                            {
+                                // 確認ダイアログ
+                                $result =
+                                `confirmDialog
+                                    -title "確認"
+                                    -message ("シーンファイルが存在します。\n\n上書きしますか？\n\n" + $fileName)
+                                    -button "上書き"
+                                    -button "スキップ"
+                                    -defaultButton "上書き"
+                                    -cancelButton "スキップ"
+                                    -dismissString "スキップ"`
+                                    ;
+
+                                // キャンセルしたら終了
+                                if ($result == "スキップ")
+                                {
+                                    $doSave = false;
+                                }
+                            }
+
+                            if($doSave)
+                            {
+                                file -rename $fileName;
+
+                                file -f -save -type "mayaAscii" -options "v=0;";
+
+                                // 2022 で取得できない不具合
+                                if(0)
+                                {
+                                    print ("// Created " + `file -q -sceneName` + "\n");
+
+                                    // 最近使ったファイルに追加
+                                    addRecentFile(`file -q -sceneName`, "mayaAscii");
+                                }
+                                else
+                                {
+                                    // シーン名を取得
+                                    string $sceneName = `python("from mtk.utils import getCurrentSceneFilePath; getCurrentSceneFilePath()")`;
+
+                                    print ("// Created " + $sceneName + "\n");
+
+                                    // 最近使ったファイルに追加
+                                    addRecentFile($sceneName, "mayaAscii");
+                                }
+
+
+                            }
+                            else
+                            {
+                                print ("// Skipped " + $fileName + "\n");
+                            }
+                        }
+
+                        // ダミーファイルコピー
+                        fy_createProject_copyDummyfolder($folderPath);
+                    }
+                }
+
+                // ダミーファイルコピー
+                fy_createProject_copyDummyfolder($folderPath);
+            }
+        }
+
+        // ファイルクローズ
+        fclose $fpid;
+    }
+
+    // 追加フォルダ
+    for ($i in $childArray)
+    {
+        if (`gmatch $i "CB_fy_createProject_add_*"` && `checkBox -q -v $i`)
+        {
+            $addTF = substituteAllString($i, "CB", "TF");
+
+            $folderPath = $projectPath + "/" + `textField -q -text $addTF`;
+
+            // フォルダ作成
+            fy_createProject_createFolder($folderPath);
+
+            // ダミーファイルコピー
+            fy_createProject_copyDummyfolder($folderPath);
+        }
+    }
+
+    confirmDialog -m ("プロジェクトを作成しました。\n\n" + $projectPath) -button "確認";
+}
+
+///////////////////////////////////////
+// フォルダ存在チェック
+///////////////////////////////////////
+global proc fy_createProject_createFolder(string $folderPath)
+{
+    if(`filetest -d $folderPath`)
+    {
+        print ("// Skipped " + $folderPath + "\n");
+    }
+    else
+    {
+        sysFile -makeDir ($folderPath);
+
+        print ("// Created " + $folderPath + "\n");
+    }
+}
+
+///////////////////////////////////////
+// ダミーファイルコピー
+///////////////////////////////////////
+global proc fy_createProject_copyDummyfolder(string $folderPath)
+{
+    if(`optionVar -q OV_fy_createProject_copyDummyFiletoEmptyFolder`)
+    {
+        string $files[] = `getFileList -fld $folderPath`;
+
+        if(`size($files)` == 0)
+        {
+            string $dummyFilePath = "Z:/mtk/tools/maya/modules/mtk3d/scripts/dummy.txt";
+            string $dummyFileName = basename($dummyFilePath, "");
+
+            sysFile -copy ($folderPath + "/" + $dummyFileName) $dummyFilePath;
+        }
+    }
+}
+
+///////////////////////////////////////
+// アセットID チェック
+///////////////////////////////////////
+global proc string[] fy_createProject_checkAssetID(string $assetID)
+{
+    if ($assetID == "")
+    {
+        return {"アセットID が入力されていません。",""};
+    }
+
+    string $IDtokens[];
+
+    // アセットID を分解
+    tokenize $assetID "_" $IDtokens;
+
+    // 有効なオブジェクト名か
+    if(isValidObjectName($assetID) == false)
+    {
+        return {("\"" + $assetID + "\"  は有効なアセットID ではありません。"),""};
+    }
+
+    // 最後が "_" で終わっていないか
+    if(endsWith($assetID, "_"))
+    {
+        return {("\"" + $assetID + "\"  は有効なアセットID ではありません。"),""};
+    }
+
+    int $assetTypeIndex = 0;
+
+    // プリフィックス リスト
+    string $validPrefixList[] = {
+        "r[0-9][0-9][0-9]",    // 0 通常アセット
+        "cmn",                 // 1 共有アセット
+        "vgt",                 // 2 植物アセット
+        "itm",                 // 3 アイテム アセット
+        "lnd",                 // 4 テレイン アセット
+        "dcl",                 // 5 デカール アセット
+        "w[0-9][0-9][0-9]",    // 6 ホワイトボックス アセット
+        "ref",                 // 7 リファレンス アセット
+        "mgs"                  // 8 メガスキャン アセット
+        };
+
+    // トークン数
+    int $numOfTokens[] = {
+        4,    // 通常アセット
+        3,    // 共有アセット
+        3,    // 植物アセット
+        3,    // アイテム アセット
+        3,    // テレイン アセット
+        3,    // デカール アセット
+        4,    // ホワイトボックス アセット
+        4,    // リファレンス アセット
+        2     // メガスキャン アセット
+        };
+
+    int $isValidPrefix = false;
+
+    string $elm;
+
+    // プリフィックス チェック
+    for($elm in $validPrefixList)
+    {
+        if(`gmatch $IDtokens[0] $elm` != false)
+        {
+            $isValidPrefix = true;
+
+            break;
+        }
+
+        $assetTypeIndex += 1;
+    }
+
+    // 有効なプリフィックス名か
+    if($isValidPrefix == false)
+    {
+        return {("\"" + $IDtokens[0] + "\"  プリフィックス名が正しくありません。"),""};
+    }
+
+    // トークン数 チェック
+    if($numOfTokens[$assetTypeIndex] != `size($IDtokens)`)
+    {
+        return {("\"" + $assetID + "\"  ID 要素の数が正しくありません。"),""};
+    }
+
+    // 通常、ホワイトボックス、リファレンス アセットの場合
+    if($assetTypeIndex == 0 || $assetTypeIndex == 6 || $assetTypeIndex == 7)
+    {
+        // 建物ID チェック
+        if(`gmatch $IDtokens[1] "s[0-9][0-9][0-9]"` == false)
+        {
+            return {("\"" + $IDtokens[1] + "\"  建物ID が正しくありません。"),""};
+        }
+
+        // ユニークID チェック
+        if(`match "^[a-z]+[0-9][0-9][0-9]$" $IDtokens[2]` == "")
+        {
+            return {("\"" + $IDtokens[2] + "\"  ユニークID が正しくありません。"),""};
+        }
+
+        // バリエーションID チェック
+        if(`gmatch $IDtokens[3] "[0-9][0-9][0-9]"` == false)
+        {
+            return {("\"" + $IDtokens[3] + "\"  バリエーションID が正しくありません。"),""};
+        }
+    }
+    // メガスキャンアセット の場合
+    else if($assetTypeIndex == 8)
+    {
+        // ユニークID チェック
+        if(`match "[A-Z]" $IDtokens[1]` != "")
+        {
+            return {("\"" + $IDtokens[1] + "\"  ユニークID に大文字が含まれています。"),""};
+        }
+    }
+    // 共有、植物、アイテム、テレイン、デカール、
+    else
+    {
+        // ユニークID チェック
+        if(`match "^[a-z]+[0-9][0-9][0-9]$" $IDtokens[1]` == "")
+        {
+            return {("\"" + $IDtokens[1] + "\"  ユニークID が正しくありません。"),""};
+        }
+
+        // バリエーションID チェック
+        if(`gmatch $IDtokens[2] "[0-9][0-9][0-9]"` == false)
+        {
+            return {("\"" + $IDtokens[2] + "\"  バリエーションID が正しくありません。"),""};
+        }
+    }
+
+
+    // プロジェクトパス
+    string $projectPath;
+
+    // プロジェクトのベースパス
+    string $basePath;
+
+    // resources アセットの場合
+    if($assetTypeIndex <= 5)
+    {
+        $basePath = "Z:/mtk/work/resources/env/";
+
+        // 通常アセットの場合
+        if($assetTypeIndex == 0)
+        {
+            $projectPath = $basePath + $IDtokens[0] + "/" + $IDtokens[1] + "_" + $IDtokens[2];
+        }
+        // 共有、植物アイテム、テレイン、デカール の場合
+        else
+        {
+            $projectPath = $basePath + $IDtokens[0] + "/" + $IDtokens[0] + "_" + $IDtokens[1];
+        }
+    }
+    // noshipping アセットの場合
+    else
+    {
+        $basePath = "Z:/mtk/work/noshipping/env/";
+
+        // メガスキャンアセットの場合
+        if($assetTypeIndex == 8)
+        {
+            $projectPath = $basePath + $IDtokens[0] + "/" + $IDtokens[0] + "_" + $IDtokens[1];
+        }
+        // リファレンス、ホワイトボックス の場合
+        else
+        {
+            $projectPath = $basePath + $IDtokens[0] + "/" + $IDtokens[1] + "_" + $IDtokens[2];
+        }
+    }
+
+    return {"true", $projectPath};
+}
+
+///////////////////////////////////////
+// クリップボードにコピーボタン作成
+///////////////////////////////////////
+global proc fy_createProject_createCopyButton(string $type)
+{
+    if($type == "モデル" || $type == "マテリアル" || $type == "テクスチャ")
+    {
+        button
+            -l " Copy "
+            -ann ($type + "名をクリップボードにコピー")
+            -h 16
+            -c ("fy_createProject_copyToClipboard(\"" + $type + "\")")
+            ;
+    }
+    else
+    {
+        text -l "";
+    }
+}
+
+///////////////////////////////////////
+// クリップボードにコピー
+///////////////////////////////////////
+global proc fy_createProject_copyToClipboard(string $type)
+{
+    string $assetID = `textField -q -text TF_ID_fy_createProject`;
+
+    // アセットID チェック
+    string $isValidID[] = fy_createProject_checkAssetID($assetID);
+
+    if($isValidID[0] != "true")
+    {
+        confirmDialog -title "確認" -m $isValidID[0] -button "確認";
+        return;
+    }
+
+    string $copyText;
+
+    if($type == "モデル")
+    {
+        $copyText = "mdl_" + $assetID;
+    }
+    else if($type == "マテリアル")
+    {
+        $copyText = "mtl_" + $assetID;
+    }
+    else if($type == "テクスチャ")
+    {
+        $copyText = "tex_" + $assetID;
+    }
+
+    // モジュールインポート
+    python("import mtk3d.maya.env.utility.functions as envut");
+
+    // クリップボードにテキストをコピー
+    python("envut.textClipboard('set',txt='" + $copyText + "')");
+
+    print ("// text copied \"" + $copyText + "\"\n");
+}
+
+////////////////////////////////////
+// シーン名からAssetID を取得
+///////////////////////////////////
+global proc fy_createProject_getAssetIdFromSceneName()
+{
+    string $sceneName;
+
+    // 2022 で取得できない不具合
+    if(0)
+    {
+        $sceneName = basenameEx(`file -q -shortName -sceneName`);
+    }
+    else
+    {
+        // シーン名を取得（拡張子なし）
+        $sceneName = basenameEx(`python("from mtk.utils import getCurrentSceneFilePath; getCurrentSceneFilePath()")`);
+    }
+
+    // シーン名が取得できなければ
+    if($sceneName == "")
+    {
+        return;
+    }
+    else
+    {
+        // シーン名から"mdl_" を取る
+        $sceneName = substituteAllString($sceneName, "mdl_", "");
+
+        textField -e -text $sceneName TF_ID_fy_createProject;
+    }
+}
+
+

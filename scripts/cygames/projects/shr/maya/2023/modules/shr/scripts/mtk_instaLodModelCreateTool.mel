@@ -1,0 +1,2233 @@
+//===============================================
+//
+// InstaLOD モデル作成ツール
+//
+//===============================================
+
+global proc mtk_instaLodModelCreateTool()
+{
+    //すでにウィンドウがあれば終了
+    if (`window -exists uWnd_mtk_instaLodModelCreateTool` == 1)
+    {
+        deleteUI uWnd_mtk_instaLodModelCreateTool;
+        //return;
+    }
+
+    // InstaLOD 起動・初期化
+    if(`mtk_instaLodModelCreateTool_openInstaLOD` == false)
+    {
+        return;
+    }
+
+    // InstaLOD ウィンドウ名
+    global string $INSTALOD_CONTROL_ID_WORKSPACE;
+
+    // lod チェックボックス
+    global string $UCB_LOD_MTK_INSTALOD[];
+    clear $UCB_LOD_MTK_INSTALOD;
+
+    // lod rowColumn レイアウト
+    global string $URCL_LOD_MTK_INSTALOD[];
+    clear $URCL_LOD_MTK_INSTALOD;
+
+    // lod 削減値 int スライダー
+    global string $UISG_LOD_VALUE_MTK_INSTALOD[];
+    clear $UISG_LOD_VALUE_MTK_INSTALOD;
+
+    // lod 削減設定オプションメニュー
+    global string $UOM_REDUCTION_PROFILE_MTK_INSTALOD[];
+    clear $UOM_REDUCTION_PROFILE_MTK_INSTALOD;
+
+    // lod 情報 lod ラベル
+    global string $UTXT_LOD_MTK_INSTALOD[];
+    clear $UTXT_LOD_MTK_INSTALOD;
+
+    // lod 情報 削減率
+    global string $UTXT_LOD_VALUE_MTK_INSTALOD[];
+    clear $UTXT_LOD_VALUE_MTK_INSTALOD;
+
+    // lod 情報 削減設定
+    global string $UTXT_REDUCTION_PROFILE_MTK_INSTALOD[];
+    clear $UTXT_REDUCTION_PROFILE_MTK_INSTALOD;
+
+    // lod 情報 ポリゴン数
+    global string $UTXT_TRIANGLES_MTK_INSTALOD[];
+    clear $UTXT_TRIANGLES_MTK_INSTALOD;
+
+    // lod レベル
+    global string $LOD_LEVELS_MTK_INSTALOD[];
+    $LOD_LEVELS_MTK_INSTALOD = {
+        "lod1",
+        "lod2",
+        "lod3",
+        "lod4",
+        "lod5",
+        "lod6",
+        "lod7"
+        //"collision"
+    };
+
+    // カスタムアトリビュートのリスト
+    global string $CUSTOM_ATTRIBUTES_MTK_INSTALOD[];
+    $CUSTOM_ATTRIBUTES_MTK_INSTALOD = {
+        "instaLodValue",
+        "instaLodProfile"
+    };
+
+    // 共有プロファイル格納場所
+    global string $COMMON_PROFILES_FOLDER_MTK_INSTALOD = "Z:/mtk/tools/maya/share/presets/instaLodProfiles/";
+
+    // ローカルプロファイル格納場所
+    global string $LOCAL_PROFILES_FOLDER_MTK_INSTALOD;
+    $LOCAL_PROFILES_FOLDER_MTK_INSTALOD = `getenv "MAYA_APP_DIR"` + "/Presets/instaLodProfiles/";
+
+    // フォルダが存在しなければ作成
+    if(`filetest -d $LOCAL_PROFILES_FOLDER_MTK_INSTALOD` == false)
+    {
+        sysFile -makeDir $LOCAL_PROFILES_FOLDER_MTK_INSTALOD;
+    }
+
+    //プリファレンスに値が無ければデフォルト値を設定
+    if (`optionVar -ex "ov_lod1_value_mtk_instaLodModelCreateTool"` == 0)
+    {
+        mtk_instaLodModelCreateTool_initPreferences;
+    }
+    //プリファレンスに値が無ければデフォルト値を設定 その２
+    if (`optionVar -ex "ov_easeType_mtk_instaLodModelCreateTool"` == 0)
+    {
+        mtk_instaLodModelCreateTool_initPreferences2;
+    }
+
+    window
+        -title "LOD Model Create Tool"
+        -resizeToFitChildren on
+        -sizeable on
+        -maximizeButton off
+        -toolbox on
+        -menuBar on
+        -closeCommand "mtk_instaLodModelCreateTool_windowCloseCommand"
+        uWnd_mtk_instaLodModelCreateTool;
+
+        // メニュー
+        menu -label "List";
+            menuItem
+                -label "リストを更新"
+                -enable on
+                -c "mtk_instaLodModelCreateTool_updateList"
+                ;
+        string $helpCmd = "python(\"import webbrowser\\nwebbrowser.open('https://wisdom.cygames.jp/pages/viewpage.action?pageId=135173484')\")";
+
+        menu -label "Help";
+            menuItem
+                -label "LOD Model Create Tool のヘルプ"
+                -enable on
+                -c $helpCmd
+                ;
+
+        int $colWidth[] = {180, 120};
+        int $columnSpacing = 4;
+        int $rowSpacing = 2;
+        int $labelHeight = 20;
+        float $labelCol[] = {0.55, 0.55, 0.55};
+
+    frameLayout -lv off -mw 8 -mh 8;
+        string $form = `formLayout`;
+
+            string $txt = `
+            text
+                -l "▼ 対象 mdl_"
+                -bgc $labelCol[0] $labelCol[1] $labelCol[2]
+                -h $labelHeight
+                `;
+
+            string $tsl = `
+            textScrollList
+                -h 130
+                -allowMultiSelection true
+                -sc "mtk_instaLodModelCreateTool_updateLodInfo(0)"
+                uTsl_mdl_mtk_instaLodModelCreateTool`;
+
+            string $info = `
+            columnLayout -adj on`;
+
+                rowColumnLayout -nc 4 -rowSpacing 1 2;
+
+                    text -l "";
+                    text -l " 【削減率】 ";
+                    text -l " 【削減設定】 ";
+                    text -l " 【ポリゴン数】 ";
+
+                    separator -h 7 -st "shelf";
+                    separator -h 7 -st "shelf";
+                    separator -h 7 -st "shelf";
+                    separator -h 7 -st "shelf";
+
+                    string $lodLevel;
+                    for($lodLevel in $LOD_LEVELS_MTK_INSTALOD)
+                    {
+                        // lod 情報 lod ラベルテキスト
+                        $UTXT_LOD_MTK_INSTALOD[`size($UTXT_LOD_MTK_INSTALOD)`] = `text -l ($lodLevel + " : ")`;
+
+                        // lod 情報 削減率テキスト
+                        $UTXT_LOD_VALUE_MTK_INSTALOD[`size($UTXT_LOD_VALUE_MTK_INSTALOD)`] = `text -l "-"`;
+
+                        // lod 情報 削減設定テキスト
+                        $UTXT_REDUCTION_PROFILE_MTK_INSTALOD[`size($UTXT_REDUCTION_PROFILE_MTK_INSTALOD)`] = `text -l "-"`;
+
+                        $UTXT_TRIANGLES_MTK_INSTALOD[`size($UTXT_TRIANGLES_MTK_INSTALOD)`] = `text -l "-"`;
+                    }
+
+                    separator -h 4 -st "none";
+                    separator -h 4 -st "none";
+                    separator -h 4 -st "none";
+                    separator -h 4 -st "none";
+
+                    setParent ..;
+
+                    rowLayout -nc 2;
+                        button -l "GUI に反映" -w 80 -h 20 -c "mtk_instaLodModelCreateTool_pasteParams(0)";
+                        button -l "クリップボードに保持" -w 120 -h 20 -c "mtk_instaLodModelCreateTool_copyParams";
+                        setParent ..;
+
+                    separator -h 8 -st "none";
+
+                setParent ..;
+
+        string $sep0 = `separator -st "in"`;
+
+        string $rcl = `
+        rowColumnLayout
+            -nc 2
+            -rowSpacing 1 $rowSpacing
+            -adjustableColumn 2
+            -columnAttach 1 "both" 1
+            `;
+
+            text -l "";
+
+            rowColumnLayout
+                -nc 2
+                -adjustableColumn 1
+                -columnSpacing 1 $columnSpacing
+                -columnSpacing 2 $columnSpacing
+                -columnWidth 1 $colWidth[0]
+                -columnWidth 2 $colWidth[1]
+                -columnAlign 1 "left"
+                -columnAlign 2 "left"
+                ;
+
+                text
+                    -l "    ▼  削減率（100 が削減なし）"
+                    -bgc $labelCol[0] $labelCol[1] $labelCol[2]
+                    -h $labelHeight
+                    ;
+
+
+                text
+                    -l "    ▼  削減設定"
+                    -bgc $labelCol[0] $labelCol[1] $labelCol[2]
+                    -h $labelHeight
+                    ;
+
+                setParent..;
+
+            for($lodLevel in $LOD_LEVELS_MTK_INSTALOD)
+            {
+                int $value = `optionVar -q ("ov_" + $lodLevel + "_checked_mtk_instaLodModelCreateTool")`;
+
+                string $temp = `checkBox
+                                    -l ($lodLevel + " :")
+                                    -v $value
+                                    `;
+
+                checkBox -e
+                    -onc ("mtk_instaLodModelCreateTool_checkBoxCommand(1,\"" + $temp + "\")")
+                    -ofc ("mtk_instaLodModelCreateTool_checkBoxCommand(0,\"" + $temp + "\")")
+                    $temp;
+
+                $UCB_LOD_MTK_INSTALOD[`size($UCB_LOD_MTK_INSTALOD)`] = $temp;
+
+                    $temp = `rowColumnLayout
+                        -en $value
+                        -nc 2
+                        -adjustableColumn 1
+                        -columnSpacing 1 $columnSpacing
+                        -columnSpacing 2 $columnSpacing
+                        -columnWidth 1 $colWidth[0]
+                        -columnWidth 2 $colWidth[1]
+                        `;
+
+                    $URCL_LOD_MTK_INSTALOD[`size($URCL_LOD_MTK_INSTALOD)`] = $temp;
+
+                        float $fvalue = `optionVar -q ("ov_" + $lodLevel + "_value_mtk_instaLodModelCreateTool")`;
+
+                        $temp = `floatSliderGrp
+                            -field true
+                            -columnWidth 1 60
+                            -pre 2
+                            -v $fvalue
+                            `;
+
+                        $UISG_LOD_VALUE_MTK_INSTALOD[`size($UISG_LOD_VALUE_MTK_INSTALOD)`] = $temp;
+
+                        $temp = `optionMenu `;
+
+                        optionMenu -e -beforeShowPopup ("mtk_instaLodModelCreateTool_updateOptionMenu({\"" + $temp + "\"})") $temp;
+
+                        // オプションメニュー項目作成
+                        mtk_instaLodModelCreateTool_updateOptionMenu({$temp});
+
+                        $UOM_REDUCTION_PROFILE_MTK_INSTALOD[`size($UOM_REDUCTION_PROFILE_MTK_INSTALOD)`] = $temp;
+
+                        string $profile = `optionVar -q ("ov_" + $lodLevel + "_profile_mtk_instaLodModelCreateTool")`;
+
+                        // 前回選択していた項目が無ければdefault を選択
+                        if(catchQuiet(`optionMenu -e -v $profile $temp`))
+                        {
+                            optionMenu -e -sl 1 $temp;
+                        }
+
+                        setParent ..;
+            }
+
+                separator -st "in" -h 8;
+                separator -st "in" -h 8;
+
+                text -l "一括設定 :";
+
+                rowColumnLayout
+                    -en on
+                    -nc 2
+                    -adjustableColumn 1
+                    -columnSpacing 1 $columnSpacing
+                    -columnSpacing 2 $columnSpacing
+                    -columnWidth 1 $colWidth[0]
+                    -columnWidth 2 $colWidth[1]
+                    ;
+
+                    rowColumnLayout
+                        -nc 2
+                        -adjustableColumn 2
+                        -columnAlign 1 "right"
+                        -rowSpacing 1 $rowSpacing
+                        ;
+
+                        text -l "最大LOD : ";
+
+                        optionMenu
+                            -cc "mtk_instaLodModelCreateTool_setMaxLodLevel; mtk_instaLodModelCreateTool_setLodValues(\"\")"
+                            uOm_maxLodLevel_mtk_instaLodModelCreateTool;
+
+                        for($lodLevel in $LOD_LEVELS_MTK_INSTALOD)
+                        {
+                            if($lodLevel != "lod1")
+                            {
+                                menuItem -l $lodLevel;
+                            }
+                        }
+
+                        optionMenu -e -v `optionVar -q ov_maxLodLevel_mtk_instaLodModelCreateTool` uOm_maxLodLevel_mtk_instaLodModelCreateTool;
+
+                        text -l "削減率 : ";
+
+                        floatSliderGrp
+                            -field true
+                            -columnWidth 1 40
+                            -pre 2
+                            -v `optionVar -q ov_endValue_mtk_instaLodModelCreateTool`
+                            -cc "mtk_instaLodModelCreateTool_setLodValues(\"end\")"
+                            -dc "mtk_instaLodModelCreateTool_setLodValues(\"end\")"
+                            uIsg_endValue_mtk_instaLodModelCreateTool;
+
+                        text -l "" -h 5;
+                        text -l "" -h 5;
+
+                        text -l "イージング : ";
+
+                        optionMenu
+                            -cc "mtk_instaLodModelCreateTool_setLodValues(\"\")"
+                            uOm_easeType_mtk_instaLodModelCreateTool;
+                            menuItem -l "線形";
+                            menuItem -l "2次";
+                            menuItem -l "3次";
+                            menuItem -l "4次";
+                            menuItem -l "5次";
+                            menuItem -l "指数";
+                            menuItem -l "円形";
+
+                        optionMenu -e -v `optionVar -q ov_easeType_mtk_instaLodModelCreateTool` uOm_easeType_mtk_instaLodModelCreateTool;
+
+                        text -l "バイアス : ";
+
+                        floatSliderGrp
+                            -field true
+                            -columnWidth 1 40
+                            -adjustableColumn 2
+                            -pre 2
+                            -v `optionVar -q ov_biasValue_mtk_instaLodModelCreateTool`
+                            -cc "mtk_instaLodModelCreateTool_setLodValues(\"bias\")"
+                            -dc "mtk_instaLodModelCreateTool_setLodValues(\"bias\")"
+                            -min -1.0
+                            -max 1.0
+                            uFsg_bias_mtk_instaLodModelCreateTool;
+
+                        setParent ..;
+
+                    frameLayout -lv off;
+
+                    optionMenu -h 24 uOm_setAllProfile_mtk_instaLodModelCreateTool;
+                        optionMenu -e -beforeShowPopup ("mtk_instaLodModelCreateTool_updateOptionMenu({\"uOm_setAllProfile_mtk_instaLodModelCreateTool\"})") uOm_setAllProfile_mtk_instaLodModelCreateTool;
+                        optionMenu -e -changeCommand "mtk_instaLodModelCreateTool_setAllProfile(\"#1\")" uOm_setAllProfile_mtk_instaLodModelCreateTool;
+
+                        // オプションメニュー項目作成
+                        mtk_instaLodModelCreateTool_updateOptionMenu({"uOm_setAllProfile_mtk_instaLodModelCreateTool"});
+                        optionMenu -e -sl 1 uOm_setAllProfile_mtk_instaLodModelCreateTool;
+                        setParent..;
+
+                    setParent ..;
+            setParent ..;
+
+        string $sep = `separator -st "in"`;
+
+        string $bt = `
+        button
+            -l "LOD モデル作成"
+            -bgc 0.5 0.6 0.5
+            -c "mtk_instaLodModelCreateTool_createButtonCommand"
+            `;
+
+        string $bt2 = `
+        button
+            -l "InstaLOD GUI"
+            -bgc 1.0 0.184 0.552
+            -c "mtk_instaLodModelCreateTool_toggleInstaLodWindow"
+            `;
+
+        string $bt3 = `
+        button
+            -l "▼"
+            -bgc 1.0 0.184 0.552
+            -c ""
+            `;
+            popupMenu
+                -b 1
+                -postMenuCommand "mtk_instaLodModelCreateTool_postMenuCommand"
+                ;
+                menuItem
+                    -l "InstaLOD GUI の現在の設定を 削減設定に追加..."
+                    -command "mtk_instaLodModelCreateTool_addProfile"
+                    uMi_addProfile_mtk_instaLodModelCreateTool;
+
+                menuItem
+                    -l "削減設定のリネーム・削除..."
+                    -c "mtk_instaLodModelCreateTool_openEditProfileDialog"
+                    ;
+
+                menuItem -d true;
+
+                menuItem
+                    -l "InstaLOD GUI の設定をデフォルトに戻す"
+                    -c "mtk_instaLodModelCreateTool_resetSettings"
+                    uMi_resetSettings_mtk_instaLodModelCreateTool;
+
+        int $cbValue = `optionVar -q ov_notCopySkinWeights_mtk_instaLodModelCreateTool`;
+        string $cb = `checkBox -l "LOD モデルにスキンウェイトをコピーしない" -v $cbValue uCb_notCopySkinWeights_mtk_instaLodModelCreateTool`;
+
+            formLayout -e
+                -attachForm    $txt "left" 0
+                -attachForm    $txt "right" 0
+                -attachForm    $txt "top" 0
+                -attachNone    $txt "bottom"
+
+                -attachForm    $tsl "left" 0
+                -attachPosition $tsl "right" 0 42
+                -attachControl $tsl "top" 4 $txt
+                -attachControl $tsl "bottom" 8 $sep0
+
+                -attachForm    $info "right" 0
+                -attachPosition $info "left" 0 45
+                -attachControl $info "top" 4 $txt
+                -attachNone $info "bottom"
+
+                -attachForm    $sep0 "left" 0
+                -attachForm    $sep0 "right" 0
+                -attachNone    $sep0 "top"
+                -attachControl $sep0 "bottom" 8 $rcl
+
+                -attachForm    $rcl "left" 0
+                -attachForm    $rcl "right" 0
+                -attachNone    $rcl "top"
+                -attachControl $rcl "bottom" 4 $sep
+
+                -attachForm    $sep "left" 0
+                -attachForm    $sep "right" 0
+                -attachNone    $sep "top"
+                -attachControl $sep "bottom" 8 $bt
+
+                -attachForm    $bt "left" 0
+                -attachPosition  $bt "right" 0 60
+                -attachNone    $bt "top"
+                -attachControl    $bt "bottom" 8 $cb
+
+                -attachControl  $bt2 "left" 4 $bt
+                -attachControl    $bt2 "right" 0 $bt3
+                -attachNone    $bt2 "top"
+                -attachControl    $bt2 "bottom" 8 $cb
+
+                -attachNone  $bt3 "left"
+                -attachForm    $bt3 "right" 0
+                -attachNone    $bt3 "top"
+                -attachControl    $bt3 "bottom" 8 $cb
+
+                -attachForm  $cb "left" 8
+                -attachPosition  $cb "right" 0 60
+                -attachNone    $cb "top"
+                -attachForm    $cb "bottom" 0
+                $form;
+
+    // リスト更新
+    mtk_instaLodModelCreateTool_updateList;
+
+    // lod 情報更新
+    mtk_instaLodModelCreateTool_updateLodInfo(0);
+
+    showWindow;
+
+    // スクリプトジョブ設定（シーンオープン時）
+    scriptJob -event "SceneOpened" "mtk_instaLodModelCreateTool_updateList; mtk_instaLodModelCreateTool_updateLodInfo(0);" -parent uWnd_mtk_instaLodModelCreateTool;
+
+}
+
+///////////////////////////////////////
+// クリップボードに設定をコピー
+///////////////////////////////////////
+global proc mtk_instaLodModelCreateTool_copyParams()
+{
+    //すでにウィンドウがあれば終了
+    if (`window -exists uWnd_clipboard_mtk_instaLodModelCreateTool` == 1)
+    {
+        mtk_instaLodModelCreateTool_updateLodInfo(1);
+
+        return;
+    }
+
+    // lod レベル
+    global string $LOD_LEVELS_MTK_INSTALOD[];
+
+    // lod 情報 lod ラベル クリップボード
+    global string $UTXT_LOD_CLIPBOARD_MTK_INSTALOD[];
+    clear $UTXT_LOD_CLIPBOARD_MTK_INSTALOD;
+
+    // lod 情報 削減率 クリップボード
+    global string $UTXT_LOD_VALUE_CLIPBOARD_MTK_INSTALOD[];
+    clear $UTXT_LOD_VALUE_CLIPBOARD_MTK_INSTALOD;
+
+    // lod 情報 削減設定 クリップボード
+    global string $UTXT_REDUCTION_PROFILE_CLIPBOARD_MTK_INSTALOD[];
+    clear $UTXT_REDUCTION_PROFILE_CLIPBOARD_MTK_INSTALOD;
+
+    // lod 情報 ポリゴン数 クリップボード
+    global string $UTXT_TRIANGLES_CLIPBOARD_MTK_INSTALOD[];
+    clear $UTXT_TRIANGLES_CLIPBOARD_MTK_INSTALOD;
+
+    window
+        -title "LOD Model Create Tool - Clipboard"
+        -resizeToFitChildren on
+        -sizeable off
+        -maximizeButton off
+        -toolbox on
+        -menuBar off
+        -parent "uWnd_mtk_instaLodModelCreateTool"
+        uWnd_clipboard_mtk_instaLodModelCreateTool;
+
+        frameLayout -lv off -mh 8 -mw 8;
+            rowColumnLayout -nc 4 -rowSpacing 1 2;
+
+                text -l "";
+                text -l " 【削減率】 ";
+                text -l " 【削減設定】 ";
+                text -l " 【ポリゴン数】 ";
+
+                separator -h 7 -st "shelf";
+                separator -h 7 -st "shelf";
+                separator -h 7 -st "shelf";
+                separator -h 7 -st "shelf";
+
+                string $lodLevel;
+                for($lodLevel in $LOD_LEVELS_MTK_INSTALOD)
+                {
+                    // lod 情報 lod ラベルテキスト
+                    $UTXT_LOD_CLIPBOARD_MTK_INSTALOD[`size($UTXT_LOD_CLIPBOARD_MTK_INSTALOD)`] = `text -l ($lodLevel + " : ")`;
+
+                    // lod 情報 削減率テキスト
+                    $UTXT_LOD_VALUE_CLIPBOARD_MTK_INSTALOD[`size($UTXT_LOD_VALUE_CLIPBOARD_MTK_INSTALOD)`] = `text -l "-"`;
+
+                    // lod 情報 削減設定テキスト
+                    $UTXT_REDUCTION_PROFILE_CLIPBOARD_MTK_INSTALOD[`size($UTXT_REDUCTION_PROFILE_CLIPBOARD_MTK_INSTALOD)`] = `text -l "-"`;
+
+                    $UTXT_TRIANGLES_CLIPBOARD_MTK_INSTALOD[`size($UTXT_TRIANGLES_CLIPBOARD_MTK_INSTALOD)`] = `text -l "-"`;
+                }
+
+                setParent ..;
+
+            button -l "GUI に反映" -h 20 -c "mtk_instaLodModelCreateTool_pasteParams(1)";
+
+            setParent ..;
+        setParent ..;
+
+    showWindow;
+
+    mtk_instaLodModelCreateTool_updateLodInfo(1);
+}
+
+///////////////////////////////////////
+// 設定をGUI に反映
+///////////////////////////////////////
+global proc mtk_instaLodModelCreateTool_pasteParams(int $method)
+{
+    // lod レベル
+    global string $LOD_LEVELS_MTK_INSTALOD[];
+
+    // lod 情報 lod ラベル
+    string $utxt_lod[];
+
+    // lod 情報 削減率
+    string $utxt_lod_value[];
+
+    // lod 情報 削減設定
+    string $utxt_reduction_profile[];
+
+    // lod 情報 トライアングル数
+    string $utxt_triangles[];
+
+    // 通常の場合
+    if($method == 0)
+    {
+        // lod 情報 lod ラベル
+        global string $UTXT_LOD_MTK_INSTALOD[];
+
+        // lod 情報 削減率
+        global string $UTXT_LOD_VALUE_MTK_INSTALOD[];
+
+        // lod 情報 削減設定
+        global string $UTXT_REDUCTION_PROFILE_MTK_INSTALOD[];
+
+        $utxt_lod = $UTXT_LOD_MTK_INSTALOD;
+        $utxt_lod_value = $UTXT_LOD_VALUE_MTK_INSTALOD;
+        $utxt_reduction_profile = $UTXT_REDUCTION_PROFILE_MTK_INSTALOD;
+    }
+    // クリップボードにコピーの場合
+    else
+    {
+        // lod 情報 lod ラベル クリップボード
+        global string $UTXT_LOD_CLIPBOARD_MTK_INSTALOD[];
+
+        // lod 情報 削減率 クリップボード
+        global string $UTXT_LOD_VALUE_CLIPBOARD_MTK_INSTALOD[];
+
+        // lod 情報 削減設定 クリップボード
+        global string $UTXT_REDUCTION_PROFILE_CLIPBOARD_MTK_INSTALOD[];
+
+        $utxt_lod = $UTXT_LOD_CLIPBOARD_MTK_INSTALOD;
+        $utxt_lod_value = $UTXT_LOD_VALUE_CLIPBOARD_MTK_INSTALOD;
+        $utxt_reduction_profile = $UTXT_REDUCTION_PROFILE_CLIPBOARD_MTK_INSTALOD;
+    }
+
+    // lod チェックボックス
+    global string $UCB_LOD_MTK_INSTALOD[];
+
+    // lod rowColumn レイアウト
+    global string $URCL_LOD_MTK_INSTALOD[];
+
+    // lod 削減値 int スライダー
+    global string $UISG_LOD_VALUE_MTK_INSTALOD[];
+
+    // lod 削減設定オプションメニュー
+    global string $UOM_REDUCTION_PROFILE_MTK_INSTALOD[];
+
+    string $elm;
+
+    int $index;
+
+    for($elm in $utxt_lod)
+    {
+        int $isEnabled = `text -q -en $elm`;
+
+        checkBox -e -v $isEnabled $UCB_LOD_MTK_INSTALOD[$index];
+
+        if($isEnabled)
+        {
+            string $l = `text -q -l $utxt_lod_value[$index]`;
+            float $lod_value = (float)$l;
+
+            floatSliderGrp -e -v $lod_value $UISG_LOD_VALUE_MTK_INSTALOD[$index];
+
+            $l = `text -q -l $utxt_reduction_profile[$index]`;
+
+            // 項目が無ければdefault を選択
+            if(catchQuiet(`optionMenu -e -v $l $UOM_REDUCTION_PROFILE_MTK_INSTALOD[$index]`))
+            {
+                optionMenu -e -sl 1 $UOM_REDUCTION_PROFILE_MTK_INSTALOD[$index];
+            }
+        }
+
+        rowColumnLayout -e -en $isEnabled $URCL_LOD_MTK_INSTALOD[$index];
+
+        $index += 1;
+    }
+}
+
+///////////////////////////////////////
+// プリファレンス値 初期設定
+///////////////////////////////////////
+global proc mtk_instaLodModelCreateTool_initPreferences()
+{
+    // lod レベル
+    global string $LOD_LEVELS_MTK_INSTALOD[];
+
+    // チェックボックス 初期値
+    int $checkBoxValues[] = {
+        true,    // lod1
+        true,    // lod2
+        true,    // lod3
+        false,   // lod4
+        false,   // lod5
+        false,   // lod6
+        false    // lod7
+    };
+
+    // lod 初期値
+    int $lodValues[] = {
+        75,    // lod1
+        50,    // lod2
+        25,    // lod3
+        20,    // lod4
+        15,    // lod5
+        10,    // lod6
+        5      // lod7
+    };
+
+    // 削減設定 初期値
+    string $reductinProfiles[] = {
+        "default",    // lod1
+        "default",    // lod2
+        "default",    // lod3
+        "default",    // lod4
+        "default",    // lod5
+        "default",    // lod6
+        "default"     // lod7
+    };
+
+    string $lodLevel;
+
+    int $count;
+
+    for($lodLevel in $LOD_LEVELS_MTK_INSTALOD)
+    {
+        // チェックボックス値
+        optionVar -iv ("ov_" + $lodLevel + "_checked_mtk_instaLodModelCreateTool") $checkBoxValues[$count];
+
+        // 削減率
+        optionVar -fv ("ov_" + $lodLevel + "_value_mtk_instaLodModelCreateTool") $lodValues[$count];
+
+        // 削減設定
+        optionVar -sv ("ov_" + $lodLevel + "_profile_mtk_instaLodModelCreateTool") $reductinProfiles[$count];
+
+        $count += 1;
+    }
+}
+
+///////////////////////////////////////
+// プリファレンス値 初期設定2
+///////////////////////////////////////
+global proc mtk_instaLodModelCreateTool_initPreferences2()
+{
+    // 最大LOD
+    optionVar -sv "ov_maxLodLevel_mtk_instaLodModelCreateTool" "lod3";
+
+    // 終了値
+    optionVar -fv "ov_endValue_mtk_instaLodModelCreateTool" 25;
+
+    // イージングタイプ
+    optionVar -sv "ov_easeType_mtk_instaLodModelCreateTool" "線形";
+
+    // バイアス値
+    optionVar -fv "ov_biasValue_mtk_instaLodModelCreateTool" 0.0;
+
+    // スキンウェイトをコピーしない
+    optionVar -iv "ov_notCopySkinWeights_mtk_instaLodModelCreateTool" 0;
+}
+
+///////////////////////////////////////
+// プリファレンス値 保存
+///////////////////////////////////////
+global proc mtk_instaLodModelCreateTool_savePreferences()
+{
+    // lod チェックボックス
+    global string $UCB_LOD_MTK_INSTALOD[];
+
+    // lod 削減値 int スライダー
+    global string $UISG_LOD_VALUE_MTK_INSTALOD[];
+
+    // lod 削減設定オプションメニュー
+    global string $UOM_REDUCTION_PROFILE_MTK_INSTALOD[];
+
+    // lod レベル
+    global string $LOD_LEVELS_MTK_INSTALOD[];
+
+    string $lodLevel;
+
+    int $count;
+
+    for($lodLevel in $LOD_LEVELS_MTK_INSTALOD)
+    {
+        // チェックボックス値
+        optionVar -iv ("ov_" + $lodLevel + "_checked_mtk_instaLodModelCreateTool") `checkBox -q -v $UCB_LOD_MTK_INSTALOD[$count]`;
+
+        // 削減率
+        optionVar -fv ("ov_" + $lodLevel + "_value_mtk_instaLodModelCreateTool") `floatSliderGrp -q -v $UISG_LOD_VALUE_MTK_INSTALOD[$count]`;
+
+        // 削減設定
+        optionVar -sv ("ov_" + $lodLevel + "_profile_mtk_instaLodModelCreateTool") `optionMenu -q -v $UOM_REDUCTION_PROFILE_MTK_INSTALOD[$count]`;
+
+        $count += 1;
+    }
+
+    // 最大LOD
+    optionVar -sv "ov_maxLodLevel_mtk_instaLodModelCreateTool" `optionMenu -q -v uOm_maxLodLevel_mtk_instaLodModelCreateTool`;
+
+    // 終了値
+    optionVar -fv "ov_endValue_mtk_instaLodModelCreateTool" `floatSliderGrp -q -v uIsg_endValue_mtk_instaLodModelCreateTool`;
+
+    // イージングタイプ
+    optionVar -sv "ov_easeType_mtk_instaLodModelCreateTool" `optionMenu -q -v uOm_easeType_mtk_instaLodModelCreateTool`;
+
+    // バイアス値
+    optionVar -fv "ov_biasValue_mtk_instaLodModelCreateTool" `floatSliderGrp -q -v uFsg_bias_mtk_instaLodModelCreateTool`;
+
+    // スキンウェイトをコピーしない
+    optionVar -iv "ov_notCopySkinWeights_mtk_instaLodModelCreateTool" `checkBox -q -v uCb_notCopySkinWeights_mtk_instaLodModelCreateTool`;
+}
+
+///////////////////////////////////////
+// プリファレンス値 削除
+///////////////////////////////////////
+global proc mtk_instaLodModelCreateTool_removePreferences()
+{
+    // lod チェックボックス
+    global string $UCB_LOD_MTK_INSTALOD[];
+
+    // lod 削減値 int スライダー
+    global string $UISG_LOD_VALUE_MTK_INSTALOD[];
+
+    // lod 削減設定オプションメニュー
+    global string $UOM_REDUCTION_PROFILE_MTK_INSTALOD[];
+
+    // lod レベル
+    global string $LOD_LEVELS_MTK_INSTALOD[];
+
+    string $lodLevel;
+
+    int $count;
+
+    for($lodLevel in $LOD_LEVELS_MTK_INSTALOD)
+    {
+        // チェックボックス値
+        optionVar -rm ("ov_" + $lodLevel + "_checked_mtk_instaLodModelCreateTool");
+
+        // 削減率
+        optionVar -rm ("ov_" + $lodLevel + "_value_mtk_instaLodModelCreateTool");
+
+        // 削減設定
+        optionVar -rm ("ov_" + $lodLevel + "_profile_mtk_instaLodModelCreateTool");
+
+        $count += 1;
+    }
+
+    // 最大LOD
+    optionVar -rm "ov_maxLodLevel_mtk_instaLodModelCreateTool";
+
+    // 終了値
+    optionVar -rm "ov_endValue_mtk_instaLodModelCreateTool";
+
+    // イージングタイプ
+    optionVar -rm "ov_easeType_mtk_instaLodModelCreateTool";
+
+    // バイアス値
+    optionVar -rm "ov_biasValue_mtk_instaLodModelCreateTool";
+}
+
+///////////////////////////////////////
+// InstaLOD 起動・初期化
+///////////////////////////////////////
+global proc int mtk_instaLodModelCreateTool_openInstaLOD()
+{
+    // InstaLOD ウィンドウ名
+    global string $INSTALOD_CONTROL_ID_WORKSPACE;
+
+    // InstaLOD ウィンドウが存在しなければ
+    if(`workspaceControl -exists $INSTALOD_CONTROL_ID_WORKSPACE` == false)
+    {
+        // InstaLOD 起動
+        if(catchQuiet(`InstaLOD_MayaIntegration`))
+        {
+            confirmDialog
+                -t "LOD Model Create Tool"
+                -m "InstaLOD for Maya が無いため使用できません。"
+                -icon "critical"
+                -b "OK";
+
+            return false;
+        }
+
+        InstaLOD;
+
+        // InstaLOD ウィンドウ非表示
+        workspaceControl -e -vis false $INSTALOD_CONTROL_ID_WORKSPACE;
+
+        // InstaLOD 初期化
+        InstaLOD_InitializeGlobals();
+    }
+
+    // InstaLOD のPipeline Path 設定が正しくない場合
+    if(`InstaLOD_IsCurrentInstaLODCmdPathValid` == false)
+    {
+        // InstaLOD ウィンドウ表示
+        workspaceControl -e -vis true $INSTALOD_CONTROL_ID_WORKSPACE;
+
+        string $message;
+        $message += "InstaLOD のPipeline Path が正しく設定されていません。\n\n";
+        $message += "InstaLOD のGUIで`InstaLOD Pipeline Path` に正しいパスを設定してください。\n\n";
+        $message += "（例） C:\\Users\\社員番号\\Documents\\InstaLOD\\InstaLODPipeline_2020b";
+
+        confirmDialog
+            -t "LOD Model Create Tool"
+            -m $message
+            -icon "warning"
+            -b "OK";
+
+        return false;
+    }
+
+    return true;
+}
+
+///////////////////////////////////////
+// InstaLOD ウィンドウトグル
+///////////////////////////////////////
+global proc mtk_instaLodModelCreateTool_toggleInstaLodWindow()
+{
+    // InstaLOD ウィンドウ名
+    global string $INSTALOD_CONTROL_ID_WORKSPACE;
+
+    // InstaLOD ウィンドウが存在しなければ
+    if(`workspaceControl -exists $INSTALOD_CONTROL_ID_WORKSPACE` == false)
+    {
+        // InstaLOD 起動
+        InstaLOD_MayaIntegration;
+        InstaLOD;
+
+        // InstaLOD 初期化
+        InstaLOD_InitializeGlobals();
+    }
+    else
+    {
+        // 現在の表示状態
+        int $visible = `workspaceControl -q -vis $INSTALOD_CONTROL_ID_WORKSPACE`;
+
+        // InstaLOD ウィンドウ表示トグル
+        workspaceControl -e -vis ($visible == 0) $INSTALOD_CONTROL_ID_WORKSPACE;
+    }
+}
+
+///////////////////////////////////////
+// ウィンドウクローズコマンド
+///////////////////////////////////////
+global proc mtk_instaLodModelCreateTool_windowCloseCommand()
+{
+    // InstaLOD ウィンドウ名
+    global string $INSTALOD_CONTROL_ID_WORKSPACE;
+
+    if(`workspaceControl -exists $INSTALOD_CONTROL_ID_WORKSPACE`)
+    {
+        deleteUI $INSTALOD_CONTROL_ID_WORKSPACE;
+    }
+
+    // プリファレンス保存
+    mtk_instaLodModelCreateTool_savePreferences;
+}
+
+/////////////////////////////////
+// mdl リスト更新
+/////////////////////////////////
+global proc mtk_instaLodModelCreateTool_updateList()
+{
+    // 現在リストで選択している項目
+    string $selItems[] = `textScrollList -q -selectItem uTsl_mdl_mtk_instaLodModelCreateTool`;
+
+    // 現在ルートにある全ての mdl_ ノードを取得
+    string $mdlNodes[] = `ls "|mdl_*"`;
+
+    textScrollList -e -removeAll uTsl_mdl_mtk_instaLodModelCreateTool;
+
+    string $mdlNode;
+
+    // テキストスクロールリストに項目を追加
+    for($mdlNode in $mdlNodes)
+    {
+        textScrollList -e -append $mdlNode uTsl_mdl_mtk_instaLodModelCreateTool;
+    }
+
+    string $item;
+
+    // もともと選択していた項目を再選択
+    for($item in $selItems)
+    {
+        if(stringArrayContains($item, $mdlNodes))
+        {
+            textScrollList -e -selectItem $item uTsl_mdl_mtk_instaLodModelCreateTool;
+        }
+    }
+}
+
+/////////////////////////////////
+// lod 情報更新
+/////////////////////////////////
+global proc mtk_instaLodModelCreateTool_updateLodInfo(int $method)
+{
+    // lod レベル
+    global string $LOD_LEVELS_MTK_INSTALOD[];
+
+    // lod 情報 lod ラベル
+    string $utxt_lod[];
+
+    // lod 情報 削減率
+    string $utxt_lod_value[];
+
+    // lod 情報 削減設定
+    string $utxt_reduction_profile[];
+
+    // lod 情報 トライアングル数
+    string $utxt_triangles[];
+
+    // 通常の場合
+    if($method == 0)
+    {
+        // lod 情報 lod ラベル
+        global string $UTXT_LOD_MTK_INSTALOD[];
+
+        // lod 情報 削減率
+        global string $UTXT_LOD_VALUE_MTK_INSTALOD[];
+
+        // lod 情報 削減設定
+        global string $UTXT_REDUCTION_PROFILE_MTK_INSTALOD[];
+
+        // lod 情報 トライアングル数
+        global string $UTXT_TRIANGLES_MTK_INSTALOD[];
+
+        $utxt_lod = $UTXT_LOD_MTK_INSTALOD;
+        $utxt_lod_value = $UTXT_LOD_VALUE_MTK_INSTALOD;
+        $utxt_reduction_profile = $UTXT_REDUCTION_PROFILE_MTK_INSTALOD;
+        $utxt_triangles = $UTXT_TRIANGLES_MTK_INSTALOD;
+    }
+    // クリップボードにコピーの場合
+    else
+    {
+        // lod 情報 lod ラベル クリップボード
+        global string $UTXT_LOD_CLIPBOARD_MTK_INSTALOD[];
+
+        // lod 情報 削減率 クリップボード
+        global string $UTXT_LOD_VALUE_CLIPBOARD_MTK_INSTALOD[];
+
+        // lod 情報 削減設定 クリップボード
+        global string $UTXT_REDUCTION_PROFILE_CLIPBOARD_MTK_INSTALOD[];
+
+        // lod 情報 ポリゴン数 クリップボード
+        global string $UTXT_TRIANGLES_CLIPBOARD_MTK_INSTALOD[];
+
+        $utxt_lod = $UTXT_LOD_CLIPBOARD_MTK_INSTALOD;
+        $utxt_lod_value = $UTXT_LOD_VALUE_CLIPBOARD_MTK_INSTALOD;
+        $utxt_reduction_profile = $UTXT_REDUCTION_PROFILE_CLIPBOARD_MTK_INSTALOD;
+        $utxt_triangles = $UTXT_TRIANGLES_CLIPBOARD_MTK_INSTALOD;
+    }
+
+    // mdl リストで選択している項目
+    string $selItems[] = `textScrollList -q -selectItem uTsl_mdl_mtk_instaLodModelCreateTool`;
+
+    string $elm;
+    int $index;
+
+    // mdl リストで何も選択していない、もしくは複数選択の場合
+    if(`size($selItems)` == 0 || `size($selItems)` > 1)
+    {
+        for($elm in $utxt_lod)
+        {
+            text -e -en false $elm;
+            text -e -en false -l "-" $utxt_lod_value[$index];
+            text -e -en false -l "-" $utxt_reduction_profile[$index];
+            text -e -en false -l "-" $utxt_triangles[$index];
+
+            $index += 1;
+        }
+
+        return;
+    }
+
+    string $selItem;
+
+    for($selItem in $selItems)
+    {
+        // インデックス初期化
+        $index = 0;
+
+        // 子ノードを取得
+        string $childNodes[] = `listRelatives -fullPath -children $selItem`;
+
+        string $lodLevel;
+
+        for($lodLevel in $LOD_LEVELS_MTK_INSTALOD)
+        {
+            string $childNode;
+
+            for($childNode in $childNodes)
+            {
+                int $enabled;
+
+                // カスタムアトリビュート値
+                string $customAttributeValues[] = {"-", "-"};
+
+                // トライアングル数
+                string $trianglesLabel = "-";
+
+                // lod ノードが存在する場合
+                if(endsWith($childNode, $lodLevel))
+                {
+                    $enabled = true;
+
+                    // カスタムアトリビュートの値を取得
+                    $customAttributeValues = `mtk_instaLodModelCreateTool_getCustomAttribute($childNode)`;
+
+                    // カスタムアトリビュートが存在する場合
+                    if($customAttributeValues[0] != "情報なし")
+                    {
+                        // 削減率を表示用に小数点以下2桁に丸める
+                        float $tempValue = float($customAttributeValues[0]);
+                        $tempValue = floor($tempValue * 100 + 0.05) / 100;
+                        $customAttributeValues[0] = string($tempValue);
+                    }
+
+                    // lod ノードのメッシュを取得
+                    string $meshes[] = `filterExpand -sm 12 $childNode`;
+
+                    // メッシュがない場合
+                    if(`size($meshes)` == 0)
+                    {
+                        $trianglesLabel = "0";
+                    }
+                    else
+                    {
+                        // トライアングル数取得
+                        int $triangles[] = `polyEvaluate -t $meshes`;
+
+                        $trianglesLabel = $triangles[0];
+                    }
+                }
+                else
+                {
+                    $enabled = false;
+                }
+
+                // lod 情報表示更新
+                text -e -en $enabled $utxt_lod[$index];
+                text -e -en $enabled -l $customAttributeValues[0] $utxt_lod_value[$index];
+                text -e -en $enabled -l $customAttributeValues[1] $utxt_reduction_profile[$index];
+                text -e -en $enabled -l $trianglesLabel $utxt_triangles[$index];
+
+                if($enabled == true)
+                {
+                    break;
+                }
+            }
+            $index += 1;
+        }
+    }
+}
+
+/////////////////////////////////
+// オプションメニュー更新
+/////////////////////////////////
+global proc mtk_instaLodModelCreateTool_updateOptionMenu(string $optionMenus[])
+{
+    // 共有プロファイル格納場所
+    global string $COMMON_PROFILES_FOLDER_MTK_INSTALOD;
+
+    // ローカルプロファイル格納場所
+    global string $LOCAL_PROFILES_FOLDER_MTK_INSTALOD;
+
+    // 共有.json ファイル名取得
+    string $commonProfileFiles[] = `getFileList -fld $COMMON_PROFILES_FOLDER_MTK_INSTALOD -filespec "*.json"`;
+
+    // ファイル名にフォルダパスを結合
+    stringArrayAddPrefix($commonProfileFiles, $COMMON_PROFILES_FOLDER_MTK_INSTALOD);
+
+    // ローカル.json ファイル名取得
+    string $localProfileFiles[] = `getFileList -fld $LOCAL_PROFILES_FOLDER_MTK_INSTALOD -filespec "*.json"`;
+
+    // ローカル.json ファイルが存在する場合
+    if(`size($localProfileFiles)` != 0)
+    {
+        // ファイル名にフォルダパスを結合
+        stringArrayAddPrefix($localProfileFiles, $LOCAL_PROFILES_FOLDER_MTK_INSTALOD);
+
+        // ダミー要素追加（セパレータ用）
+        stringArrayInsertAtIndex(0, $localProfileFiles, "divider");
+    }
+
+    // 削減設定 共有プロファイルパス
+    global string $PROFILE_PATH_MTK_INSTALOD[];
+    $PROFILE_PATH_MTK_INSTALOD = stringArrayCatenate($commonProfileFiles, $localProfileFiles);
+
+    string $optionMenu;
+
+    for($optionMenu in $optionMenus)
+    {
+        string $sel;
+
+        if(`optionMenu -q -numberOfItems $optionMenu` != 0)
+        {
+            // 現在選択している項目を取得
+            $sel = `optionMenu -q -value $optionMenu`;
+        }
+
+        // 現在のオプションメニュー項目を削除
+        string $menuItems[] = `optionMenu -q -itemListLong $optionMenu`;
+
+        if(`size($menuItems)` != 0)
+        {
+            deleteUI $menuItems;
+        }
+
+        string $elm;
+
+        for($elm in $PROFILE_PATH_MTK_INSTALOD)
+        {
+            if($elm == "divider")
+            {
+                menuItem -divider true -p $optionMenu;
+            }
+            else
+            {
+                menuItem -l `basenameEx($elm)` -p $optionMenu;
+            }
+        }
+
+        menuItem -divider true -p $optionMenu;
+        menuItem -l "InstaLOD GUI" -p $optionMenu;
+
+        // 選択していた項目を選択
+        catchQuiet(`optionMenu -e -v $sel $optionMenu`);
+    }
+}
+
+///////////////////////////////////////
+// checkBox オンコマンド
+///////////////////////////////////////
+global proc mtk_instaLodModelCreateTool_checkBoxCommand(int $value, string $checkBox)
+{
+    // lod チェックボックス
+    global string $UCB_LOD_MTK_INSTALOD[];
+
+    // lod rowColumn レイアウト
+    global string $URCL_LOD_MTK_INSTALOD[];
+
+    int $index = stringArrayFind($checkBox, 0, $UCB_LOD_MTK_INSTALOD);
+
+    rowColumnLayout -e -en $value $URCL_LOD_MTK_INSTALOD[$index];
+}
+
+///////////////////////////////////////
+// 作成ボタンコマンド
+///////////////////////////////////////
+global proc mtk_instaLodModelCreateTool_createButtonCommand()
+{
+    // リストで選択している項目を取得
+    string $selItems[] = `textScrollList -q -selectItem uTsl_mdl_mtk_instaLodModelCreateTool`;
+
+    // リストで項目が選択されていなければ終了
+    if(`size($selItems)` == 0)
+    {
+        confirmDialog
+            -t "LOD Model Create Tool"
+            -m "対象のmdl_ がリストで選択されていません。"
+            -icon "warning"
+            -b "OK";
+
+        return;
+    }
+
+    // lod チェックボックス
+    global string $UCB_LOD_MTK_INSTALOD[];
+
+    string $elm;
+    int $checked;
+
+    for($elm in $UCB_LOD_MTK_INSTALOD)
+    {
+        $checked += `checkBox -q -v $elm`;
+    }
+
+    // LOD チェックボックスにチェックが入っていなければ終了
+    if($checked == 0)
+    {
+        confirmDialog
+            -t "LOD Model Create Tool"
+            -m "作成するLOD レベルにチェックを入れてください。"
+            -icon "warning"
+            -b "OK";
+
+        return;
+    }
+
+    // 実行確認
+    string $confirm = `confirmDialog
+        -title "LOD Model Create Tool"
+        -message "LOD モデルを作成します。"
+        -button "作成"
+        -button "キャンセル"
+        -defaultButton "作成"
+        -cancelButton "キャンセル"
+        -dismissString "キャンセル"
+        `;
+
+        if($confirm == "キャンセル")
+        {
+            return;
+        }
+
+    // InstaLOD 起動
+    mtk_instaLodModelCreateTool_openInstaLOD;
+
+    // lod rowColumn レイアウト
+    global string $URCL_LOD_MTK_INSTALOD[];
+
+    // lod 削減値 int スライダー
+    global string $UISG_LOD_VALUE_MTK_INSTALOD[];
+
+    // lod 削減設定オプションメニュー
+    global string $UOM_REDUCTION_PROFILE_MTK_INSTALOD[];
+
+    // lod レベル
+    global string $LOD_LEVELS_MTK_INSTALOD[];
+
+    // 削減設定プロファイルパス
+    global string $PROFILE_PATH_MTK_INSTALOD[];
+
+    // 一時プロファイルフォルダ
+    string $tempProfileFolder = `getenv "TMPDIR"` + "/mtk_instaLodModelCreateTool";
+
+    if(`filetest -d $tempProfileFolder` == false)
+    {
+        sysFile -md $tempProfileFolder;
+    }
+
+    // 一時プロファイルパス
+    string $tempProfilePath = $tempProfileFolder + "/temp.json";
+
+    // 作成されたLOD ノード
+    string $lodNodes[];
+
+    string $selItem;
+
+    for($selItem in $selItems)
+    {
+        // 子ノードを取得
+        string $childNodes[] = `listRelatives -fullPath -children $selItem`;
+        string $childNode;
+
+        // 対象model ノード
+        string $targetModelNode;
+
+        // model ノード取得
+        for($childNode in $childNodes)
+        {
+            if(endsWith($childNode, "|model"))
+            {
+                $targetModelNode = $childNode;
+
+                break;
+            }
+        }
+
+        // model ノードがない場合、次のループへ
+        if($targetModelNode == "")
+        {
+            string $message = $selItem + " にはmodel ノードが存在しないため処理をスキップします。";
+
+            confirmDialog
+                -t "LOD Model Create Tool"
+                -m $message
+                -icon "warning"
+                -b "OK";
+
+            continue;
+        }
+
+        string $checkBox;
+
+        int $index;
+
+        string $progressMessage;
+
+        progressWindow
+            -t "LOD Model Create Tool"
+            -isInterruptable false
+            -status "\nLOD 作成中...\n"
+            -max $checked;
+
+        for($checkBox in $UCB_LOD_MTK_INSTALOD)
+        {
+            if(`checkBox -q -v $checkBox`)
+            {
+                // LOD レベル
+                string $lodLevel = $LOD_LEVELS_MTK_INSTALOD[$index];
+
+                $progressMessage = "\n" + $lodLevel + " : 作成中...\n";
+
+                progressWindow -e -status $progressMessage -progress $index;
+
+                // 値
+                float $lodValue =  `floatSliderGrp -q -v $UISG_LOD_VALUE_MTK_INSTALOD[$index]`;
+
+                // 削減設定インデックス
+                int $reductionProfileIndex = `optionMenu -q -select $UOM_REDUCTION_PROFILE_MTK_INSTALOD[$index]` - 1;
+
+                // 対象model ノード選択
+                select -r $targetModelNode;
+
+                // エラーなどで残ってしまった作業用ノードがあれば削除
+                string $garbageNodes[] = `ls "|__instalod_temp*"`;
+                if(`size($garbageNodes)` != 0)
+                {
+                    delete $garbageNodes;
+                }
+
+                // 対象model ノードを複製
+                string $dupedTargetModelNode[] = `duplicate -rr -name "__instalod_temp" $targetModelNode `;
+
+                // アンペアレント
+                $dupedTargetModelNode = `parent -w $dupedTargetModelNode`;
+
+                // 並びを先頭に
+                // InstaLOD 実行後、ショートネームが同じものがあると最初に見つかったものを対象としてしまう問題に対処するため
+                reorder -front $dupedTargetModelNode;
+
+                //複製model ノード以下のmesh ノードを取得
+                string $preIndexllMeshShapeNodes[] = `listRelatives -allDescendents -noIntermediate -type "mesh" -f $dupedTargetModelNode`;
+
+                // mesh ノードの親トランスフォームノードを取得
+                string $preIndexllMeshNodes[] = `listRelatives -f -p $preIndexllMeshShapeNodes`;
+
+                // 重複を削除
+                $preIndexllMeshNodes = stringArrayRemoveDuplicates($preIndexllMeshNodes);
+
+                // スキンウェイトをコピーする場合
+                if(`checkBox -q -v uCb_notCopySkinWeights_mtk_instaLodModelCreateTool` == false)
+                {
+                    // 元のmodel ノード以下のmesh ノードを取得
+                    string $sourceMeshShapeNodes[] = `listRelatives -allDescendents -noIntermediate -type "mesh" -f $targetModelNode`;
+
+                    // mesh ノードの親トランスフォームノードを取得
+                    string $sourceMeshNodes[] = `listRelatives -f -p $sourceMeshShapeNodes`;
+
+                    // 重複を削除
+                    $sourceMeshNodes = stringArrayRemoveDuplicates($sourceMeshNodes);
+
+                    int $i;
+
+                    for($i = 0; $i<`size($preIndexllMeshNodes)`; $i++)
+                    {
+                        python("from mtk.utils.history import MtkHistory");
+                        python("MtkHistory._bind_and_copy_weights('" + $sourceMeshNodes[$i] + "','" + $preIndexllMeshNodes[$i] + "')");
+                    }
+                }
+
+                // 削減設定がInstaLOD GUI の場合
+                if(`optionMenu -q -v $UOM_REDUCTION_PROFILE_MTK_INSTALOD[$index]` == "InstaLOD GUI")
+                {
+                    // 削減方法
+                    optionVar -sv "INSTALOD_ID_OPTIMIZE_TYPE" "Optimize";
+
+                    // 値
+                    optionVar -fv "INSTALOD_ID_OP_PERCENTTRIANGLES" $lodValue;
+                    optionVar -iv "INSTALOD_ID_OP_ABSOLUTETRIANGLES" 0;
+                    optionVar -iv "INSTALOD_ID_OP_SCREENSIZEINPIXELS" 0;
+
+                    // InstaLOD 実行
+                    InstaLOD_OptimizeMeshes($preIndexllMeshNodes, "", false);
+                }
+                // 削減設定がInstaLOD GUI 以外の場合
+                else
+                {
+                    // 削減設定プロファイルのパス
+                    string $reductionProfilePath = $PROFILE_PATH_MTK_INSTALOD[$reductionProfileIndex];
+
+                    // プロファイルが存在しなければスキップ
+                    if(`filetest -f $reductionProfilePath` == false)
+                    {
+                        string $message = $reductionProfilePath + "\nが存在しません。\n\n" + $selItem + " の" + $lodLevel + " 作成はスキップします。";
+
+                        confirmDialog
+                            -t "LOD Model Create Tool"
+                            -m $message
+                            -icon "warning"
+                            -b "OK";
+
+                        $index += 1;
+
+                        continue;
+                    }
+
+                    // プロファイル内容をすべて読み込み
+                    string $preIndexllText = freadAllText($reductionProfilePath);
+
+                    // プロファイル内容を分割
+                    string $lines[] = stringToStringArray($preIndexllText, "\n");
+
+                    string $line;
+                    int $count;
+
+                    for($line in $lines)
+                    {
+                        // Percent Triangles の値を設定
+                        if(`gmatch $line "*PercentTriangles*"`)
+                        {
+                            $lines[$count] = ("\"PercentTriangles\" : " + $lodValue / 100.0 + ",");
+                        }
+
+                        // Absolute Triangles の値を設定
+                        if(`gmatch $line "*AbsoluteTriangles*"`)
+                        {
+                            $lines[$count] = "\"AbsoluteTriangles\" : 0,";
+                        }
+
+                        // Screen Size In Pixels の値を設定
+                        if(`gmatch $line "*ScreenSizeInPixels*"`)
+                        {
+                            $lines[$count] = "\"ScreenSizeInPixels\" : 0,";
+                        }
+
+                        $count += 1;
+                    }
+
+                    $preIndexllText = stringArrayToString($lines, "\n");
+
+                    // 一時ファイルに書き込み
+                    fwriteAllText($tempProfilePath, $preIndexllText);
+
+                    // InstaLOD 実行
+                    InstaLOD_OptimizeMeshes($preIndexllMeshNodes, $tempProfilePath, false);
+                }
+
+                // 元のmesh ノードを削除
+                delete $preIndexllMeshNodes;
+
+                // 作成されたノードを取得
+                string $selNodes[] = `ls -sl`;
+                string $selNode;
+
+                string $reverse[];
+
+                // 親ノードに _INSTALOD が付いたときに先にリネームされてしまうので、子ノードのリネームが先になるように配列の要素を逆順にする
+                for($selNode in $selNodes)
+                {
+                    stringArrayInsertAtIndex(0, $reverse, $selNode);
+                }
+
+                $selNodes = $reverse;
+
+                for($selNode in $selNodes)
+                {
+                    string $tokens[];
+
+                    // ノード名を分割
+                    tokenize $selNode "|" $tokens;
+
+                    // リネーム先のノード名
+                    string $newName = substituteAllString($tokens[`size($tokens)` - 1], "_INSTALOD", ("_" + $lodLevel));
+
+                    // リネーム
+                    rename $selNode $newName;
+                }
+
+                // mdl の階層に戻す
+                $dupedTargetModelNode = `parent $dupedTargetModelNode $selItem`;
+
+                // lod ノードが存在すれば削除
+                for($childNode in $childNodes)
+                {
+                    if(endsWith($childNode, ("|" + $lodLevel)) )
+                    {
+                        delete $childNode;
+
+                        break;
+                    }
+                }
+
+                // リネーム
+                $dupedTargetModelNode[0] = `rename $dupedTargetModelNode $lodLevel`;
+
+                // フルパス名に
+                $dupedTargetModelNode = `ls -long $dupedTargetModelNode[0]`;
+
+                // 作成LOD ノードリストに追加
+                $lodNodes[`size($lodNodes)`] = $dupedTargetModelNode[0];
+
+                // カスタムアトリビュートを追加
+                mtk_instaLodModelCreateTool_setCustomAttribute($lodValue, `optionMenu -q -v $UOM_REDUCTION_PROFILE_MTK_INSTALOD[$index]`, $dupedTargetModelNode[0]);
+            }
+
+            $index += 1;
+        }
+
+        // lod ノード並べ替え
+        mtk_instaLodModelCreateTool_reorderLodNodes($selItem);
+    }
+
+    progressWindow -endProgress;
+
+    select -r $lodNodes;
+
+    // lod 情報更新
+    mtk_instaLodModelCreateTool_updateLodInfo(0);
+}
+
+///////////////////////////////////////
+// カスタムアトリビュート セット
+///////////////////////////////////////
+global proc mtk_instaLodModelCreateTool_setCustomAttribute(float $value, string $profile, string $node)
+{
+    // カスタムアトリビュートのリスト
+    global string $CUSTOM_ATTRIBUTES_MTK_INSTALOD[];
+
+    // カスタムアトリビュートがなければ作成
+    if(`attributeExists $CUSTOM_ATTRIBUTES_MTK_INSTALOD[0] $node` == false)
+    {
+       addAttr -longName $CUSTOM_ATTRIBUTES_MTK_INSTALOD[0] -attributeType "float" $node;
+    }
+
+    if(`attributeExists $CUSTOM_ATTRIBUTES_MTK_INSTALOD[1] $node` == false)
+    {
+       addAttr -longName $CUSTOM_ATTRIBUTES_MTK_INSTALOD[1] -dt "string" $node;
+    }
+
+    // アトリビュート値を設定
+    setAttr ($node + "." + $CUSTOM_ATTRIBUTES_MTK_INSTALOD[0]) $value;
+    setAttr ($node + "." + $CUSTOM_ATTRIBUTES_MTK_INSTALOD[1]) -type "string" $profile;
+}
+
+///////////////////////////////////////
+// カスタムアトリビュート ゲット
+///////////////////////////////////////
+global proc string[] mtk_instaLodModelCreateTool_getCustomAttribute(string $node)
+{
+    string $result[] = {"情報なし", "情報なし"};
+
+    // カスタムアトリビュートのリスト
+    global string $CUSTOM_ATTRIBUTES_MTK_INSTALOD[];
+
+    // カスタムアトリビュートがない場合
+    if(`attributeExists $CUSTOM_ATTRIBUTES_MTK_INSTALOD[0] $node` == true)
+    {
+        // アトリビュート値を取得
+        $result[0] = `getAttr ($node + "." + $CUSTOM_ATTRIBUTES_MTK_INSTALOD[0])`;
+    }
+
+    // カスタムアトリビュートがない場合
+    if(`attributeExists $CUSTOM_ATTRIBUTES_MTK_INSTALOD[1] $node` == true)
+    {
+        // アトリビュート値を取得
+        $result[1] = `getAttr ($node + "." + $CUSTOM_ATTRIBUTES_MTK_INSTALOD[1])`;
+    }
+
+    return $result;
+}
+
+///////////////////////////////////////
+// lod ノード並べ替え
+///////////////////////////////////////
+global proc mtk_instaLodModelCreateTool_reorderLodNodes(string $rootNode)
+{
+    // ノードの並び
+    string $orderDifinitions[] = {
+        "model"
+        //"root_jnt"
+    };
+
+    // lod レベル
+    global string $LOD_LEVELS_MTK_INSTALOD[];
+
+    // ノードの並び
+    $orderDifinitions = stringArrayCatenate($orderDifinitions, $LOD_LEVELS_MTK_INSTALOD);
+
+    // 子ノード取得
+    string $children[] = `listRelatives -f -c $rootNode`;
+
+    // 並べ替え順ターゲット
+    string $orderTargets[];
+
+    string $orderDifinition;
+
+    for($orderDifinition in $orderDifinitions)
+    {
+        string $child;
+
+        for($child in $children)
+        {
+            if(endsWith($child, $orderDifinition))
+            {
+                $orderTargets[`size($orderTargets)`] = $orderDifinition;
+
+                break;
+            }
+        }
+    }
+
+    string $orderTarget;
+
+    int $index;
+
+    for($orderTarget in $orderTargets)
+    {
+        if(startsWith($orderTarget, "lod"))
+        {
+            string $preOrderTarget = $orderTargets[$index - 1];
+
+            $orderTarget = "|" + $rootNode + "|" + $orderTarget;
+            $preOrderTarget = "|" + $rootNode + "|" + $preOrderTarget;
+
+            int $a = stringArrayFind($preOrderTarget, 0, $children);
+            int $b = stringArrayFind($orderTarget, 0, $children);
+
+            int $step;
+
+            if($a < $b)
+            {
+                $step = $a - $b + 1;
+            }
+            else
+            {
+               $step = $a -$b;
+            }
+
+            // 並べ替え
+            reorder -relative $step $orderTarget;
+
+        }
+
+        $index += 1;
+
+        // 並べ替え後の子ノード取得
+        $children = `listRelatives -f -c $rootNode`;
+    }
+}
+
+///////////////////////////////////////
+// ポップアップメニューが表示されるときのコールバック
+///////////////////////////////////////
+global proc mtk_instaLodModelCreateTool_postMenuCommand()
+{
+    // InstaLOD ウィンドウ名
+    global string $INSTALOD_CONTROL_ID_WORKSPACE;
+
+    int $flag = true;
+
+    // InstaLOD ウィンドウが存在しなければ
+    if(`workspaceControl -exists $INSTALOD_CONTROL_ID_WORKSPACE` == false)
+    {
+        $flag = false;
+    }
+    else
+    {
+        // 現在の表示状態
+        $flag = `workspaceControl -q -vis $INSTALOD_CONTROL_ID_WORKSPACE`;
+    }
+
+    menuItem -e -en $flag uMi_addProfile_mtk_instaLodModelCreateTool;
+}
+
+///////////////////////////////////////
+// 削減設定を追加
+///////////////////////////////////////
+global proc mtk_instaLodModelCreateTool_addProfile()
+{
+    // ローカルプロファイル格納場所
+    global string $LOCAL_PROFILES_FOLDER_MTK_INSTALOD;
+
+    // 削減設定名
+    string $profileName;
+
+    // ダイアログタイトル
+    string $title = "削減設定を追加";
+
+    // 入力ダイアログを表示
+    string $result = `promptDialog
+        -title $title
+        -message "削減設定名を入力 :"
+        -button "追加" -button "キャンセル"
+        -defaultButton "追加" -cancelButton "キャンセル"
+        -dismissString "キャンセル"`;
+
+    if($result == "追加")
+    {
+        $profileName = `promptDialog -query -text`;
+
+        if($profileName == "")
+        {
+            return;
+        }
+    }
+    else
+    {
+        return;
+    }
+
+    // プロファイル保存パス
+    string $path = $LOCAL_PROFILES_FOLDER_MTK_INSTALOD + $profileName + ".json";
+
+    if(`filetest -f $path`)
+    {
+        $result = `confirmDialog
+            -title $title
+            -message ($profileName + " はすでに存在します。上書きしますか？")
+            -button "上書き"
+            -button "キャンセル"
+            -defaultButton "上書き"
+            -cancelButton "キャンセル"
+            -dismissString "キャンセル"
+            `;
+
+        if($result == "キャンセル")
+        {
+            return;
+        }
+    }
+
+    global string $INSTALOD_ID_OPTIMIZE_TYPE;
+    InstaLOD_SetOptionVarStringValue($INSTALOD_ID_OPTIMIZE_TYPE, "Optimize");
+
+    global string $INSTALOD_MESH_SUFFIX;
+
+    string $optimizationProfile[];
+    $optimizationProfile[0] = InstaLOD_BuildProfileFromOptionVars("Maya", $INSTALOD_MESH_SUFFIX);
+    InstaLOD_WriteAllLines($path, $optimizationProfile);
+
+    // lod 削減設定オプションメニュー
+    global string $UOM_REDUCTION_PROFILE_MTK_INSTALOD[];
+
+    // オプションメニュー更新
+    mtk_instaLodModelCreateTool_updateOptionMenu($UOM_REDUCTION_PROFILE_MTK_INSTALOD);
+}
+
+///////////////////////////////////////
+// 削減設定の削除ダイアログを開く
+///////////////////////////////////////
+global proc mtk_instaLodModelCreateTool_openEditProfileDialog()
+{
+    // ダイアログを開く
+    layoutDialog
+        -t "削減設定"
+        -ui "mtk_instaLodModelCreateTool_editProfileDialog";
+}
+
+///////////////////////////////////////
+// 削減設定の削除ダイアログUI
+///////////////////////////////////////
+global proc mtk_instaLodModelCreateTool_editProfileDialog()
+{
+    string $form = `setParent -q`;
+
+    formLayout -e -width 250 $form;
+
+    string $b1 = `button -l "リネーム"    -c "mtk_instaLodModelCreateTool_editProfile(\"リネーム\")"`;
+    string $b2 = `button -l "削除"     -c "mtk_instaLodModelCreateTool_editProfile(\"削除\")"`;
+    string $b3 = `button -l "閉じる" -c "layoutDialog -dismiss \"close\""`;
+    string $tsl = `textScrollList uTsl_editProfileDialog_mtk_instaLodModelCreateTool`;
+    string $sp = `separator -st "in"`;
+
+    int $formMargin = 5;
+    int $buttonMargin = 2;
+
+    formLayout -edit
+        -attachForm         $tsl  "top"    $formMargin
+        -attachForm         $tsl  "left"   $formMargin
+        -attachControl      $tsl  "bottom" $formMargin $sp
+        -attachControl      $tsl  "right"  $formMargin $b1
+
+        -attachForm         $b1  "top"    $formMargin
+        -attachNone         $b1  "left"
+        -attachNone         $b1  "bottom"
+        -attachForm         $b1  "right"  $formMargin
+
+        -attachControl      $b2  "top"    $buttonMargin $b1
+        -attachNone         $b2  "left"
+        -attachNone         $b2  "bottom"
+        -attachForm         $b2  "right"  $formMargin
+
+        -attachNone         $sp  "top"
+        -attachForm         $sp  "left"   $formMargin
+        -attachControl      $sp  "bottom" $formMargin $b3
+        -attachForm         $sp  "right"  $formMargin
+
+        -attachNone         $b3  "top"
+        -attachForm         $b3  "left"   $formMargin
+        -attachForm         $b3  "bottom" $formMargin
+        -attachForm         $b3  "right"  $formMargin
+    $form;
+
+    mtk_instaLodModelCreateTool_updateProfileDialogList;
+}
+
+///////////////////////////////////////
+// 削減設定の削除ダイアログ リスト更新
+///////////////////////////////////////
+global proc mtk_instaLodModelCreateTool_updateProfileDialogList()
+{
+    // ローカルプロファイル格納場所
+    global string $LOCAL_PROFILES_FOLDER_MTK_INSTALOD;
+
+    // ローカル.json ファイル名取得
+    string $profileFiles[] = `getFileList -fld $LOCAL_PROFILES_FOLDER_MTK_INSTALOD -filespec "*.json"`;
+
+    string $profileFile;
+
+    // 項目をすべて削除
+    textScrollList -e -removeAll uTsl_editProfileDialog_mtk_instaLodModelCreateTool;
+
+    // テキストスクロールリストに項目を追加
+    for($profileFile in $profileFiles)
+    {
+        textScrollList -e -append `basenameEx($profileFile)` uTsl_editProfileDialog_mtk_instaLodModelCreateTool;
+    }
+}
+
+///////////////////////////////////////
+// 削減設定の削除ダイアログ 削除ボタンコールバック
+///////////////////////////////////////
+global proc mtk_instaLodModelCreateTool_editProfile(string $method)
+{
+    // リストで選択している項目を取得
+    string $selItem[] = `textScrollList -q -selectItem uTsl_editProfileDialog_mtk_instaLodModelCreateTool`;
+
+    if(`size($selItem)` == 0)
+    {
+        return;
+    }
+
+    // プロファイル格納場所
+    global string $LOCAL_PROFILES_FOLDER_MTK_INSTALOD;
+
+    // プロファイルのパス
+    string $filePath = $LOCAL_PROFILES_FOLDER_MTK_INSTALOD + $selItem[0] + ".json";
+
+    // プロファイルが存在しなければ
+    if(`filetest -f $filePath` == false)
+    {
+        // リスト更新
+        mtk_instaLodModelCreateTool_updateProfileDialogList;
+
+        return;
+    }
+    else
+    {
+        // 削除の場合
+        if($method == "削除")
+        {
+            string $result = `confirmDialog
+                -title $method
+                -message ($selItem[0] + " を削除します。")
+                -button $method
+                -button "キャンセル"
+                -defaultButton $method
+                -cancelButton "キャンセル"
+                -dismissString "キャンセル"
+                `;
+
+            if($result == "キャンセル")
+            {
+                return;
+            }
+
+            // プロファイル削除
+            sysFile -delete $filePath;
+        }
+        // リネームの場合
+        else if($method == "リネーム")
+        {
+            string $result = `promptDialog
+                -title $method
+                -message "リネーム後の名前を入力 :"
+                -text $selItem[0]
+                -button $method
+                -button "キャンセル"
+                -defaultButton $method
+                -cancelButton "キャンセル"
+                -dismissString "キャンセル"`;
+
+            if($result == $method)
+            {
+                // 入力された新しい名前を取得
+                $newName = `promptDialog -query -text`;
+
+                if($newName == "")
+                {
+                    return;
+                }
+
+                // リネーム後のファイルパス
+                string $newPath = $LOCAL_PROFILES_FOLDER_MTK_INSTALOD + $newName + ".json";
+
+                // すでに存在すれば終了
+                if(`filetest -f $newPath`)
+                {
+                    confirmDialog -t "確認" -m ($newName + " はすでに存在します。") -b "OK";
+
+                    return;
+                }
+
+                // リネーム
+                sysFile -rename $newPath $filePath;
+            }
+            else
+            {
+                return;
+            }
+        }
+    }
+
+    // リスト更新
+    mtk_instaLodModelCreateTool_updateProfileDialogList;
+
+    // lod 削減設定オプションメニュー
+    global string $UOM_REDUCTION_PROFILE_MTK_INSTALOD[];
+
+    string $optionMenu;
+
+    // オプションメニュー更新
+    mtk_instaLodModelCreateTool_updateOptionMenu($UOM_REDUCTION_PROFILE_MTK_INSTALOD);
+    mtk_instaLodModelCreateTool_updateOptionMenu({"uOm_setAllProfile_mtk_instaLodModelCreateTool"});
+}
+
+///////////////////////////////////////
+// InstaLOD の設定をデフォルトにする
+///////////////////////////////////////
+global proc mtk_instaLodModelCreateTool_resetSettings()
+{
+    // InstaLOD ウィンドウ名
+    global string $INSTALOD_CONTROL_ID_WORKSPACE;
+
+    // InstaLOD ウィンドウが存在しなければ
+    if(`workspaceControl -exists $INSTALOD_CONTROL_ID_WORKSPACE` == false)
+    {
+        // InstaLOD 起動
+        InstaLOD_MayaIntegration;
+        InstaLOD;
+
+        // InstaLOD 初期化
+        InstaLOD_InitializeGlobals();
+    }
+
+    // 設定をデフォルトに
+    InstaLOD_ResetSettings(true);
+}
+
+///////////////////////////////////////
+// 一括設定 オプションメニュー コールバック
+///////////////////////////////////////
+global proc mtk_instaLodModelCreateTool_setAllProfile(string $selItem)
+{
+    // lod 削減設定オプションメニュー
+    global string $UOM_REDUCTION_PROFILE_MTK_INSTALOD[];
+
+    string $optionMenu;
+
+    for($optionMenu in $UOM_REDUCTION_PROFILE_MTK_INSTALOD)
+    {
+        optionMenu -e -value $selItem $optionMenu;
+    }
+}
+
+///////////////////////////////////////
+// 一括設定 最大LOD オプションメニュー コールバック
+///////////////////////////////////////
+global proc mtk_instaLodModelCreateTool_setMaxLodLevel()
+{
+    // lod レベル
+    global string $LOD_LEVELS_MTK_INSTALOD[];
+
+    // lod チェックボックス
+    global string $UCB_LOD_MTK_INSTALOD[];
+
+    // lod rowColumn レイアウト
+    global string $URCL_LOD_MTK_INSTALOD[];
+
+    // 最大LOD レベル
+    string $maxLodLevel = `optionMenu -q -v uOm_maxLodLevel_mtk_instaLodModelCreateTool`;
+
+    int $index = stringArrayFind($maxLodLevel, 0, $LOD_LEVELS_MTK_INSTALOD);
+
+    string $checkBox;
+    int $count;
+
+    // 最大LOD レベルまでのチェックボックスをオン、UI をenable に
+    for($checkBox in $UCB_LOD_MTK_INSTALOD)
+    {
+        int $value = ($count <= $index);
+
+        checkBox -e -v $value $checkBox;
+
+        rowColumnLayout -e -en $value $URCL_LOD_MTK_INSTALOD[$count];
+
+        $count += 1;
+    }
+}
+
+///////////////////////////////////////
+// LOD 値 を一括設定
+///////////////////////////////////////
+global proc mtk_instaLodModelCreateTool_setLodValues(string $slider)
+{
+    // lod レベル
+    global string $LOD_LEVELS_MTK_INSTALOD[];
+
+    // lod 削減値 int スライダー
+    global string $UISG_LOD_VALUE_MTK_INSTALOD[];
+
+    // 最大LOD レベル取得
+    string $maxLodLevel = `optionMenu -q -v uOm_maxLodLevel_mtk_instaLodModelCreateTool`;
+
+    // 開始、終了、バイアス値取得
+    float $start = 100;
+    float $end = `floatSliderGrp -q -v uIsg_endValue_mtk_instaLodModelCreateTool`;
+    string $easeType = `optionMenu -q -v uOm_easeType_mtk_instaLodModelCreateTool`;
+    float $bias = `floatSliderGrp -q -v uFsg_bias_mtk_instaLodModelCreateTool`;
+
+    int $levels = stringArrayFind($maxLodLevel, 0, $LOD_LEVELS_MTK_INSTALOD) + 1;
+    int $i = 0;
+
+    for($i; $i < $levels ; $i++)
+    {
+        float $pos = (1.0 /($levels) * ($i+1));
+
+        float $value = mtk_instaLodModelCreateTool_easing($pos, $start, $end, $easeType, $bias);
+
+        floatSliderGrp -e -v $value $UISG_LOD_VALUE_MTK_INSTALOD[$i];
+    }
+}
+
+///////////////////////////////////////
+// Easing 計算
+///////////////////////////////////////
+global proc float mtk_instaLodModelCreateTool_easing(float $pos, float $start, float $end, string $easeType, float $bias)
+{
+    float $result;
+
+    float $vEase;
+
+    float $difference = $end - $start;
+
+    $bias = -1 * $bias;
+
+    // 線形値
+    float $vLinear = $pos * $difference + $start;
+
+    if($easeType == "線形")
+    {
+        // 線形の時はそのまま
+        $result = $vLinear;
+    }
+    else
+    {
+        // Ease In
+        if($bias < 0)
+        {
+            // 2次
+            if($easeType == "2次")
+            {
+                $vEase = $difference * `pow $pos 2` + $start;
+            }
+            // 3次
+            else if($easeType == "3次")
+            {
+                $vEase = $difference * `pow $pos 3` + $start;
+            }
+            // 4次
+            else if($easeType == "4次")
+            {
+                $vEase = $difference * `pow $pos 4` + $start;
+
+            }
+            // 5次
+            else if($easeType == "5次")
+            {
+                $vEase = $difference * `pow $pos 5` + $start;
+
+            }
+            // 指数
+            else if($easeType == "指数")
+            {
+                $vEase = $difference * `pow 2 (10*($pos-1))` + $start;
+
+            }
+            // 円形
+            else if($easeType == "円形")
+            {
+                $vEase = -1 * $difference * (sqrt(1- `pow $pos 2`) - 1) + $start;
+            }
+        }
+        // Ease Out
+        else if($bias >= 0)
+        {
+            // 2次
+            if($easeType == "2次")
+            {
+                $vEase = -1 * $difference * $pos * ($pos - 2) + $start;
+            }
+            // 3次
+            else if($easeType == "3次")
+            {
+                $pos = $pos - 1;
+                $vEase = $difference * (`pow $pos 3` + 1) + $start;
+            }
+            // 4次
+            else if($easeType == "4次")
+            {
+                $pos = $pos - 1;
+                $vEase = -1 * $difference * (`pow $pos 4` - 1) + $start;
+            }
+            // 5次
+            else if($easeType == "5次")
+            {
+                $pos = $pos - 1;
+                $vEase = $difference * (`pow $pos 5` + 1) + $start;
+            }
+            // 指数
+            else if($easeType == "指数")
+            {
+                $vEase = $difference * (-1 * (`pow 2 (-10 * $pos)`) + 1) + $start;
+            }
+            // 円形
+            else if($easeType == "円形")
+            {
+                $pos = $pos - 1;
+                $vEase = $difference * sqrt(1- `pow $pos 2`) + $start;
+            }
+        }
+
+        // イージングした値と線形値をバイアス値を使って合成
+        $result = $vEase * abs($bias) + $vLinear * (1 - abs($bias));
+    }
+
+    return $result;
+}
+
+//mtk_instaLodModelCreateTool;

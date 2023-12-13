@@ -1,0 +1,3060 @@
+//===============================================
+//
+// コリジョン・物理マテリアル設定ツール
+//
+//===============================================
+
+global proc mtk_collisionSettingTool()
+{
+    //プリファレンスに値が無ければデフォルト値を設定
+    if (`optionVar -ex "ov_selTabIndex_mtk_collisionSettingTool"` == 0)
+    {
+        optionVar -iv "ov_selTabIndex_mtk_collisionSettingTool" 1;
+        optionVar -iv "ov_setPhyMaterial_mtk_collisionSettingTool" 1;
+    }
+
+    // すでにウィンドウが出ていたら
+    if (`window -exists uWnd_mtk_collisionSettingTool` == 1)
+    {
+        deleteUI uWnd_mtk_collisionSettingTool;
+    }
+
+    // グローバル変数設定
+    mtk_collisionSettingTool_setGlobalVariable;
+
+    // 各種定義ファイル
+    string $defFiles[] = {
+                            "z:/mtk/work/engine/material/material.matdecl", // 物理マテリアル定義
+                            "z:/mtk/work/engine/physics/mtk.collisiontype", // コリジョンタイプ定義
+                            "z:/mtk/work/engine/physics/mtk.queryfilter",   // クエリフィルタ定義
+                            "z:/mtk/tools/maya/2022/modules/mtk/scripts/mtk_collisionSettingTool_attr.csv"
+                        };
+
+    // メインプログレスバー
+    global string $gMainProgressBar;
+
+    // プログレスバー開始
+    progressBar -e -beginProgress -status "" -maxValue `size($defFiles)` $gMainProgressBar;
+
+    source "mtk_p4Cmds";
+
+    string $defFile;
+    int $step = 1;
+
+    for($defFile in $defFiles)
+    {
+        progressBar -e -status ("リビジョン確認中 : " + basename($defFile, "")) $gMainProgressBar;
+
+        // 物理マテリアル定義ファイルが古ければ警告
+        if(`mtk_collisionSettingTool_checkFileIsUncurrent($defFile)` == true)
+        {
+            // 最新リビジョンを取得
+            mtk_p4Cmds_sync($defFile);
+        }
+
+        progressBar -e -step $step $gMainProgressBar;
+
+        $step += 1;
+    }
+
+    // プログレスバー 終了
+    progressBar -e -endProgress $gMainProgressBar;
+
+    window
+        -title "Collision Setting Tool"
+        -resizeToFitChildren on
+        -sizeable on
+        -toolbox on
+        -maximizeButton off
+        -mb on
+        -closeCommand "mtk_collisionSettingTool_closeCommand"
+        uWnd_mtk_collisionSettingTool;
+
+        menu -label "List";
+            menuItem
+                -label "リストを更新"
+                -enable on
+                -c "mtk_collisionSettingTool_refreshList; mtk_collisionSettingTool_createPhyMaterialsList"
+                ;
+
+        menu -label "Help" ;
+
+            menuItem
+                -label "Collision Setting Tool のヘルプ"
+                -enable on
+                -c "python(\"import webbrowser\\nwebbrowser.open('https://wisdom.cygames.jp/pages/viewpage.action?pageId=129770553')\")"
+                ;
+
+            menuItem
+                -label "物理マテリアルリスト"
+                -enable on
+                -c "python(\"import webbrowser\\nwebbrowser.open('https://wisdom.cygames.jp/pages/viewpage.action?pageId=124851518')\")"
+                ;
+
+            menuItem -d on;
+
+            menuItem
+                -label "hda: mtk_convex_hull のヘルプ"
+                -enable on
+                -c "python(\"import webbrowser\\nwebbrowser.open('https://wisdom.cygames.jp/display/mutsunokami/Maya+hda%3A+mtk_convex+hull')\")"
+                ;
+
+            menuItem
+                -label "hda: mtk_create_collision のヘルプ"
+                -enable on
+                -c "python(\"import webbrowser\\nwebbrowser.open('https://wisdom.cygames.jp/pages/viewpage.action?pageId=154477037')\")"
+                ;
+
+            menuItem
+                -label "hda: mtk_create_ground_collision のヘルプ"
+                -enable on
+                -c "python(\"import webbrowser\\nwebbrowser.open('https://wisdom.cygames.jp/display/mutsunokami/Maya+hda%3A+mtk_create_ground_collision')\")"
+                ;
+
+    tabLayout uTbl_mtk_collisionSettingTool;
+
+        // アトリビュート設定タブ
+        frameLayout -lv off -mw 8 -mh 4;
+
+        formLayout uFl_attSettings_mtk_collisionSettingTool;
+
+            string $fl1 = `frameLayout -l " アセット" -lv on`;
+                scrollLayout
+                    -childResizable on
+                    -bgc 0.17 0.17 0.17
+                    uSl_asset_mtk_collisionSettingTool;
+
+                    setParent ..;
+                setParent ..;
+
+            string $sep1 = `separator -st "in"`;
+
+            string $fl2 = `frameLayout -l " コリジョン作成" -lv on -mw 12 -mh 4`;
+                rowColumnLayout -nc 2 -adj 2 -cal 1 right -rs 1 4;
+
+                    text -l "ソース : ";
+                    optionMenu uOm_baseNode_mtk_collisionSettingTool;
+
+                    text -l "ターゲット : ";
+                    optionMenu -cc "mtk_collisionSettingTool_updateCreateButtonLabel; mtk_collisionSettingTool_dispLastCreatedDate" uOm_colType_mtk_collisionSettingTool;
+                    global string $MTK_COLLISIONSETTINGTOOL_COLLISIONNODELIST[];
+
+                    string $collision_node;
+
+                    for($collision_node in $MTK_COLLISIONSETTINGTOOL_COLLISIONNODELIST)
+                    {
+                        menuItem -l $collision_node;
+                    }
+
+                    global string $MTK_COLLISIONSETTINGTOOL_ICONANNOTATIONS[];
+                    global string $MTK_COLLISIONSETTINGTOOL_ICONPATHS[];
+
+                    // Houdini 環境が有効か
+                    int $houdiniEngineEnabled = python("import mtk.utils.hda_loader.houdini_util as houdini_util; houdini_util.main()");
+
+                    text -l "作成方法 : ";
+                    optionMenu -cc "mtk_collisionSettingTool_updataCheckboxEnabled" uOm_createMethod_mtk_collisionSettingTool;
+                        menuItem -l "複製";
+                        menuItem -l "円柱";
+
+                        string $label;
+
+                        // hda ラベル名
+                        global string $MTK_COLLISIONSETTINGTOOL_HDALABELS[];
+
+                        for($label in $MTK_COLLISIONSETTINGTOOL_HDALABELS)
+                        {
+                            menuItem
+                                -l $label
+                                -en $houdiniEngineEnabled
+                                ;
+                        }
+
+                    text -l "プリセット名 : ";
+
+                    textField
+                        -editable false
+                        -text ""
+                        -ann ""
+                        uTxt_presetName_mtk_collisionSettingTool;
+
+                    text -l "属性 : ";
+
+                    rowLayout -nc (`size($MTK_COLLISIONSETTINGTOOL_ICONANNOTATIONS)` + 2) uCl_colType_mtk_collisionSettingTool;
+                        setParent ..;
+
+                    text -l "作成日時 : ";
+
+                    textField
+                        -editable false
+                        -text "--/--/-- --:--:--"
+                        -ann "コリジョン作成を最後に実行した日時"
+                        uTf_lastCreatedDate_mtk_collisionSettingTool;
+
+                    setParent ..;
+
+                rowLayout -nc 3 -adj 1;
+
+                    button
+                        -l "作成"
+                        -c "mtk_collisionSettingTool_createColNode"
+                        -bgc 0.5 0.5 0.6
+                        uBtn_createColNode_mtk_collisionSettingTool;
+
+                    text -l " ";
+
+                    checkBox
+                        -l "物理マテリアルを設定"
+                        -v `optionVar -q ov_setPhyMaterial_mtk_collisionSettingTool`
+                        -onc "optionVar -iv ov_setPhyMaterial_mtk_collisionSettingTool 1"
+                        -ofc "optionVar -iv ov_setPhyMaterial_mtk_collisionSettingTool 0"
+                        uCbx_setPhyMaterial_mtk_collisionSettingTool;
+
+                    setParent..;
+                setParent ..;
+
+                string $sep2 = `separator -st "in"`;
+
+            string $fl3 = `frameLayout -l " コリジョンアトリビュート設定" -lv on -mw 12 -mh 4`;
+
+                rowLayout -nc 2 -adj 2;
+                    text -l "設定日時 :";
+                    textField
+                        -editable false
+                        -text "--/--/-- --:--:--"
+                        -ann "コリジョンアトリビュート設定を最後に実行した日時"
+                        uTf_lastModifiedDate_mtk_collisionSettingTool;
+                    setParent ..;
+
+                rowLayout -nc 2 -adj 1;
+
+                    button
+                        -l "コリジョンアトリビュートを設定"
+                        -c "mtk_collisionSettingTool_setCollisionAttributeButtonCommand(1)"
+                        -bgc 0.5 0.6 0.5
+                        ;
+
+                    button
+                        -l "コリジョンアトリビュートを削除"
+                        -c "mtk_collisionSettingTool_deleteCollisionAttributeButtonCommand"
+                        -bgc 0.6 0.5 0.5
+                        ;
+
+
+                    setParent ..;
+                setParent ..;
+            setParent ..;
+
+        formLayout -e
+            -attachForm    $fl1 "left" 0
+            -attachForm    $fl1 "right" 0
+            -attachForm    $fl1 "top" 0
+            -attachControl $fl1 "bottom" 4 $sep1
+
+            -attachForm    $sep1 "left" 0
+            -attachForm    $sep1 "right" 0
+            -attachControl $sep1 "bottom" 4 $fl2
+
+            -attachForm    $fl2 "left" 0
+            -attachForm    $fl2 "right" 0
+            -attachControl $fl2 "bottom" 4 $sep2
+
+            -attachForm    $sep2 "left" 0
+            -attachForm    $sep2 "right" 0
+            -attachControl $sep2 "bottom" 4 $fl3
+
+            -attachForm    $fl3 "left" 0
+            -attachForm    $fl3 "right" 0
+            -attachForm    $fl3 "bottom" 0
+
+            uFl_attSettings_mtk_collisionSettingTool;
+
+        // 物理マテリアル設定タブ
+        frameLayout -p uTbl_mtk_collisionSettingTool -lv off -mw 8 -mh 4;
+
+            formLayout uFl_phyMat_mtk_collisionSettingTool;
+
+                string $fl = `frameLayout -l "物理マテリアル" -lv on`;
+
+                    textScrollList
+                        -allowMultiSelection on
+                        -selectCommand "mtk_collisionSettingTool_selectItemCallback"
+                        uTsl_physicalMaterial_mtk_collisionSettingTool;
+
+                    setParent ..;
+
+                string $rcl = `rowColumnLayout
+                        -nc 2
+                        -adjustableColumn 2
+                        -columnAlign 1 "right"
+                        -columnAlign 2 "left"
+                        -rowSpacing 3 4
+                    `;
+
+                    text -l "説明 :  ";
+
+                    scrollField
+                        -w 150
+                        -h 80
+                        -wordWrap true
+                        -editable false
+                        uSf_mtk_collisionSettingTool;
+
+                    text -l "イメージ :  ";
+
+                    rowLayout -nc 3;
+                        iconTextButton
+                            -w 150
+                            -h 100
+                            uItb_sampleImage_mtk_collisionSettingTool
+                            ;
+
+                        setParent..;
+                    setParent..;
+
+                string $s1 = `separator -st "in"`;
+
+                string $rcl2 = `rowColumnLayout -nc 2 -adj 1 -cs 2 8 -rs 1 2`;
+
+                string $b1 = `button
+                         -l "選択に物理マテリアルを割り当て"
+                         -ann "選択オブジェクト、フェースに物理マテリアルを割り当てます。"
+                         -c "mtk_collisionSettingTool_setPhyMaterial"
+                         -bgc 0.5 0.6 0.5
+                         `;
+
+                text -l "";
+
+                string $b2 = `button
+                        -l "選択から物理マテリアルを取得"
+                        -ann "選択オブジェクト、フェースに割り当てられている物理マテリアルをリストで選択します。"
+                        -c "mtk_collisionSettingTool_getPhyMaterial"
+                        -bgc 0.5 0.6 0.5
+                        `;
+
+                checkBox
+                    -l "自動"
+                    -onc "mtk_collisionSettingTool_getPhyMaterial; checkBox -e -v false uCb_autoSelect_mtk_collisionSettingTool; optionVar -iv ov_auto_mtk_collisionSettingTool 1"
+                    -ofc "optionVar -iv ov_auto_mtk_collisionSettingTool 0"
+                    -v (`optionVar -q ov_auto_mtk_collisionSettingTool` == 1)
+                    uCb_autoGet_mtk_collisionSettingTool;
+
+                string $b3 = `button
+                        -l "物理マテリアルからオブジェクトを選択"
+                        -ann "リストで選択している物理マテリアルが割り当てられているオブジェクト、フェースを選択します。"
+                        -c "mtk_collisionSettingTool_selectObject"
+                        -bgc 0.5 0.6 0.5
+                        `;
+
+                checkBox
+                    -l "自動"
+                    -onc "mtk_collisionSettingTool_selectObject; checkBox -e -v false uCb_autoGet_mtk_collisionSettingTool; optionVar -iv ov_auto_mtk_collisionSettingTool 2"
+                    -ofc "optionVar -iv ov_auto_mtk_collisionSettingTool 0"
+                    -v (`optionVar -q ov_auto_mtk_collisionSettingTool` == 2)
+                    uCb_autoSelect_mtk_collisionSettingTool;
+
+                rowColumnLayout -nc 2 -adj 1 -cs 2 2;
+                    button
+                        -l "ラベル表示"
+                        -bgc 0.5 0.5 0.6
+                        -c "mtk_collisionSettingTool_dispPhyMatLabel"
+                        ;
+                    button
+                        -l "ラベル非表示"
+                        -bgc 0.5 0.5 0.6
+                        -c "mtk_collisionSettingTool_deletePhyMatLabel"
+                        ;
+                setParent ..;
+
+                checkBox
+                    -l "自動"
+                    -onc "optionVar -iv ov_autoDispLabel_mtk_collisionSettingTool 1; mtk_collisionSettingTool_dispPhyMatLabel"
+                    -ofc "optionVar -iv ov_autoDispLabel_mtk_collisionSettingTool 0; mtk_collisionSettingTool_deletePhyMatLabel"
+                    -v `optionVar -q ov_autoDispLabel_mtk_collisionSettingTool`
+                    uCb_autoDispLabel_mtk_collisionSettingTool;
+
+            formLayout -e
+                -attachForm    $fl "left" 0
+                -attachForm    $fl "right" 0
+                -attachForm    $fl "top" 0
+                -attachControl    $fl "bottom" 8 $rcl
+
+                -attachForm    $rcl "left" 0
+                -attachForm    $rcl "right" 0
+                -attachControl $rcl "bottom" 4 $s1
+
+                -attachForm    $s1 "left" 0
+                -attachForm    $s1 "right" 0
+                -attachControl $s1 "bottom" 4 $rcl2
+
+                -attachForm    $rcl2 "left" 0
+                -attachForm    $rcl2 "right" 0
+                -attachForm $rcl2 "bottom" 0
+
+                uFl_phyMat_mtk_collisionSettingTool;
+
+    // タブ設定
+    tabLayout -e
+        -tabLabelIndex 1 "アトリビュート設定"
+        -tabLabelIndex 2 "物理マテリアル設定"
+        -selectTabIndex `optionVar -q ov_selTabIndex_mtk_collisionSettingTool`
+        -selectCommand "mtk_collisionSettingTool_selectTabCallback"
+        uTbl_mtk_collisionSettingTool;
+
+    // アセットリスト更新
+    mtk_collisionSettingTool_refreshList;
+
+    // 物理マテリアルリスト更新
+    mtk_collisionSettingTool_createPhyMaterialsList;
+
+    showWindow;
+
+    // スクリプトジョブ設定（シーンオープン時）
+    scriptJob -event "SceneOpened" "mtk_collisionSettingTool_refreshList; mtk_collisionSettingTool_createPhyMaterialsList" -parent uWnd_mtk_collisionSettingTool;
+
+    // スクリプトジョブ設定（選択変化時）
+    scriptJob -event "SelectionChanged" "mtk_collisionSettingTool_selectionChangedScriptJob" -parent uWnd_mtk_collisionSettingTool;
+
+    // ウィンドウサイズ保持用 グローバル変数
+    global int $MTK_COLLISIONSETTINGTOOL_WIDTH;
+    global int $MTK_COLLISIONSETTINGTOOL_HEIGHT;
+
+    if(`optionVar -ex "ov_width_mtk_collisionSettingTool"` == 0)
+    {
+        optionVar -iv "ov_width_mtk_collisionSettingTool" `window -q -w uWnd_mtk_collisionSettingTool`;
+        optionVar -iv "ov_height_mtk_collisionSettingTool" `window -q -h uWnd_mtk_collisionSettingTool`;
+    }
+
+    $MTK_COLLISIONSETTINGTOOL_WIDTH = `optionVar -q "ov_width_mtk_collisionSettingTool"`;
+    $MTK_COLLISIONSETTINGTOOL_HEIGHT = `optionVar -q "ov_height_mtk_collisionSettingTool"`;
+}
+
+///////////////////////////////////////////////////////
+// グローバル変数設定
+///////////////////////////////////////////////////////
+global proc mtk_collisionSettingTool_setGlobalVariable()
+{
+    // カスタムアトリビュートのリスト
+    global string $MTK_COLLISIONSETTINGTOOL_ATTRIBUTELIST[];
+
+    $MTK_COLLISIONSETTINGTOOL_ATTRIBUTELIST =
+    {
+        "phyActorType",
+        "phyShapeType",
+        "phyCollisionTypeName",
+        "phyQueryFilterPresetName"
+    };
+
+    // コリジョン属性アイコン
+    global string $MTK_COLLISIONSETTINGTOOL_ICONPATHS[];
+
+    $MTK_COLLISIONSETTINGTOOL_ICONPATHS =
+    {
+        "z:/mtk/tools/maya/2022/modules/mtk/icons/mtk_collisionSettingTool/icon_player_off.png",
+        "z:/mtk/tools/maya/2022/modules/mtk/icons/mtk_collisionSettingTool/icon_player_on.png",
+
+        "z:/mtk/tools/maya/2022/modules/mtk/icons/mtk_collisionSettingTool/icon_character_off.png",
+        "z:/mtk/tools/maya/2022/modules/mtk/icons/mtk_collisionSettingTool/icon_character_on.png",
+
+        "z:/mtk/tools/maya/2022/modules/mtk/icons/mtk_collisionSettingTool/icon_camera_off.png",
+        "z:/mtk/tools/maya/2022/modules/mtk/icons/mtk_collisionSettingTool/icon_camera_on.png",
+
+        "z:/mtk/tools/maya/2022/modules/mtk/icons/mtk_collisionSettingTool/icon_sight_off.png",
+        "z:/mtk/tools/maya/2022/modules/mtk/icons/mtk_collisionSettingTool/icon_sight_on.png",
+
+        "z:/mtk/tools/maya/2022/modules/mtk/icons/mtk_collisionSettingTool/icon_arrow_off.png",
+        "z:/mtk/tools/maya/2022/modules/mtk/icons/mtk_collisionSettingTool/icon_arrow_on.png",
+
+        "z:/mtk/tools/maya/2022/modules/mtk/icons/mtk_collisionSettingTool/icon_water_off.png",
+        "z:/mtk/tools/maya/2022/modules/mtk/icons/mtk_collisionSettingTool/icon_water_on.png",
+
+        "z:/mtk/tools/maya/2022/modules/mtk/icons/mtk_collisionSettingTool/icon_bush_off.png",
+        "z:/mtk/tools/maya/2022/modules/mtk/icons/mtk_collisionSettingTool/icon_bush_on.png"
+    };
+
+    // コリジョン属性アイコン用のアノテーション
+    global string $MTK_COLLISIONSETTINGTOOL_ICONANNOTATIONS[];
+
+    $MTK_COLLISIONSETTINGTOOL_ICONANNOTATIONS =
+    {
+        "プレイヤーコリジョン",
+        "キャラクターコリジョン",
+        "カメラコリジョン",
+        "視線コリジョン",
+        "矢コリジョン",
+        "水面コリジョン",
+        "ブッシュコリジョン"
+    };
+
+    // hda パス
+    global string $MTK_COLLISIONSETTINGTOOL_HDAPATHS[];
+
+    $MTK_COLLISIONSETTINGTOOL_HDAPATHS =
+    {
+        "Z:/mtk/tools/maya/share/hda/mtk_convex_hull.hda",
+        "Z:/mtk/tools/maya/share/hda/mtk_create_collision.hda",
+        "Z:/mtk/tools/maya/share/hda/mtk_create_ground_collision.hda"
+    };
+
+    // hda アセット名
+    global string $MTK_COLLISIONSETTINGTOOL_HDAASSETS[];
+
+    $MTK_COLLISIONSETTINGTOOL_HDAASSETS =
+    {
+        "Sop/mtk_convex_hull",
+        "Sop/mtk_create_collision",
+        "Sop/mtk_create_ground_collision"
+    };
+
+    // hda ラベル名
+    global string $MTK_COLLISIONSETTINGTOOL_HDALABELS[];
+
+    $MTK_COLLISIONSETTINGTOOL_HDALABELS =
+    {
+        "HDA: mtk_convex_hull",
+        "HDA: mtk_create_collision",
+        "HDA: mtk_create_ground_collision"
+    };
+
+
+    // コリジョンアトリビュート設定リスト
+    global string $MTK_COLLISIONSETTINGTOOL_PHYCOLLISIONATTRSETTINGS[];
+    clear $MTK_COLLISIONSETTINGTOOL_PHYCOLLISIONATTRSETTINGS;
+
+    // コリジョンアトリビュート定義ファイル
+    string $filePath = "z:/mtk/tools/maya/2022/modules/mtk/scripts/mtk_collisionSettingTool_attr.csv";
+
+    // ファイルオープン
+    int $fpid = `fopen $filePath "r"`;
+
+    // ヘッダ行 捨て読み
+    fgetline $fpid;
+
+    string $line;
+
+    // 一行ずつ読み込み
+    for( $line = `fgetline $fpid`; size($line) > 0; $line = `fgetline $fpid`)
+    {
+        string $temp = substituteAllString($line, "\n", "");
+
+        $MTK_COLLISIONSETTINGTOOL_PHYCOLLISIONATTRSETTINGS[`size($MTK_COLLISIONSETTINGTOOL_PHYCOLLISIONATTRSETTINGS)`] = $temp;
+    }
+
+    // ファイルクローズ
+    fclose $fpid;
+
+    // コリジョンノード名リスト
+    global string $MTK_COLLISIONSETTINGTOOL_COLLISIONNODELIST[];
+    clear $MTK_COLLISIONSETTINGTOOL_COLLISIONNODELIST;
+
+    string $setting;
+
+    for($setting in $MTK_COLLISIONSETTINGTOOL_PHYCOLLISIONATTRSETTINGS)
+    {
+        string $temp[] = stringToStringArray($setting, ",");
+
+        $MTK_COLLISIONSETTINGTOOL_COLLISIONNODELIST[`size($MTK_COLLISIONSETTINGTOOL_COLLISIONNODELIST)`] = $temp[0];
+    }
+
+    // 物理マテリアル情報用 グローバル変数
+    global string $MTK_COLLISIONSETTINGTOOL_PHYMATERIALINFO[];
+    clear $MTK_COLLISIONSETTINGTOOL_PHYMATERIALINFO;
+
+    // 物理マテリアル情報ファイル
+    $filePath = "Z:/mtk/tools/maya/2022/modules/mtk/scripts/mtk_collisionSettingTool.csv";
+
+    // 物理マテリアル情報ファイルがなければ終了
+    if(`filetest -f $filePath` == false)
+    {
+        print ($filePath + " ファイルが見つかりません。\n");
+    }
+    else
+    {
+        // ファイルオープン
+        $fpid = `fopen $filePath "r"`;
+
+        // ヘッダ行 捨て読み
+        fgetline $fpid;
+
+        // 一行ずつ読み込み
+        for( $line = `fgetline $fpid`; size($line) > 0; $line = `fgetline $fpid`)
+        {
+            $line = substituteAllString($line, "\n", "");
+
+            $MTK_COLLISIONSETTINGTOOL_PHYMATERIALINFO[`size($MTK_COLLISIONSETTINGTOOL_PHYMATERIALINFO)`] = $line;
+        }
+
+        // ファイルクローズ
+        fclose $fpid;
+    }
+}
+
+///////////////////////////////////////////////////////
+// 「物理マテリアルを設定」チェックボックスのenabled を更新
+///////////////////////////////////////////////////////
+global proc mtk_collisionSettingTool_updataCheckboxEnabled()
+{
+    // 作成コリジョンタイプ
+    string $selectedColType = `optionMenu -q -v uOm_colType_mtk_collisionSettingTool`;
+
+    // コリジョン作成方法
+    string $colCreateMethodIndex = `optionMenu -q -sl uOm_createMethod_mtk_collisionSettingTool`;
+
+    if($selectedColType == "col_camera" || $selectedColType == "col_sight" || $colCreateMethodIndex != 1)
+    {
+        checkBox -e -en off uCbx_setPhyMaterial_mtk_collisionSettingTool;
+    }
+    else
+    {
+        checkBox -e -en on uCbx_setPhyMaterial_mtk_collisionSettingTool;
+    }
+}
+
+
+///////////////////////////////////////////////////////
+// コリジョンソース選択プルダウン更新
+///////////////////////////////////////////////////////
+global proc mtk_collisionSettingTool_createCollisionSourceOptionMenu()
+{
+    string $sourceNodes[] =
+    {
+        "model",
+        "lod1",
+        "lod2",
+        "lod3",
+        "lod4",
+        "lod5",
+        "lod6",
+        "lod7"
+    };
+
+    // 現在選択しているメニュー項目インデックス
+    int $index = `optionMenu-q -sl uOm_baseNode_mtk_collisionSettingTool`;
+
+    // メニュー項目をクリア
+    optionMenu -e -dai uOm_baseNode_mtk_collisionSettingTool;
+
+    // 現在リストで選択している項目
+    string $selMdlNodes[] = mtk_collisionSettingTool_getSelectedItems();
+    string $selMdlNode;
+
+    string $sourceNode;
+
+    for($sourceNode in $sourceNodes)
+    {
+        // メニュー項目作成
+        string $mi = `menuItem -p uOm_baseNode_mtk_collisionSettingTool -l $sourceNode`;
+
+        for($selMdlNode in $selMdlNodes)
+        {
+            // 対象ノードが存在しなければ無効化
+            if(`objExists ("|" + $selMdlNode + "|" + $sourceNode)` == false)
+            {
+                menuItem -e -en false $mi;
+
+                break;
+            }
+        }
+
+        // // 対象ノードが存在しなければ無効化
+        // if(`objExists ("|" + $selMdlNodes[0] + "|" + $sourceNode)` == false)
+        // {
+        //     menuItem -e -en false $mi;
+        // }
+    }
+
+    if($index != 0)
+    {
+        // もともと選択していた項目を選択
+        optionMenu-e -sl $index uOm_baseNode_mtk_collisionSettingTool;
+    }
+}
+
+///////////////////////////////////////////////////////
+// 作成ボタンのラベルとコリジョン属性アイコンを更新
+///////////////////////////////////////////////////////
+global proc mtk_collisionSettingTool_updateCreateButtonLabel()
+{
+    string $selectedColType = `optionMenu -q -v uOm_colType_mtk_collisionSettingTool`;
+
+    // ボタンラベルを更新
+    button -e -l ($selectedColType + " を作成") uBtn_createColNode_mtk_collisionSettingTool;
+
+    // チェックボックスを更新
+    mtk_collisionSettingTool_updataCheckboxEnabled;
+
+    // col_ ノード名と有効なコリジョン
+    string $colNodes[] =
+    {
+        // ノード名, player, character, camera, sight, arrow, water, bush
+        "col_object,1,1,1,1,1,0,0,detailed_object,object",
+        "col_character,1,1,0,1,1,0,0,detailed_object_without_camera,object_without_camera",
+        "col_player,1,0,0,0,0,0,0,player",
+        "col_camera,0,0,1,0,0,0,0,camera",
+        "col_detailed,0,0,0,1,1,0,0,detailed",
+        "col_sight,0,0,0,1,0,0,0,sight",
+        "col_water,0,0,1,0,0,1,0,water_surface",
+        "col_bush,0,0,0,0,0,0,1,bush"
+    };
+
+    global string $MTK_COLLISIONSETTINGTOOL_ICONPATHS[];
+    global string $MTK_COLLISIONSETTINGTOOL_ICONANNOTATIONS[];
+
+    // 現在のアイコン
+    string $icons[] = `rowLayout -q -ca uCl_colType_mtk_collisionSettingTool`;
+
+    // 一旦アイコン削除
+    if(`size($icons)` != 0)
+    {
+        deleteUI $icons;
+    }
+
+    text -p uCl_colType_mtk_collisionSettingTool -l " ";
+
+    for($colNode in $colNodes)
+    {
+        string $elms[] = stringToStringArray($colNode, ",");
+
+        int $hasColDetailed = false;
+
+        if($elms[0] == $selectedColType)
+        {
+            // col_object, col_character の場合、col_detailed が存在するかチェック
+            if($elms[0] == "col_object" || $elms[0] == "col_character")
+            {
+                // col_detailed が存在すれば、視線と武器コリジョンを0 に
+                if(`mtk_collisionSettingTool_hasColDetailed` == true)
+                {
+                    $elms[4] = 0;
+                    $elms[5] = 0;
+
+                    $hasColDetailed = true;
+                }
+            }
+
+            textField -e -text ($elms[8 + $hasColDetailed]) uTxt_presetName_mtk_collisionSettingTool;
+
+            int $index = 0;
+
+            string $iconAnnotation;
+
+            for($iconAnnotation in $MTK_COLLISIONSETTINGTOOL_ICONANNOTATIONS)
+            {
+                picture
+                    -p uCl_colType_mtk_collisionSettingTool
+                    -en off
+                    -h 16 -w 18
+                    -i $MTK_COLLISIONSETTINGTOOL_ICONPATHS[$index * 2 + (int)$elms[$index + 1]]
+                    -ann $iconAnnotation
+                    ;
+
+                $index += 1;
+            }
+
+            break;
+        }
+    }
+}
+
+///////////////////////////////////////////////////////
+// 選択アセットにcol_detailed ノードが存在するか
+///////////////////////////////////////////////////////
+global proc int mtk_collisionSettingTool_hasColDetailed()
+{
+    int $result;
+
+    // 現在リストで選択している項目
+    string $selMdlNodes[] = mtk_collisionSettingTool_getSelectedItems();
+
+    if(`size($selMdlNodes)` != 0)
+    {
+        if(`objExists ("|" + $selMdlNodes[0] + "|collision|col_detailed")`)
+        {
+            $result = true;
+        }
+    }
+
+    return $result;
+}
+
+///////////////////////////////////////////////////////
+// タブ変更コールバック
+///////////////////////////////////////////////////////
+global proc mtk_collisionSettingTool_selectTabCallback()
+{
+    global int $MTK_COLLISIONSETTINGTOOL_WIDTH;
+    global int $MTK_COLLISIONSETTINGTOOL_HEIGHT;
+
+    // 現在のウィンドウサイズを取得
+    int $currentWidth = `window -q -w uWnd_mtk_collisionSettingTool`;
+    int $currentHeight = `window -q -h uWnd_mtk_collisionSettingTool`;
+
+    // 前のタブのウィンドウサイズに復元
+    window -e -w $MTK_COLLISIONSETTINGTOOL_WIDTH uWnd_mtk_collisionSettingTool;
+    window -e -h $MTK_COLLISIONSETTINGTOOL_HEIGHT uWnd_mtk_collisionSettingTool;
+
+    // 復元前のウィンドウサイズを格納
+    $MTK_COLLISIONSETTINGTOOL_WIDTH = $currentWidth;
+    $MTK_COLLISIONSETTINGTOOL_HEIGHT = $currentHeight;
+
+    // 復元前のウィンドウサイズを保存
+    optionVar -iv "ov_width_mtk_collisionSettingTool" $currentWidth;
+    optionVar -iv "ov_height_mtk_collisionSettingTool" $currentHeight;
+
+    // 選択タブのインデックスを保存
+    optionVar -iv "ov_selTabIndex_mtk_collisionSettingTool" `tabLayout -q -selectTabIndex uTbl_mtk_collisionSettingTool`;
+}
+
+///////////////////////////////////////////////////////
+// 物理マテリアル テキストスクロールリスト 項目選択コールバック
+///////////////////////////////////////////////////////
+global proc mtk_collisionSettingTool_selectItemCallback()
+{
+    // 物理マテリアル情報表示更新
+    mtk_collisionSettingTool_updatePhyMatInfo;
+
+    // 自動選択がオンの場合
+    if(`checkBox -q -v uCb_autoSelect_mtk_collisionSettingTool`)
+    {
+        // 物理マテリアルからオブジェクトを選択
+        mtk_collisionSettingTool_selectObject;
+    }
+}
+
+///////////////////////////////////////////////////////
+// 物理マテリアル情報表示更新
+///////////////////////////////////////////////////////
+global proc mtk_collisionSettingTool_updatePhyMatInfo()
+{
+    global string $MTK_COLLISIONSETTINGTOOL_PHYMATERIALINFO[];
+
+    //  テキストスクロールリストで選択している項目を取得
+    string $selItem[] = `textScrollList -q -selectItem uTsl_physicalMaterial_mtk_collisionSettingTool`;
+
+    // 物理マテリアル
+    string $phyMat[];
+
+    string $item;
+
+    for($item in $selItem)
+    {
+        string $temp[] = stringToStringArray($item, " : ");
+
+        $phyMat[`size($phyMat)`] = $temp[0];
+    }
+
+    // 重複を削除
+    $phyMat = stringArrayRemoveDuplicates($phyMat);
+
+
+    // 物理マテリアル ラベル名
+    string $materialLabel;
+
+    // 物理マテリアル 説明文
+    string $description;
+
+    // サンプル画像パス
+    string $sampleImagePath;
+
+    string $tokens[];
+
+    if(`size($phyMat)` != 0)
+    {
+        // 複数選択の場合
+        if(`size($phyMat)` >= 2)
+        {
+            $materialLabel = "複数選択" + ":\n";
+        }
+        else
+        {
+            string $elm;
+
+            for($elm in $MTK_COLLISIONSETTINGTOOL_PHYMATERIALINFO)
+            {
+                if(startsWith($elm, $phyMat[0]))
+                {
+                    tokenize $elm "," $tokens;
+
+                    $materialLabel = $tokens[1] + ":\n";
+                    $description = $tokens[2];
+                    $sampleImagePath = $tokens[3];
+                }
+            }
+        }
+    }
+
+    // 説明フィールド更新
+    scrollField -e -text ($materialLabel + $description) uSf_mtk_collisionSettingTool;
+
+    // サンプル画像が存在するか
+    int $fileExists = `filetest -f $sampleImagePath`;
+
+    if($fileExists)
+    {
+        // 画像解像度を取得するために一時的にファイルノードを作成
+        $tempFileNode = `createNode "file" -skipSelect`;
+        setAttr ($tempFileNode + ".fileTextureName") -type "string" $sampleImagePath;
+
+        // 画像解像度を取得
+        float $x = `getAttr ($tempFileNode + ".outSizeX")`;
+        float $y = `getAttr ($tempFileNode + ".outSizeY")`;
+
+        // 表示サイズ設定
+        int $h = 150;
+        float $w;
+        $w = $h / $y * $x;
+
+        // サンプル画像更新
+        iconTextButton -e
+            -h $h
+            -w (int($w))
+            -vis on
+            -image $sampleImagePath
+            uItb_sampleImage_mtk_collisionSettingTool
+            ;
+
+        delete $tempFileNode;
+    }
+    else
+    {
+        // サンプル画像非表示
+        iconTextButton -e -vis off -w 100 uItb_sampleImage_mtk_collisionSettingTool;
+    }
+}
+
+///////////////////////////////////////////////////////
+// アセットリスト更新
+///////////////////////////////////////////////////////
+global proc mtk_collisionSettingTool_refreshList()
+{
+    // 現在リストで選択している項目
+    string $selMdlNodes[] = mtk_collisionSettingTool_getSelectedItems();
+
+    // スクロールレイアウトの内容を一旦削除
+    string $childArray[] = `scrollLayout -q -childArray uSl_asset_mtk_collisionSettingTool`;
+
+    if(`size($childArray)` != 0)
+    {
+        deleteUI $childArray;
+    }
+
+    int $is = 16;
+    int $iw = 18;
+
+    global string $MTK_COLLISIONSETTINGTOOL_ICONANNOTATIONS[];
+
+    global string $MTK_COLLISIONSETTINGTOOL_ICONPATHS[];
+
+    setParent uSl_asset_mtk_collisionSettingTool;
+
+    // iconTextRadioCollection;
+
+    // 現在ルートにある全ての mdl_ ノードを取得
+    string $mdlNodes[] = `ls "|mdl_*"`;
+
+    string $mdlNode;
+
+    // スクロールリストに項目を追加
+    for($mdlNode in $mdlNodes)
+    {
+        rowLayout
+            -nc 9
+            -adj 2
+            -cw 2 16
+            -cw 3 $iw
+            -cw 4 $iw
+            -cw 5 $iw
+            -cw 6 $iw
+            -cw 7 $iw
+            -cw 8 $iw
+            ;
+
+            string $rb = `
+                iconTextCheckBox
+                    -st "textOnly"
+                    -l $mdlNode
+                    `;
+
+            iconTextCheckBox
+                -e
+                -onc ("mtk_collisionSettingTool_itemClickedCallback(1,\"" + $rb + "\")")
+                -ofc ("mtk_collisionSettingTool_itemClickedCallback(0,\"" + $rb + "\")")
+                $rb;
+
+            if(stringArrayContains($mdlNode, $selMdlNodes))
+            {
+                iconTextCheckBox -e -v true $rb;
+            }
+
+            text -l "";
+
+            string $iconAnnotation;
+            int $index;
+
+            int $collisionStatus[] = mtk_collisionSettingTool_getCollisionStatus($mdlNode);
+
+            for($iconAnnotation in $MTK_COLLISIONSETTINGTOOL_ICONANNOTATIONS)
+            {
+                picture
+                    -en off
+                    -h $is -w $is
+                    -i $MTK_COLLISIONSETTINGTOOL_ICONPATHS[$index * 2 + $collisionStatus[$index]]
+                    -ann $iconAnnotation
+                    ;
+
+                $index += 1;
+            }
+
+            setParent ..;
+    }
+
+    // コリジョンソース選択プルダウン更新
+    mtk_collisionSettingTool_createCollisionSourceOptionMenu;
+
+    // 作成ボタンのラベルとコリジョン属性アイコンを更新
+    mtk_collisionSettingTool_updateCreateButtonLabel;
+
+    // col_ ノード作成日時ラベル更新
+    mtk_collisionSettingTool_dispLastCreatedDate;
+
+    // コリジョンアトリビュート最終設定日時 ラベル更新
+    mtk_collisionSettingTool_dispLastModifiedDate;
+}
+
+///////////////////////////////////////////////////////
+// アセットリストで項目をクリックしたときのコールバック
+///////////////////////////////////////////////////////
+global proc mtk_collisionSettingTool_itemClickedCallback(int $v, string $clickedButton)
+{
+    // 修飾キーの状態を取得
+    int $mods = `getModifiers`;
+
+    // 修飾キーなしの場合
+    if($mods == 0)
+    {
+        // アセットリストのチェックボタンを取得
+        string $checkButtons[] = `mtk_collisionSettingTool_getCheckButtons`;
+        string $checkButton;
+
+        for($checkButton in $checkButtons)
+        {
+            if($checkButton != $clickedButton)
+            {
+                iconTextCheckBox -e -v off $checkButton;
+            }
+        }
+
+        if($v == 0)
+        {
+            iconTextCheckBox -e -v on $clickedButton;
+        }
+    }
+    // shift キーの場合
+    if($mods % 2)
+    {
+        // アセットリストのチェックボタンを取得
+        string $checkButtons[] = `mtk_collisionSettingTool_getCheckButtons`;
+        string $checkButton;
+
+        if($v == 0)
+        {
+            iconTextCheckBox -e -v on $clickedButton;
+        }
+
+        int $selIndexes[];
+        int $clickedIndex;
+        int $index;
+
+        for($checkButton in $checkButtons)
+        {
+            if(`iconTextCheckBox -q -v $checkButton`)
+            {
+                $selIndexes[`size($selIndexes)`] = $index;
+            }
+
+            if($checkButton == $clickedButton)
+            {
+                $clickedIndex = $index;
+            }
+
+            $index += 1;
+        }
+
+        int $minIndex = `mtk_collisionSettingTool_getMinValue($selIndexes)`;
+        int $maxIndex = `mtk_collisionSettingTool_getMaxValue($selIndexes)`;
+
+        for($index = $minIndex; $index <= $maxIndex; $index++)
+        {
+           iconTextCheckBox -e -v on $checkButtons[$index];
+        }
+    }
+
+    mtk_collisionSettingTool_createCollisionSourceOptionMenu;
+    mtk_collisionSettingTool_updateCreateButtonLabel;
+    mtk_collisionSettingTool_dispLastModifiedDate;
+    mtk_collisionSettingTool_dispLastCreatedDate;
+}
+
+///////////////////////////////////////////////////////
+// 配列の最小値を取得
+///////////////////////////////////////////////////////
+global proc int mtk_collisionSettingTool_getMinValue(int $values[])
+{
+    int $min = 100;
+
+    int $value;
+
+    for($value in $values)
+    {
+        $min = `min $min $value`;
+    }
+
+    return $min;
+}
+
+///////////////////////////////////////////////////////
+// 配列の最大値を取得
+///////////////////////////////////////////////////////
+global proc int mtk_collisionSettingTool_getMaxValue(int $values[])
+{
+    int $max = 0;
+
+    int $value;
+
+    for($value in $values)
+    {
+        $max = `max $max $value`;
+    }
+
+    return $max;
+}
+
+///////////////////////////////////////////////////////
+// アセットリストのチェックボタンを取得
+///////////////////////////////////////////////////////
+global proc string[] mtk_collisionSettingTool_getCheckButtons()
+{
+    string $checkButtons[];
+
+    string $childLayouts[] = `scrollLayout -q -childArray uSl_asset_mtk_collisionSettingTool`;
+
+    if(`size($childLayouts)` == 0)
+    {
+        return $checkButtons;
+    }
+
+    string $controls[];
+    string $childLayout;
+
+    for($childLayout in $childLayouts)
+    {
+        // レイアウトの子を取得
+        string $childArray[] = `layout -q -fpn -childArray $childLayout`;
+
+        // フルパスに
+        stringArrayAddPrefix($childArray, (`layout -q -fpn $childLayout` + "|"));
+
+        $controls = stringArrayCatenate($controls, $childArray);
+    }
+
+    string $control;
+
+    for($control in $controls)
+    {
+        if(`objectTypeUI -isType "iconTextCheckBox" $control`)
+        {
+            $checkButtons[`size($checkButtons)`] = $control;
+        }
+    }
+
+    return $checkButtons;
+}
+
+///////////////////////////////////////////////////////
+// アセットリストで選択している項目を取得
+///////////////////////////////////////////////////////
+global proc string[] mtk_collisionSettingTool_getSelectedItems()
+{
+    string $selItems[];
+
+    string $childLayouts[] = `scrollLayout -q -childArray uSl_asset_mtk_collisionSettingTool`;
+
+    if(`size($childLayouts)` == 0)
+    {
+        return $selItems;
+    }
+
+    string $controls[];
+    string $childLayout;
+
+    for($childLayout in $childLayouts)
+    {
+        $controls = stringArrayCatenate($controls, `layout -q -childArray $childLayout`);
+    }
+
+    string $checkBoxes[];
+    string $control;
+
+    for($control in $controls)
+    {
+        if(`objectTypeUI -isType "iconTextCheckBox" $control`)
+        {
+            if(`iconTextCheckBox -q -v $control`)
+            {
+                $selItems[`size($selItems)`] = `iconTextCheckBox -q -l $control`;
+            }
+        }
+    }
+
+    return $selItems;
+}
+
+///////////////////////////////////////////////////////
+// アセットのコリジョン設定状態を取得
+///////////////////////////////////////////////////////
+global proc int[] mtk_collisionSettingTool_getCollisionStatus(string $mdlNode)
+{
+    int $collisionStatus[];
+
+    // phyQueryFilterPresetName と有効なコリジョン
+    string $presets[] =
+    {
+        // phyQueryFilterPresetName, player, character, camera, sight, arrow, water, bush
+        "default,1,1,1,0,0,0,0",
+        "object,1,1,1,0,0,0,0",
+        "detailed_object,1,1,1,1,1,0,0",
+        "object_without_camera,1,1,0,0,0,0,0",
+        "detailed_object_without_camera,1,1,0,1,1,0,0",
+        "player,1,0,0,0,0,0,0",
+        "camera,0,0,1,0,0,0,0",
+        "detailed,0,0,0,1,1,0,0",
+        "sight,0,0,0,1,0,0,0",
+        "water_surface,0,0,1,0,0,1,0",
+        "bush,0,0,0,0,0,0,1"
+    };
+
+    // collision ノードを取得
+    string $collisionNode = mtk_collisionSettingTool_getNode("collision", $mdlNode);
+
+    // collision ノードがなければ
+    if($collisionNode == "")
+    {
+        return $collisionStatus;
+    }
+
+    // 処理対象となるノードを取得
+    string $allTargetNodes[] = `mtk_collisionSettingTool_getAllTargetTransformNodes($collisionNode)`;
+
+    string $assignedPresets[];
+
+    string $targetNode;
+
+    for($targetNode in $allTargetNodes)
+    {
+        // 対象ノード以下のメッシュノード
+        string $meshes[] = `listRelatives -allDescendents -noIntermediate -type "mesh" $targetNode`;
+
+        if(`size($meshes)` != 0)
+        {
+            // アトリビュートが存在すれば値を取得
+            if(`attributeExists "phyQueryFilterPresetName" $targetNode`)
+            {
+                $assignedPresets[`size($assignedPresets)`] = `getAttr ($targetNode + ".phyQueryFilterPresetName")`;
+            }
+        }
+    }
+
+    // 重複を削除
+    $assignedPresets = stringArrayRemoveDuplicates($assignedPresets);
+
+    string $preset;
+
+    for($preset in $presets)
+    {
+        string $presetDatas[] = stringToStringArray($preset, ",");
+
+        string $assignedPreset;
+
+        for($assignedPreset in $assignedPresets)
+        {
+            if($assignedPreset == $presetDatas[0])
+            {
+                $collisionStatus[0] = `clamp 0 1 ($collisionStatus[0] + (int)$presetDatas[1])`;
+                $collisionStatus[1] = `clamp 0 1 ($collisionStatus[1] + (int)$presetDatas[2])`;
+                $collisionStatus[2] = `clamp 0 1 ($collisionStatus[2] + (int)$presetDatas[3])`;
+                $collisionStatus[3] = `clamp 0 1 ($collisionStatus[3] + (int)$presetDatas[4])`;
+                $collisionStatus[4] = `clamp 0 1 ($collisionStatus[4] + (int)$presetDatas[5])`;
+                $collisionStatus[5] = `clamp 0 1 ($collisionStatus[5] + (int)$presetDatas[6])`;
+                $collisionStatus[6] = `clamp 0 1 ($collisionStatus[6] + (int)$presetDatas[7])`;
+            }
+        }
+    }
+
+    return $collisionStatus;
+}
+
+///////////////////////////////////////////////////////
+// コリジョンアトリビュートを設定 ボタンコマンド
+///////////////////////////////////////////////////////
+global proc mtk_collisionSettingTool_setCollisionAttributeButtonCommand(int $showDialog)
+{
+    // リストで選択している項目を取得
+    string $selMdlNodes[] = mtk_collisionSettingTool_getSelectedItems();
+
+    if($showDialog)
+    {
+        // リストで項目を選択していなければ終了
+        if(`size($selMdlNodes)` == 0)
+        {
+            confirmDialog
+                -t "Collision Setting Tool"
+                -m "リストで項目を選択してから実行してください。"
+                -b "OK"
+                -icon "warning"
+                ;
+
+            return;
+        }
+
+        // 確認ダイアログ
+        string $result =
+        `confirmDialog
+            -title "Collision Setting Tool"
+            -message "コリジョンアトリビュートを設定します。"
+            -button "実行"
+            -button "キャンセル"
+            -defaultButton "実行"
+            -cancelButton "キャンセル"
+            -dismissString "キャンセル"
+            -icon "question"`
+            ;
+
+        // キャンセルしたら終了
+        if ($result == "キャンセル")
+        {
+            return;
+        }
+    }
+
+    string $logMessage = "■ 処理結果:\n\n";
+
+    string $mdlNode;
+
+    for($mdlNode in $selMdlNodes)
+    {
+        // collision ノードを取得
+        string $collisionNode = mtk_collisionSettingTool_getNode("collision", $mdlNode);
+
+        // collision ノードがなければスキップ
+        if($collisionNode == "")
+        {
+            // ログメッセージ作成
+            $logMessage = $logMessage + "   × " + $mdlNode + "  :  collision ノードが存在しないためスキップ\n";
+
+            continue;
+        }
+
+        // 処理対象となるすべてのトランスフォームノードを取得
+        string $allTargetTransformNodes[] = `mtk_collisionSettingTool_getAllTargetTransformNodes($collisionNode)`;
+
+        // 処理対象となるノードがなければ終了
+        if(`size($allTargetTransformNodes)` == 0)
+        {
+            // ログメッセージ作成
+            $logMessage = $logMessage + "   × " + $mdlNode + "  :  処理対象のノードが存在しないためスキップ\n";
+
+            continue;
+        }
+
+        // コリジョンアトリビュートを設定
+        mtk_collisionSettingTool_setCollisionAttribute($allTargetTransformNodes);
+
+        // 最終設定日時カスタムアトリビュートが無ければ作成
+        if(`attributeExists "fyColAttrLastModified" $collisionNode` == false)
+        {
+            addAttr -longName "fyColAttrLastModified" -dataType "string" $collisionNode;
+        }
+
+        // 現在日時を取得
+        string $date = `date -format "YYYY/MM/DD hh:mm:ss"`;
+
+        setAttr ($collisionNode + ".fyColAttrLastModified") -type "string" $date;
+
+        // ログメッセージ作成
+        $logMessage = $logMessage + "   〇 " + $mdlNode + "  :  コリジョンアトリビュートを設定\n";
+    }
+
+    if($showDialog)
+    {
+        // ログダイアログ表示
+        confirmDialog
+            -t "Collision Setting Tool"
+            -m $logMessage
+            -b "OK"
+            -icon "information"
+            ;
+    }
+
+    mtk_collisionSettingTool_refreshList;
+}
+
+///////////////////////////////////////////////////////
+// コリジョンアトリビュートを削除 ボタンコマンド
+///////////////////////////////////////////////////////
+global proc mtk_collisionSettingTool_deleteCollisionAttributeButtonCommand()
+{
+    // リストで選択している項目を取得
+    string $selMdlNodes[] = mtk_collisionSettingTool_getSelectedItems();
+
+    // リストで項目を選択していなければ終了
+    if(`size($selMdlNodes)` == 0)
+    {
+        confirmDialog
+            -t "Collision Setting Tool"
+            -m "リストで項目を選択してから実行してください。"
+            -b "OK"
+            -icon "warning"
+            ;
+
+        return;
+    }
+
+    // 確認ダイアログ
+    string $result =
+    `confirmDialog
+        -title "Collision Setting Tool"
+        -message "コリジョンアトリビュートを削除します。"
+        -button "削除"
+        -button "キャンセル"
+        -defaultButton "削除"
+        -cancelButton "キャンセル"
+        -dismissString "キャンセル"
+        -icon "question"`
+        ;
+
+    // キャンセルしたら終了
+    if ($result == "キャンセル")
+    {
+        return;
+    }
+
+    string $logMessage = "■ 処理結果:\n\n";
+
+    string $mdlNode;
+
+    for($mdlNode in $selMdlNodes)
+    {
+        // collision ノードを取得
+        string $collisionNode = mtk_collisionSettingTool_getNode("collision", $mdlNode);
+
+        // collision ノードがなければスキップ
+        if($collisionNode == "")
+        {
+            // ログメッセージ作成
+            $logMessage = $logMessage + "   × " + $mdlNode + "  :  collision ノードが存在しないためスキップ\n";
+
+            continue;
+        }
+
+        // 処理対象となるすべてのトランスフォームノードを取得
+        string $allTargetTransformNodes[] = `mtk_collisionSettingTool_getAllTargetTransformNodes($collisionNode)`;
+
+        // ノードのコリジョンアトリビュートを削除
+        mtk_collisionSettingTool_deleteCollisionAttribute($allTargetTransformNodes);
+
+        // 最終設定日時カスタムアトリビュートが存在すれば削除
+        if(`attributeExists "fyColAttrLastModified" $collisionNode`)
+        {
+             deleteAttr ($collisionNode + ".fyColAttrLastModified");
+        }
+
+        // ログメッセージ作成
+        $logMessage = $logMessage + "   〇 " + $mdlNode + "  :  コリジョンアトリビュートを削除\n";
+    }
+
+    // ログダイアログ表示
+    confirmDialog
+        -t "Collision Setting Tool"
+        -m $logMessage
+        -b "OK"
+        -icon "information"
+        ;
+
+    mtk_collisionSettingTool_refreshList;
+}
+
+///////////////////////////////////////////////////////
+// ノードにコリジョンアトリビュートを設定
+// 引数のノード名はフルパスで
+///////////////////////////////////////////////////////
+global proc mtk_collisionSettingTool_setCollisionAttribute(string $targetNodes[])
+{
+    // カスタムアトリビュートのリスト
+    global string $MTK_COLLISIONSETTINGTOOL_ATTRIBUTELIST[];
+
+    // コリジョンアトリビュート設定リスト
+    global string $MTK_COLLISIONSETTINGTOOL_PHYCOLLISIONATTRSETTINGS[];
+
+    string $targetNode;
+
+    int $col_detailedExists;
+
+    // col_detailed が存在すればフラグを立てる
+    for($targetNode in $targetNodes)
+    {
+        if(endsWith($targetNode, "col_detailed"))
+        {
+            $col_detailedExists = true;
+        }
+    }
+
+    string $setting;
+
+    for($setting in $MTK_COLLISIONSETTINGTOOL_PHYCOLLISIONATTRSETTINGS)
+    {
+        string $temp[] = stringToStringArray($setting, ",");
+
+        string $colNodeName = $temp[0];
+        string $phyActorType = $temp[1];
+        string $phyShapeType = $temp[2];
+        string $phyCollisionTypeName = $temp[3];
+        string $phyQueryFilterPresetName = $temp[4];
+
+        // 設定完了したノードリスト
+        string $finishedNodes[];
+
+        for($targetNode in $targetNodes)
+        {
+            // カスタムアトリビュートがなければ作成
+            for($attribute in $MTK_COLLISIONSETTINGTOOL_ATTRIBUTELIST)
+            {
+                if(`attributeExists $attribute $targetNode` == false)
+                {
+                    addAttr -longName $attribute -dataType "string" $targetNode;
+                }
+            }
+
+            // col_* で終わるノード
+            if(endsWith($targetNode, $colNodeName))
+            {
+                // アトリビュート値を設定
+                setAttr ($targetNode + ".phyActorType") -type "string" $phyActorType;
+                setAttr ($targetNode + ".phyShapeType") -type "string" $phyShapeType;
+                setAttr ($targetNode + ".phyCollisionTypeName") -type "string" $phyCollisionTypeName;
+                setAttr ($targetNode + ".phyQueryFilterPresetName") -type "string" $phyQueryFilterPresetName;
+
+                // col_detailed が存在する場合
+                if($col_detailedExists)
+                {
+                    // col_character ノードはdetailed なしのプリセットにする
+                    if(endsWith($targetNode, "col_character"))
+                    {
+                        setAttr ($targetNode + ".phyQueryFilterPresetName") -type "string" "object_without_camera";
+                    }
+                    // col_object ノードはdetailed なしのプリセットにする
+                    else if(endsWith($targetNode, "col_object"))
+                    {
+                        setAttr ($targetNode + ".phyQueryFilterPresetName") -type "string" "object";
+                    }
+                }
+
+                // 設定完了したノードリストに追加
+                $finishedNodes[`size($finishedNodes)`] = $targetNode;
+            }
+         }
+
+        // ターゲットノードリストから設定完了したノードを削除
+        $targetNodes = stringArrayRemove($finishedNodes, $targetNodes);
+    }
+
+    // 残りのノードはデフォルト設定
+    for($targetNode in $targetNodes)
+    {
+        string $defaultValues[] = stringToStringArray($MTK_COLLISIONSETTINGTOOL_PHYCOLLISIONATTRSETTINGS[0], ",");
+
+        // アトリビュート値を設定
+        setAttr ($targetNode + ".phyActorType") -type "string" $defaultValues[1];
+        setAttr ($targetNode + ".phyShapeType") -type "string" $defaultValues[2];
+        setAttr ($targetNode + ".phyCollisionTypeName") -type "string" $defaultValues[3];
+        setAttr ($targetNode + ".phyQueryFilterPresetName") -type "string" $defaultValues[4];
+
+        // col_detailed が存在する場合、detailed なしのプリセットにする
+        if($col_detailedExists)
+        {
+            setAttr ($targetNode + ".phyQueryFilterPresetName") -type "string" "object";
+        }
+    }
+}
+
+///////////////////////////////////////////////////////
+// ノードからコリジョンアトリビュートを削除
+///////////////////////////////////////////////////////
+global proc mtk_collisionSettingTool_deleteCollisionAttribute(string $targetNodes[])
+{
+    // カスタムアトリビュートのリスト
+    global string $MTK_COLLISIONSETTINGTOOL_ATTRIBUTELIST[];
+
+    string $targetNode;
+
+    for($targetNode in $targetNodes)
+    {
+       string $attribute;
+
+       // カスタムアトリビュートがあれば削除
+       for($attribute in $MTK_COLLISIONSETTINGTOOL_ATTRIBUTELIST)
+       {
+           if(`attributeExists $attribute $targetNode`)
+           {
+               deleteAttr -attribute $attribute $targetNode;
+           }
+       }
+    }
+}
+
+///////////////////////////////////////////////////////
+// アセットにアサインされているdetailed コリジョンを返す
+///////////////////////////////////////////////////////
+global proc string[] mtk_collisionSettingTool_checkAssignedDetailedCollision(string $mdlNode)
+{
+    // detailed コリジョンプリセット名のリスト
+    string $detailedPresetNames[] = {
+        "detailed",
+        "detailed_object",
+        "detailed_object_without_camera"
+    };
+
+    string $detailedCollisions[];
+
+    // collision ノードを取得
+    string $collisionNode = mtk_collisionSettingTool_getNode("collision", $mdlNode);
+
+    // collision ノードがなければ
+    if($collisionNode == "")
+    {
+        return $detailedCollisions;
+    }
+
+    // 処理対象となるノードを取得
+    string $allTargetNodes[] = `mtk_collisionSettingTool_getAllTargetTransformNodes($collisionNode)`;
+
+    string $targetNode;
+
+    for($targetNode in $allTargetNodes)
+    {
+       if(`attributeExists "phyQueryFilterPresetName" $targetNode`)
+       {
+           string $assignedPreset = `getAttr ($targetNode + ".phyQueryFilterPresetName")`;
+
+           if(stringArrayContains($assignedPreset, $detailedPresetNames))
+           {
+               $detailedCollisions[`size($detailedCollisions)`] = $assignedPreset;
+           }
+       }
+    }
+
+    $detailedCollisions = stringArrayRemoveDuplicates($detailedCollisions);
+
+    return $detailedCollisions;
+}
+
+///////////////////////////////////////////////////////
+// ノードを取得
+///////////////////////////////////////////////////////
+global proc string mtk_collisionSettingTool_getNode(string $nodeType, string $mdlNode)
+{
+    string $collisionNode;
+
+    // 子ノードを取得
+    string $childNodes[] = `listRelatives -path -children $mdlNode`;
+
+    for($childNode in $childNodes)
+    {
+        // ノード名が指定したノード名で終わる場合
+        if(endsWith($childNode, $nodeType))
+        {
+            return $childNode;
+        }
+    }
+
+    return $collisionNode;
+}
+
+///////////////////////////////////////////////////////
+// 物理マテリアルリスト作成
+///////////////////////////////////////////////////////
+global proc mtk_collisionSettingTool_createPhyMaterialsList()
+{
+    // 物理マテリアル定義ファイル
+    string $filePath = "z:/mtk/work/engine/material/material.matdecl";
+
+    // 現在選択している項目
+    string $currentSelection[] = `textScrollList -q -selectItem uTsl_physicalMaterial_mtk_collisionSettingTool`;
+
+    // テキストスクロールリストを一旦クリア
+    textScrollList -e -removeAll uTsl_physicalMaterial_mtk_collisionSettingTool;
+
+    // シーン内の物理マテリアルリスト
+    string $phyMaterials[];
+
+    // シーン内の物理マテリアルリスト（default 属性）
+    string $defaultPhyMaterials[];
+
+    // シーン内のすべてのマテリアル
+    string $allMat[] = `ls -mat`;
+
+    string $mat;
+
+    for($mat in $allMat)
+    {
+        // 物理マテリアルアトリビュートが存在すれば
+        if(`attributeExists "phyMaterialName" $mat`)
+        {
+            // 物理マテリアルアトリビュートを取得
+            string $attr = `getAttr ($mat + ".phyMaterialName")`;
+
+            string $itemLabel = $attr + " : " + $mat;
+
+            if($attr != "")
+            {
+                if($attr == "default")
+                {
+                    // シーン内の物理マテリアルリスト（default 属性）に格納
+                    $defaultPhyMaterials[`size($defaultPhyMaterials)`] = $itemLabel;
+                }
+                else
+                {
+                    // シーン内の物理マテリアルリストに格納
+                    $phyMaterials[`size($phyMaterials)`] = $itemLabel;
+                }
+            }
+        }
+    }
+
+    // ファイルオープン
+    int $fpid = `fopen $filePath "r"`;
+
+    string $line;
+
+    // 物理マテリアル定義名のリスト
+    global string $MTK_COLLISIONSETTINGTOOL_PHYMATERIALDEFINITIONS[];
+    clear $MTK_COLLISIONSETTINGTOOL_PHYMATERIALDEFINITIONS;
+
+    // 一行ずつ読み込み
+    for( $line = `fgetline $fpid`; size($line) > 0; $line = `fgetline $fpid`)
+    {
+        if(startsWith($line, "-"))
+        {
+            string $phyMaterial = substituteAllString($line, "- ", "");
+            $phyMaterial = substituteAllString($phyMaterial, "\n", "");
+
+            if(`match "[a-z]+[0-9][0-9][0-9]" $phyMaterial` != "")
+            {
+                $phyMaterials[`size($phyMaterials)`] = $phyMaterial;
+
+                $MTK_COLLISIONSETTINGTOOL_PHYMATERIALDEFINITIONS[`size($MTK_COLLISIONSETTINGTOOL_PHYMATERIALDEFINITIONS)`] = $phyMaterial;
+            }
+            else
+            {
+                $defaultPhyMaterials[`size($defaultPhyMaterials)`] = $phyMaterial;
+            }
+        }
+    }
+
+    // ファイルクローズ
+    fclose $fpid;
+
+    // ソート
+    $MTK_COLLISIONSETTINGTOOL_PHYMATERIALDEFINITIONS = `sort $MTK_COLLISIONSETTINGTOOL_PHYMATERIALDEFINITIONS`;
+
+    // default を先頭に追加
+    stringArrayInsertAtIndex(0, $MTK_COLLISIONSETTINGTOOL_PHYMATERIALDEFINITIONS, "default");
+
+
+    // ソート
+    $defaultPhyMaterials = `sort $defaultPhyMaterials`;
+    $phyMaterials = `sort $phyMaterials`;
+
+    $phyMaterials = stringArrayCatenate($defaultPhyMaterials, $phyMaterials);
+
+    string $elm;
+
+    int $index = 1;
+
+    for($elm in $phyMaterials)
+    {
+        string $temp[] = stringToStringArray($elm, " : ");
+
+        if(`size($temp)` == 1)
+        {
+            // テキストスクロールリストに項目を追加
+            textScrollList -e -append $elm uTsl_physicalMaterial_mtk_collisionSettingTool;
+        }
+        else
+        {
+            // テキストスクロールリストに項目を追加（太字）
+            textScrollList -e -append $elm -lineFont $index "boldLabelFont" uTsl_physicalMaterial_mtk_collisionSettingTool;
+        }
+
+        $index += 1;
+    }
+
+    // 新しいリスト項目
+    string $allItems[] = `textScrollList -q -allItems uTsl_physicalMaterial_mtk_collisionSettingTool`;
+
+    string $item;
+
+    for($item in $currentSelection)
+    {
+        if(stringArrayContains($item, $allItems))
+        {
+            // リスト項目の選択を復元
+            textScrollList -e -selectItem $item uTsl_physicalMaterial_mtk_collisionSettingTool;
+        }
+    }
+
+    // 物理マテリアル情報表示更新
+    mtk_collisionSettingTool_updatePhyMatInfo;
+
+    // 未使用物理マテリアル削除
+    mtk_collisionSettingTool_deleteUnusedMaterial;
+}
+
+///////////////////////////////////////////////////////
+// 各種、定義ファイルが古いか確認
+///////////////////////////////////////////////////////
+global proc int mtk_collisionSettingTool_checkFileIsUncurrent(string $filePath)
+{
+    string $isUncurrent = false;
+
+    // ファイルが存在しない場合
+    if(`filetest -f $filePath` == false)
+    {
+        $isUncurrent = true;
+    }
+    else
+    {
+        // 最新リビジョン番号を取得
+        string $headRev = `system("p4 fstat -T headRev " + $filePath)`;
+
+        // ワークスペースにあるリビジョン番号
+        string $haveRev = `system("p4 fstat -T haveRev " + $filePath)`;
+
+        $headRev = substituteAllString($headRev, "... headRev ", "");
+        $haveRev = substituteAllString($haveRev, "... haveRev ", "");
+
+        if(int($headRev) > int($haveRev))
+        {
+            $isUncurrent = true;
+        }
+    }
+
+    return $isUncurrent;
+}
+
+///////////////////////////////////////////////////////
+// 物理マテリアルを割り当てボタンコマンド
+///////////////////////////////////////////////////////
+global proc mtk_collisionSettingTool_setPhyMaterial()
+{
+    string $sel[] = `ls -sl -dag`;
+
+    if(`size($sel)` == 0)
+    {
+        $sel = `ls -sl`;
+
+        string $selPolygon[] = `filterExpand -sm 34`;
+
+        if(`size($selPolygon)` == 0)
+        {
+            confirmDialog
+                -icon "warning"
+                -t "Collision Setting Tool"
+                -m "割り当てるオブジェクト、もしくはフェースが選択されていません。"
+                -b "OK"
+                ;
+            return;
+        }
+    }
+
+    // テキストスクロールリストで選択されている項目を取得
+    string $selItems[] = `textScrollList -q -si uTsl_physicalMaterial_mtk_collisionSettingTool`;
+
+    if(`size($selItems)` == 0)
+    {
+        confirmDialog
+            -icon "warning"
+            -t "Collision Setting Tool"
+            -m "割り当てる物理マテリアルがリストで選択されていません。"
+            -b "OK"
+            ;
+
+        return;
+    }
+
+    if(`size($selItems)` >= 2)
+    {
+        confirmDialog
+            -icon "warning"
+            -t "Collision Setting Tool"
+            -m "物理マテリアルを複数選択しての割り当ては実行できません。"
+            -b "OK"
+            ;
+
+        return;
+    }
+
+
+    // 選択項目名を分割
+    string $tokens[] = stringToStringArray($selItems[0], " : ");
+
+    // アサインするマテリアル名
+    string $material;
+
+    // シーンの全マテリアルを取得
+    string $allMaterials[] = `ls -materials`;
+
+    if(`size($tokens)` == 1)
+    {
+        $material = "phy_" + $selItems[0];
+
+        // まだマテリアルが存在しなければ
+        if(stringArrayContains($material, $allMaterials) == false)
+        {
+            // マテリアル作成
+            string $newMat = `shadingNode -asShader "lambert"`;
+            rename $newMat $material;
+
+            // カスタムアトリビュート追加
+            addAttr -longName "phyMaterialName" -dataType "string" $material;
+
+            // ランダムカラー割り当て
+            setAttr ($material + ".color") -type double3 `rand 1` `rand 1` `rand 1`;
+        }
+
+        // アトリビュート値を設定
+        setAttr ($material + ".phyMaterialName") -type "string" $selItems[0];
+    }
+    else
+    {
+        $material = $tokens[1];
+
+        // マテリアルが存在しなければ
+        if(stringArrayContains($material, $allMaterials) == false)
+        {
+            confirmDialog
+                -icon "error"
+                -t "Collision Setting Tool"
+                -m ("マテリアル " + $material +" が存在しません。")
+                -b "OK"
+                ;
+
+            return;
+        }
+    }
+
+    select $sel;
+    hyperShade -assign $material;
+
+    // 未使用マテリアル削除
+    mtk_collisionSettingTool_deleteUnusedMaterial;
+
+    // 物理マテリアルリスト更新
+    mtk_collisionSettingTool_createPhyMaterialsList;
+}
+
+///////////////////////////////////////////////////////
+// オブジェクトから物理マテリアルを選択
+///////////////////////////////////////////////////////
+global proc mtk_collisionSettingTool_getPhyMaterial()
+{
+    // 現在の選択を取得
+    string $sel[] = `ls -sl`;
+
+    // 割り当てられているマテリアルを選択
+    hyperShade -smn;
+
+    // 選択マテリアルを取得
+    string $selMat[] = `ls -sl`;
+
+    string $mat;
+
+    // テキストスクロールリストの全項目を取得
+    string $allItems[] = `textScrollList -q -allItems uTsl_physicalMaterial_mtk_collisionSettingTool`;
+
+    // テキストスクロールリストの項目を選択解除
+    textScrollList -e -deselectAll uTsl_physicalMaterial_mtk_collisionSettingTool;
+
+    for($mat in $selMat)
+    {
+        // 物理マテリアルアトリビュートが存在すれば
+        if(`attributeExists "phyMaterialName" $mat`)
+        {
+            // 物理マテリアルアトリビュートを取得
+            string $attr = `getAttr ($mat + ".phyMaterialName")`;
+
+            if($attr != "")
+            {
+                string $item = $attr + " : " + $mat;
+
+                // 項目がテキストスクロールリストに存在すれば
+                if(stringArrayContains($item, $allItems))
+                {
+                    // テキストスクロールリストで該当項目を選択
+                    textScrollList -e -si $item uTsl_physicalMaterial_mtk_collisionSettingTool;
+                }
+            }
+        }
+    }
+
+    // 元の選択を復元
+    select -r $sel;
+
+    // 物理マテリアル情報表示を更新
+    mtk_collisionSettingTool_updatePhyMatInfo;
+}
+
+///////////////////////////////////////////////////////
+// 選択変化時のスクリプトジョブコマンド
+///////////////////////////////////////////////////////
+global proc mtk_collisionSettingTool_selectionChangedScriptJob()
+{
+    if(`checkBox -q -v uCb_autoGet_mtk_collisionSettingTool`)
+    {
+        // 選択から物理マテリアルを取得
+        mtk_collisionSettingTool_getPhyMaterial;
+    }
+
+    if(`checkBox -q -v uCb_autoDispLabel_mtk_collisionSettingTool`)
+    {
+        // 選択に物理マテリアルラベル表示
+        mtk_collisionSettingTool_dispPhyMatLabel;
+    }
+}
+
+///////////////////////////////////////////////////////
+// 物理マテリアルからオブジェクトを選択
+///////////////////////////////////////////////////////
+global proc mtk_collisionSettingTool_selectObject()
+{
+    // テキストスクロールリストで選択している項目を取得
+    string $selItems[] = `textScrollList -q -si uTsl_physicalMaterial_mtk_collisionSettingTool`;
+
+    // シーンにあるすべてのマテリアルを取得
+    string $allMaterials[] = `ls -materials`;
+
+    // 対象物理マテリアルリスト
+    string $phyMaterials[];
+
+    string $selItem;
+
+    for($selItem in $selItems)
+    {
+        // 選択項目名を分割
+        string $tokens[] = stringToStringArray($selItem, " : ");
+
+        if(`size($tokens)` == 1)
+        {
+            string $material;
+
+            for($material in $allMaterials)
+            {
+                // 物理マテリアルアトリビュートが存在すれば
+                if(`attributeExists "phyMaterialName" $material`)
+                {
+                    // 物理マテリアルアトリビュートを取得
+                    string $attr = `getAttr ($material + ".phyMaterialName")`;
+
+                    if($attr == $tokens[0])
+                    {
+                        // 物理マテリアルリストに追加
+                        $phyMaterials[`size($phyMaterials)`] = $material;
+                    }
+                }
+            }
+        }
+        else
+        {
+            // シーンにマテリアルが存在すれば
+            if(stringArrayContains($tokens[1], $allMaterials))
+            {
+                // 物理マテリアルリストに追加
+                $phyMaterials[`size($phyMaterials)`] = $tokens[1];
+            }
+        }
+    }
+
+    // 重複を削除
+    $phyMaterials = stringArrayRemoveDuplicates($phyMaterials);
+
+
+    string $selAll[];
+
+    if(`size($phyMaterials)` != 0)
+    {
+        string $phyMaterial;
+
+        for($phyMaterial in $phyMaterials)
+        {
+            // マテリアルからオブジェクトを選択
+            hyperShade -objects $phyMaterial;
+
+            string $sel[] = `ls -sl`;
+
+            // アサインされているオブジェクトが無ければマテリアル削除
+            if(`size($sel)` == 0)
+            {
+                // 物理マテリアルリスト更新
+                mtk_collisionSettingTool_createPhyMaterialsList;
+            }
+            else
+            {
+                appendStringArray($selAll, $sel, `size($sel)`);
+            }
+        }
+
+        select -r $selAll;
+    }
+    else
+    {
+        select -cl;
+    }
+}
+
+///////////////////////////////////////////////////////
+// 未使用物理マテリアルを削除
+///////////////////////////////////////////////////////
+global proc mtk_collisionSettingTool_deleteUnusedMaterial()
+{
+    string $allPhyMat[] = `ls -mat "phy_*"`;
+
+    string $sel[] = `ls -sl`;
+
+    string $elm;
+
+    for ($elm in $allPhyMat)
+    {
+        // 未使用マテリアルチェック
+        hyperShade -objects $elm;
+
+        string $temp[] = `ls -sl`;
+
+        if (`size($temp)` == 0)
+        {
+            delete $elm;
+        }
+    }
+
+    // 選択を元に戻す
+    select -r $sel;
+
+}
+
+///////////////////////////////////////////////////////
+// ウィンドウクローズコールバック
+///////////////////////////////////////////////////////
+global proc mtk_collisionSettingTool_closeCommand()
+{
+    // グローバル変数をクリア
+    global string $MTK_COLLISIONSETTINGTOOL_PHYMATERIALINFO[];
+    clear $MTK_COLLISIONSETTINGTOOL_PHYMATERIALINFO;
+
+    // アノテーションノードを削除
+    string $labelNode = "_physics_mat_labels";
+
+    if(`objExists $labelNode`)
+    {
+        delete $labelNode;
+    }
+
+    // 未使用物理マテリアル削除
+    mtk_collisionSettingTool_deleteUnusedMaterial;
+}
+
+///////////////////////////////////////////////////////
+// フェースに物理マテリアルラベルを表示
+///////////////////////////////////////////////////////
+global proc mtk_collisionSettingTool_dispPhyMatLabel()
+{
+    // モジュールインポート
+    python("from mtk3d.maya.env.tool import showphymatlabel");
+
+    python("showphymatlabel.show_phy_material_labels()");
+}
+
+///////////////////////////////////////////////////////
+// 物理マテリアルラベルを削除
+///////////////////////////////////////////////////////
+global proc mtk_collisionSettingTool_deletePhyMatLabel()
+{
+    string $labelNode = "_physics_mat_labels";
+
+    if(`objExists $labelNode`)
+    {
+        delete $labelNode;
+    }
+}
+
+///////////////////////////////////////////////////////
+// col_ ノードを作成
+///////////////////////////////////////////////////////
+global proc mtk_collisionSettingTool_createColNode()
+{
+    // リストで選択している項目を取得
+    string $selMdlNodes[] = mtk_collisionSettingTool_getSelectedItems();
+
+    // リストで項目を選択していなければ終了
+    if(`size($selMdlNodes)` == 0)
+    {
+        confirmDialog
+            -t "Collision Setting Tool"
+            -m "リストで項目を選択してから実行してください。"
+            -b "OK"
+            -icon "warning"
+            ;
+
+        return;
+    }
+
+    string $selItem = `optionMenu -q -value uOm_baseNode_mtk_collisionSettingTool`;
+
+    string $logMessage = "■ 処理結果:\\n\\n";
+
+    string $createdNodes[];
+
+    string $hdaNodes[];
+
+    string $mdlNode;
+
+    for($mdlNode in $selMdlNodes)
+    {
+        // ベースノードを取得
+        string $baseNode = mtk_collisionSettingTool_getNode($selItem, $mdlNode);
+
+        // ベースノードがなければスキップ
+        if($baseNode == "")
+        {
+            // ログメッセージ作成
+            $logMessage = $logMessage + "   × " + $mdlNode + "  :  " + $selItem + " ノードが存在しないためスキップ\\n";
+
+            continue;
+        }
+
+        // collision ノードを取得
+        string $collisionNode = mtk_collisionSettingTool_getNode("collision", $mdlNode);
+
+        // collision ノードが存在しない場合は作成
+        if($collisionNode == "")
+        {
+            $collisionNode = `createNode "transform" -parent $mdlNode -name "collision"`;
+        }
+
+        // 作成するコリジョンノードタイプ
+        string $colType = `optionMenu -q -value uOm_colType_mtk_collisionSettingTool`;
+
+        // 既に存在するか
+        string $colNode = mtk_collisionSettingTool_getNode($colType, $collisionNode);
+
+        // col_ ノードが存在する場合
+        if($colNode != "")
+        {
+            string $message = $mdlNode + " には、すでに"+ $colType + " ノードが存在します。\n\n置き換えますか？";
+
+            // 確認ダイアログ
+            string $result =
+            `confirmDialog
+                -title "Collision Setting Tool"
+                -message $message
+                -button "置き換え"
+                -button "スキップ"
+                -defaultButton "置き換え"
+                -cancelButton "スキップ"
+                -dismissString "スキップ"
+                -icon "question"`
+                ;
+
+            if($result == "スキップ")
+            {
+                // ログメッセージ作成
+                $logMessage = $logMessage + "   × " + $mdlNode + "  :  " + $colType + " ノードの置き換えをスキップ\\n";
+
+                continue;
+            }
+            else
+            {
+                delete $colNode;
+            }
+        }
+
+        // コリジョン作成方法を取得
+        int $createMethod = `optionMenu -q -sl uOm_createMethod_mtk_collisionSettingTool`;
+
+        string $hdaNode;
+
+        string $createdNode;
+
+        // 「複製」の場合
+        if($createMethod == 1)
+        {
+            // ベースノードを複製
+            string $dupedNodes[] = `duplicate $baseNode`;
+
+            $createdNode = $dupedNodes[0];
+        }
+                // 「円柱」の場合
+        else if($createMethod == 2)
+        {
+            // 地面への沈み込ませ量
+            float $bottom_offset = 50;
+
+            // バウンディング基準からのスケール値
+            float $scale = 0.9;
+
+            // model ノードのバウンディングボックス情報を取得
+            float $bb[] = `exactWorldBoundingBox $baseNode`;
+
+            // 円柱の半径を求める
+            float $radius = (`abs $bb[0]` + `abs $bb[3]` + `abs $bb[2]` + `abs $bb[5]`) / 4 * $scale;
+
+            // 円柱の高さ
+            float $height = $bb[4] * $scale;
+
+            // 円柱を作成
+            string $cylinder[] = `polyCylinder -r $radius -h ($height + $bottom_offset) -sx 8 -sy 1 -sz 1 -ax 0 1 0 -rcp 0 -cuv 3 -ch 1`;
+
+            // ヒストリを削除
+            DeleteHistory;
+
+            // 地面へ沈み込ませる
+            move -r -ws (($bb[0] + $bb[3])/2) (($height - $bottom_offset) / 2) (($bb[2] + $bb[5])/2) $cylinder[0];
+
+            // ピボットを底面に
+            move -r 0 (($height + $bottom_offset) / -2) 0 ($cylinder[0] + ".scalePivot") ($cylinder[0] + ".rotatePivot");
+
+            // トランスフォームノード作成
+            $createdNode = `createNode "transform"`;
+
+            // トランスフォームノードの子に
+            parent $cylinder[0] $createdNode;
+        }
+        else
+        {
+            // hda パス
+            global string $MTK_COLLISIONSETTINGTOOL_HDAPATHS[];
+
+            // hda アセット名
+            global string $MTK_COLLISIONSETTINGTOOL_HDAASSETS[];
+
+            // hda ノード作成
+            catchQuiet($hdaNode = `houdiniAsset -loadAsset $MTK_COLLISIONSETTINGTOOL_HDAPATHS[$createMethod - 3] $MTK_COLLISIONSETTINGTOOL_HDAASSETS[$createMethod - 3]`);
+
+            int $num = `rand 0 1000`;
+            string $newName = substituteAllString($hdaNode, "|", "");
+
+            // 固有名になるようにリネーム
+            $hdaNode = `rename $hdaNode ($newName + "_" + $num)`;
+
+            // hda ノードに入力
+            if(catch(houdiniEngine_setAssetInput(($hdaNode + ".input[0].inputNodeId"), {$baseNode})))
+            {
+                // ログメッセージ作成
+                $logMessage = $logMessage + "   × " + $mdlNode + "  :  " + $colType + " 作成失敗\\n";
+
+                delete $hdaNode;
+
+                continue;
+            }
+
+            // トランスフォームノード作成
+            $createdNode = `createNode "transform"`;
+
+        }
+
+        // collision ノードの子に
+        string $temp[] = `parent $createdNode $collisionNode`;
+
+        // リネーム
+        $colNode = `rename $temp[0] $colType`;
+
+        // ロングネームに変換
+        $colNode = `longNameOf($colNode)`;
+
+        // hda ノードを作成している場合
+        if($hdaNode != "")
+        {
+            $hdaNodes = stringArrayCatenate($hdaNodes, `parent $hdaNode $colNode`);
+        }
+
+        $createdNodes[`size($createdNodes)`] = $colNode;
+
+        // 作成日時カスタムアトリビュート名を取得
+        string $creationDateAttributeName = mtk_collisionSettingTool_getCreationDateAttributeName($colType);
+
+        // 最終作成日時カスタムアトリビュートが無ければ作成
+        if(`attributeExists $creationDateAttributeName $colNode` == false)
+        {
+            addAttr -longName $creationDateAttributeName -dataType "string" $colNode;
+        }
+
+        // 現在日時を取得
+        string $date = `date -format "YYYY/MM/DD hh:mm:ss"`;
+
+        setAttr ($colNode + "." + $creationDateAttributeName) -type "string" $date;
+
+        // ログメッセージ作成
+        $logMessage = $logMessage + "   〇 " + $mdlNode + "  :  " + $colType + " ノードを作成\\n";
+    }
+
+    // コリジョンアトリビュートを設定
+    mtk_collisionSettingTool_setCollisionAttributeButtonCommand(0);
+
+    // 物理マテリアルを設定チェックボックスが有効かつオンの場合
+    if(`checkBox -q -en uCbx_setPhyMaterial_mtk_collisionSettingTool` && `checkBox -q -v uCbx_setPhyMaterial_mtk_collisionSettingTool`)
+    {
+        select -r $createdNodes;
+
+        // 物理マテリアル設定ダイアログ
+        mtk_collisionSettingTool_setPhyMaterialAttributeDialog;
+
+        // 物理マテリアルリスト更新
+        mtk_collisionSettingTool_createPhyMaterialsList;
+    }
+
+    int $checkBoxEnabled;
+
+    // hda ノードを作成している場合
+    if(`size($hdaNodes)` != 0)
+    {
+        $checkBoxEnabled = 1;
+    }
+
+    string $cmd = "mtk_collisionSettingTool_logDialog(\"" + $logMessage + "\", " + $checkBoxEnabled + ")";
+
+    // ログダイアログ表示
+    layoutDialog -title "Collision Setting Tool" -ui $cmd;
+
+    // アトリビュートエディタのコピータブを表示する場合
+    if($checkBoxEnabled && `optionVar -q "mtk_collisionSettingTool_showAE"`)
+    {
+        string $elm;
+
+        for($elm in $hdaNodes)
+        {
+            // アトリビュートエディタを更新
+            updateAE (`longNameOf($elm)`);
+
+            // hda のパラメータ編集のためアトリビュートエディタのコピータブを表示
+            copyAEWindow;
+        }
+    }
+
+    // 作成したノードを選択
+    select -r $createdNodes;
+
+    mtk_collisionSettingTool_refreshList;
+}
+
+///////////////////////////////////////////////////////
+// ログ表示ダイアログ
+///////////////////////////////////////////////////////
+global proc mtk_collisionSettingTool_logDialog(string $logMessage, int $checkBoxEnabled)
+{
+    string $form = `setParent -q`;
+
+	string $t = `text -l $logMessage -al "left"`;
+	string $b1 = `button -l "OK" -c "layoutDialog -dismiss \"OK\""`;
+
+    int $cb1_value = `optionVar -q "mtk_collisionSettingTool_showAE"`;
+
+    string $cb1 = `checkBox
+        -label "HDA のパラメータを編集する"
+        -v $cb1_value
+        -en $checkBoxEnabled
+        -onc "optionVar -iv mtk_collisionSettingTool_showAE 1"
+        -ofc "optionVar -iv mtk_collisionSettingTool_showAE 0"
+        `;
+
+	string $s = `text -l ""`;
+
+    formLayout -edit
+        -attachForm            $t   "top"    16
+        -attachForm            $t   "left"   32
+        -attachNone            $t   "bottom"
+        -attachForm            $t   "right"  32
+
+        -attachControl         $b1  "top"    10 $t
+        -attachPosition            $b1  "left"  0 40
+        -attachNone            $b1  "bottom"
+        -attachPosition            $b1  "right" 0 60
+
+        -attachControl         $cb1 "top"    8 $b1
+        -attachPosition            $cb1 "left"  0 40
+        -attachNone            $cb1 "bottom"
+        -attachNone            $cb1 "right"
+
+        -attachControl         $s "top"    0 $cb1
+        -attachNone            $s "left"
+        -attachNone            $s "bottom"
+        -attachNone            $s "right"
+
+    $form;
+
+    setFocus $b1;
+}
+
+///////////////////////////////////////////////////////
+// 作成日時カスタムアトリビュート名を取得
+///////////////////////////////////////////////////////
+global proc string mtk_collisionSettingTool_getCreationDateAttributeName(string $colType)
+{
+    // col_ ノード名を分割
+    string $stringArray[] = stringToStringArray($colType, "_");
+
+    // アトリビュート名
+    string $creationDateAttributeName;
+
+    string $string;
+
+    for($string in $stringArray)
+    {
+        $creationDateAttributeName = $creationDateAttributeName + capitalizeString($string);
+    }
+
+    $creationDateAttributeName = "fy" + $creationDateAttributeName + "LastCreated";
+
+    return $creationDateAttributeName;
+}
+
+///////////////////////////////////////////////////////
+// ノード以下のすべてのメッシュのTransform ノードを取得
+///////////////////////////////////////////////////////
+global proc string[] mtk_collisionSettingTool_getAllTargetTransformNodes(string $node)
+{
+    // ノードの子トランスフォームを取得（処理対象となるトランスフォームノード）
+    string $allTargetTransformNodes[] = `listRelatives -c -f -type "transform" $node`;
+
+    /*
+    // ノードのすべての子孫のうち、mesh を取得
+    string $allMeshNodes[] = `listRelatives -f -allDescendents -type "mesh" -noIntermediate $node`;
+
+    // 処理対象となるすべてのトランスフォームノードを取得
+    string $allTargetTransformNodes[] = `listRelatives -parent -fullPath -type "transform" -noIntermediate $allMeshNodes`;
+
+    // 重複を削除
+    $allTargetTransformNodes = stringArrayRemoveDuplicates($allTargetTransformNodes);
+    */
+
+    return $allTargetTransformNodes;
+}
+
+///////////////////////////////////////////////////////
+// 物理マテリアル割り当てダイアログ
+///////////////////////////////////////////////////////
+global proc mtk_collisionSettingTool_setPhyMaterialAttributeDialog()
+{
+    global string $MTK_COLLISIONSETTINGTOOL_TARGETMATERIALS[];
+
+    // アサインされているマテリアルを選択
+    hyperShade -smn;
+
+    $MTK_COLLISIONSETTINGTOOL_TARGETMATERIALS = `ls -sl`;
+
+    if(`size($MTK_COLLISIONSETTINGTOOL_TARGETMATERIALS)` != 0)
+    {
+        // 物理マテリアル選択候補テーブル用 グローバル変数
+        global string $MTK_COLLISIONSETTINGTOOL_PHYMATERIALCANDIDATETABLE[];
+        clear $MTK_COLLISIONSETTINGTOOL_PHYMATERIALCANDIDATETABLE;
+
+        // 物理マテリアル選択候補テーブルファイル
+        string $filePath = "//cgs-str-fas05/100_projects/117_mutsunokami/30_design/environment/tools/collisionSettingToolData/phyMatTable.csv";
+
+        // ファイルがなければ終了
+        if(`filetest -f $filePath` == false)
+        {
+            print ($filePath + " ファイルが見つかりません。\n");
+        }
+        else
+        {
+            // ファイルオープン
+            int $fpid = `fopen $filePath "r"`;
+
+            // ヘッダ行 捨て読み
+            //fgetline $fpid;
+
+            string $line;
+
+            // 一行ずつ読み込み
+            for($line = `fgetline $fpid`; size($line) > 0; $line = `fgetline $fpid`)
+            {
+                // 改行コード削除
+                $line = substituteAllString($line, "\n", "");
+
+                $MTK_COLLISIONSETTINGTOOL_PHYMATERIALCANDIDATETABLE[`size($MTK_COLLISIONSETTINGTOOL_PHYMATERIALCANDIDATETABLE)`] = $line;
+            }
+
+            // ファイルクローズ
+            fclose $fpid;
+        }
+
+        layoutDialog
+            -t "Collision Setting Tool"
+            -ui "mtk_collisionSettingTool_setPhyMaterialAttributeDialogUI"
+            ;
+    }
+}
+
+///////////////////////////////////////////////////////
+// 物理マテリアル割り当てダイアログ
+///////////////////////////////////////////////////////
+global proc mtk_collisionSettingTool_setPhyMaterialAttributeDialogUI()
+{
+    global string $MTK_COLLISIONSETTINGTOOL_TARGETMATERIALS[];
+    global string $MTK_COLLISIONSETTINGTOOL_PHYMATERIALS[];
+    clear $MTK_COLLISIONSETTINGTOOL_PHYMATERIALS;
+
+    // 物理マテリアル定義名のリスト
+    global string $MTK_COLLISIONSETTINGTOOL_PHYMATERIALDEFINITIONS[];
+
+    // ダイアログのformLayout を取得
+    string $form = `setParent -q`;
+
+    string $txt = `text -l "割り当てる物理マテリアルを選択してください。"`;
+
+    string $rcl = `rowColumnLayout -nc 2 -rowSpacing 1 4 -adjustableColumn 2`;
+
+    string $material;
+
+    string $optionMenus[];
+
+    int $index;
+
+    text -l "【 マテリアル 】" -al "center";
+    text -l "【 物理マテリアル 】" -al "center";
+
+    for($material in $MTK_COLLISIONSETTINGTOOL_TARGETMATERIALS)
+    {
+        text -l ($material + " : ") -al "right";
+
+        string $optionMenu = `optionMenu`;
+        $optionMenus[`size($optionMenus)`] = $optionMenu;
+
+        optionMenu -e -cc ("$MTK_COLLISIONSETTINGTOOL_PHYMATERIALS[" + $index + "] = \"#1\"") $optionMenu;
+
+        string $allItems[] = $MTK_COLLISIONSETTINGTOOL_PHYMATERIALDEFINITIONS;
+
+        // 現在アサインされている物理マテリアル名
+        string $currentPhyMatName;
+
+        // 物理マテリアル候補
+        string $phyMatCandidates[];
+
+        // 物理マテリアルアトリビュートが存在すれば
+        if(`attributeExists "phyMaterialName" $material`)
+        {
+            // アトリビュート値を取得
+            $currentPhyMatName = `getAttr ($material + ".phyMaterialName")`;
+
+            // 物理マテリアルリストに存在しない場合
+            if(stringArrayContains($currentPhyMatName, $allItems) == false)
+            {
+                $currentPhyMatName = "";
+            }
+        }
+
+        $phyMatCandidates = mtk_collisionSettingTool_getPhyMaterialCandidate($material);
+
+        if($currentPhyMatName != "")
+        {
+            menuItem -l ("現在:  " + $currentPhyMatName);
+            menuItem -d true;
+
+            $allItems = stringArrayRemove({$currentPhyMatName}, $allItems);
+        }
+
+        if(`size($phyMatCandidates)` != 0)
+        {
+            string $item;
+            int $num = 1;
+
+            for($item in $phyMatCandidates)
+            {
+                menuItem -l ($num + ":  " + $item);
+
+                $num += 1;
+            }
+
+            menuItem -d true -dl "test";
+
+            $allItems = stringArrayRemove($phyMatCandidates, $allItems);
+        }
+
+        string $item;
+
+        for($item in $allItems)
+        {
+            menuItem -l $item;
+        }
+
+        $MTK_COLLISIONSETTINGTOOL_PHYMATERIALS[`size($MTK_COLLISIONSETTINGTOOL_PHYMATERIALS)`] = `optionMenu -q -v $optionMenu`;
+
+        $index += 1;
+    }
+
+    setParent ..;
+
+    string $s = `separator -st "none"`;
+
+    string $b1 = `button -l "設定" -c "mtk_collisionSettingTool_setPhyMaterialAttribute; mtk_collisionSettingTool_writePhyMaterialTableFile; layoutDialog -dismiss \"設定\""`;
+    string $b2 = `button -l "スキップ" -c "layoutDialog -dismiss \"スキップ\""`;
+
+    int $mw = 16;
+    int $mh = 16;
+    int $sp = 4;
+
+    formLayout -e
+        -attachForm    $txt "top" $mh
+        -attachForm    $txt "left" $mw
+        -attachNone    $txt "bottom"
+        -attachForm    $txt "right" $mw
+
+        -attachControl $rcl "top" ($sp*3) $txt
+        -attachForm    $rcl "left" $mw
+        -attachNone    $rcl "bottom"
+        -attachForm    $rcl "right" $mw
+
+        -attachControl $s "top" ($sp*3) $rcl
+        -attachForm    $s "left" $mw
+        -attachControl $s "bottom" ($sp*3) $b1
+        -attachForm    $s "right" $mw
+
+        -attachNone     $b1 "top"
+        -attachForm     $b1 "left" $mw
+        -attachForm     $b1 "bottom"  $mh
+        -attachPosition $b1 "right" $sp 50
+
+        -attachNone     $b2 "top"
+        -attachControl  $b2 "left" $sp $b1
+        -attachForm     $b2 "bottom" $mh
+        -attachForm     $b2 "right" $mw
+
+        $form;
+}
+
+///////////////////////////////////////////////////////
+// 物理マテリアルアトリビュートを割り当て
+///////////////////////////////////////////////////////
+global proc mtk_collisionSettingTool_setPhyMaterialAttribute()
+{
+    global string $MTK_COLLISIONSETTINGTOOL_TARGETMATERIALS[];
+    global string $MTK_COLLISIONSETTINGTOOL_PHYMATERIALS[];
+
+    string $material;
+
+    int $index;
+
+    for($material in $MTK_COLLISIONSETTINGTOOL_TARGETMATERIALS)
+    {
+        // 物理マテリアルアトリビュートが存在しなけｒば
+        if(`attributeExists "phyMaterialName" $material` == false)
+        {
+            // カスタムアトリビュート追加
+            addAttr -longName "phyMaterialName" -dataType "string" $material;
+        }
+
+        // ラベル文字を取るために分割
+        string $elm[] = stringToStringArray($MTK_COLLISIONSETTINGTOOL_PHYMATERIALS[$index], " ");
+
+        // ラベル文字を取る
+        $MTK_COLLISIONSETTINGTOOL_PHYMATERIALS[$index] = $elm[`size($elm)` - 1];
+
+        // アトリビュート値を設定
+        setAttr ($material + ".phyMaterialName") -type "string" $MTK_COLLISIONSETTINGTOOL_PHYMATERIALS[$index];
+
+        $index += 1;
+    }
+}
+
+///////////////////////////////////////////////////////
+// マテリアル名から候補の物理マテリアルを選ぶ
+///////////////////////////////////////////////////////
+global proc string[] mtk_collisionSettingTool_getPhyMaterialCandidate(string $material)
+{
+    // 物理マテリアル選択候補テーブル用 グローバル変数
+    global string $MTK_COLLISIONSETTINGTOOL_PHYMATERIALCANDIDATETABLE[];
+
+    // ユニークID を取得
+    string $uniqueID = mtk_collisionSettingTool_getUniqueIDformMatName($material);
+
+    string $candidates[];
+    int $numOfUses[];
+
+    string $line;
+
+    for($line in $MTK_COLLISIONSETTINGTOOL_PHYMATERIALCANDIDATETABLE)
+    {
+        // 行を分解
+        string $elm[] = stringToStringArray($line, ",");
+
+        // ユニークID がテーブルに存在する場合
+        if($elm[0] == $uniqueID)
+        {
+            int $i;
+
+            // 候補と使用回数を取得
+            for($i = 1; $i < `size($elm)` ; $i += 2)
+            {
+                $candidates[`size($candidates)`] = $elm[$i];
+                $numOfUses[`size($numOfUses)`] = $elm[$i + 1];
+            }
+
+            // 候補がふたつ以上ある場合
+            if(`size($candidates)` >= 2)
+            {
+                // 使用回数順に候補を降順でソート
+                for($i = 0; $i < `size($numOfUses)`; $i++)
+                {
+                    for ($j = $i + 1; $j < `size($numOfUses)`; $j++)
+                    {
+                        if($numOfUses[$i] < $numOfUses[$j])
+                        {
+                            int $tmpInt = $numOfUses[$i];
+                            string $tmpStr = $candidates[$i];
+
+                            $numOfUses[$i] = $numOfUses[$j];
+                            $candidates[$i] = $candidates[$j];
+
+                            $numOfUses[$j] = $tmpInt;
+                            $candidates[$j] = $tmpStr;
+                        }
+                    }
+                }
+            }
+
+            break;
+        }
+    }
+
+    return $candidates;
+}
+
+///////////////////////////////////////////////////////
+// マテリアル名からユニークID を取得
+///////////////////////////////////////////////////////
+global proc string mtk_collisionSettingTool_getUniqueIDformMatName(string $material)
+{
+    string $uniqueID;
+
+    // マテリアル名を分解
+    string $elm[] = stringToStringArray($material, "_");
+
+    // 分解した要素数
+    int $size = `size($elm)`;
+
+    if($size >= 4 && `match "_[a-z]+[0-9][0-9][0-9]_[0-9][0-9][0-9]$" $material` != "")
+    {
+        // 最後から2番目の要素の末尾3桁の数字を取ってユニークID を取得
+        $uniqueID = `substitute "[0-9][0-9][0-9]$" $elm[$size - 2] ""`;
+    }
+
+    return $uniqueID;
+}
+
+///////////////////////////////////////////////////////
+// 物理マテリアル割り当てテーブル保存
+///////////////////////////////////////////////////////
+global proc mtk_collisionSettingTool_writePhyMaterialTableFile()
+{
+    // ターゲットマテリアル名
+    global string $MTK_COLLISIONSETTINGTOOL_TARGETMATERIALS[];
+
+    // 割り当てる物理マテリアル名
+    global string $MTK_COLLISIONSETTINGTOOL_PHYMATERIALS[];
+
+    string $targetMaterial;
+
+    int $index;
+
+    for($targetMaterial in $MTK_COLLISIONSETTINGTOOL_TARGETMATERIALS)
+    {
+        // ユニークID 取得
+        string $uniqueID = mtk_collisionSettingTool_getUniqueIDformMatName($targetMaterial);
+
+        // ユニークID が空じゃなければ
+        if($uniqueID != "")
+        {
+            // 物理マテリアル候補テーブルにセット
+            mtk_collisionSettingTool_setPhyMaterialCandidate($uniqueID, $MTK_COLLISIONSETTINGTOOL_PHYMATERIALS[$index]);
+        }
+
+        $index += 1;
+    }
+
+    // 物理マテリアル選択候補テーブル用 グローバル変数
+    global string $MTK_COLLISIONSETTINGTOOL_PHYMATERIALCANDIDATETABLE[];
+
+    // 物理マテリアル選択候補テーブルファイル
+    string $filePath = "//cgs-str-fas05/100_projects/117_mutsunokami/30_design/environment/tools/collisionSettingToolData/phyMatTable.csv";
+
+    // ファイルがなければ終了
+    if(`filetest -f $filePath` == false)
+    {
+        print ($filePath + " ファイルが見つかりません。\n");
+
+        return;
+    }
+    else
+    {
+        // ファイルオープン
+        int $fpid = `fopen $filePath "w"`;
+
+        string $line;
+
+        // 一行ずつ書き込み
+        for($line in $MTK_COLLISIONSETTINGTOOL_PHYMATERIALCANDIDATETABLE)
+        {
+            fprint $fpid ($line + "\n");
+        }
+
+        // ファイルクローズ
+        fclose $fpid;
+    }
+}
+
+///////////////////////////////////////////////////////
+// 物理マテリアル候補テーブルにセット
+///////////////////////////////////////////////////////
+global proc mtk_collisionSettingTool_setPhyMaterialCandidate(string $uniqueID, string $phyMaterial)
+{
+    // 物理マテリアル選択候補テーブル用 グローバル変数
+    global string $MTK_COLLISIONSETTINGTOOL_PHYMATERIALCANDIDATETABLE[];
+
+    int $uniqueIdExists = false;
+    int $phyMatExists = false;
+
+    int $index;
+    string $line;
+
+    for($line in $MTK_COLLISIONSETTINGTOOL_PHYMATERIALCANDIDATETABLE)
+    {
+        // 行を分解
+        string $elm[] = stringToStringArray($line, ",");
+
+        // ユニークID がテーブルに存在する場合
+        if($elm[0] == $uniqueID)
+        {
+            $uniqueIdExists = true;
+
+            int $i;
+
+            //
+            for($i = 1; $i < `size($elm)` ; $i += 2)
+            {
+                // 候補の物理マテリアルがテーブルに存在する場合
+                if($elm[$i] == $phyMaterial)
+                {
+                    $phyMatExists = true;
+
+                    int $count = int($elm[$i + 1]) + 1;
+                    $elm[$i + 1] = string($count);
+
+                    break;
+                }
+            }
+
+            // 候補の物理マテリアルがテーブルに存在しなかった場合
+            if($phyMatExists == false)
+            {
+                // 新しい内容に追加
+                $elm[`size($elm)`] = $phyMaterial;
+                $elm[`size($elm)`] = "1";
+            }
+
+            $MTK_COLLISIONSETTINGTOOL_PHYMATERIALCANDIDATETABLE[$index] = stringArrayToString($elm, ",");
+
+            break;
+        }
+
+        $index += 1;
+    }
+
+    // ユニークID がテーブルに存在しなかった場合
+    if($uniqueIdExists == false)
+    {
+        $MTK_COLLISIONSETTINGTOOL_PHYMATERIALCANDIDATETABLE[`size($MTK_COLLISIONSETTINGTOOL_PHYMATERIALCANDIDATETABLE)`] = $uniqueID + "," + $phyMaterial + ",1";
+    }
+}
+
+///////////////////////////////////////////////////////
+// コリジョンアトリビュート最終設定日時 表示更新
+///////////////////////////////////////////////////////
+global proc mtk_collisionSettingTool_dispLastModifiedDate()
+{
+    // リストで選択している項目を取得
+    string $selMdlNodes[] = mtk_collisionSettingTool_getSelectedItems();
+
+    string $text = "--/--/-- --:--:--";
+
+    // リストで項目をひとつだけ選択している場合
+    if(`size($selMdlNodes)` == 1)
+    {
+        // collision ノードを取得
+        string $collisionNode = mtk_collisionSettingTool_getNode("collision", $selMdlNodes[0]);
+
+        // collision ノードが存在する場合
+        if($collisionNode != "")
+        {
+            // 最終設定日カスタムアトリビュートが存在すれば
+            if(`attributeExists "fyColAttrLastModified" $collisionNode`)
+            {
+                $text = `getAttr ($collisionNode + ".fyColAttrLastModified")`;
+            }
+        }
+    }
+    // 複数選択の場合
+    else if(`size($selMdlNodes)` >= 2)
+    {
+        $text = "複数選択";
+    }
+
+    textField -e -text $text uTf_lastModifiedDate_mtk_collisionSettingTool;
+}
+
+///////////////////////////////////////////////////////
+// col_ ノード最終作成日時 表示更新
+///////////////////////////////////////////////////////
+global proc mtk_collisionSettingTool_dispLastCreatedDate()
+{
+    // リストで選択している項目を取得
+    string $selMdlNodes[] = mtk_collisionSettingTool_getSelectedItems();
+
+    string $text = "--/--/-- --:--:--";
+
+    // リストで項目をひとつだけ選択している場合
+    if(`size($selMdlNodes)` == 1)
+    {
+        // 作成するコリジョンノードタイプ
+        string $colType = `optionMenu -q -value uOm_colType_mtk_collisionSettingTool`;
+
+        // 作成日時カスタムアトリビュート名を取得
+        string $creationDateAttributeName = mtk_collisionSettingTool_getCreationDateAttributeName($colType);
+
+        // col_* ノード
+        string $colNode = $selMdlNodes[0] + "|collision|" + $colType;
+
+        // col_* ノードが存在する場合
+        if(`objExists $colNode`)
+        {
+            // 最終設定日カスタムアトリビュートが存在すれば
+            if(`attributeExists $creationDateAttributeName $colNode`)
+            {
+                $text = `getAttr ($colNode + "." + $creationDateAttributeName)`;
+            }
+        }
+    }
+    // 複数選択の場合
+    else if(`size($selMdlNodes)` >= 2)
+    {
+        $text = "複数選択";
+    }
+
+    textField -e -text $text uTf_lastCreatedDate_mtk_collisionSettingTool;
+}

@@ -1,0 +1,61 @@
+﻿project_path:
+  share_path: C:/cygames/shrshare/share/asset/
+
+character_info:
+  - label: player
+    id: ply
+    path: rigs/player
+    
+  - label: mob
+    id: mob
+    path: rigs/mob
+
+  - label: npc
+    id: npc
+    path: rigs/npc
+
+  - label: creature
+    id: cre
+    path: rigs/creature
+    active_parts : [body]
+
+  - label: enemy
+    id: enm
+    path: rigs/enemy
+    active_parts : [body]
+
+weapons:
+  - label: "wpy0001_sword"
+    file_name: "wpy0001"
+    path: rigs/weapon/wpy/wpy0001_sword/maya
+    default_visibility: True
+
+  - label: "wpy0011_sheath"
+    file_name: "wpy0011"
+    path: rigs/weapon/wpy/wpy0011_sheath/maya
+  
+  - label: "wpy0021_shield"
+    file_name: "wpy0021"
+    path: rigs/weapon/wpy/wpy0021_shield/maya
+    
+  - label: "wpy1001_greatsword"
+    file_name: "wpy1001"
+    path: rigs/weapon/wpy/wpy1001_greatsword/maya
+    
+  - label: "wpy1011_greatsheath"
+    file_name: "wpy1011"
+    path: rigs/weapon/wpy/wpy1011_greatsheath/maya
+
+  - label: "wpy0031_shield"
+    file_name: "wpy0031"
+    path: rigs/weapon/wpy/wpy0031_shield/maya
+
+  - label: "wsd0000_goblinsword"
+    file_name: "wsd0000"
+    path: rigs/weapon/wsd/wsd0000_goblinsword/maya
+    default_visibility: True
+
+  - label: "wbo0000_goblinbowgun"
+    file_name: "wbo0000"
+    path: rigs/weapon/wbo/wbo0000_goblinbowgun/maya
+    default_visibility: True

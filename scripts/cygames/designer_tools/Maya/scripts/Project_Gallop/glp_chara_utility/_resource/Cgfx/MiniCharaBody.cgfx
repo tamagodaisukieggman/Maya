@@ -1,0 +1,23 @@
+string Category = "Gallop/3D/Chara/MiniCharaBody";
+string keywords = "bumpmap,texture";
+string description = "MiniCharaBody";
+
+#define USE_EMISSIVE
+#include "GallopCharaMain.cginc"
+
+//////// techniques ////////////////////////////
+
+technique SERDefault
+{
+	pass
+	{
+		DepthTestEnable=true;
+		DepthMask = true;
+		DepthFunc = LEqual;
+		VertexProgram = compile vp40 vert();
+		FragmentProgram = compile fp40 frag();
+	}
+}
+
+
+

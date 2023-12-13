@@ -1,0 +1,383 @@
+//===============================================
+//
+// マテリアルアサインツール
+//
+//===============================================
+
+global proc shr_materialCreateAssignTool()
+{
+    // TA ツールログ送信
+    shr_toolLog("Material Create and Assign Tool", "1.0.0", "launched.");
+
+    source "shr_fixHierarchy";
+
+    //すでにウィンドウがあれば終了
+    if (`window -exists WND_shr_materialCreateAssignTool` == 1)
+    {
+        deleteUI WND_shr_materialCreateAssignTool;
+        //return;
+    }
+
+    window
+        -title "Material Create & Assign Tool"
+        -resizeToFitChildren on
+        -sizeable off
+        -maximizeButton off
+        -mb on
+        WND_shr_materialCreateAssignTool;
+
+        // ヘルプURL
+        string $helpCmd = "showHelp -absolute \"https://wisdom.cygames.jp/pages/viewpage.action?pageId=440913774\"";
+
+        menu -l "Help" -helpMenu on;
+            menuItem
+                -l "Material Create & Assign Tool のヘルプ"
+                -c $helpCmd
+               ;
+
+    frameLayout -mw 8 -mh 4 -lv off;
+        columnLayout -adj on;
+
+    		rowColumnLayout -nc 2 -columnAlign 1 right -rowSpacing 1 8;
+    			text -label "マテリアル名 : ";
+
+                rowLayout -nc 2;
+        			textField
+        			    -text ""
+        			    -w 210
+        			    TF_shr_materialCreateAssignTool;
+
+        			columnLayout -adj on -rowSpacing 2;
+        			    button
+        			        -l "シーン名から設定"
+        			        -ann "シーン名からマテリアル名を設定します。"
+        			        -h 18
+        			        -c "shr_materialCreateAssignTool_getMatNameFromSceneName(0)"
+        			        ;
+        			    button
+        			        -l "ルートノード名から設定"
+        			        -ann "選択ノードのルートノード名からマテリアル名を設定します。"
+        			        -h 18
+        			        -c "shr_materialCreateAssignTool_getMatNameFromSelection(0)"
+        			        ;
+
+        			    setParent ..;
+                    setParent ..;
+                text -l "種類 : ";
+
+                columnLayout;
+                    optionMenu
+                        -ann "作成するマテリアルの種類を選択します。"
+                        -cc "shr_materialCreateAssignTool_optionMenuCallback"
+                        OM_shr_materialCreateAssignTool;
+                        menuItem -l "Lambert";
+                        menuItem -l "Phong";
+                        menuItem -l "Blinn";
+
+                    optionMenu -e -sl (`optionVar -q "shr_materialCreateAssignTool_materialType"` + 1) OM_shr_materialCreateAssignTool;
+
+                    setParent ..;
+
+                text -l "カラー : ";
+                colorSliderGrp
+                    -rgb 0.5 0.5 0.5
+                    CSG_shr_materialCreateAssignTool;
+
+                setParent ..;
+
+            separator -h 16 -st "in" SP_shr_materialCreateAssignTool;
+
+            rowLayout -nc 2;
+                button
+                    -l "マテリアルを作成"
+                    -bgc 0.5 0.6 0.5
+                    -w 190
+                    -c "shr_materialCreateAssignTool_assignMaterial(0)"
+                    ;
+                button
+                    -l "マテリアルを作成して選択に割り当て"
+                    -bgc 0.5 0.6 0.5
+                    -w 190
+                    -c "shr_materialCreateAssignTool_assignMaterial(1)"
+                    ;
+            setParent ..;
+        setParent ..;
+
+    setFocus SP_shr_materialCreateAssignTool;
+
+    string $sel[] = `ls -sl -tr`;
+
+    if(`size($sel)` != 0)
+    {
+        shr_materialCreateAssignTool_getMatNameFromSelection(1);
+    }
+
+    if(`textField -q -tx TF_shr_materialCreateAssignTool` == "")
+    {
+        shr_materialCreateAssignTool_getMatNameFromSceneName(1);
+    }
+
+    showWindow;
+}
+
+////////////////////////////////////
+// シーン名からマテリアル名を生成
+///////////////////////////////////
+global proc shr_materialCreateAssignTool_getMatNameFromSceneName(int $isSilent)
+{
+    // シーン名を取得（拡張子なし）
+    string $sceneName = basenameEx(`file -q -shortName -sceneName`);
+
+    // 正しいシーン名の場合
+    if(`shr_fixHierarchy_checkRootNodeName($sceneName)` == 1)
+    {
+        // プレフィックス"mi_" を付加
+        string $matName = "mi_" + $sceneName;
+
+        textField -e -text $matName TF_shr_materialCreateAssignTool;
+    }
+    else
+    {
+        if($isSilent == false)
+        {
+            string $message = "マテリアル名を生成できませんでした。\n\n";
+            $message += "シーン名が規約に沿っているか確認してください。";
+
+            confirmDialog -t "確認" -icon "warning" -m $message -b "確認";
+        }
+    }
+}
+
+////////////////////////////////////
+// 選択ノードからマテリアル名を生成
+///////////////////////////////////
+global proc shr_materialCreateAssignTool_getMatNameFromSelection(int $isSilent)
+{
+    // 選択ノードを取得
+    string $sel[] = `ls -sl -tr`;
+
+    if(`size($sel)` == 0)
+    {
+        string $message = "ノードを選択してから実行してください。";
+
+        confirmDialog -t "確認" -icon "information" -m $message -b "確認";
+
+        return;
+    }
+
+    // ルートノードを取得
+    string $rootNode = `shr_materialCreateAssignTool_getRootNodeName($sel[0])`;
+
+    // 正しいルートノード名の場合
+    if(`shr_fixHierarchy_checkRootNodeName($rootNode)` == 1)
+    {
+        // プレフィックス"mi_" を付加
+        string $matName = "mi_" + $rootNode;
+
+        textField -e -text $matName TF_shr_materialCreateAssignTool;
+    }
+    else
+    {
+        if($isSilent == false)
+        {
+            string $message = "マテリアル名を生成できませんでした。\n\n";
+            $message += "ルートノード名が規約に沿っているか確認してください。";
+
+            confirmDialog -t "確認" -icon "warning" -m $message -b "確認";
+        }
+    }
+}
+
+////////////////////////////////////
+// 最上位ノードを取得
+///////////////////////////////////
+global proc string shr_materialCreateAssignTool_getRootNodeName(string $nodeName)
+{
+    // ノードネームが空なら終了
+    if($nodeName == "")
+    {
+        return "";
+    }
+
+    // ノードが存在しなければ終了
+    if(`objExists $nodeName` == false)
+    {
+        print("// " + $nodeName + " が見つかりません。");
+
+        return "";
+    }
+
+    // ノードのフルパス名を取得
+    string $fullPathName[] = `ls -long $nodeName`;
+
+    // フルパス名を分割
+    string $tokens[] = stringToStringArray($fullPathName[0], "|");
+
+    // ワールドの子の場合
+    if($nodeName == $tokens[0])
+    {
+        return $nodeName;
+    }
+    else
+    {
+        return $tokens[0];
+    }
+}
+
+////////////////////////////////////
+// マテリアルを作成・割り当て
+///////////////////////////////////
+global proc shr_materialCreateAssignTool_assignMaterial(int $mode)
+{
+    // マテリアル名取得
+    string $matName = `textField -q -text TF_shr_materialCreateAssignTool`;
+
+    // マテリアル名が入力されていなければ終了
+    if($matName == "")
+    {
+        confirmDialog -t "確認" -icon "warning" -m "マテリアル名が入力されていません。" -b "確認";
+        return;
+    }
+
+    string $matExists[] = `ls -mat $matName`;
+
+    // マテリアルが既にシーンに存在する場合
+    if(`size($matExists)` != 0)
+    {
+        string $message = $matName + " はすでにシーンに存在します。";
+
+        // マテリアルの候補名を取得
+        string $newMatName = `shr_materialCreateAssignTool_createNewMatName($matName)`;
+
+        if($newMatName == "")
+        {
+            confirmDialog -m $message -t "確認"  -button "確認";
+            return;
+        }
+        else
+        {
+            $message = $message + "\n\n" + $newMatName + " を作成しますか？";
+
+            // 確認ダイアログ
+            string $result =
+            `confirmDialog
+                -title "確認"
+                -message $message
+                -button "はい"
+                -button "いいえ"
+                -defaultButton "はい"
+                -cancelButton "いいえ"
+                -dismissString "いいえ"`
+                ;
+
+            // キャンセルしたら終了
+            if ($result == "いいえ")
+            {
+                return;
+            }
+
+            $matName = $newMatName;
+
+            textField -e -text $newMatName TF_shr_materialCreateAssignTool;
+        }
+    }
+
+    // 選択ノード取得
+    string $sel[] = `ls -sl`;
+
+    if($mode == 1)
+    {
+        if (`size($sel)` == 0)
+        {
+            confirmDialog -t "確認" -icon "warning" -m "割り当てるオブジェクトが選択されていません。" -b "確認";
+            return;
+        }
+    }
+
+    // 割り当てるマテリアルの種類を取得
+    string $matType = `optionMenu -q -v OM_shr_materialCreateAssignTool`;
+
+    // 小文字に
+    $matType = `tolower $matType`;
+
+    // マテリアル作成
+    string $newMat = `shadingNode -asShader $matType -name $matName`;
+
+    // カラー設定
+    float $rgb[] = `colorSliderGrp -q -rgb CSG_shr_materialCreateAssignTool`;
+
+    setAttr ($newMat + ".color") -type double3 $rgb[0] $rgb[1] $rgb[2];
+
+    print ("// " + $newMat + " を作成しました。\n");
+
+    select $sel;
+
+    if($mode == 1)
+    {
+        // マテリアルをアサイン
+        hyperShade -assign $newMat;
+
+        print ("// " + $newMat + " を選択に割り当てました。\n");
+    }
+}
+
+////////////////////////////////////
+// マテリアル種類の選択を保存
+///////////////////////////////////
+global proc shr_materialCreateAssignTool_optionMenuCallback()
+{
+    optionVar -iv "shr_materialCreateAssignTool_materialType" (`optionMenu -q -sl OM_shr_materialCreateAssignTool` - 1);
+}
+
+////////////////////////////////////
+// 新しいマテリアル名 候補作成
+///////////////////////////////////
+global proc string shr_materialCreateAssignTool_createNewMatName(string $matName)
+{
+    string $tokens[];
+
+    // マテリアル名を分解
+    int $numTokens = `tokenize $matName "_" $tokens`;
+
+    // トークン数がひとつなら終了
+    if($numTokens == 1)
+    {
+        return "";
+    }
+
+    // 最後のトークンが数字2桁なら
+    if(`gmatch $tokens[$numTokens - 1] "[0-9][0-9]"`)
+    {
+        while(`objExists ($matName)`)
+        {
+            // int にキャスト
+            int $varNum = (int) $tokens[$numTokens - 1];
+
+            // バリエーション番号をカウントアップ
+            $varNum += 1;
+
+            // バリエーション番号をstring にキャストしてトークンの最後に入れる
+            $tokens[$numTokens - 1] = (string) $varNum;
+
+            // バリエーション番号の桁数
+            int $wordCount = `size($tokens[$numTokens - 1])`;
+
+            // 桁数に応じて、前に"0"を追加
+            if($wordCount == 1)
+            {
+                $tokens[$numTokens - 1] = "0" + $tokens[$numTokens - 1];
+            }
+            // else if($wordCount == 2)
+            // {
+            //     $tokens[$numTokens - 1] = "0" + $tokens[$numTokens - 1];
+            // }
+
+            // トークンを結合してアセットID に
+            $matName = stringArrayToString($tokens, "_");
+        }
+
+    }
+
+    return $matName;
+}
+

@@ -1,0 +1,31 @@
+//2017/09/28
+string Category = "Gallop/3D/Chara/ToonFaceTSER/Default";
+string keywords = "bumpmap,texture";
+string description = "ToonFaceTSERDefault";
+
+#define TOON_SHADING
+#define TOON_RIM
+#define TOON_RIM_CONTROLL
+#define TOON_SPECULAR
+#define TOON_ENVIRONMENT
+#define TOON_FACE
+#define USE_DIRT
+#define USE_MASK_COLOR
+#include "GallopCharaToon.cginc"
+
+//////// techniques ////////////////////////////
+
+technique SERDefault
+{
+	pass
+	{
+		DepthTestEnable=true;
+		DepthMask = true;
+		DepthFunc = LEqual;
+		VertexProgram = compile vp40 vert();
+		FragmentProgram = compile fp40 frag();
+	}
+}
+
+
+

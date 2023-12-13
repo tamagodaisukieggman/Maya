@@ -1,0 +1,31 @@
+//===============================================
+//
+// Node Hierarchy Assistant
+//
+//===============================================
+
+global proc mtk_nodeHierarchyAssistant_UI()
+{
+    if(`workspaceControl -ex uWsc_mtk_nodeHierarchyAssistant`)
+    {
+        return;
+        //workspaceControl -e -close uWsc_mtk_nodeHierarchyAssistant;
+    }
+
+    if(`workspaceControlState -exists uWsc_mtk_nodeHierarchyAssistant`)
+    {
+        workspaceControlState -remove uWsc_mtk_nodeHierarchyAssistant;
+    }
+
+    workspaceControl
+        -retain false
+        -iw 100
+        -ih 100
+        -uiScript "mtk_nodeHierarchyAssistant"
+        -label "Node Hierarchy Assistant"
+        //-heightProperty "fixed"
+        //-widthProperty "fixed"
+        uWsc_mtk_nodeHierarchyAssistant;
+
+}
+

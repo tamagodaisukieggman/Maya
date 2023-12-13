@@ -1,0 +1,10 @@
+[ MayaScriptフォルダ ]
+
+このファイル「_MAYA_SCRIPT_PATH.txt」があるフォルダのパスを
+Maya起動時に以下の項目へ自動登録します。
+
+・Maya環境変数 (.mel用) : MAYA_SCRIPT_PATH
+・Pythonモジュール検索パス (.py用) : sys.path
+
+※Mayaの環境設定ファイルを書き換えることはありません。
+※起動したMayaのみ有効の一時的な設定です。

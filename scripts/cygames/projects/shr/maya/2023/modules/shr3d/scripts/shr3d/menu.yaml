@@ -1,0 +1,130 @@
+﻿name: shenron3d # メニュータイトル
+tearoff: True # このメニューを分離できるように
+
+#--------------
+# sample
+#--------------
+# - label: File  
+#   type: submenu
+#   icon: menu_file.png
+#   children:
+#         # Exporterという名前の区切り線を作成
+#       - label: Exporter
+#         type: divider
+
+#         # Export Toolという名前のボタン作成       
+#       - label: "Export FBX : FBX 出力"
+#         type: command
+#         command: maya.mel.eval("shr_exportFbx_UI;")
+#         enable: true
+
+# document リンクへ飛ぶ
+# - label: About shenron tools
+#   type: document
+#   icon: menu_confluence.png
+#   document: https://wisdom.cygames.jp/x/VjNyFw
+
+
+
+menus:
+  # Selection
+  - label: Environment
+    type: submenu
+    children:
+
+
+  # Modeling Menu
+  - label: Character
+    type: submenu
+    children:
+
+
+  # Rigging Menu
+  - label: Animation
+    type: submenu
+    children:
+
+  # Animation Menu
+  - label: Cutscene
+    type: submenu
+    children:
+
+  # Effects
+  - label: Rigging
+    type: submenu
+    children:
+
+      # General
+      - label: Setup
+        type: divider
+
+      - label: "Startup: Setup作業環境ツール"
+        type: command
+        annotation: "Setup作業環境ツール"
+        icon: animPrefs.png
+        command: import shr3d.rig.startup.ui as stup;stup.showUI()
+
+      - label: "Base Body Builder: 素体Joint配置ツール"
+        type: command
+        annotation: "素体Joint配置ツール"
+        icon: character.png
+        command: import shr3d.rig.baseBodyBuilder.ui as bbb;bbb.showUI()
+
+      - label: "Drive Tools: 補助骨&サポートツール"
+        type: command
+        annotation: "補助骨&サポートツール"
+        icon: jointEdit.png
+        command: import shr3d.rig.drive.ui as drv;drv.showUI()
+
+      - label: "Mirror: ミラーコピーツール"
+        type: command
+        annotation: "ミラーコピーツール"
+        icon: mirror.png
+        command: import shr3d.rig.mirror.ui as mir;mir.showUI()
+
+      - label: "BindPose Reset: バインドポーズリセットツール"
+        type: command
+        annotation: "バインドポーズリセットツール"
+        icon: goToBindPose.png
+        command: import shr3d.rig.bindposeReset.main as bpr;bpr.main()
+
+      # General
+      - label: Development
+        type: divider
+
+      - label: "Icon Viewer: アイコン 検索ツール"
+        type: command
+        annotation: "アイコン 検索ツール"
+        icon: search.png
+        command: import shr3d.rig.iconViewer.ui as iv;iv.showUI()
+
+      # Utilities
+      - label: Utilities
+        type: divider
+
+      - label: "Attribute Transfer Tool: アトリビュート転送ツール"
+        type: command
+        annotation: "アトリビュート転送ツール"
+        icon: attributes.png
+        command: import shr3d.rig.attribute_transfer_tool.attribute_transfer_tool_main as main;main.main()
+
+
+  
+  # Cutscene Menu
+  - label: Effect
+    type: submenu
+    children:
+
+  # # Divider
+  # - type: divider
+
+  # # Documents Menus
+  # - label: "About Project: shenron"
+  #   type: document
+  #   icon: menu_confluence.png
+  #   document: https://wisdom.cygames.jp/x/vIpVFw
+
+  # - label: About shenron tools
+  #   type: document
+  #   icon: menu_confluence.png
+  #   document: https://wisdom.cygames.jp/x/VjNyFw

@@ -1,0 +1,33 @@
+//===============================================
+//
+// outliner Toolkit
+// 
+// Fujita Yukihiro
+//
+//===============================================
+
+global proc fy_outlinerToolkit_UI()
+{
+    if(`workspaceControl -ex uWsc_fy_outlinerToolkit`)
+    {
+        return;
+        //workspaceControl -e -close uWsc_fy_fbxExport;
+    }
+ 
+     if(`workspaceControlState -exists uWsc_fy_outlinerToolkit`)
+    {
+        workspaceControlState -remove uWsc_fy_outlinerToolkit;
+    }
+    
+    workspaceControl
+        -retain false
+        -iw 100
+        -ih 100
+        -uiScript "fy_outlinerToolkit"
+        -label "Outliner Toolkit"
+        //-heightProperty "fixed"
+        //-widthProperty "fixed"
+        uWsc_fy_outlinerToolkit;
+    
+}
+

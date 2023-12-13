@@ -1,0 +1,36 @@
+global proc CyUVSnapShot(){
+   
+string $mesh[] = `ls -sl -fl`;
+if((`size $mesh`) == 0){return;}//----選択0で終了
+
+string $myScriptDir = `internalVar -uwd`;
+string $set_Dir = `substitute "Documents/maya/projects/" $myScriptDir "Desktop"`;
+hyperShade -smn "";
+string $select_mat[] = `ls -sl -mat`;
+if((`size $select_mat`) == 0){return;}//----選択0で終了
+
+$select_mat =`sort $select_mat`;
+string $tex;
+for($tex in $select_mat){
+    string $texture[] = `listConnections -d false -type file $tex`;
+    if((`size $texture`) == 0){return;}
+    string $file = `getAttr ($texture[0] + ".fileTextureName")`;
+    string $texname[];
+	int $size =`tokenize $file "/" $texname`;
+    
+    int $size_x = 512;
+    int $size_y = 512;
+    if((`size $texture`) > 0){
+        $size_x = `getAttr ($texture[0] + ".outSizeX")`;
+        $size_y = `getAttr ($texture[0] + ".outSizeY")`;
+    }
+    string $save1 = `confirmDialog -t "" -m ($size_x+ " _ " + $size_y + " (" + $texname[$size-1] + ") "+ " このサイズで出力しますか？") -b "Yes" -b "No"`;
+    if($save1 == "Yes"){
+        select $mesh;
+        string $file = `uvSnapshot -n ( $set_Dir + "/UV_snapshot.tga") -xr $size_x -yr $size_y -r 255 -g 255 -b 255 -o -ff tga`;
+        system( "load" +  $set_Dir + "/UV_snapshot.tga");
+        return;
+    }
+}
+
+}

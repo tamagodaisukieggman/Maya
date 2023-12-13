@@ -1,0 +1,17 @@
+ラベル名,内部処理名,フォルダ名
+モデル,model,model
+マテリアル,material,material
+テクスチャ,texture,texture
+3D-Coat,3dcoat,workbench/3dcoat
+After Effects,aftereffects,workbench/aftereffects
+Houdini,houdini,workbench/houdini
+Marvelous Designer,marvelousdesigner,workbench/marvelousdesigner
+Maya,maya,workbench/maya
+MotionBuilder,motionbuilder,workbench/motionbuilder
+Nuke,nuke,workbench/nuke
+Photoshop,photoshop,workbench/photoshop
+Substance Designer,substancedesigner,workbench/substancedesigner
+Substance Painter,substancepainter,workbench/substancepainter
+Toolbag,toolbag,workbench/toolbag
+ZBrush,zbrush,workbench/zbrush
+Temp,temp,workbench/temp

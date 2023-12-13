@@ -1,0 +1,1107 @@
+//===============================================
+//
+//  ノード階層アシスタント
+//
+//===============================================
+
+global proc mtk_nodeHierarchyAssistant()
+{
+    // コリジョン設定ツールをソース
+    source "mtk_collisionSettingTool";
+
+    // グローバル変数を設定
+    mtk_collisionSettingTool_setGlobalVariable();
+
+    /*
+    //すでにウィンドウがあれば終了
+    if (`window -exists uWnd_mtk_nodeHierarchyAssistant` == 1)
+    {
+        deleteUI uWnd_mtk_nodeHierarchyAssistant;
+        //return;
+    }
+    */
+
+    //プリファレンスに値が無ければデフォルト値を設定
+    if (`optionVar -ex "ov_selTabIndex_mtk_nodeHierarchyAssistant"` == 0)
+    {
+        optionVar -iv "ov_selTabIndex_mtk_nodeHierarchyAssistant" 1;
+    }
+
+    /*
+    window
+        -title "ノード階層アシスタント"
+        -resizeToFitChildren on
+        -sizeable on
+        -maximizeButton off
+        -toolbox off
+        -mb off
+        uWnd_mtk_nodeHierarchyAssistant;
+    */
+
+    string $helpCmd = "python(\"import webbrowser\\nwebbrowser.open('https://wisdom.cygames.jp/pages/viewpage.action?pageId=100852815')\")";
+
+    menuBarLayout;
+        menu -l "Help" -helpMenu on;
+            menuItem
+                -l "Node Hierarchy Assistant のヘルプ"
+                -c $helpCmd
+               ;
+
+    tabLayout -selectCommand "mtk_nodeHierarchyAssistant_selectTabCallBack" uTbl_mtk_nodeHierarchyAssistant;
+
+        // 階層作成タブ
+        frameLayout
+            -mw 8 -mh 8
+            -lv off
+            uFl_create_mtk_nodeHierarchyAssistant;
+
+            columnLayout -adj on;
+                optionMenu -label " プリセット :" -cc "mtk_nodeHierarchyAssistant_updateTreeView" uOm_mtk_nodeHierarchyAssistant;
+                    //menuItem -l "背景";
+                    mtk_nodeHierarchyAssistant_createOptionMenu;
+
+                separator -st "in" -h 16;
+
+                rowColumnLayout -nc 3 -adj 2;
+                    text -l "アセットID : ";
+                    textField uTf_mtk_nodeHierarchyAssistant;
+                    button -l "シーン名から取得" -h 16 -c "mtk_nodeHierarchyAssistant_getAssetIdFromSceneName";
+                    setParent..;
+
+                rowColumnLayout -nc 2 -adj 2;
+                    text -l "";
+                    separator -st "in" -h 16;
+                    //setParent ..;
+
+                    text -l "作成ノード : ";
+
+
+                    formLayout -w 250 -h 350 uFml_mtk_nodeHierarchyAssistant;
+                        treeView
+                            -numberOfButtons 1
+                            -attachButtonRight false
+                            -allowMultiSelection true
+                            -allowReparenting false
+                            -pressCommand 1 "mtk_nodeHierarchyAssistant_buttonCallBack"
+                            -selectCommand ""
+                            -itemDblClickCommand2 "mtk_nodeHierarchyAssistant_dblClickCallBack"
+                            -flatButton 1
+                            uTrv_mtk_nodeHierarchyAssistant;
+
+                        formLayout -e
+                            -attachForm  uTrv_mtk_nodeHierarchyAssistant "top" 2
+                            -attachForm  uTrv_mtk_nodeHierarchyAssistant "left" 2
+                            -attachForm  uTrv_mtk_nodeHierarchyAssistant "bottom" 2
+                            -attachForm  uTrv_mtk_nodeHierarchyAssistant "right" 2
+                            uFml_mtk_nodeHierarchyAssistant;
+
+                        // ツリー作成
+                        mtk_nodeHierarchyAssistant_updateTreeView;
+
+             	    	setParent..;
+                    setParent ..;
+
+
+                button -l "作成" -bgc 0.5 0.6 0.5 -c "mtk_nodeHierarchyAssistant_createHierarchy";
+
+                setParent ..;
+            setParent ..;
+
+        // ノード追加タブ
+        frameLayout
+            -mw 8 -mh 8
+            -lv off
+            uFl_add_mtk_nodeHierarchyAssistant;
+
+            columnLayout -adj on;
+                rowColumnLayout -nc 2 -cal 1 "right";
+
+                    int $colWidth = 100;
+
+                    text -l "固有名 :  ";
+                    rowColumnLayout -nc 2 -columnWidth 1 $colWidth -cal 2 "left" uRcl_fixedName_mtk_nodeHierarchyAssistant;
+                        radioCollection uRc_fixedName_mtk_nodeHierarchyAssistant;
+                        setParent ..;
+
+                    text -l "" -h 4;
+                    text -l "" -h 4;
+
+
+                    text -l "" ;
+                    int $buttonWidth = 100;
+                    rowColumnLayout -nc 2;
+                        button
+                             -l "子ノードに追加"
+                             -w $buttonWidth
+                             -ann "選択ノード以下に追加"
+                             -c "mtk_nodeHierarchyAssistant_nodeButtonsCallBack(\"fixedName\", \"addChild\")"
+                             -bgc 0.5 0.6 0.5
+                             ;
+                        button
+                            -l "同階層に追加"
+                            -w $buttonWidth
+                            -ann "選択ノードと同階層に追加"
+                            -c "mtk_nodeHierarchyAssistant_nodeButtonsCallBack(\"fixedName\", \"addSibling\")"
+                            -bgc 0.5 0.6 0.5
+                            ;
+                        button
+                            -l "親ノード間に挿入"
+                            -w $buttonWidth
+                            -ann "選択ノードと親ノードの間に挿入"
+                            -c "mtk_nodeHierarchyAssistant_nodeButtonsCallBack(\"fixedName\", \"insertParent\")"
+                            -bgc 0.6 0.5 0.5
+                            ;
+                        button
+                            -l "子ノード間に挿入"
+                            -w $buttonWidth
+                            -ann "選択ノードと子ノードの間に挿入"
+                            -c "mtk_nodeHierarchyAssistant_nodeButtonsCallBack(\"fixedName\", \"insertChild\")"
+                            -bgc 0.6 0.5 0.5
+                            ;
+                        text -l "";
+                        button
+                            -l "リネーム"
+                            -w $buttonWidth
+                            -ann "選択ノードをリネーム"
+                            -c "mtk_nodeHierarchyAssistant_nodeButtonsCallBack(\"fixedName\", \"rename\")"
+                            -bgc 0.5 0.5 0.6
+                            ;
+                        setParent ..;
+
+
+                    text -l "";
+                    int $separatorHeight = 24;
+                    separator -st "in" -h $separatorHeight;
+
+                    text -l "サフィックス :  ";
+                    rowColumnLayout -nc 2 -columnWidth 1 $colWidth -cal 2 "left" uRcl_suffix_mtk_nodeHierarchyAssistant;
+                        radioCollection uRc_suffix_mtk_nodeHierarchyAssistant;
+                        setParent ..;
+
+                    text -l "" -h 4;
+                    text -l "" -h 4;
+
+                    text -l "" ;
+                    $buttonWidth = 100;
+                    rowLayout -nc 2;
+                        button
+                            -l "suffix 追加"
+                            -w $buttonWidth
+                            -ann "選択ノードにサフィックス追加"
+                            -c "mtk_nodeHierarchyAssistant_nodeButtonsCallBack(\"suffix\", \"addSuffix\")"
+                            -bgc 0.5 0.6 0.5
+                            ;
+                        button
+                            -l "リネーム"
+                            -w $buttonWidth
+                            -ann "選択ノードをリネーム"
+                            -c "mtk_nodeHierarchyAssistant_nodeButtonsCallBack(\"suffix\", \"rename\")"
+                            -bgc 0.5 0.5 0.6
+                            ;
+                        setParent ..;
+
+
+                    text -l "";
+                    separator -st "in" -h $separatorHeight;
+
+                    text -l "プリフィックス :  ";
+                    rowColumnLayout -nc 2 -columnWidth 1 $colWidth -cal 2 "left" uRcl_prefix_mtk_nodeHierarchyAssistant;
+                        radioCollection uRc_prefix_mtk_nodeHierarchyAssistant;
+                        setParent ..;
+
+                    text -l "" -h 4;
+                    text -l "" -h 4;
+
+                    text -l "" ;
+                    $buttonWidth = 100;
+                    rowLayout -nc 2;
+                        button
+                            -l "prefix 追加"
+                            -w $buttonWidth
+                            -ann "選択ノードにプリフィックス追加"
+                            -c "mtk_nodeHierarchyAssistant_nodeButtonsCallBack(\"prefix\", \"addPrefix\")"
+                            -bgc 0.5 0.6 0.5
+                            ;
+                        button
+                            -l "リネーム"
+                            -w $buttonWidth
+                            -ann "選択ノードをリネーム"
+                            -c "mtk_nodeHierarchyAssistant_nodeButtonsCallBack(\"prefix\", \"rename\")"
+                            -bgc 0.5 0.5 0.6
+                            ;
+                        setParent ..;
+                    setParent ..;
+                setParent ..;
+
+            // ラジオボタン作成
+            mtk_nodeHierarchyAssistant_createRadioButtons;
+
+            setParent ..;
+
+    tabLayout -e
+        -tabLabelIndex 1 "階層作成"
+        -tabLabelIndex 2 "ノード追加"
+        -selectTabIndex `optionVar -q ov_selTabIndex_mtk_nodeHierarchyAssistant`
+        uTbl_mtk_nodeHierarchyAssistant;
+
+    // シーン名からアセットID を取得
+    mtk_nodeHierarchyAssistant_getAssetIdFromSceneName();
+
+    //showWindow;
+
+
+}
+
+////////////////////////////////////
+// オプションメニューの項目作成
+///////////////////////////////////
+global proc mtk_nodeHierarchyAssistant_createOptionMenu()
+{
+    string $csvFolderPath = "Z:/mtk/tools/maya/2022/modules/mtk/scripts";
+
+    string $csvFiles[] = `getFileList -folder $csvFolderPath -filespec "hierarchyPreset_*.csv"`;
+
+    string $file;
+
+    for($file in $csvFiles)
+    {
+        string $csvFile = $csvFolderPath + "/" + $file;
+
+        // csv ファイル読み込み
+        string $lines[] = mtk_nodeHierarchyAssistant_readCsvFile($csvFile);
+
+        // 改行コード削除
+        string $label = startString($lines[0], `size($lines[0])` - 1);
+
+        // メニュー項目追加 docTag にファイルパスを格納
+        menuItem -parent uOm_mtk_nodeHierarchyAssistant -l $label -docTag $csvFile;
+    }
+
+    // 前回選択されていたプリセット名
+    string $selPreset = `optionVar -q "ov_selPreset_mtk_nodeHierarchyAssistant"`;
+
+    // メニューアイテム名を取得
+    string $items[] = `optionMenu -q -itemListLong uOm_mtk_nodeHierarchyAssistant`;
+
+    string $item;
+
+    // メニューアイテムのラベル名
+    string $values[];
+
+    for($item in $items)
+    {
+        $values[`size($values)`] = `menuItem -q -l $item`;
+    }
+
+    // 前回選択していたプリセット名があれば選択
+    if(stringArrayContains($selPreset, $values))
+    {
+        optionMenu -e -v $selPreset uOm_mtk_nodeHierarchyAssistant;
+    }
+    // 背景デフォルトを選択
+    else if (stringArrayContains("背景 デフォルト", $values))
+    {
+        optionMenu -e -v "背景 デフォルト" uOm_mtk_nodeHierarchyAssistant;
+    }
+}
+
+
+////////////////////////////////////
+// ツリービューの項目作成
+///////////////////////////////////
+global proc mtk_nodeHierarchyAssistant_updateTreeView()
+{
+    // オプションメニュー項目の配列を取得
+    string $itemList[] = `optionMenu -q -itemListLong uOm_mtk_nodeHierarchyAssistant`;
+
+    // 現在選択しているオプションメニュー項目のインデックス
+    int $selIndex = `optionMenu -q -select uOm_mtk_nodeHierarchyAssistant`;
+
+    // オプションメニュー項目のdocTag からcsv ファイルのパスを取得
+    string $csvPath = `menuItem -q -docTag $itemList[$selIndex - 1]`;
+
+    // 選択しているプリセット項目
+    string $selPreset = `optionMenu -q -v uOm_mtk_nodeHierarchyAssistant`;
+
+    // 選択しているプリセット項目を保存
+    optionVar -sv "ov_selPreset_mtk_nodeHierarchyAssistant" $selPreset;
+
+    // csv ファイル読み込み
+    string $lines[] = `mtk_nodeHierarchyAssistant_readCsvFile($csvPath)`;
+
+    // ヘッダ行削除
+    stringArrayRemoveAtIndex(0, $lines);
+    stringArrayRemoveAtIndex(0, $lines);
+
+    string $line;
+
+    // ツリー項目の各種設定値
+    string $buttonState[] = {"buttonUp", "buttonDown"};
+    string $icon[] = {"checkboxOff.png", "checkboxOn.png"};
+    float $labelCol[] ={0.165, 0.165, 0.165};
+
+    // ツリーをいったん削除
+    treeView -e -removeAll uTrv_mtk_nodeHierarchyAssistant;
+
+    // ツリー項目作成
+    for($line in $lines)
+    {
+        string $elms[];
+
+        tokenizeList($line, $elms);
+
+        int $isChecked = int($elms[0]);
+
+        treeView
+            -e -addItem $elms[1] $elms[2]
+            uTrv_mtk_nodeHierarchyAssistant;
+
+        treeView -e
+            -displayLabel $elms[1] ($elms[1] + "    ( " + $elms[3] + " )")
+            -buttonStyle $elms[1] 1 "2StateButton"
+            -buttonState $elms[1] 1 $buttonState[$isChecked]
+            -image $elms[1] 1 $icon[$isChecked]
+            -selectItem $elms[1] $isChecked
+            -labelBackgroundColor $elms[1] $labelCol[0] $labelCol[1] $labelCol[2]
+            -selectionColor $elms[1] 0.2 0.2 0.2
+            uTrv_mtk_nodeHierarchyAssistant;
+    }
+}
+
+////////////////////////////////////
+// ラジオボタン作成
+///////////////////////////////////
+global proc mtk_nodeHierarchyAssistant_createRadioButtons()
+{
+    string $csvPath = "Z:/mtk/tools/maya/2022/modules/mtk/scripts/nodeNames.csv";
+
+    // csv ファイル読み込み
+    string $lines[] = `mtk_nodeHierarchyAssistant_readCsvFile($csvPath)`;
+
+    // ヘッダ行削除
+    stringArrayRemoveAtIndex(0, $lines);
+
+    string $line;
+
+    for($line in $lines)
+    {
+        string $elms[];
+        tokenizeList($line, $elms);
+
+        // ラジオボタンの親レイアウト指定
+        setParent ("uRcl_" + $elms[0] + "_mtk_nodeHierarchyAssistant");
+
+        // 親コレクションを指定してラジオボタン作成
+        radioButton -label $elms[1] -collection ("uRc_" + $elms[0] + "_mtk_nodeHierarchyAssistant");
+
+        text -l $elms[2];
+    }
+
+    string $types[] = {"fixedName", "suffix", "prefix"};
+
+    string $type;
+
+    // 各コレクションの一つ目の項目を選択
+    for($type in $types)
+    {
+        string $uRcName = "uRc_" + $type + "_mtk_nodeHierarchyAssistant";
+
+        string $collectionItems[] = `radioCollection -q -collectionItemArray $uRcName`;
+
+        radioCollection -e -select $collectionItems[0] $uRcName;
+    }
+}
+
+
+////////////////////////////////////
+// treeView ボタン コールバック
+///////////////////////////////////
+global proc mtk_nodeHierarchyAssistant_buttonCallBack(string $item, int $onoff)
+{
+    string $buttonState[] = {"buttonUp", "buttonDown"};
+    string $icon[] = {"checkboxOff.png", "checkboxOn.png"};
+
+	// treeView ボタン エディット
+    treeView -e
+        -image $item 1 $icon[$onoff]
+        -buttonState $item 1 $buttonState[$onoff]
+        -selectItem $item $onoff
+        uTrv_mtk_nodeHierarchyAssistant;
+
+    // オンにした時
+    if($onoff)
+    {
+        // 親項目取得
+        string $parent = `treeView -q -itemParent $item uTrv_mtk_nodeHierarchyAssistant`;
+
+        // 親がいれば
+        if($parent != "")
+        {
+            // 親項目もオンに（再帰呼び出し）
+            mtk_nodeHierarchyAssistant_buttonCallBack($parent, 1);
+        }
+    }
+    // オフにしたとき
+    else
+    {
+        // 子項目取得
+        string $children[] = `treeView -q -children $item uTrv_mtk_nodeHierarchyAssistant`;
+
+        // 自分自身を配列から削除
+        stringArrayRemoveAtIndex(0, $children);
+
+        string $elm;
+
+        // 子ノードもオフに
+        for($elm in $children)
+        {
+            treeView -e
+                -image $elm 1 $icon[$onoff]
+                -buttonState $elm 1 "buttonUp"
+                -selectItem $elm $onoff
+                uTrv_mtk_nodeHierarchyAssistant;
+        }
+    }
+}
+
+////////////////////////////////////
+// treeView ダブルクリック コールバック
+///////////////////////////////////
+global proc mtk_nodeHierarchyAssistant_dblClickCallBack(string $item, int $label)
+{
+    // ダブルクリックによるリネーム処理をふさぐため、何もしない
+}
+
+////////////////////////////////////
+// タブ選択 コールバック
+///////////////////////////////////
+global proc mtk_nodeHierarchyAssistant_selectTabCallBack()
+{
+    int $selTabIndex = `tabLayout -q -selectTabIndex uTbl_mtk_nodeHierarchyAssistant`;
+
+    // 選択タブのインデックスをプリファレンスに保存
+    optionVar -iv "ov_selTabIndex_mtk_nodeHierarchyAssistant" $selTabIndex;
+}
+
+////////////////////////////////////
+// 階層構造作成
+///////////////////////////////////
+global proc mtk_nodeHierarchyAssistant_createHierarchy()
+{
+    string $assetID = `textField -q -text uTf_mtk_nodeHierarchyAssistant`;
+
+    // アセットID が有効なオブジェクト名じゃなければ終了
+    if(isValidObjectName($assetID) == false)
+    {
+        confirmDialog -m "入力されたアセットID が有効ではありません。" -t "確認" -button "確認";
+        return;
+    }
+
+    if($assetID == "")
+    {
+        confirmDialog -m "アセットID が入力されていません。" -t "確認" -button "確認";
+
+        return;
+    }
+
+    string $selNodes[] = `treeView -q -selectItem uTrv_mtk_nodeHierarchyAssistant`;
+
+    if(`size($selNodes)` == 0)
+    {
+        confirmDialog -m "作成するノードが選択されていません。" -t "確認" -button "確認";
+
+        return;
+    }
+
+    // コリジョンアトリビュートを設定するノードリスト
+    string $colNodes[];
+
+    string $elm;
+
+    string $rootNode;
+
+    for($elm in $selNodes)
+    {
+        string $parentNode = `treeView -q -itemParent $elm uTrv_mtk_nodeHierarchyAssistant`;
+
+        string $nodeName;
+
+        // ルートノード
+        if($parentNode == "")
+        {
+            string $assetID = `textField -q -text uTf_mtk_nodeHierarchyAssistant`;
+
+            $nodeName = $elm + $assetID;
+
+            if(`objExists ($nodeName)`)
+            {
+                string $newNodeName = mtk_nodeHierarchyAssistant_createNewAssetId($assetID);
+
+                string $message = $nodeName + " はすでに存在します。";
+
+                if($newNodeName == "")
+                {
+                    confirmDialog -m $message -t "確認"  -button "確認";
+                    return;
+                }
+                else
+                {
+                    $message = $message + "\n\n" + $newNodeName + " を作成しますか？";
+
+                    // 確認ダイアログ
+                    string $result =
+                    `confirmDialog
+                        -title "確認"
+                        -message $message
+                        -button "はい"
+                        -button "いいえ"
+                        -defaultButton "はい"
+                        -cancelButton "いいえ"
+                        -dismissString "いいえ"`
+                        ;
+
+                    // キャンセルしたら終了
+                    if ($result == "いいえ")
+                    {
+                        return;
+                    }
+
+                    $nodeName = $newNodeName;
+                    $assetID = substituteAllString($nodeName, "mdl_", "");
+
+                    textField -e -text $assetID uTf_mtk_nodeHierarchyAssistant;
+                }
+            }
+
+            $rootNode = `createNode "transform" -name $nodeName`;
+
+        }
+        // ルートノード以外
+        else
+        {
+            $parentNode = `treeView -q -item $parentNode -itemAnnotation uTrv_mtk_nodeHierarchyAssistant`;
+
+            // ルートジョイントノードの場合はjoint 作成
+            if($elm == "jnt_0000_skl_root")
+            {
+                select -r $parentNode;
+                $nodeName = `joint -a -p 0 0 0 -name $elm`;
+            }
+            else
+            {
+                $nodeName = `createNode "transform" -parent $parentNode -name $elm`;
+
+                // 作成ノードが"col_" で始まるノードの場合
+                if(startsWith($elm, "col_"))
+                {
+                    // コリジョンアトリビュートを設定するノードリストにロングネームで追加
+                    $colNodes[`size($colNodes)`] = longNameOf($nodeName);
+                }
+            }
+        }
+
+        treeView -e -itemAnnotation $elm $nodeName uTrv_mtk_nodeHierarchyAssistant;
+    }
+
+    for($elm in $selNodes)
+    {
+        treeView -e -itemAnnotation $elm "" uTrv_mtk_nodeHierarchyAssistant;
+    }
+
+    // コリジョンアトリビュートを設定
+    if(`size($colNodes)` != 0)
+    {
+        mtk_collisionSettingTool_setCollisionAttribute($colNodes);
+    }
+
+    select -r $rootNode;
+}
+
+////////////////////////////////////
+// ノード追加ボタン コールバック
+///////////////////////////////////
+global proc mtk_nodeHierarchyAssistant_nodeButtonsCallBack(string $type, string $mode)
+{
+    // モード一覧
+    // addChild
+    // addSibling
+    // insertParent
+    // insertChild
+    // rename
+    // addSuffix
+    // addPrefix
+
+    string $selNodes[] = `ls -sl -tr -long`;
+
+    if(`size($selNodes)` == 0)
+    {
+        confirmDialog -t "確認" -m "ノードが選択してから実行してください。" -button "確認";
+    }
+
+    string $sel;
+
+    string $radioCollectionName = `radioCollection -q -select ("uRc_" + $type + "_mtk_nodeHierarchyAssistant")`;
+
+    string $nodeName = `radioButton -q -l $radioCollectionName`;
+
+    string $message;
+
+    // 作成ノード
+    string $createdNode;
+
+    // 作成ノードリスト
+    string $createdNodes[];
+
+    // 選択ノード以下に追加
+    if($mode == "addChild")
+    {
+        for($sel in $selNodes)
+        {
+            string $children[] = `listRelatives -children $sel`;
+
+            string $child;
+
+            if(stringArrayContains( $nodeName,$children) )
+            {
+                $message = $sel + " ノード以下に、すでに" + $nodeName + " ノードが存在します。\n";
+
+                print ("// " + $message);
+                confirmDialog -m $message -t "確認" -button "確認";
+            }
+            else
+            {
+                // ルートジョイントノードの場合はjoint 作成
+                if($nodeName == "jnt_0000_skl_root")
+                {
+                    select -r $sel;
+                    joint -name $nodeName;
+                }
+                else
+                {
+                    $createdNode = `createNode "transform" -parent $sel -name $nodeName`;
+                    $createdNodes[`size($createdNodes)`] = longNameOf($createdNode);
+                }
+
+                print ("// " + $sel + " ノード以下に、" + $nodeName + " ノードを作成しました。\n");
+            }
+        }
+
+        select -r $selNodes;
+    }
+
+    // 同階層に追加
+    if($mode == "addSibling")
+    {
+        string $finishedParents[];
+
+        for($sel in $selNodes)
+        {
+            string $parent[] = `listRelatives -parent -pa $sel`;
+
+            if(`size($parent)` == 0)
+            {
+                $message = $sel + " は最上位ノードのためスキップします。\n";
+
+                print ("// " + $message);
+                confirmDialog -m $message -t "確認" -button "確認";
+            }
+            else if(stringArrayContains($parent[0], $finishedParents) == false)
+            {
+                stringArrayInsertAtIndex(0, $finishedParents, $parent[0]);
+
+                if(mtk_nodeHierarchyAssistant_checkSiblingNodes($sel, $nodeName))
+                {
+                    $message =$sel + " と同階層に、すでに" + $nodeName + " ノードが存在します。\n";
+
+                    print ("// " + $message);
+                    confirmDialog -m $message -t "確認" -button "確認";
+                }
+                else
+                {
+                    // ルートジョイントノードの場合はjoint 作成
+                    if($nodeName == "jnt_0000_skl_root")
+                    {
+                        select -r $parent[0];
+                        joint -name $nodeName;
+                    }
+                    else
+                    {
+                        $createdNode = `createNode "transform" -parent $parent[0] -name $nodeName`;
+                        $createdNodes[`size($createdNodes)`] = longNameOf($createdNode);
+                    }
+
+                    print ("// " + $sel + " と同階層に、" + $nodeName + " ノードを作成しました。\n");
+                }
+            }
+        }
+
+        select -r $selNodes;
+    }
+
+    // 選択ノードと親ノードの間に追加
+    if($mode == "insertParent")
+    {
+        string $finishedParents[];
+        string $newSelNodes[];
+
+        for($sel in $selNodes)
+        {
+            string $parent[] = `listRelatives -parent -pa $sel`;
+
+            if(`size($parent)` == 0)
+            {
+                $message = $sel + " は最上位ノードのためスキップします。\n";
+
+                print ("// " + $message);
+                confirmDialog -m $message -t "確認" -button "確認";
+
+                stringArrayInsertAtIndex(0, $newSelNodes, $sel);
+            }
+            else if(mtk_nodeHierarchyAssistant_checkSiblingNodes($sel, $nodeName) == false)
+            {
+                // ルートジョイントノードの場合はjoint 作成
+                if($nodeName == "jnt_0000_skl_root")
+                {
+                    select -r $parent[0];
+                    $createdNode = `joint -name $nodeName`;
+                }
+                else
+                {
+                    $createdNode = `createNode "transform" -parent $parent[0] -name $nodeName`;
+                    $createdNodes[`size($createdNodes)`] = longNameOf($createdNode);
+                }
+
+                string $tempName[] = `parent $sel $createdNode`;
+
+                stringArrayInsertAtIndex(0, $newSelNodes, longNameOf($tempName[0]));
+                stringArrayInsertAtIndex(0, $finishedParents, $parent[0]);
+                stringArrayInsertAtIndex(0, $createdNodes, $createdNode);
+
+                print ("// " + $parent[0] + " ノード以下に、" + $nodeName + " ノードを作成しました。\n");
+            }
+            else if(mtk_nodeHierarchyAssistant_checkSiblingNodes($sel, $nodeName) && (stringArrayContains($parent[0], $finishedParents) == false))
+            {
+                $message = $parent[0] + " ノード以下に、すでに" + $nodeName + " ノードが存在します。\n";
+
+                print ("// " + $message);
+                confirmDialog -m $message -t "確認" -button "確認";
+
+                stringArrayInsertAtIndex(0, $newSelNodes, $sel);
+            }
+            else if(mtk_nodeHierarchyAssistant_checkSiblingNodes($sel, $nodeName) && stringArrayContains($parent[0], $finishedParents))
+            {
+                int $index = stringArrayFind($parent[0], 0, $finishedParents);
+
+                string $tempName[] = `parent $sel $createdNode`;
+                stringArrayInsertAtIndex(0, $newSelNodes, longNameOf($tempName[0]));
+
+            }
+        }
+        select -r $newSelNodes;
+    }
+
+    // 選択ノードと子ノードの間に追加
+    if($mode == "insertChild")
+    {
+        for($sel in $selNodes)
+        {
+            string $children[] = `listRelatives -children $sel`;
+
+            string $child;
+
+            if(stringArrayContains( $nodeName,$children) )
+            {
+                $message = $sel + " ノード以下に、すでに" + $nodeName + " ノードが存在します。\n";
+
+                print ("// " + $message);
+                confirmDialog -m $message -t "確認" -button "確認";
+            }
+            else
+            {
+                $children = `listRelatives -children -pa $sel`;
+
+                // ルートジョイントノードの場合はjoint 作成
+                if($nodeName == "jnt_0000_skl_root")
+                {
+                    select -r $sel;
+                    $createdNode = `joint -name $nodeName`;
+                }
+                else
+                {
+                    $createdNode = `createNode "transform" -parent $sel -name $nodeName`;
+                    $createdNodes[`size($createdNodes)`] = longNameOf($createdNode);
+                }
+
+                if(`size($children)` != 0)
+                {
+                    parent $children $createdNode;
+                }
+
+                print ("// " + $sel + " ノード以下に、" + $nodeName + " ノードを作成しました。\n");
+            }
+        }
+
+        select -r $selNodes;
+    }
+
+    // リネーム
+    if($mode == "rename")
+    {
+        for($sel in $selNodes)
+        {
+            if(mtk_nodeHierarchyAssistant_checkSiblingNodes($sel, $nodeName))
+            {
+                $message = $sel + " と同階層に、すでに" + $nodeName + " ノードが存在します。\n";
+
+                print ("// " + $message);
+                confirmDialog -m $message -t "確認" -button "確認";
+            }
+            else
+            {
+                $createdNode = `rename $sel $nodeName`;
+                $createdNodes[`size($createdNodes)`] = longNameOf($createdNode);
+
+                print ("// " + $sel + " を" + $nodeName + " にリネームしました。\n");
+            }
+        }
+    }
+
+    // suffix 追加
+    if($mode == "addSuffix")
+    {
+        for($sel in $selNodes)
+        {
+            string $baseName = `mtk_nodeHierarchyAssistant_basename($sel)`;
+
+            if(endsWith($baseName, $nodeName))
+            {
+                $message = $baseName + " には、すでに" + $nodeName + " サフィックスが付いています。\n";
+
+                print ("// " + $message);
+                confirmDialog -m $message -t "確認" -button "確認";
+            }
+            else
+            {
+                string $newName = $baseName + $nodeName;
+
+                if(mtk_nodeHierarchyAssistant_checkSiblingNodes($sel, $newName))
+                {
+                    $message = $sel + " と同階層に、すでに" + $newName + " ノードが存在します。\n";
+
+                    print ("// " + $message);
+                    confirmDialog -m $message -t "確認" -button "確認";
+                }
+                else
+                {
+                    rename $sel $newName;
+                    print ("// " + $sel + " を" + $newName + " にリネームしました。\n");
+                }
+            }
+        }
+    }
+
+    // prefix 追加
+    if($mode == "addPrefix")
+    {
+        for($sel in $selNodes)
+        {
+            string $baseName = `mtk_nodeHierarchyAssistant_basename($sel)`;
+
+            if(startsWith($baseName, $nodeName))
+            {
+                $message = $baseName + " には、すでに" + $nodeName + " プリフィックスが付いています。\n";
+
+                print ("// " + $message);
+                confirmDialog -m $message -t "確認" -button "確認";
+            }
+            else
+            {
+                string $newName = $nodeName + $baseName;
+
+                if(mtk_nodeHierarchyAssistant_checkSiblingNodes($sel, $newName))
+                {
+                    $message = $sel + " と同階層に、すでに" + $newName + " ノードが存在します。\n";
+
+                    print ("// " + $message);
+                    confirmDialog -m $message -t "確認" -button "確認";
+                }
+                else
+                {
+                    rename $sel $newName;
+                    print ("// " + $sel + " を" + $newName + " にリネームしました。\n");
+                }
+            }
+        }
+    }
+
+    // 追加ノードが "col_*" ノード、かつ対象ノードが存在する場合
+    if(startsWith($nodeName, "col_") && `size($createdNodes)` != 0)
+    {
+        // 作成したノードにコリジョンアトリビュートを設定
+        mtk_collisionSettingTool_setCollisionAttribute($createdNodes);
+    }
+}
+
+////////////////////////////////////
+// ベースノードネーム
+///////////////////////////////////
+global proc string mtk_nodeHierarchyAssistant_basename(string $name)
+{
+    string $elms[];
+
+    tokenize $name "|" $elms;
+    return $elms[`size($elms)` - 1];
+}
+
+////////////////////////////////////
+// 同階層に特定の名前のノードが存在するかチェック
+///////////////////////////////////
+global proc int mtk_nodeHierarchyAssistant_checkSiblingNodes(string $currentNode, string $checkNode)
+{
+    string $parent[] = `listRelatives -parent -pa $currentNode`;
+
+    if(`size($parent)` == 0)
+    {
+        string $rootNodes[] = `ls -tr "|*"`;
+
+        if(stringArrayContains($checkNode, $rootNodes))
+        {
+            return true;
+        }
+        else if(stringArrayContains( ("|" + $checkNode), $rootNodes))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    string $children[] = `listRelatives -children $parent[0]`;
+
+    string $child;
+
+    if(stringArrayContains($checkNode, $children) )
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
+////////////////////////////////////
+// csv ファイル読み込み
+///////////////////////////////////
+global proc string[] mtk_nodeHierarchyAssistant_readCsvFile(string $filePath)
+{
+    // 戻り値
+    string $result[];
+
+    if(`filetest -r $filePath` == false)
+    {
+        return $result;
+    }
+
+    string $line;
+
+    int $fpid = `fopen $filePath "r"`;
+
+    // ヘッダ行 捨て読み
+    //fgetline $fpid;
+
+    for( $line = `fgetline $fpid`; size($line) > 0; $line = `fgetline $fpid`)
+    {
+    	stringArrayInsertAtIndex(`size($result)`, $result, $line);
+    }
+
+    fclose $fpid;
+
+    return $result;
+}
+
+
+////////////////////////////////////
+// シーン名からAssetID を取得
+///////////////////////////////////
+global proc mtk_nodeHierarchyAssistant_getAssetIdFromSceneName()
+{
+    // シーン名を取得（拡張子なし）
+    string $sceneName = basenameEx(`python("from mtk.utils import getCurrentSceneFilePath; getCurrentSceneFilePath()")`);
+    // string $sceneName = basenameEx(`file -q -shortName -sceneName`);
+
+    // シーン名が取得できなければ
+    if($sceneName == "")
+    {
+        return;
+    }
+    else
+    {
+        // シーン名から"mdl_" を取る
+        $sceneName = substituteAllString($sceneName, "mdl_", "");
+
+        textField -e -text $sceneName uTf_mtk_nodeHierarchyAssistant;
+    }
+}
+
+////////////////////////////////////
+// AssetID 候補作成
+///////////////////////////////////
+global proc string mtk_nodeHierarchyAssistant_createNewAssetId(string $assetID)
+{
+    string $tokens[];
+
+    // アセットID を分解
+    int $numTokens = `tokenize $assetID "_" $tokens`;
+
+    // トークン数がひとつなら終了
+    if($numTokens == 1)
+    {
+        return "";
+    }
+
+    // ノード名設定
+    string $nodeName = "mdl_" + $assetID;
+
+    // 最後のトークンが数字3桁なら
+    if(`gmatch $tokens[$numTokens - 1] "[0-9][0-9][0-9]"`)
+    {
+        while(`objExists ($nodeName)`)
+        {
+            // int にキャスト
+            int $varNum = (int) $tokens[$numTokens - 1];
+
+            // バリエーション番号をカウントアップ
+            $varNum += 1;
+
+            // バリエーション番号をstring にキャストしてトークンの最後に入れる
+            $tokens[$numTokens - 1] = (string) $varNum;
+
+            // バリエーション番号の桁数
+            int $wordCount = `size($tokens[$numTokens - 1])`;
+
+            // 桁数に応じて、前に"0"を追加
+            if($wordCount == 1)
+            {
+                $tokens[$numTokens - 1] = "00" + $tokens[$numTokens - 1];
+            }
+            else if($wordCount == 2)
+            {
+                $tokens[$numTokens - 1] = "0" + $tokens[$numTokens - 1];
+            }
+
+            // トークンを結合してアセットID に
+            $assetID = stringArrayToString($tokens, "_");
+
+            // "mdl_" を付けてノード名に
+            $nodeName = "mdl_" + $assetID;
+        }
+
+    }
+
+    return $nodeName;
+}
+

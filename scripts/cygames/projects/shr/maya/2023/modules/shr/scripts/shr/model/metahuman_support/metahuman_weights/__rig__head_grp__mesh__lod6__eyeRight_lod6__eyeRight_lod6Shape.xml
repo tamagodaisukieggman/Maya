@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<deformerWeight>
+  <headerInfo fileName="C:\cygames\shrdev\shr_art\resources\characters\player\pfc\pfc1000_hero\work\maya\easy_bind/__rig__head_grp__mesh__lod6__eyeRight_lod6__eyeRight_lod6Shape.xml" worldMatrix="1.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 0.000000 1.000000 "/>
+  <shape name="eyeRight_lod6Shape" group="0" stride="3" size="33" max="32">
+    <point index="0" value=" -4.042721 -8.049702 172.105988"/>
+    <point index="1" value=" -3.116037 -8.119866 172.489975"/>
+    <point index="2" value=" -2.186996 -8.176377 172.104538"/>
+    <point index="3" value=" -1.796556 -8.186328 171.175598"/>
+    <point index="4" value=" -2.186861 -8.142880 170.247314"/>
+    <point index="5" value=" -3.114836 -8.072474 169.863129"/>
+    <point index="6" value=" -4.041848 -8.016165 170.248413"/>
+    <point index="7" value=" -4.426434 -8.006719 171.177429"/>
+    <point index="8" value=" -4.152302 -8.581142 172.169922"/>
+    <point index="9" value=" -3.154540 -8.656160 172.582687"/>
+    <point index="10" value=" -2.151136 -8.714849 172.165741"/>
+    <point index="11" value=" -1.729806 -8.725686 171.165955"/>
+    <point index="12" value=" -2.151002 -8.679288 170.166122"/>
+    <point index="13" value=" -3.153093 -8.604717 169.751633"/>
+    <point index="14" value=" -4.149887 -8.544712 170.166321"/>
+    <point index="15" value=" -4.566320 -8.535028 171.168015"/>
+    <point index="16" value=" -4.028748 -9.335761 171.978470"/>
+    <point index="17" value=" -3.204667 -9.395185 172.318512"/>
+    <point index="18" value=" -2.380361 -9.441415 171.976562"/>
+    <point index="19" value=" -2.029749 -9.452852 171.151917"/>
+    <point index="20" value=" -2.377779 -9.413921 170.327286"/>
+    <point index="21" value=" -3.203619 -9.352286 169.988449"/>
+    <point index="22" value=" -4.026732 -9.304802 170.329880"/>
+    <point index="23" value=" -4.372340 -9.299746 171.154556"/>
+    <point index="24" value=" -3.671849 -9.853920 171.585251"/>
+    <point index="25" value=" -3.233818 -9.881747 171.758957"/>
+    <point index="26" value=" -2.797240 -9.904371 171.582397"/>
+    <point index="27" value=" -2.608074 -9.910239 171.143524"/>
+    <point index="28" value=" -2.797277 -9.887557 170.704849"/>
+    <point index="29" value=" -3.233142 -9.856770 170.530380"/>
+    <point index="30" value=" -3.669752 -9.833525 170.705322"/>
+    <point index="31" value=" -3.860995 -9.834845 171.144928"/>
+    <point index="32" value=" -3.245901 -10.114094 171.139725"/>
+    <polygonCounts size="32" polygonCounts="4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 3 3 3 3 3 3 3 3 "/>
+    <polygonConnects size="120" polygonConnects="0 8 9 1 1 9 10 2 2 10 11 3 3 11 12 4 4 12 13 5 5 13 14 6 6 14 15 7 7 15 8 0 8 16 17 9 9 17 18 10 10 18 19 11 11 19 20 12 12 20 21 13 13 21 22 14 14 22 23 15 15 23 16 8 16 24 25 17 17 25 26 18 18 26 27 19 19 27 28 20 20 28 29 21 21 29 30 22 22 30 31 23 23 31 24 16 24 32 25 25 32 26 26 32 27 27 32 28 28 32 29 29 32 30 30 32 31 31 32 24 "/>
+  </shape>
+  <weights deformer="eyeRight_lod6_mesh_skinCluster" source="FACIAL_R_Eye" shape="eyeRight_lod6Shape" layer="0" defaultValue="0.00000000" size="33" max="32">
+    <point index="0" value="1.00000000"/>
+    <point index="1" value="1.00000000"/>
+    <point index="2" value="1.00000000"/>
+    <point index="3" value="1.00000000"/>
+    <point index="4" value="1.00000000"/>
+    <point index="5" value="1.00000000"/>
+    <point index="6" value="1.00000000"/>
+    <point index="7" value="1.00000000"/>
+    <point index="8" value="1.00000000"/>
+    <point index="9" value="1.00000000"/>
+    <point index="10" value="1.00000000"/>
+    <point index="11" value="1.00000000"/>
+    <point index="12" value="1.00000000"/>
+    <point index="13" value="1.00000000"/>
+    <point index="14" value="1.00000000"/>
+    <point index="15" value="1.00000000"/>
+    <point index="16" value="1.00000000"/>
+    <point index="17" value="1.00000000"/>
+    <point index="18" value="1.00000000"/>
+    <point index="19" value="1.00000000"/>
+    <point index="20" value="1.00000000"/>
+    <point index="21" value="1.00000000"/>
+    <point index="22" value="1.00000000"/>
+    <point index="23" value="1.00000000"/>
+    <point index="24" value="1.00000000"/>
+    <point index="25" value="1.00000000"/>
+    <point index="26" value="1.00000000"/>
+    <point index="27" value="1.00000000"/>
+    <point index="28" value="1.00000000"/>
+    <point index="29" value="1.00000000"/>
+    <point index="30" value="1.00000000"/>
+    <point index="31" value="1.00000000"/>
+    <point index="32" value="1.00000000"/>
+  </weights>
+</deformerWeight>

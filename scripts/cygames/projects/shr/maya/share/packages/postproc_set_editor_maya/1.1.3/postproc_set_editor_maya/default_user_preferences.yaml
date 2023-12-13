@@ -1,0 +1,17 @@
+﻿!!python/object:postproc_set_editor_maya.ui_maya.MayaSetEditorUserPreferences
+layout_settings: !!python/object:wmutils.user_preference_interface.LayoutSettingsConfigObject
+  headers: {}
+  splitters: {}
+  ui_visibility: !!python/object:wmutils.user_preference_interface.UIVisibilityConfigObject
+    subgroup: true
+    tags: {}
+    tasks: {}
+local_splitters: {}    
+position_size: null
+presets: null
+recent_loaded_preset_files:
+  - C:/cygames/shrshare/tools/config/postproc_set_editor/maya/preset_character.yaml
+  - C:/cygames/shrshare/tools/config/postproc_set_editor/maya/preset_rig.yaml
+  - C:/cygames/shrshare/tools/config/postproc_set_editor/maya/preset_environment.yaml
+  - C:/cygames/shrshare/tools/config/postproc_set_editor/maya/preset_animation.yaml
+

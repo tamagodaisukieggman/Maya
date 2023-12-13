@@ -1,0 +1,1688 @@
+//===============================================
+//
+// ばらまきツール
+//
+// Fujita Yukihiro
+//
+//===============================================
+
+global proc fy_scatterObjectsTool()
+{
+    // MASH プラグインがロードされていなければロード
+    if(`pluginInfo -q -l "MASH.mll"` == false)
+    {
+        loadPlugin "MASH.mll";
+    }
+
+    global string $MASH_FY_SCATTEROBJECTSTOOL;
+
+    if(`objExists $MASH_FY_SCATTEROBJECTSTOOL` == false)
+    {
+        $MASH_FY_SCATTEROBJECTSTOOL = "";
+    }
+
+    // すでにウィンドウが出ていたら
+    if (`window -exists uWnd_fy_scatterObjectsTool` == 1)
+    {
+        deleteUI uWnd_fy_scatterObjectsTool;
+    }
+
+    window
+        -title "Scatter Objects Tool"
+        -resizeToFitChildren on
+        -sizeable on
+        -toolbox off
+        -maximizeButton off
+        -mb on
+        uWnd_fy_scatterObjectsTool;
+
+    string $helpCmd = "python(\"import webbrowser\\nwebbrowser.open('https://wisdom.cygames.jp/pages/viewpage.action?pageId=161119566')\")";
+
+    menu -label "ヘルプ" ;
+        menuItem
+            -label "Scatter Objects Tool のヘルプ"
+            -enable on
+            -image "help.png"
+            -c $helpCmd
+            ;
+
+    formLayout uFl_fy_scatterObjectsTool;
+
+        frameLayout
+            -p uFl_fy_scatterObjectsTool
+            -l "MASH ネットワーク"
+            -collapsable false
+            -lv off
+            -mw 8 -mh 0
+            uFl_mashNetwork_fy_scatterObjectsTool;
+
+        // MASH ネットワーク フレーム作成
+        fy_scatterObjectsTool_createMashNetworkUI;
+
+        setParent uFl_fy_scatterObjectsTool;
+
+    scrollLayout -childResizable true -w 432 -bv true uSl_fy_scatterObjectsTool;
+
+        // インスタンスフレーム作成
+        frameLayout
+            -p uSl_fy_scatterObjectsTool
+            -l "インスタンス設定"
+            -collapsable true
+            -mw 8 -mh 4
+            uFl_instance_fy_scatterObjectsTool;
+
+        // エミッターフレーム作成
+        frameLayout
+            -p uSl_fy_scatterObjectsTool
+            -l "エミッター設定"
+            -collapsable true
+            -mw 8 -mh 4
+            uFl_emitter_fy_scatterObjectsTool;
+
+        // ランダムフレーム作成
+        frameLayout
+            -p uSl_fy_scatterObjectsTool
+            -l "ランダム設定"
+            -collapsable true
+            -mw 8 -mh 4
+            uFl_random_fy_scatterObjectsTool;
+
+        // インスタンスコリジョンフレーム作成
+        frameLayout
+            -p uSl_fy_scatterObjectsTool
+            -l "コリジョン設定"
+            -collapsable true
+            -mw 8 -mh 4
+            uFl_instanceCollision_fy_scatterObjectsTool;
+
+        //コライダーフレーム作成
+        frameLayout
+            -p uSl_fy_scatterObjectsTool
+            -l "コライダー設定 - 共通"
+            -collapsable true
+            -mw 8 -mh 4
+            uFl_collider_fy_scatterObjectsTool;
+
+        //シミュレーションフレーム作成
+        frameLayout
+            -p uSl_fy_scatterObjectsTool
+            -l "シミュレーション設定 - 共通"
+            -collapsable true
+            -mw 8 -mh 4
+            uFl_simulation_fy_scatterObjectsTool;
+
+        setParent uFl_fy_scatterObjectsTool;
+
+        button -l "オブジェクト化" -bgc 0.5 0.6 0.5 -c "fy_scatterObjectsTool_bakeInstancerToObjects" uBtn_bakeInstancer_fy_scatterObjectsTool;
+
+    int $sw = 4;
+
+    formLayout -e
+        -attachForm uFl_mashNetwork_fy_scatterObjectsTool "top"    $sw
+        -attachForm uFl_mashNetwork_fy_scatterObjectsTool "left"   $sw
+        -attachNone uFl_mashNetwork_fy_scatterObjectsTool "bottom"
+        -attachForm uFl_mashNetwork_fy_scatterObjectsTool "right"  $sw
+
+        -attachControl uSl_fy_scatterObjectsTool "top"    $sw uFl_mashNetwork_fy_scatterObjectsTool
+        -attachForm    uSl_fy_scatterObjectsTool "left"   $sw
+        -attachControl uSl_fy_scatterObjectsTool "bottom" $sw uBtn_bakeInstancer_fy_scatterObjectsTool
+        -attachForm    uSl_fy_scatterObjectsTool "right"  $sw
+
+        -attachNone uBtn_bakeInstancer_fy_scatterObjectsTool "top"
+        -attachForm uBtn_bakeInstancer_fy_scatterObjectsTool "left"   $sw
+        -attachForm uBtn_bakeInstancer_fy_scatterObjectsTool "bottom" $sw
+        -attachForm uBtn_bakeInstancer_fy_scatterObjectsTool "right"  $sw
+
+        uFl_fy_scatterObjectsTool;
+
+    // MASH ネットワークリストを更新
+    fy_scatterObjectsTool_refreshMashNetworkList;
+
+    // スクリプトジョブを作成
+    fy_scatterObjectsTool_createScriptJob;
+
+    showWindow;
+}
+
+///////////////////////////////////////////////////////
+// scriptJob 作成
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_createScriptJob()
+{
+    // シーンオープン
+    scriptJob -event "SceneOpened" "fy_scatterObjectsTool" -parent uWnd_fy_scatterObjectsTool;
+
+    // 対象MASH ネットワークを取得
+    string $mashNetworks[] = `fy_scatterObjectsTool_getMashNetworks`;
+
+    string $mashNetwork;
+
+    for($mashNetwork in $mashNetworks)
+    {
+        // 削除した場合に リストを更新するスクリプトジョブを作成
+        fy_scatterObjectsTool_createMashDeletedScriptJob($mashNetwork);
+    }
+
+    // リネームした場合に インスタンスオブジェクトリスト・コライダーオブジェクトリストを更新
+    scriptJob
+        -parent uWnd_fy_scatterObjectsTool
+        -event "NameChanged" "fy_scatterObjectsTool_refreshMashNetworkList; fy_scatterObjectsTool_refreshInstancedObjectsList; "
+        ;
+
+    // 選択が変化した場合に インスタンスオブジェクトリストを更新
+    scriptJob
+        -parent uWnd_fy_scatterObjectsTool
+        -event "SelectionChanged" "fy_scatterObjectsTool_refreshInstancedObjectsList; fy_scatterObjectsTool_refreshColliderObjectsList"
+        ;
+}
+
+///////////////////////////////////////////////////////
+// MASH ネットワーク設定フレームを作成
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_createMashNetworkUI()
+{
+    int $buttonWidth = 100;
+    int $buttonHeight = 20;
+
+    columnLayout -p uFl_mashNetwork_fy_scatterObjectsTool -adj on -rs 0;
+
+        rowColumnLayout -nc 2 -adj 1 -rs 1 2 -cs 2 2;
+            text -l "▼ MASH ネットワーク" -bgc 0.51 0.51 0.51;
+            text -l "";
+
+            textScrollList
+                -h 50
+                -sc "fy_scatterObjectsTool_selectMashNetworkCallback"
+                uTsl_mashNetwork_fy_scatterObjectsTool;
+
+            columnLayout -adj on -rs 2;
+                button
+                    -l "新規追加"
+                    -ann "新規MASH ネットワークを作成します"
+                    -w $buttonWidth
+                    -h $buttonHeight
+                    -c "fy_scatterObjectsTool_importMashNetwork";
+                button
+                    -l "リネーム"
+                    -ann "選択したMASH ネットワークをリネームします"
+                    -w $buttonWidth
+                    -h $buttonHeight
+                    -c "fy_scatterObjectsTool_renameMashNetwork";
+                button
+                    -l "削除"
+                    -ann "選択したMASH ネットワークを削除します"
+                    -w $buttonWidth
+                    -h $buttonHeight
+                    -c "fy_scatterObjectsTool_deleteMashNetwork";
+
+                rowLayout -nc 2;
+                    text -l "  ";
+                    checkBox
+                        -l "有効"
+                        -ann "選択したMASH ネットワークを有効にします"
+                        -w $buttonWidth
+                        -h $buttonHeight
+                        -onc "fy_scatterObjectsTool_enableMashNetwork(1); fy_scatterObjectsTool_enableUI(1); fy_scatterObjectsTool_dispEmitter"
+                        -ofc "fy_scatterObjectsTool_enableMashNetwork(0); fy_scatterObjectsTool_enableUI(0); fy_scatterObjectsTool_dispEmitter"
+                        uCb_enableMash_fy_scatterObjectsTool;
+}
+
+///////////////////////////////////////////////////////
+// インスタンス設定フレームを作成
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_createInstanceUI()
+{
+    if(`columnLayout -ex uCl_instance_fy_scatterObjectsTool`)
+    {
+        deleteUI uCl_instance_fy_scatterObjectsTool;
+    }
+
+    global string $MASH_FY_SCATTEROBJECTSTOOL;
+
+    int $buttonWidth = 100;
+    int $buttonHeight = 20;
+
+    if($MASH_FY_SCATTEROBJECTSTOOL == "")
+    {
+        return;
+    }
+
+    columnLayout
+        -adj on
+        -rs 0
+        -p uFl_instance_fy_scatterObjectsTool
+        uCl_instance_fy_scatterObjectsTool;
+
+        rowColumnLayout -nc 2 -adj 1 -rs 1 2 -cs 2 2;
+            text -l "▼ ばらまくオブジェクト"  -bgc 0.51 0.51 0.51;
+            text -l "";
+
+            textScrollList -h 50 -allowMultiSelection true uTsl_instancedObjects_fy_scatterObjectsTool;
+
+            columnLayout -adj on -rs 2;
+                button -l "リストに追加" -w $buttonWidth -h $buttonHeight -c "fy_scatterObjectsTool_addInstancedObjects";
+                button -l "上に移動" -w $buttonWidth -h $buttonHeight -c "fy_scatterObjectsTool_moveUpInstancedObjects";
+                button -l "下に移動" -w $buttonWidth -h $buttonHeight -c "fy_scatterObjectsTool_moveDownInstancedObjects";
+                button -l "リストから削除" -w $buttonWidth -h $buttonHeight -c "fy_scatterObjectsTool_removeInstancedObjects";
+
+                setParent ..;
+            setParent ..;
+
+        optionMenuGrp  -l "出現" -cc "fy_scatterObjectsTool_changeIdType(\"#1\")" uOm_idtype_fy_scatterObjectsTool;
+            menuItem -l "ランダム";
+            menuItem -l "リスト順";
+            menuItem -l "パーセンテージ" -en off;
+
+        attrControlGrp -attribute ($MASH_FY_SCATTEROBJECTSTOOL + "_Id.seed") -l "ランダムシード" uAcg_idSeed_fy_scatterObjectsTool;
+        popupMenu;
+
+    // スクリプトジョブ インスタンスオブジェクト接続数に変化があった場合にインスタンスオブジェクトリスト更新
+    scriptJob
+        -parent uCl_instance_fy_scatterObjectsTool
+        -attributeChange ($MASH_FY_SCATTEROBJECTSTOOL + "_instancer.hierarchyCount") "fy_scatterObjectsTool_refreshInstancedObjectsList; fy_scatterObjectsTool_setIdCount"
+        ;
+
+    // 出現 オプションメニューを更新
+    fy_scatterObjectsTool_refreshIdtypeOptionMenu;
+
+    // インスタンスオブジェクトリストを更新
+    fy_scatterObjectsTool_refreshInstancedObjectsList;
+}
+
+///////////////////////////////////////////////////////
+// エミッター設定フレームを作成
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_createEmitterUI()
+{
+    if(`columnLayout -ex uCl_emitter_fy_scatterObjectsTool`)
+    {
+        deleteUI uCl_emitter_fy_scatterObjectsTool;
+    }
+
+    global string $MASH_FY_SCATTEROBJECTSTOOL;
+
+    int $buttonWidth = 100;
+
+    if($MASH_FY_SCATTEROBJECTSTOOL == "")
+    {
+        return;
+    }
+
+    columnLayout
+        -adj on
+        -rs 0
+        -p uFl_emitter_fy_scatterObjectsTool
+        uCl_emitter_fy_scatterObjectsTool;
+
+        rowLayout
+            -nc 3
+            -cw 1 140 -cat 1 "right" 0
+            -cw 2 90
+            -cw 3 100
+            -adj 3
+            ;
+            text -l "エミッター形状";
+            optionMenu -l "" -cc "fy_scatterObjectsTool_changeEmitterShape(\"#1\")" uOm_emitterShape_fy_scatterObjectsTool;
+                menuItem -l "立方体";
+                menuItem -l "球";
+
+            checkBox -l "エミッター表示" -cc "fy_scatterObjectsTool_dispEmitter" uCb_emitterVisible_fy_scatterObjectsTool;
+
+            setParent ..;
+
+        attrControlGrp -attribute ($MASH_FY_SCATTEROBJECTSTOOL + "_Distribute.sphericalBias") -l "球面バイアス" uAcg_sphericalBias_fy_scatterObjectsTool;
+        popupMenu;
+
+        text -l "" -h 4;
+
+        attrControlGrp -attribute ($MASH_FY_SCATTEROBJECTSTOOL + "_Distribute.pointCount") -l "発生数" uAcg_numOfPoints_fy_scatterObjectsTool;
+        popupMenu;
+        attrControlGrp -attribute ($MASH_FY_SCATTEROBJECTSTOOL + "_Distribute.seed") -l "ランダムシード" uAcg_distributeSeed_fy_scatterObjectsTool;
+        popupMenu;
+
+        text -l "" -h 4;
+
+        attrControlGrp -attribute ($MASH_FY_SCATTEROBJECTSTOOL + "_Transform.scaleAmount") -l "エミッターサイズ" uAcg_scaleAmount_fy_scatterObjectsTool;
+        popupMenu;
+        attrControlGrp -attribute ($MASH_FY_SCATTEROBJECTSTOOL + "_Transform.positionAmount") -l "エミッター位置" uAcg_positionAmount_fy_scatterObjectsTool;
+        popupMenu;
+        attrControlGrp -attribute ($MASH_FY_SCATTEROBJECTSTOOL + "_Transform.rotationAmount") -l "エミッター回転" uAcg_rotationAmount_fy_scatterObjectsTool;
+        popupMenu;
+
+        text -l "" -h 4;
+
+        attrControlGrp -attribute ($MASH_FY_SCATTEROBJECTSTOOL + "_Dynamics.initiallySleeping") -l "スリープ状態で開始" -cc "fy_scatterObjectsTool_initiallySleepingCheckboxCallback" uAcg_initiallySleeping_fy_scatterObjectsTool;
+        popupMenu;
+        attrControlGrp -attribute ($MASH_FY_SCATTEROBJECTSTOOL + "_Dynamics.initialVelocity") -l "初期移動速度" uAcg_initialVelocity_fy_scatterObjectsTool;
+        popupMenu;
+        attrControlGrp -attribute ($MASH_FY_SCATTEROBJECTSTOOL + "_Dynamics.initialRotationalVelocity") -l "初期回転速度" uAcg_initialRotationalVelocity_fy_scatterObjectsTool;
+        popupMenu;
+
+    // エミッター形状オプションメニューを更新
+    fy_scatterObjectsTool_refreshEmitterShapeOptionMenu;
+
+    // 初期速度フィールドを更新
+    fy_scatterObjectsTool_initiallySleepingCheckboxCallback;
+}
+
+///////////////////////////////////////////////////////
+// MASH ランダム設定フレームを作成
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_createRandomUI()
+{
+    if(`columnLayout -ex uCl_random_fy_scatterObjectsTool`)
+    {
+        deleteUI uCl_random_fy_scatterObjectsTool;
+    }
+
+    global string $MASH_FY_SCATTEROBJECTSTOOL;
+
+    if($MASH_FY_SCATTEROBJECTSTOOL == "")
+    {
+        return;
+    }
+
+    columnLayout
+        -adj on
+        -rs 0
+        -p uFl_random_fy_scatterObjectsTool
+        uCl_random_fy_scatterObjectsTool;
+
+        attrEnumOptionMenuGrp
+            -label "座標系"
+            -attribute ($MASH_FY_SCATTEROBJECTSTOOL + "_Random.transformationSpace")
+            -ei 2 "ローカル"
+            -ei 1 "ワールド"
+            ;
+
+        attrControlGrp  -attribute ($MASH_FY_SCATTEROBJECTSTOOL + "_Random.randomSeed") -l "ランダムシード";
+        popupMenu;
+
+        text -l "" -h 4;
+
+        attrControlGrp  -attribute ($MASH_FY_SCATTEROBJECTSTOOL + "_Random.positionX") -l "位置 X";
+        popupMenu;
+        attrControlGrp  -attribute ($MASH_FY_SCATTEROBJECTSTOOL + "_Random.positionY") -l "位置 Y";
+        popupMenu;
+        attrControlGrp  -attribute ($MASH_FY_SCATTEROBJECTSTOOL + "_Random.positionZ") -l "位置 Z";
+        popupMenu;
+        text -l "" -h 4;
+        attrControlGrp  -attribute ($MASH_FY_SCATTEROBJECTSTOOL + "_Random.rotationX") -l "回転 X";
+        popupMenu;
+        attrControlGrp  -attribute ($MASH_FY_SCATTEROBJECTSTOOL + "_Random.rotationY") -l "回転 Y";
+        popupMenu;
+        attrControlGrp  -attribute ($MASH_FY_SCATTEROBJECTSTOOL + "_Random.rotationZ") -l "回転 Z";
+        popupMenu;
+        text -l "" -h 4;
+        attrControlGrp  -attribute ($MASH_FY_SCATTEROBJECTSTOOL + "_Random.scaleX") -l "スケール X";
+        popupMenu;
+        attrControlGrp  -attribute ($MASH_FY_SCATTEROBJECTSTOOL + "_Random.scaleY") -l "スケール Y" uAcg_randScaleY_fy_scatterObjectsTool;
+        popupMenu;
+        attrControlGrp  -attribute ($MASH_FY_SCATTEROBJECTSTOOL + "_Random.scaleZ") -l "スケール Z" uAcg_randScaleZ_fy_scatterObjectsTool;
+        popupMenu;
+        attrControlGrp  -attribute ($MASH_FY_SCATTEROBJECTSTOOL + "_Random.uniformRandom") -l "均一スケール" -cc "fy_scatterObjectsTool_uniformScaleCheckboxCallback";
+        popupMenu;
+        attrControlGrp  -attribute ($MASH_FY_SCATTEROBJECTSTOOL + "_Random.absoluteScale") -l "拡大のみ";
+        popupMenu;
+
+    // 均一スケール 更新
+    fy_scatterObjectsTool_uniformScaleCheckboxCallback;
+}
+
+///////////////////////////////////////////////////////
+// インスタンスコリジョン設定フレームを作成
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_createInstanceCollisionUI()
+{
+    if(`columnLayout -ex uCl_instanceCollision_fy_scatterObjectsTool`)
+    {
+        deleteUI uCl_instanceCollision_fy_scatterObjectsTool;
+    }
+
+    global string $MASH_FY_SCATTEROBJECTSTOOL;
+
+    int $buttonWidth = 100;
+
+    if($MASH_FY_SCATTEROBJECTSTOOL == "")
+    {
+        return;
+    }
+
+    columnLayout
+        -adj on
+        -rs 0
+        -p uFl_instanceCollision_fy_scatterObjectsTool
+        uCl_instanceCollision_fy_scatterObjectsTool;
+
+        attrEnumOptionMenuGrp
+            -label "コリジョン形状"
+            -attribute ($MASH_FY_SCATTEROBJECTSTOOL + "_Dynamics.collisionShape")
+            -ei 0 "自動"
+            -ei 1 "ボックス"
+            -ei 2 "球"
+            -ei 7 "円柱"
+            -ei 3 "カプセル"
+            -ei 4 "凸型ハル"
+            -ei 8 "メッシュ"
+            ;
+
+        attrControlGrp -attribute "scatterObjects_BulletSolverShape.displayMashCollisionShapes" -l "コリジョン表示" uAcg_dispCollision_fy_scatterObjectsTool;
+        popupMenu;
+        attrControlGrp -attribute ($MASH_FY_SCATTEROBJECTSTOOL + "_Dynamics.collisionObjectScale") -l "コリジョン形状のスケール" uAcg_collisionObjectScale_fy_scatterObjectsTool;
+        popupMenu;
+        text -l "" -h 4;
+        attrControlGrp -attribute ($MASH_FY_SCATTEROBJECTSTOOL + "_Dynamics.friction") -l "移動摩擦" uAcg_collisionFriction_fy_scatterObjectsTool;
+        popupMenu;
+        attrControlGrp -attribute ($MASH_FY_SCATTEROBJECTSTOOL + "_Dynamics.rollingFriction") -l "回転摩擦" uAcg_collisionRotFriction_fy_scatterObjectsTool;
+        popupMenu;
+        attrControlGrp -attribute ($MASH_FY_SCATTEROBJECTSTOOL + "_Dynamics.damping") -l "移動減衰" uAcg_collisionDamping_fy_scatterObjectsTool;
+        popupMenu;
+        attrControlGrp -attribute ($MASH_FY_SCATTEROBJECTSTOOL + "_Dynamics.rollingDamping") -l "回転減衰" uAcg_collisionRotDamping_fy_scatterObjectsTool;
+        popupMenu;
+        attrControlGrp -attribute ($MASH_FY_SCATTEROBJECTSTOOL + "_Dynamics.bounce") -l "バウンス" uAcg_collisionBounce_fy_scatterObjectsTool;
+        popupMenu;
+        attrControlGrp -attribute ($MASH_FY_SCATTEROBJECTSTOOL + "_Dynamics.mass") -l "質量" uAcg_collisionMass_fy_scatterObjectsTool;
+        popupMenu;
+}
+
+///////////////////////////////////////////////////////
+// コライダー設定フレームを作成
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_createColliderUI()
+{
+    if(`columnLayout -ex uCl_collider_fy_scatterObjectsTool`)
+    {
+        deleteUI uCl_collider_fy_scatterObjectsTool;
+    }
+
+    global string $MASH_FY_SCATTEROBJECTSTOOL;
+
+    int $buttonWidth = 100;
+    int $buttonHeight = 20;
+
+    if($MASH_FY_SCATTEROBJECTSTOOL == "")
+    {
+        return;
+    }
+
+    columnLayout
+        -adj on
+        -rs 0
+        -p uFl_collider_fy_scatterObjectsTool
+        uCl_collider_fy_scatterObjectsTool;
+
+        rowColumnLayout -nc 2 -adj 1 -rs 1 2 -cs 2 2;
+            text -l "▼ コライダーオブジェクト" -bgc 0.51 0.51 0.51;
+            text -l "";
+
+            textScrollList
+                -h 75
+                -allowMultiSelection false
+                -sc "fy_scatterObjectsTool_createColliderSettingsUI"
+                uTsl_colliderObjects_fy_scatterObjectsTool;
+
+            columnLayout -adj on -rs 2;
+                button -l "リストに追加" -w $buttonWidth -h $buttonHeight -c "fy_scatterObjectsTool_addColliderObjects";
+                button -l "リストから削除" -w $buttonWidth -h $buttonHeight -c "fy_scatterObjectsTool_removeColliderObjects";
+
+                setParent ..;
+            setParent ..;
+
+    // コライダーオブジェクトリストを更新
+    fy_scatterObjectsTool_refreshColliderObjectsList;
+}
+
+///////////////////////////////////////////////////////
+// コライダー設定フレームを作成
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_createColliderSettingsUI()
+{
+    if(`columnLayout -exists uCl_colliderSettings_fy_scatterObjectsTool`)
+    {
+        deleteUI uCl_colliderSettings_fy_scatterObjectsTool;
+    }
+
+    string $colliderObj[] = `textScrollList -q -si uTsl_colliderObjects_fy_scatterObjectsTool`;
+
+    if(`size($colliderObj)` == 0)
+    {
+        return;
+    }
+
+    columnLayout -p uCl_collider_fy_scatterObjectsTool -adj on -rs 0 uCl_colliderSettings_fy_scatterObjectsTool;
+
+        attrEnumOptionMenuGrp
+            -attribute ($colliderObj[0] + ".collisionShape")
+            -l "コリジョン形状"
+            -ei 0 "自動"
+            -ei 1 "ボックス"
+            -ei 2 "球"
+            -ei 4 "凸型ハル"
+            -ei 5 "メッシュ"
+            -ei 6 "無限プレーン"
+            uAcg_colliderShape_fy_scatterObjectsTool;
+
+        attrControlGrp -attribute ($colliderObj[0] + ".friction") -l "摩擦" uAcg_colliderFriction_fy_scatterObjectsTool;
+        popupMenu;
+        attrControlGrp -attribute ($colliderObj[0] + ".damping") -l "減衰" uAcg_colliderDamping_fy_scatterObjectsTool;
+        popupMenu;
+        attrControlGrp -attribute ($colliderObj[0] + ".bounce") -l "バウンス" uAcg_colliderBounce_fy_scatterObjectsTool;
+        popupMenu;
+        attrControlGrp -attribute ($colliderObj[0] + ".mass") -l "質量" uAcg_colliderMass_fy_scatterObjectsTool;
+        popupMenu;
+}
+
+///////////////////////////////////////////////////////
+// シミュレーション設定フレームを作成
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_createSimulationUI()
+{
+    if(`columnLayout -ex uCl_simulation_fy_scatterObjectsTool`)
+    {
+        deleteUI uCl_simulation_fy_scatterObjectsTool;
+    }
+
+    global string $MASH_FY_SCATTEROBJECTSTOOL;
+
+    int $buttonWidth = 100;
+
+    if($MASH_FY_SCATTEROBJECTSTOOL == "")
+    {
+        return;
+    }
+
+    columnLayout
+        -adj on
+        -rs 0
+        -p uFl_simulation_fy_scatterObjectsTool
+        uCl_simulation_fy_scatterObjectsTool;
+
+        attrControlGrp -attribute "scatterObjects_BulletSolverShape.collisionIterations" -l "コリジョン計算回数" uAcg_iterations_fy_scatterObjectsTool;
+        popupMenu;
+        attrControlGrp -attribute "scatterObjects_BulletSolverShape.internalFrameRate" -l "内部フレームレート" uAcg_internalFrameRate_fy_scatterObjectsTool;
+        popupMenu;
+        text -l "" -h 4;
+        attrControlGrp -attribute "scatterObjects_BulletSolverShape.gravity" -l "重力" uAcg_gravity_fy_scatterObjectsTool;
+        popupMenu;
+        text -l "" -h 4;
+
+        if(`objExists "scatterObjects_rangeCube"`)
+        {
+            attrControlGrp -attribute "scatterObjects_rangeCube.visibility" -l "有効範囲を使用" -cc "fy_scatterObjectsTool_useRangeCheckboxCallback" uAcg_rangeEnable_fy_scatterObjectsTool;
+            popupMenu;
+            attrControlGrp -attribute "scatterObjects_rangeCube.scale" -l "有効範囲サイズ" uAcg_rangeScale_fy_scatterObjectsTool;
+            popupMenu;
+            attrControlGrp -attribute "scatterObjects_rangeCube.translate" -l "有効範囲位置" uAcg_rangePos_fy_scatterObjectsTool;
+            popupMenu;
+        }
+
+    //
+    fy_scatterObjectsTool_useRangeCheckboxCallback;
+}
+
+///////////////////////////////////////////////////////
+// MASH ネットワークリストを更新
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_refreshMashNetworkList()
+{
+    global string $MASH_FY_SCATTEROBJECTSTOOL;
+
+    // 対象MASH ネットワークを取得
+    string $mashNetworks[] = `fy_scatterObjectsTool_getMashNetworks`;
+
+    // リストの内容を一旦クリア
+    textScrollList -e -removeAll uTsl_mashNetwork_fy_scatterObjectsTool;
+
+    string $mashNetwork;
+
+    for($mashNetwork in $mashNetworks)
+    {
+        // テキストスクロールリストに追加
+        textScrollList -e -a $mashNetwork uTsl_mashNetwork_fy_scatterObjectsTool;
+    }
+
+    if(stringArrayContains($MASH_FY_SCATTEROBJECTSTOOL, $mashNetworks))
+    {
+        // 項目を選択
+        textScrollList -e -si $MASH_FY_SCATTEROBJECTSTOOL uTsl_mashNetwork_fy_scatterObjectsTool;
+    }
+
+    fy_scatterObjectsTool_selectMashNetworkCallback;
+}
+
+///////////////////////////////////////////////////////
+// インスタンスオブジェクトリストを更新
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_refreshInstancedObjectsList()
+{
+    global string $MASH_FY_SCATTEROBJECTSTOOL;
+
+    if($MASH_FY_SCATTEROBJECTSTOOL == "")
+    {
+        return;
+    }
+
+    // リストで現在選択しているインデックス
+    string $selItems[] = `textScrollList -q -si uTsl_instancedObjects_fy_scatterObjectsTool`;
+
+    // リストの内容を一旦クリア
+    textScrollList -e -removeAll uTsl_instancedObjects_fy_scatterObjectsTool;
+
+    // inputHierarchy への接続を取得
+    string $instancedObjects[] = `listConnections -s true -d false ($MASH_FY_SCATTEROBJECTSTOOL + "_instancer.inputHierarchy")`;
+
+    string $instancedObject;
+
+    for($instancedObject in $instancedObjects)
+    {
+        // テキストスクロールリストに追加
+        textScrollList -e -a $instancedObject uTsl_instancedObjects_fy_scatterObjectsTool;
+    }
+
+    if(`size($selItems)` == 0)
+    {
+        return;
+    }
+
+    string $allItems[] = `textScrollList -q -allItems uTsl_instancedObjects_fy_scatterObjectsTool`;
+    string $selItem;
+
+    for($selItem in $selItems)
+    {
+        if(stringArrayContains($selItem, $allItems))
+        {
+            // 項目を選択
+            textScrollList -e -si $selItem uTsl_instancedObjects_fy_scatterObjectsTool;
+        }
+    }
+}
+
+///////////////////////////////////////////////////////
+// 出現順（idtype） オプションメニューを現在のアトリビュート値に合わせて更新
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_refreshIdtypeOptionMenu()
+{
+    global string $MASH_FY_SCATTEROBJECTSTOOL;
+
+    if($MASH_FY_SCATTEROBJECTSTOOL == "")
+    {
+        return;
+    }
+
+    // idtype アトリビュートを取得
+    int $value = `getAttr ($MASH_FY_SCATTEROBJECTSTOOL + "_Id.idtype")`;
+
+    // 出現順オプションメニューを更新
+    switch($value)
+    {
+        case 1:
+            optionMenuGrp -e -v "リスト順" uOm_idtype_fy_scatterObjectsTool;
+            attrControlGrp -e -en false uAcg_idSeed_fy_scatterObjectsTool;
+            break;
+
+        case 2:
+            optionMenuGrp -e -v "ランダム" uOm_idtype_fy_scatterObjectsTool;
+            attrControlGrp -e -en true uAcg_idSeed_fy_scatterObjectsTool;
+            break;
+    }
+}
+
+///////////////////////////////////////////////////////
+// エミッター形状 オプションメニューを現在のアトリビュート値に合わせて更新
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_refreshEmitterShapeOptionMenu()
+{
+    global string $MASH_FY_SCATTEROBJECTSTOOL;
+
+    if($MASH_FY_SCATTEROBJECTSTOOL == "")
+    {
+        return;
+    }
+
+    // エミッター形状 アトリビュートを取得
+    int $method = `getAttr ($MASH_FY_SCATTEROBJECTSTOOL + "_Distribute.volumeShape")`;
+
+    // 配置方法オプションメニューを更新
+    if( $method == 2 )
+    {
+        optionMenu -e -v "立方体" uOm_emitterShape_fy_scatterObjectsTool;
+    }
+    else if( $method == 3)
+    {
+        optionMenu -e -v "球" uOm_emitterShape_fy_scatterObjectsTool;
+    }
+
+    string $selItem = `optionMenu -q -v uOm_emitterShape_fy_scatterObjectsTool`;
+
+    // エミッター形状オブジェクト
+    string $boundsCube = $MASH_FY_SCATTEROBJECTSTOOL + "_boundsCube";
+    string $boundsSphere = $MASH_FY_SCATTEROBJECTSTOOL + "_boundsSphere";
+
+    int $isChecked = `getAttr ($boundsCube + ".visibility")` || `getAttr ($boundsSphere + ".visibility")`;
+
+    checkBox -e -v $isChecked uCb_emitterVisible_fy_scatterObjectsTool;
+
+    attrControlGrp -e -en ($selItem == "球") uAcg_sphericalBias_fy_scatterObjectsTool;
+}
+
+///////////////////////////////////////////////////////
+// コライダーオブジェクトリストを更新
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_refreshColliderObjectsList()
+{
+    global string $MASH_FY_SCATTEROBJECTSTOOL;
+
+    if($MASH_FY_SCATTEROBJECTSTOOL == "")
+    {
+        return;
+    }
+
+    // リストで現在選択しているインデックス
+    string $selItems[] = `textScrollList -q -si uTsl_colliderObjects_fy_scatterObjectsTool`;
+
+    // リストの内容を一旦クリア
+    textScrollList -e -removeAll uTsl_colliderObjects_fy_scatterObjectsTool;
+
+    // collisionObjects への接続を取得
+    string $colliderObjects[] = `listConnections -s true -d false -shapes true -p false "scatterObjects_BulletSolverShape.collisionObjects"`;
+
+    // 重複を削除
+    $colliderObjects = stringArrayRemoveDuplicates($colliderObjects);
+
+    string $colliderObject;
+
+    for($colliderObject in $colliderObjects)
+    {
+        // テキストスクロールリストに追加
+        textScrollList -e -a $colliderObject uTsl_colliderObjects_fy_scatterObjectsTool;
+    }
+
+    string $allItems[] = `textScrollList -q -allItems uTsl_colliderObjects_fy_scatterObjectsTool`;
+    string $selItem;
+
+    for($selItem in $selItems)
+    {
+        if(stringArrayContains($selItem, $allItems))
+        {
+            // 項目を選択
+            textScrollList -e -si $selItem uTsl_colliderObjects_fy_scatterObjectsTool;
+        }
+    }
+
+    fy_scatterObjectsTool_createColliderSettingsUI;
+}
+
+///////////////////////////////////////////////////////
+// インスタンスオブジェクトを追加
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_addInstancedObjects()
+{
+    global string $MASH_FY_SCATTEROBJECTSTOOL;
+
+    // インスタンスオブジェクトの接続を修正
+    fy_scatterObjectsTool_fixInstanceConnections;
+
+    // 選択しているオブジェクト
+    string $selNodes[] = `ls -sl -o`;
+
+    string $selNode;
+
+    for($selNode in $selNodes)
+    {
+        // matrix アトリビュートが存在すれば
+        if(`attributeExists "matrix" $selNode`)
+        {
+            // 現在instancer に接続されているオブジェクトを取得
+            string $connections[] = `listConnections -s true -d false ($MASH_FY_SCATTEROBJECTSTOOL + "_instancer.inputHierarchy")`;
+
+            // すでに接続されているか
+            if(stringArrayContains($selNode, $connections))
+            {
+                continue;
+            }
+
+            // inputHierarchy 配列アトリビュートのサイズを取得
+            int $index = `getAttr -size ($MASH_FY_SCATTEROBJECTSTOOL + "_instancer.inputHierarchy")`;
+
+            // アトリビュート接続
+            connectAttr -f ($selNode + ".matrix") ($MASH_FY_SCATTEROBJECTSTOOL + "_instancer.inputHierarchy[" + $index + "]");
+
+            if($index == 1 && $connections[0] == ($MASH_FY_SCATTEROBJECTSTOOL + "_dummyCube"))
+            {
+                delete ($MASH_FY_SCATTEROBJECTSTOOL + "_dummyCube");
+
+                // インスタンスオブジェクトの接続を修正
+                fy_scatterObjectsTool_fixInstanceConnections;
+            }
+        }
+    }
+}
+
+///////////////////////////////////////////////////////
+// インスタンスオブジェクトを削除
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_removeInstancedObjects()
+{
+    global string $MASH_FY_SCATTEROBJECTSTOOL;
+
+    // リストで選択しているオブジェクト
+    string $selItems[] = `textScrollList -q -si uTsl_instancedObjects_fy_scatterObjectsTool`;
+
+    string $selItem;
+
+    for($selItem in $selItems)
+    {
+        string $connections[] = `listConnections -s false -d true -p true -type "instancer" ($selItem + ".matrix")`;
+
+        string $connection;
+
+        for($connection in $connections)
+        {
+            if(startsWith($connection, ($MASH_FY_SCATTEROBJECTSTOOL + "_instancer")))
+            {
+                // アトリビュート切断
+                disconnectAttr ($selItem + ".matrix") $connection;
+            }
+        }
+    }
+
+    // インスタンスオブジェクトの接続を修正
+    fy_scatterObjectsTool_fixInstanceConnections;
+}
+
+///////////////////////////////////////////////////////
+// インスタンスオブジェクトの順番を変更（上へ）
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_moveUpInstancedObjects()
+{
+    global string $MASH_FY_SCATTEROBJECTSTOOL;
+
+    // インスタンスオブジェクトの接続を修正
+    fy_scatterObjectsTool_fixInstanceConnections;
+
+    // リストで選択している項目のインデックス
+    int $indexList[] = `textScrollList -q -sii uTsl_instancedObjects_fy_scatterObjectsTool`;
+
+    int $index;
+
+    // 最上位インデックス
+    int $limitIndex = 0;
+
+    for($index in $indexList)
+    {
+        $index -= 1;
+
+        // 最上位に来たら、最上位インデックスを増やす
+        if($index == $limitIndex)
+        {
+            $limitIndex += 1;
+
+            continue;
+        }
+
+        // 1つ上の接続を取得
+        string $upperConnection[] = `listConnections -s true -d false -p true ($MASH_FY_SCATTEROBJECTSTOOL + "_instancer.inputHierarchy[" + ($index - 1) + "]")`;
+
+        // 現在の接続を取得
+        string $currentConnection[] = `listConnections -s true -d false -p true ($MASH_FY_SCATTEROBJECTSTOOL + "_instancer.inputHierarchy[" + $index + "]")`;
+
+        // 1つ上に接続
+        connectAttr -f $currentConnection[0] ($MASH_FY_SCATTEROBJECTSTOOL + "_instancer.inputHierarchy[" + ($index - 1) + "]");
+
+        // 1つ上に接続されていたものを選択していた位置に接続
+        connectAttr -f $upperConnection[0] ($MASH_FY_SCATTEROBJECTSTOOL + "_instancer.inputHierarchy[" + $index + "]");
+    }
+}
+
+///////////////////////////////////////////////////////
+// インスタンスオブジェクトの順番を変更（下へ）
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_moveDownInstancedObjects()
+{
+    global string $MASH_FY_SCATTEROBJECTSTOOL;
+
+    // インスタンスオブジェクトの接続を修正
+    fy_scatterObjectsTool_fixInstanceConnections;
+
+    // リストで選択している項目のインデックス
+    int $indexList[] = `textScrollList -q -sii uTsl_instancedObjects_fy_scatterObjectsTool`;
+
+    int $reversedIndexList[];
+ 	int $size = `size $indexList`;
+ 	int $i;
+
+ 	// 配列の順序を反転
+ 	for($i = 0; $i < $size; $i++)
+ 	{
+ 	    $reversedIndexList[( $size - 1 - $i )] = $indexList[$i];
+ 	}
+
+    // 接続数
+    int $hierarchyCount = `getAttr ($MASH_FY_SCATTEROBJECTSTOOL + "_instancer.hierarchyCount")`;
+
+    int $index;
+
+    // 最下位インデックス
+    int $limitIndex = $hierarchyCount - 1;
+
+    for($index in $reversedIndexList)
+    {
+        $index -= 1;
+
+        // 最下位に来たら最下位インデックスを減らす
+        if($index == $limitIndex)
+        {
+            $limitIndex -= 1;
+
+            continue;
+        }
+
+        // 現在の接続を取得
+        string $currentConnection[] = `listConnections -s true -d false -p true ($MASH_FY_SCATTEROBJECTSTOOL + "_instancer.inputHierarchy[" + $index + "]")`;
+
+        // 1つ下の接続を取得
+        string $lowerConnection[] = `listConnections -s true -d false -p true ($MASH_FY_SCATTEROBJECTSTOOL + "_instancer.inputHierarchy[" + ($index + 1) + "]")`;
+
+        // 1つ下に接続
+        connectAttr -f $currentConnection[0] ($MASH_FY_SCATTEROBJECTSTOOL + "_instancer.inputHierarchy[" + ($index + 1) + "]");
+
+        // 1つ下に接続されていたものを選択していた位置に接続
+        connectAttr -f $lowerConnection[0] ($MASH_FY_SCATTEROBJECTSTOOL + "_instancer.inputHierarchy[" + $index + "]");
+    }
+}
+
+///////////////////////////////////////////////////////
+// インスタンスオブジェクトの接続を修正（inputHierarchy のインデックスが飛ぶのを修正する）
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_fixInstanceConnections()
+{
+    global string $MASH_FY_SCATTEROBJECTSTOOL;
+
+    // 現在instancer に接続されているオブジェクトのmatrix プラグを取得
+    string $objects[] = `listConnections -s true -d false -p true ($MASH_FY_SCATTEROBJECTSTOOL + "_instancer.inputHierarchy")`;
+
+    int $index;
+
+    for($index = 0; $index < `size($objects)`; $index += 1)
+    {
+        // 接続されるべきinputHierarchy プラグ
+        string $inputHierarchy = $MASH_FY_SCATTEROBJECTSTOOL + "_instancer.inputHierarchy[" + $index + "]";
+
+        // 接続されるべきinputHierarchy プラグの現在の接続を取得
+        string $connections[] = `listConnections -s true -d false -p true $inputHierarchy`;
+
+        // 接続が正しくなければ
+        if($objects[$index] != $connections[0])
+        {
+            string $distination[] = `listConnections -s false -d true -p true $objects[$index]`;
+
+            // 現在の接続を解除
+            disconnectAttr $objects[$index] $distination;
+
+            // 正しく再接続
+            connectAttr -f $objects[$index] $inputHierarchy;
+        }
+    }
+}
+
+///////////////////////////////////////////////////////
+// ID タイプをセット
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_changeIdType(string $type)
+{
+    global string $MASH_FY_SCATTEROBJECTSTOOL;
+
+    switch($type)
+    {
+        case "リスト順":
+            setAttr ($MASH_FY_SCATTEROBJECTSTOOL + "_Id.idtype") 1;
+            attrControlGrp -e -en false uAcg_idSeed_fy_scatterObjectsTool;
+            break;
+
+        case "ランダム":
+            setAttr ($MASH_FY_SCATTEROBJECTSTOOL + "_Id.idtype") 2;
+            attrControlGrp -e -en true uAcg_idSeed_fy_scatterObjectsTool;
+            break;
+    }
+}
+
+///////////////////////////////////////////////////////
+// エミッター形状を変更
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_changeEmitterShape(string $method)
+{
+    global string $MASH_FY_SCATTEROBJECTSTOOL;
+
+    switch($method)
+    {
+        case "立方体":
+            setAttr ($MASH_FY_SCATTEROBJECTSTOOL + "_Distribute.volumeShape") 2;
+            break;
+
+        case "球":
+            setAttr ($MASH_FY_SCATTEROBJECTSTOOL + "_Distribute.volumeShape") 3;
+            break;
+    }
+
+    fy_scatterObjectsTool_dispEmitter;
+
+    attrControlGrp -e -en ($method == "球") uAcg_sphericalBias_fy_scatterObjectsTool;
+}
+
+///////////////////////////////////////////////////////
+// ID カウントをインスタンス数に合わせる
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_setIdCount()
+{
+    global string $MASH_FY_SCATTEROBJECTSTOOL;
+
+    int $hierarchyCount = `getAttr ($MASH_FY_SCATTEROBJECTSTOOL + "_instancer.hierarchyCount")`;
+
+    if($hierarchyCount == 0)
+    {
+        $hierarchyCount = 1;
+    }
+
+    setAttr ($MASH_FY_SCATTEROBJECTSTOOL + "_Id.numObjects") $hierarchyCount;
+}
+
+///////////////////////////////////////////////////////
+// スリープ状態で開始チェックボックス コールバックコマンド
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_initiallySleepingCheckboxCallback()
+{
+    global string $MASH_FY_SCATTEROBJECTSTOOL;
+
+    if($MASH_FY_SCATTEROBJECTSTOOL == "")
+    {
+        return;
+    }
+
+    int $initiallySleeping = `getAttr ($MASH_FY_SCATTEROBJECTSTOOL + "_Dynamics.initiallySleeping")`;
+
+    attrControlGrp -e -en ($initiallySleeping == false) uAcg_initialVelocity_fy_scatterObjectsTool;
+    attrControlGrp -e -en ($initiallySleeping == false) uAcg_initialRotationalVelocity_fy_scatterObjectsTool;
+}
+
+///////////////////////////////////////////////////////
+// 均一スケールチェックボックス コールバックコマンド
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_uniformScaleCheckboxCallback()
+{
+    global string $MASH_FY_SCATTEROBJECTSTOOL;
+
+    if($MASH_FY_SCATTEROBJECTSTOOL == "")
+    {
+        return;
+    }
+
+    int $uniformScale = `getAttr ($MASH_FY_SCATTEROBJECTSTOOL + "_Random.uniformRandom")`;
+
+    attrControlGrp  -e -en ($uniformScale == false) uAcg_randScaleY_fy_scatterObjectsTool;
+    attrControlGrp  -e -en ($uniformScale == false) uAcg_randScaleZ_fy_scatterObjectsTool;
+}
+
+///////////////////////////////////////////////////////
+// 有効範囲を使用チェックボックス コールバックコマンド
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_useRangeCheckboxCallback()
+{
+    if(`objExists "scatterObjects_rangeCube"` == false)
+    {
+        return;
+    }
+
+    int $useRange = `getAttr "scatterObjects_rangeCube.visibility"`;
+
+    attrControlGrp  -e -en $useRange uAcg_rangeScale_fy_scatterObjectsTool;
+    attrControlGrp  -e -en $useRange uAcg_rangePos_fy_scatterObjectsTool;
+}
+
+///////////////////////////////////////////////////////
+// MASH ネットワーク選択コールバックコマンド
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_selectMashNetworkCallback()
+{
+    global string $MASH_FY_SCATTEROBJECTSTOOL;
+
+    string $selMashNetwork[] = `textScrollList -q -si uTsl_mashNetwork_fy_scatterObjectsTool`;
+
+    $MASH_FY_SCATTEROBJECTSTOOL = $selMashNetwork[0];
+
+    fy_scatterObjectsTool_createInstanceUI;
+    fy_scatterObjectsTool_createEmitterUI;
+    fy_scatterObjectsTool_createRandomUI;
+    fy_scatterObjectsTool_createInstanceCollisionUI;
+    fy_scatterObjectsTool_createColliderUI;
+    fy_scatterObjectsTool_createSimulationUI;
+
+    // 有効・無効チェックボックス更新
+    if(`size($selMashNetwork)` == 0)
+    {
+        checkBox -e -en false uCb_enableMash_fy_scatterObjectsTool;
+    }
+    else
+    {
+        int $enabled = `getAttr ($selMashNetwork[0] + "_Distribute.enable")`;
+
+        checkBox -e -en true -v $enabled uCb_enableMash_fy_scatterObjectsTool;
+
+        fy_scatterObjectsTool_enableUI($enabled);
+    }
+
+    // フレームレイアウトのラベル・コントロール名リスト
+    string $labelControlNames[] =
+    {
+        "インスタンス設定 - ", "uFl_instance_fy_scatterObjectsTool",
+        "エミッター設定 - ", "uFl_emitter_fy_scatterObjectsTool",
+        "ランダム設定 - ", "uFl_random_fy_scatterObjectsTool",
+        "コリジョン設定 - ", "uFl_instanceCollision_fy_scatterObjectsTool"
+    };
+
+    int $i;
+
+    // フレームレイアウトのラベル名を変更
+    for($i=0; $i<`size($labelControlNames)`; $i+=2)
+    {
+        frameLayout -e -l ($labelControlNames[$i] + $MASH_FY_SCATTEROBJECTSTOOL) $labelControlNames[$i+1];
+    }
+}
+
+///////////////////////////////////////////////////////
+// MASH ネットワークをインポート
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_importMashNetwork()
+{
+    if(`objExists scatterObjects_BulletSolver` == false)
+    {
+        // Bullet Solver をインポート
+        file
+            -import
+            -ignoreVersion
+            -type "mayaAscii"
+            -mergeNamespacesOnClash false
+            -renamingPrefix "imported"
+            -options "v=0;"
+            -pr
+            "Z:/mtk/tools/maya/share/presets/mashPresets/scatterObjects_solver.ma";
+    }
+
+    file
+        -import
+        -ignoreVersion
+        -type "mayaAscii"
+        -mergeNamespacesOnClash false
+        -renamingPrefix "imported"
+        -options "v=0;"
+        -pr
+        "Z:/mtk/tools/maya/share/presets/mashPresets/scatterObjects.ma";
+
+    global string $MASH_FY_SCATTEROBJECTSTOOL;
+
+    $MASH_FY_SCATTEROBJECTSTOOL = fy_scatterObjectsTool_renameMashNetworkCmd("scatterObjects", "scatterObjects1");
+
+    // Bullet Solver をアサイン
+    fy_scatterObjectsTool_assignBulletSolver;
+
+    // MASH_Python をアサイン
+    fy_scatterObjectsTool_assignMashPython;
+
+    // 削除した際に実行するスクリプトジョブを作成
+    fy_scatterObjectsTool_createMashDeletedScriptJob($MASH_FY_SCATTEROBJECTSTOOL);
+
+    fy_scatterObjectsTool_refreshMashNetworkList;
+}
+
+///////////////////////////////////////////////////////
+// Bullet Solver アサイン
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_assignBulletSolver()
+{
+    global string $MASH_FY_SCATTEROBJECTSTOOL;
+
+    // 現在の選択を格納
+    string $sel[] = `ls -sl`;
+
+    // BulletSover を選択
+    select -r "scatterObjects_BulletSolver";
+
+    // MASH ノードを選択に追加
+    select -add -ne $MASH_FY_SCATTEROBJECTSTOOL;
+
+    // Bullet Solver をアサイン
+    MASHAssignSolver;
+
+    // 元の選択を復元
+    select -r $sel;
+}
+
+///////////////////////////////////////////////////////
+// MASH_Python アサイン
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_assignMashPython()
+{
+    global string $MASH_FY_SCATTEROBJECTSTOOL;
+
+    // instancer のinputPoints
+    string $instancerInputPoints = $MASH_FY_SCATTEROBJECTSTOOL + "_instancer.inputPoints";
+
+    // inctancer のinputPoints のソース（ソルバ）を取得
+    string $bulletSolverOutputPoints[] = `listConnections -s true -d false -plugs true -type "MASH_BulletSolver" $instancerInputPoints`;
+
+    // ソルバのoutputPoints をpython のinputPoints に接続
+    connectAttr -f $bulletSolverOutputPoints[0] ($MASH_FY_SCATTEROBJECTSTOOL + "_Python.inputPoints");
+
+    // python のoutputPoints をinstancer のinputPoints に接続
+    connectAttr -f ($MASH_FY_SCATTEROBJECTSTOOL + "_Python.outputPoints") $instancerInputPoints;
+
+}
+
+///////////////////////////////////////////////////////
+// MASH ネットワークをリネーム
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_renameMashNetwork()
+{
+    string $selMashNetwork[] = `textScrollList -q -si uTsl_mashNetwork_fy_scatterObjectsTool`;
+
+    if(`size($selMashNetwork)` == 0)
+    {
+        return;
+    }
+
+    global string $MASH_FY_SCATTEROBJECTSTOOL;
+
+    //移動値入力ダイアログ
+    string $resault =
+    `promptDialog
+        -title "名前の変更"
+        -message "名前を入力してください。"
+        -style "text"
+        -text $selMashNetwork[0]
+        -button "リネーム"
+        -button "キャンセル"
+        -defaultButton "リネーム"
+        -cancelButton "キャンセル"
+        -dismissString "キャンセル"`;
+
+    if($resault == "リネーム")
+    {
+        string $inputName = `promptDialog -q -text`;
+
+        $MASH_FY_SCATTEROBJECTSTOOL = fy_scatterObjectsTool_renameMashNetworkCmd($selMashNetwork[0], $inputName);
+    }
+}
+
+///////////////////////////////////////////////////////
+// MASH ネットワークをリネーム実行
+///////////////////////////////////////////////////////
+global proc string fy_scatterObjectsTool_renameMashNetworkCmd(string $oldName, string $newName)
+{
+    // ノードロックを解除
+    lockNode -l false $oldName;
+
+    // BulletSolcer をノードロック（一緒にリネームされないように）
+    lockNode -l true "scatterObjects_BulletSolverShape";
+
+    // リネーム
+    $newName = `rename $oldName $newName`;
+
+    // BulletSolcer をノードロック解除
+    lockNode -l false "scatterObjects_BulletSolverShape";
+
+    // 自動ではリネームされないもの
+    string $dummyCube = $oldName + "_dummyCube";
+    string $boundsSphere = $oldName + "_boundsSphere";
+    string $boundsCube = $oldName + "_boundsCube";
+    string $divideNode = $oldName + "_Divide";
+    string $unitConversion = $oldName + "_unitConversion";
+
+    if(`objExists $dummyCube`)
+    {
+        rename $dummyCube ($newName + "_dummyCube");
+    }
+    if(`objExists $boundsSphere`)
+    {
+        rename $boundsSphere ($newName + "_boundsSphere");
+    }
+    if(`objExists $boundsCube`)
+    {
+        rename $boundsCube ($newName + "_boundsCube");
+    }
+    if(`objExists $divideNode`)
+    {
+        rename $divideNode ($newName + "_Divide");
+    }
+    if(`objExists $unitConversion`)
+    {
+        rename $unitConversion ($newName + "_unitConversion");
+    }
+
+    // ノードロック
+    lockNode -l true $newName;
+
+    return $newName;
+}
+
+///////////////////////////////////////////////////////
+// MASH ネットワークを削除
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_deleteMashNetwork()
+{
+    string $selMashNetwork[] = `textScrollList -q -si uTsl_mashNetwork_fy_scatterObjectsTool`;
+
+    if(`size($selMashNetwork)` == 0)
+    {
+        return;
+    }
+
+    string $result =
+    `confirmDialog
+        -title "Scatter Objects Tool"
+        -icn "question"
+        -message ($selMashNetwork[0] + " を削除しますか？")
+        -button "削除"
+        -button "キャンセル"
+        -defaultButton "削除"
+        -cancelButton "キャンセル"
+        -dismissString "キャンセル"`
+        ;
+
+    // キャンセルしたら終了
+    if ($result == "キャンセル")
+    {
+        return;
+    }
+
+    // ノードロックを解除
+    lockNode -l false $selMashNetwork;
+
+    delete $selMashNetwork;
+}
+
+///////////////////////////////////////////////////////
+// MASH ネットワークを有効・無効
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_enableMashNetwork(int $enable)
+{
+    string $selMashNetwork[] = `textScrollList -q -si uTsl_mashNetwork_fy_scatterObjectsTool`;
+    int $selIndex[] = `textScrollList -q -sii uTsl_mashNetwork_fy_scatterObjectsTool`;
+
+    if(`size($selMashNetwork)` == 0)
+    {
+        return;
+    }
+
+    setAttr ($selMashNetwork[0] + "_Distribute.enable") $enable;
+}
+
+///////////////////////////////////////////////////////
+// 設定UI を有効・無効
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_enableUI(int $enable)
+{
+    string $layouts[] =
+    {
+        "uCl_instance_fy_scatterObjectsTool",
+        "uCl_emitter_fy_scatterObjectsTool",
+        "uCl_random_fy_scatterObjectsTool",
+        "uCl_instanceCollision_fy_scatterObjectsTool"
+    };
+
+    string $layout;
+
+    for($layout in $layouts)
+    {
+        columnLayout -e -en $enable $layout;
+    }
+}
+
+///////////////////////////////////////////////////////
+// MASH ネットワークを削除したときに自動で削除されないものを削除
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_deleteRemainingNodes(string $uuidList[])
+{
+    string $uuid;
+
+    for($uuid in $uuidList)
+    {
+        // uuid からノード名を取得
+        string $node[] = `ls $uuid`;
+
+        if(`objExists $node[0]`)
+        {
+            delete $node;
+        }
+    }
+
+    // MASH ネットワークを取得
+    string $mashNetworks[] = `fy_scatterObjectsTool_getMashNetworks`;
+
+    // 他にMASH ネットワークが無ければ rangeCube を削除
+    if(`size($mashNetworks)` == 0)
+    {
+        if(`objExists "scatterObjects_rangeCube"`)
+        {
+            delete "scatterObjects_rangeCube";
+        }
+    }
+}
+
+///////////////////////////////////////////////////////
+// MASH ネットワークを取得
+///////////////////////////////////////////////////////
+global proc string[] fy_scatterObjectsTool_getMashNetworks()
+{
+    string $mashNetworks[];
+    string $resultMashNetworks[];
+
+    $mashNetworks = `ls -type "MASH_Waiter"`;
+
+    string $mashNetWork;
+
+    for($mashNetwork in $mashNetworks)
+    {
+        if(`attributeExists "fyScatterObjects" $mashNetwork`)
+        {
+            $resultMashNetworks[`size($resultMashNetworks)`] = $mashNetwork;
+        }
+    }
+
+    return $resultMashNetworks;
+}
+
+///////////////////////////////////////////////////////
+// MASH ネットワークが削除されるときのスクリプトジョブ
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_createMashDeletedScriptJob(string $mashNetwork)
+{
+    // 手動で削除するノードリスト
+    string $remainingNodes[] =
+    {
+        $mashNetwork + "_dummyCube",
+        $mashNetwork + "_boundsSphere",
+        $mashNetwork + "_boundsCube",
+        $mashNetwork + "_Divide"
+    };
+
+    // 手動で削除するノードのuuid リスト
+    string $uuidList[];
+
+    string $remainingNode;
+
+    // 手動で削除するノードのuuid を取得
+    for($remainingNode in $remainingNodes)
+    {
+        // uuid を取得
+        string $uuid[] = `ls -uuid $remainingNode`;
+
+        $uuidList[`size($uuidList)`] = $uuid[0];
+    }
+
+    string $arg = "{\"" + stringArrayToString($uuidList, "\",\"") + "\"}";
+
+    // 削除した際に実行するスクリプトジョブを作成
+    scriptJob
+        -parent uWnd_fy_scatterObjectsTool
+        -nodeDeleted $mashNetwork ("fy_scatterObjectsTool_deleteRemainingNodes(" + $arg + ") ;fy_scatterObjectsTool_refreshMashNetworkList;")
+        ;
+}
+
+///////////////////////////////////////////////////////
+// エミッター表示・非表示
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_dispEmitter()
+{
+    global string $MASH_FY_SCATTEROBJECTSTOOL;
+
+    string $boundsCube = $MASH_FY_SCATTEROBJECTSTOOL + "_boundsCube";
+    string $boundsSphere = $MASH_FY_SCATTEROBJECTSTOOL + "_boundsSphere";
+
+    int $index = `getAttr ($MASH_FY_SCATTEROBJECTSTOOL + "_Distribute.volumeShape")`;
+
+    int $enable = `getAttr ($MASH_FY_SCATTEROBJECTSTOOL + "_Distribute.enable")`;
+
+    int $visible = `checkBox -q -v uCb_emitterVisible_fy_scatterObjectsTool`;
+
+
+    switch($index)
+    {
+        // 立方体
+        case 2:
+            setAttr ($boundsCube + ".visibility") $visible;
+            setAttr ($boundsSphere + ".visibility") false;
+            setAttr ($boundsCube + ".overrideVisibility") $enable;
+            setAttr ($boundsSphere + ".overrideVisibility") $enable;
+            break;
+
+        // 球
+        case 3:
+            setAttr ($boundsCube + ".visibility") false;
+            setAttr ($boundsSphere + ".visibility") $visible;
+            setAttr ($boundsCube + ".overrideVisibility") $enable;
+            setAttr ($boundsSphere + ".overrideVisibility") $enable;
+            break;
+    }
+}
+
+///////////////////////////////////////////////////////
+// コライダーオブジェクトをリストに追加
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_addColliderObjects()
+{
+    // モジュールインポート
+    python("import mtk3d.maya.env.mash.functions as envmash");
+
+    global string $MASH_FY_SCATTEROBJECTSTOOL;
+
+    // 選択しているオブジェクト
+    string $selNodes[] = `ls -sl -o`;
+
+    // mesh シェイプを取得
+    string $meshes[] = `listRelatives -s -type "mesh" -ni $selNodes`;
+
+    string $mesh;
+
+    for($mesh in $meshes)
+    {
+        // MASH アトリビュートが存在するか
+        int $mashAttrExists = `attributeExists "bounce" $mesh`;
+
+        python("envmash.addCollider('" + $MASH_FY_SCATTEROBJECTSTOOL + "','" + $mesh + "')");
+
+        if($mashAttrExists == false)
+        {
+            // デフォルト値を設定
+            fy_scatterObjectsTool_setDefaultParamsToColliderObject($mesh);
+        }
+    }
+
+    // コライダーオブジェクトリストを更新
+    fy_scatterObjectsTool_refreshColliderObjectsList;
+}
+
+///////////////////////////////////////////////////////
+// コライダーオブジェクトにデフォルト値を設定
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_setDefaultParamsToColliderObject(string $mesh)
+{
+    setAttr ($mesh + ".bounce") 0.1;
+    setAttr ($mesh + ".friction") 0.5;
+}
+
+///////////////////////////////////////////////////////
+// コライダーオブジェクトをリストから削除
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_removeColliderObjects()
+{
+    // リストで選択しているオブジェクト
+    string $selItems[] = `textScrollList -q -si uTsl_colliderObjects_fy_scatterObjectsTool`;
+
+    if(`objExists $selItems[0]` == false)
+    {
+        return;
+    }
+
+    // アトリビュートリスト
+    string $attributes[] =
+    {
+        ".bounce",
+        ".collisionContactMaskLayers",
+        ".collisionMaskLayers",
+        ".collisionGroupLayers",
+        ".collisionShape",
+        ".collisionShapeScale",
+        ".damping",
+        ".friction",
+        ".mass",
+        ".worldMatrix",
+        ".worldMesh"
+    };
+
+    string $attribute;
+
+    for($attribute in $attributes)
+    {
+        // 接続先を取得
+        string $connections[] = `connectionInfo -destinationFromSource ($selItems[0] + $attribute)`;
+
+        if(`size($connections)` != 0)
+        {
+            // アトリビュートを切断
+            disconnectAttr ($selItems[0] + $attribute) $connections[0];
+        }
+    }
+
+    // コライダーオブジェクトリストを更新
+    fy_scatterObjectsTool_refreshColliderObjectsList;
+}
+
+///////////////////////////////////////////////////////
+// インスタンサーを実体化
+///////////////////////////////////////////////////////
+global proc fy_scatterObjectsTool_bakeInstancerToObjects()
+{
+    global string $MASH_FY_SCATTEROBJECTSTOOL;
+
+    if(`objExists ($MASH_FY_SCATTEROBJECTSTOOL + "_instancer")` == false)
+    {
+        return;
+    }
+
+    select -r ($MASH_FY_SCATTEROBJECTSTOOL + "_instancer");
+
+    // インスタンサーベイクGUI を起動
+    MASHBakeGUI;
+
+    // インスタンサーベイクGUI を非表示
+    window -e -vis false "mashBakeStill";
+
+    // 現在のフレームを実体化
+    MASHBakeStillMEL;
+
+    // インスタンサーベイクGUI を削除
+    deleteUI "mashBakeStill";
+}
+
+//fy_scatterObjectsTool;
+
+

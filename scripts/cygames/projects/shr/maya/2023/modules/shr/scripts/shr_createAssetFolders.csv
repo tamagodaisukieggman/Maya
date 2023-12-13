@@ -1,0 +1,18 @@
+ラベル名,内部処理名,フォルダ名
+メッシュ,mesh,mesh
+テクスチャ,texture,texture
+FBX,fbx,work/fbx
+3D-Coat,3dcoat,work/3dcoat
+After Effects,aftereffects,work/aftereffects
+Houdini,houdini,work/houdini
+Marvelous Designer,marvelousdesigner,work/marvelousdesigner
+Maya,maya,work/maya
+MotionBuilder,motionbuilder,work/motionbuilder
+Nuke,nuke,work/nuke
+Photoshop,photoshop,work/photoshop
+SpeedTree,speedtree,work/speedtree
+Substance Designer,substancedesigner,work/substancedesigner
+Substance Painter,substancepainter,work/substancepainter
+Toolbag,toolbag,work/toolbag
+ZBrush,zbrush,work/zbrush
+Temp,temp,work/temp

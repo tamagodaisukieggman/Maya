@@ -1,0 +1,10 @@
+<Display Name>,<Operator Name>,<HDA Name>,<Help URL>,<Sample File>
+Rock Bridge,Sop/rock_bridge,rock_bridge.hda,https://wisdom.cygames.jp/display/tsubasa/Rock+Bridge,D:/cygames/tsubasa/tools/dcc_user/maya/share/python/houdini_engine/hda_list/env/tab1/sample/scenes/rock_bridge.mb
+Road Trail,Sop/roadtrail,roadtrail.hda,https://wisdom.cygames.jp/display/tsubasa/Road+Trail,D:/cygames/tsubasa/tools/dcc_user/maya/share/python/houdini_engine/hda_list/env/tab1/sample/scenes/roadtrail.mb
+Road Border,Sop/roadborder,roadborder.hda,https://wisdom.cygames.jp/display/tsubasa/Road+Border,D:/cygames/tsubasa/tools/dcc_user/maya/share/python/houdini_engine/hda_list/env/tab1/sample/scenes/roadborder.mb
+Cliff Edge Mesh,Sop/cliffedgemesh,cliffedgemesh.hda,https://wisdom.cygames.jp/display/tsubasa/Cliff+Edge+Mesh,D:/cygames/tsubasa/tools/dcc_user/maya/share/python/houdini_engine/hda_list/env/tab1/sample/scenes/cliffedgemesh.mb
+Merge Terrain,Sop/mergeterrain,mergeterrain.hda,https://wisdom.cygames.jp/display/tsubasa/Merge+Terrain,D:/cygames/tsubasa/tools/dcc_user/maya/share/python/houdini_engine/hda_list/env/tab1/sample/scenes/mergeterrain.mb
+Create NaviMesh,Sop/createnavimesh,createnavimesh.hda,https://wisdom.cygames.jp/display/tsubasa/Create+NaviMesh,D:/cygames/tsubasa/tools/dcc_user/maya/share/python/houdini_engine/hda_list/env/tab1/sample/scenes/createnavimesh.mb
+Create Waterfall,Sop/createwaterfall,createwaterfall.hda,https://wisdom.cygames.jp/display/tsubasa/Create+Waterfall,D:/cygames/tsubasa/tools/dcc_user/maya/share/python/houdini_engine/hda_list/env/tab1/sample/scenes/createwaterfall.mb
+Melted Model,Sop/meltedmodel,meltedmodel.hda,https://wisdom.cygames.jp/display/tsubasa/Melted+Model,D:/cygames/tsubasa/tools/dcc_user/maya/share/python/houdini_engine/hda_list/env/tab1/sample/scenes/meltedmodel.mb
+Wrap To Geo,Sop/wrap_to_geo,wrap_to_geo.hda,https://wisdom.cygames.jp/display/tsubasa/Wrap+To+Geo,D:/cygames/tsubasa/tools/dcc_user/maya/share/python/houdini_engine/hda_list/env/tab2/sample/scenes/wrap_to_geo.mb

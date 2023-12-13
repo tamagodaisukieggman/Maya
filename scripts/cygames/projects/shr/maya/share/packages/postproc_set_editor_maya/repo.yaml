@@ -1,0 +1,14 @@
+﻿version: "2022.7.6"
+
+book:
+  append:
+    - key: PYTHONPATH
+      values:
+        - .
+      relative: true
+    - key: WM_MODULE
+      values:
+        - postproc_set_editor_maya
+      relative: false
+  
+      

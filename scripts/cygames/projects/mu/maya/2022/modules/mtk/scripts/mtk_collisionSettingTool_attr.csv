@@ -1,0 +1,9 @@
+階層名,phyActorType,phyShapeType,phyCollisionTypeName,phyQueryFilterPresetName
+col_object,default,default,default,detailed_object
+col_character,default,default,default,detailed_object_without_camera
+col_player,default,No Simulation,default,player
+col_camera,default,No Simulation,default,camera
+col_detailed,default,default,detailed,detailed
+col_sight,default,No Simulation,default,sight
+col_water,default,default,default,water_surface
+col_bush,default,No Simulation,default,bush

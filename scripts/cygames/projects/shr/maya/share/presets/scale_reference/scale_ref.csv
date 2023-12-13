@@ -1,0 +1,15 @@
+isEnabled,name,category,fbxPath
+1,男性,人間,C:\cygames\shrdev\shr\tools\in\ext\maya\share\presets\scale_reference\scale_ref_man.fbx
+1,牛,動物,C:\cygames\shrdev\shr\tools\in\ext\maya\share\presets\scale_reference\scale_ref_cow.fbx
+1,馬,動物,C:\cygames\shrdev\shr\tools\in\ext\maya\share\presets\scale_reference\scale_ref_horse.fbx
+1,トロル,モンスター,C:\cygames\shrdev\shr\tools\in\ext\maya\share\presets\scale_reference\scale_ref_troll.fbx
+1,ドラゴン,モンスター,C:\cygames\shrdev\shr\tools\in\ext\maya\share\presets\scale_reference\scale_ref_dragon.fbx
+1,スカイリザード,モンスター,C:\cygames\shrdev\shr\tools\in\ext\maya\share\presets\scale_reference\scale_ref_skylizard.fbx
+1,ワイバーン,モンスター,C:\cygames\shrdev\shr\tools\in\ext\maya\share\presets\scale_reference\scale_ref_wyvern.fbx
+1,ランドグリフォン,モンスター,C:\cygames\shrdev\shr\tools\in\ext\maya\share\presets\scale_reference\scale_ref_landgriffon.fbx
+1,1m ボックス,プリミティブ,C:\cygames\shrdev\shr\tools\in\ext\maya\share\presets\scale_reference\scale_ref_box1m.fbx
+1,10m ボックス,プリミティブ,C:\cygames\shrdev\shr\tools\in\ext\maya\share\presets\scale_reference\scale_ref_box10m.fbx
+1,100m ボックス,プリミティブ,C:\cygames\shrdev\shr\tools\in\ext\maya\share\presets\scale_reference\scale_ref_box100m.fbx
+1,50cm椅子（背もたれ無し）,モーション用,C:\cygames\shrdev\shr\tools\in\ext\maya\share\presets\scale_reference\scale_ref_chair50cm.fbx
+1,寝床（高：30ｃｍ幅：125cm奥行：250cm）,モーション用,C:\cygames\shrdev\shr\tools\in\ext\maya\share\presets\scale_reference\scale_ref_50_125_250_bed.fbx
+0,ダミー,その他,C:\cygames\shrdev\shr\tools\in\ext\maya\share\presets\scale_reference\scale_ref_dummy.fbx

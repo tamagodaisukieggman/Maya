@@ -1,0 +1,298 @@
+﻿# chara チェッカーの分類
+#   - チェック項目
+#       text: チェック内容 スペース2つで区切ることができます　チェック範囲、チェック対象として表示されます
+#       error_text: エラー内容
+#       checker: チェック用関数
+#       modifier: (なくて可) 修正用関数 
+#       history: (なくて可でデフォルト0) 0: 修正時にヒストリーを削除しない 1: 修正時にヒストリーを削除する 
+#       all: (なくて可でデフォルトはfalse) ヒストリーを削除するときはtrue 
+
+mesh:
+    -
+        preset:
+            - chara
+            - env
+        text: 5角形以上のポリゴン 選択ノードの属するルートノード下 ポリゴンメッシュ
+        error_text: 5角形以上のポリゴンがあります
+        checker: has_nface
+
+    -
+        preset:
+            - chara
+            - env
+        text: ２重ポリゴンの存在 選択ノードの属するルートノード下 ポリゴンメッシュ
+        error_text: ２重ポリゴンが存在します
+        checker: has_lamina_faces
+
+    -
+        preset:
+            - chara
+            - env
+        text: 非多様体頂点 選択ノードの属するルートノード下 ポリゴンメッシュ
+        error_text: 非多様体頂点が存在します
+        checker: has_non_manifold_vertices
+        all: true
+
+    -
+        preset:
+            - chara
+        text: CVsの値 選択ノードの属するルートノード下 ポリゴンメッシュ
+        error_text: CVsの値が存在します
+        checker: has_cvs_value
+
+    -
+        preset:
+            - chara
+            - env
+        text: 浮動頂点 選択ノードの属するルートノード下 ポリゴンメッシュ
+        error_text: 浮動頂点が存在します
+        checker: has_invalid_vertices
+
+    -
+        preset:
+            - chara
+            - env
+        text: ゼロポリゴン 選択ノードの属するルートノード下 ポリゴンメッシュ
+        error_text: ゼロポリゴンが存在します
+        checker: has_mesh_size
+
+    -
+        preset:
+            - chara
+            - env
+        text: 空のUVセット 選択ノードの属するルートノード下 ポリゴンメッシュ
+        error_text: 空のUVセットが存在します
+        checker: has_mesh_no_uvset
+
+    -
+        preset:
+            - chara
+            - env
+        text: 不要なヒストリー 選択ノードの属するルートノード下 ポリゴンメッシュ
+        error_text: 不要なヒストリーを持つメッシュが存在します
+        checker: has_history
+
+    -
+        preset:
+            - chara
+            - env
+        text: フリーズされていないノード 選択ノードの属するルートノード下 トランスフォーム
+        error_text: フリーズされていないトランスフォームノードが存在します
+        checker: has_transform_value
+
+    -
+        preset:
+            - chara
+            - env
+        text: スケールが「1」ではないノード　選択ノードの属するルートノード下 トランスフォーム
+        error_text: スケールが「 1 」ではないトランスフォームノードが存在します
+        checker: has_scale_value
+    -
+        preset:
+            - chara
+            - env
+        text: 「mtl_」ではないマテリアル　選択ノードの属するルートノード下　マテリアル
+        error_text: 「 mtl_ 」ではないマテリアルのポリゴン・オブジェクトがあります
+        checker: material_name
+texture:
+    -
+        preset:
+            - chara
+            - env
+        text: テクスチャのサイズ 選択ノードの属するルートノード下 ファイルノード
+        error_text: サイズが２のべき乗でないテクスチャが存在します
+        checker: texture_size
+    -
+        preset:
+            - chara
+            - env
+        text: ファイル名とパス　選択ノードの属するルートノード下　ファイルノード
+        error_text: テクスチャのファイル名もしくはパスが不正です
+        checker: texture_name_path
+
+joint:
+    -
+        preset:
+            - chara
+        text: ジョイント名、ジョイントインデックスの確認　選択ノードの属するルートノード下　ジョイント
+        error_text: ジョイント名、ジョイントインデックスが不正です
+        checker: joint_names
+    -
+        preset:
+            - chara
+        text: 重複ジョイントインデックスの確認　選択ノードの属するルートノード下　ジョイント
+        error_text: ジョイントインデックスが重複しています
+        checker: joint_names_same_index
+    -
+        preset:
+            - chara
+        text: 「_L」「_R」の存在と階層　選択ノードの属するルートノード下　ジョイント
+        error_text: 「_R」ジョイントがないか、階層が不正です
+        checker: joint_names_lr
+
+    -
+        preset:
+            - chara
+        text: 「_L」「_R」の位置、回転値　選択ノードの属するルートノード下　ジョイント
+        error_text: 「_R」ジョイントの値が違います
+        checker: joint_transform_lr
+
+    -
+        preset:
+            - chara
+        text: ルートジョイントの名前と値　選択ノードの属するルートノード下　ジョイント
+        error_text: ルートジョイントの名前が不正か、値が入ってます
+        checker: root_jnt_name_value
+
+    -
+        preset:
+            - chara
+        text: インバーススケール　選択ノードの属するルートノード下　ジョイント
+        error_text: インバーススケールが外れています
+        checker: check_transform_joint_Inverse_scale
+
+skin:
+    -
+        preset:
+            - chara
+        text: バインドポーズが1つ　選択ノードの属するルートノード下　ポリゴンメッシュ
+        error_text: バインドポーズが複数あります
+        checker: has_a_bind_pose
+
+    -
+        preset:
+            - chara
+        text: 1頂点に [  {}  ] ボーン以上のインフルエンス　選択ノードの属するルートノード下　ポリゴンメッシュ
+        error_text:  (  {}  ) ボーン以上のジョイントにバインドされている頂点があります
+        checker: has_many_bind
+
+    -
+        preset:
+            - chara
+        text: スキニングされていないオブジェクト　選択ノードの属するルートノード下　ポリゴンメッシュ
+        error_text: スキニングされていないオブジェクトがあります
+        checker: has_skinnning
+    -
+        preset:
+            - chara
+        text: 使用されていないインフルエンス　選択ノードの属するルートノード下　ジョイント
+        error_text: 使用されていないインフルエンスが存在します
+        checker: has_unused_influence
+
+    -
+        preset:
+            - chara
+        text: スキンクラスターの設定がClassicLinear　選択ノードの属するルートノード下　ポリゴンメッシュ
+        error_text: スキンクラスターの設定がClassicLinearではありません
+        checker: is_skining_method_linear
+
+hierarchy:
+    -
+        preset:
+            - rig
+        text: トップ階層の名前はroot　シーン全体　トランスフォーム
+        error_text: rootがトップ階層に存在しません
+        checker: is_topnode_root
+    -
+        preset:
+            - chara
+            - rig
+            - env
+        text: 不明なプラグインの削除　シーン全体　プラグイン
+        error_text: 不明なプラグインを削除しました
+        checker: unknown_plugin
+    -
+        preset:
+            - rig
+        text: AllSet, CtrlSet, AnimJtSet は存在するか　シーン全体　セットノード
+        error_text: AllSet, CtrlSet, AnimJtSet のいずれかが存在しません
+        checker: is_required_rig_sets_exist
+    -
+        preset:
+            - rig
+        text: コントローラのサフィックス、不要なコンストレイント、値の確認　シーン全体　コントロールオブジェクト
+        error_text: コントローラのサフィックス、またはコンストレイント、または値に不正があります
+        checker: controller
+    -
+        preset:
+            - rig
+        text: 「CtrlSet」に登録されていないコントローラーの検出　シーン全体　コントロールオブジェクト
+        error_text: 「CtrlSet」に含まれておりません
+        checker: ctrl_set_geometorys
+    -
+        preset:
+            - rig
+        text: 「AnimJtSet」へ登録されていないジョイントの検出　シーン全体　コントロールオブジェクト
+        error_text: 「AnimJtSet」に含まれておりません
+        checker: anim_jt_set
+    -
+        preset:
+            - rig
+            - chara
+        text: キーフレームの有無　シーン全体　トランスフォーム
+        error_text: キーフレームが存在します
+        checker: all_keyframe
+    -
+        preset:
+            - rig
+        text: rootの階層下にmodel/ rig　シーン全体　トランスフォーム
+        error_text: rootの階層下にmodel/ rigが存在しません
+        checker: has_required_transform_in_root
+
+    -
+        preset:
+            - rig
+        text: リファレンスのネームスペース　シーン全体　リファレンス
+        error_text: リファレンスに不要なネームスペースが存在します
+        checker: reference_name
+
+
+
+    -
+        preset:
+            - chara
+            - env
+        text: ルートノードの名前　選択ノードの属するルートノード下　トランスフォーム
+        error_text: ルートの名前かノードタイプに問題があります
+        checker: hierarchey_root
+
+    # -
+    #     preset:
+    #         - chara
+    #         - env
+    #     text: 同名ノード　選択ノードの属するルートノード下　トランスフォーム
+    #     error_text: 階層内に同じ名前があります
+    #     checker: hierarchey_samename
+
+    -
+        preset:
+            - chara
+            - env
+        text: 名前の確認（第一階層）　選択ノードの属するルートノード下　トランスフォーム
+        error_text: 第一階層の名前かノードタイプに問題があります
+        checker: hierarchey_first
+
+    -
+        preset:
+            - env
+            - chara
+        text: 名前の確認（第二階層）　選択ノードの属するルートノード下　トランスフォーム
+        error_text: 第二階層の名前かノードタイプに問題があります
+        checker: hierarchey_second
+
+# others:
+#     # -
+#     #     preset: 
+#     #         - chara
+#     #         - env
+#     #     text: モデルのメッシュスケールが(1,1,1)になっているかチェック
+#     #     error_text: メッシュスケールが(1,1,1)になっていません
+#     #     checker: is_scale_to_one
+#     -
+#         preset:
+#             - chara
+#             - env
+#         text: 不要なノード、マテリアルの検出
+#         error_text: 不要なマテリアルが存在します
+#         checker: has_unused_nodes
+#         modifier: modify_unused_nodes
