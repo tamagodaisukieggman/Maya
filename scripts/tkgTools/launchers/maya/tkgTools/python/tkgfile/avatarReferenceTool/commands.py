@@ -203,11 +203,14 @@ def replace_ref(ref_name=None, path=None, type='avatar'):
 def delete_ref(ref_name=None):
     # 着せ替えの削除
     joint_connection(namespace=ref_name, connect=False)
-    cmds.file(rr=True, referenceNode=ref_name+'RN')
+    if cmds.objExists(ref_name+'RN'):
+        cmds.file(rr=True, referenceNode=ref_name+'RN')
+
     try:
         cmds.namespace(mergeNamespaceWithParent=True, removeNamespace=ref_name)
     except:
-        print(traceback.format_exc())
+        # print(traceback.format_exc())
+        pass
 
     delete_sim_temps(sim_namespace=ref_name)
 
@@ -229,6 +232,7 @@ def order_dags(dags=None):
 
 def go_to_bindPose_for_rig(namespace=None):
     # コントローラをbindPoseにする
+    sel = cmds.ls(os=True)
     cmds.select(namespace + 'ctrl_sets', r=True, ne=True)
     ctrls = cmds.pickWalk(d='down')
 
@@ -238,6 +242,9 @@ def go_to_bindPose_for_rig(namespace=None):
         bt = cmds.getAttr(ctrl + '.bindPoseTranslate')[0]
         br = cmds.getAttr(ctrl + '.bindPoseRotate')[0]
         cmds.xform(ctrl, t=bt, ro=br, ws=True, p=True, a=True)
+
+    if sel:
+        cmds.select(sel, r=True)
 
 def joint_connection(namespace=None, connect=None):
     # 読み込んだ着せ替えとキャラの骨を拘束する
@@ -262,7 +269,6 @@ def joint_connection(namespace=None, connect=None):
         for chr_j in chr_joints:
             ty_j = chr_j.replace(chr_nss, namespace)
             try:
-                print('joint_connection', chr_j, ty_j)
                 pa_cons.append(cmds.parentConstraint(chr_j, ty_j, w=True)[0])
             except:
                 print(traceback.format_exc())
@@ -322,6 +328,11 @@ def prop_update(ref_name, path, unload, chr_nss):
     create_ref(ref_name=ref_name, path=path, type='prop')
     go_to_bindPose_for_rig(namespace=chr_nss)
 
+@the_world
+def match_transform(src, dst, chr_nss):
+    if cmds.objExists(src) and cmds.objExists(dst):
+        go_to_bindPose_for_rig(namespace=chr_nss)
+        cmds.matchTransform(src, dst, pos=True, rot=True, scl=False)
 
 def get_offSet_Root(attach_node=None, filter=None):
     oft_roots = cmds.ls(attach_node, r=True)
@@ -361,6 +372,10 @@ def force_constraint(src=None, tgt=None):
     return cnsts
 
 def fbx_to_rig_for_prop(attach_ctrl=None, ref_name=None):
+    bake_objects = []
+    bake_objects.append(attach_ctrl)
+
+    delete_objects = []
     # attach_ctrl = 'p2:Handattach_R_ctrl'
     # ref_name = 'pro_0'
     wt = cmds.xform(attach_ctrl, q=True, t=True, ws=True)
@@ -371,8 +386,12 @@ def fbx_to_rig_for_prop(attach_ctrl=None, ref_name=None):
     # base_joints = cmds.pickWalk(d='down');cmds.ls(os=True)
 
     dups = cmds.duplicate(ref_name + ':Root')
-    consts = cmds.ls('Root', dag=True, type='constraint', l=True)
+    consts = cmds.ls(dups[0], dag=True, type='constraint', l=True)
     [cmds.delete(c) for c in consts]
+    dup_jnts = cmds.ls(dups[0], dag=True, l=True)
+    # cmds.makeIdentity(dup_jnts, n=False, s=True, r=True, t=True, apply=True, pn=True)
+    [cmds.setAttr(jnt+'.ssc', False) for jnt in dup_jnts]
+    delete_objects.append(dups[0])
 
     temp_ctrl_sets = '{}_prop_temp_ctrl_sets'.format(ref_name)
     cmds.select(temp_ctrl_sets, r=True, ne=True)
@@ -382,32 +401,46 @@ def fbx_to_rig_for_prop(attach_ctrl=None, ref_name=None):
 
     all_consts = []
     for ctrl in ordered_ctrls:
+        bake_objects.append(ctrl)
         spl_ctrl = ctrl.split(':')[-1]
         jnt = spl_ctrl.replace('_ctrl', '')
-        cmds.matchTransform(jnt, ctrl)
         if 'Root' in jnt:
-            # con = cmds.scaleConstraint(attach_ctrl, jnt, w=True)
-            # all_consts.append(con[0])
-
-            con = cmds.pointConstraint(attach_ctrl, jnt, w=True)
+            con = cmds.pointConstraint(jnt, attach_ctrl, w=True)
             all_consts.append(con[0])
 
-            con = cmds.orientConstraint(attach_ctrl, jnt, w=True)
+            con = cmds.orientConstraint(jnt, attach_ctrl, w=True)
             all_consts.append(con[0])
+
+            cmds.connectAttr(jnt+'.sx', ref_name + ':Root_ctrl.sx', f=True)
+            cmds.connectAttr(jnt+'.sy', ref_name + ':Root_ctrl.sy', f=True)
+            cmds.connectAttr(jnt+'.sz', ref_name + ':Root_ctrl.sz', f=True)
+
         else:
-            consts = force_constraint(src=jnt, tgt=ctrl)
-            [all_consts.append(c) for c in consts]
+            # cmds.matchTransform(jnt, ctrl)
+            #
+            # consts = force_constraint(src=jnt, tgt=ctrl)
+            # [all_consts.append(c) for c in consts]
 
+            con = cmds.pointConstraint(jnt, ctrl, w=True)
+            all_consts.append(con[0])
 
-    cmds.connectAttr('Root.s', ref_name + ':Root_ctrl.s', f=True)
+            con = cmds.orientConstraint(jnt, ctrl, w=True)
+            all_consts.append(con[0])
+
+            cmds.connectAttr(jnt+'.rx', ctrl+'.rx', f=True)
+            cmds.connectAttr(jnt+'.ry', ctrl+'.ry', f=True)
+            cmds.connectAttr(jnt+'.rz', ctrl+'.rz', f=True)
+
+            cmds.connectAttr(jnt+'.sx', ctrl+'.sx', f=True)
+            cmds.connectAttr(jnt+'.sy', ctrl+'.sy', f=True)
+            cmds.connectAttr(jnt+'.sz', ctrl+'.sz', f=True)
 
     cmds.xform(attach_ctrl, t=wt, ws=True, a=True)
     cmds.xform(attach_ctrl, ro=wr, ws=True, a=True)
 
+    [delete_objects.append(con) for con in all_consts]
 
-def match_transform(src, dst):
-    if cmds.objExists(src) and cmds.objExists(dst):
-        cmds.matchTransform(src, dst, pos=True, rot=True, scl=False)
+    return bake_objects, delete_objects
 
 def parent_constraint(src, dst):
     pos_con = cmds.pointConstraint(src, dst, w=True)
@@ -1827,7 +1860,7 @@ def prop_scale_connection(ctrl, ctrl_nss, prop_namespace):
     # handattach = ctrl.replace('_ctrl', '').replace(ctrl_nss, ctrl_nss + 'chr:')
     handattach = prop_namespace +':Root_ctrl'
     for grp in ctrl_grps:
-        cmds.connectAttr(handattach+'.s', grp+'.s', f=True)
+        # cmds.connectAttr(handattach+'.s', grp+'.s', f=True)
         if handattach in grp:
             root_cnst = 'Root_ctrl_grp_parentConstraint1'
             if cmds.objExists(root_cnst):
@@ -1903,6 +1936,40 @@ def anim_temp_save(ref_name=None, parts_type=None, operation='export'):
                 pr=True,
                 importTimeRange='override'
             )
+
+def fullbake(ctrls=None):
+    # フルベイク
+    try:
+        cmds.refresh(su=1)
+
+        # get
+        start, end, animstart, animend, curtime, autoKeyState = get_animation_status()
+
+        attrs = list(set(cmds.listAttr(ctrls, k=True)))
+        cmds.bakeResults(
+            ctrls,
+            simulation=True,
+            t=(start, end),
+            sampleBy=1,
+            oversamplingRate=1,
+            disableImplicitControl=True,
+            preserveOutsideKeys=True,
+            sparseAnimCurveBake=False,
+            removeBakedAttributeFromLayer=False,
+            removeBakedAnimFromLayer=False,
+            bakeOnOverrideLayer=False,
+            minimizeRotation=True,
+            at=attrs
+        )
+
+        # set
+        set_animation_status(start, end, animstart, animend, curtime, autoKeyState)
+
+        cmds.refresh(su=0)
+
+    except:
+        cmds.refresh(su=0)
+        print(traceback.format_exc())
 
 
 @bake_with_func
