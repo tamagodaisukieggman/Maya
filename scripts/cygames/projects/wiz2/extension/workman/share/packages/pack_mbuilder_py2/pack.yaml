@@ -1,0 +1,11 @@
+PYTHONPATH:
+    - value : W:\production\tools\python\2.7.17\Lib\site-packages
+      is_abspath : 1
+    - value : W:\production\tools\python\2.7.17\Lib\site-packages\Deadline\10.0.23.4\python
+      is_abspath : 1
+    - value : W:\production\tools\python\2.7.17\Lib\site-packages\mysql\8.0.15
+      is_abspath : 1
+    - value : W:\production\tools\python\2.7.17\Lib\site-packages\p4
+      is_abspath : 1
+    - value : W:\production\tools\python\2.7.17\Lib\site-packages\fbx\2020.0.1
+      is_abspath : 1

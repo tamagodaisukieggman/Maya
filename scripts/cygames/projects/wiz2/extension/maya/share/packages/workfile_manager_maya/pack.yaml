@@ -1,0 +1,6 @@
+PYTHONPATH:
+    - python
+WORKFILE_MANAGER_MAYA_VERSION: <VERSION>
+WM_PLUGIN_PATH:
+    - python
+WM_MODULE: workfile_manager_maya

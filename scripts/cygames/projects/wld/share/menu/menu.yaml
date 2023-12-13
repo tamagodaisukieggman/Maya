@@ -1,0 +1,277 @@
+world:
+  - Pipeline:
+    - name:       Workfile Manager
+      label:      Workfile Manager
+      shelfName:  Workfile Manager
+      type:       Python
+      command:    import workfile_manager_maya.ui_maya as wmm;wmm.show()
+
+    - name:       Post-process Set Editor
+      label:      Post-process Set Editor
+      shelfName:  Post-process Set Editor
+      type:       Python
+      command:    from postproc_set_editor_maya import ui_maya;ui_maya.show()
+
+    - name:       Publish Files
+      label:      Publish Files
+      shelfName:  Publish Files
+      type:       Python
+      command:    from publish_files_maya import ui_maya;ui_maya.show()
+
+    - name:       Set Physics Material
+      label:      Set Physics Material
+      shelfName:  Set Physics Material
+      type:       Python
+      command:    from pipelinetools.set_physics_mat_tools import set_physics_mat_tools_ui as spmtu;spmtu.main()
+
+    - name:       Workfile Manager Checker Tool
+      label:      Workfile Manager Checker Tool
+      shelfName:  Workfile Manager Checker Tool
+      type:       Python
+      command:    from pipelinetools.workman_checker_tools import workman_checker_tools;workman_checker_tools.main()
+  
+  - Modeling:
+    - name:       Eyelash Generator
+      label:      Eyelash Generator
+      shelfName:  Eyelash Generator
+      type:       Python
+      command:    import cymayaeyelash;cymayaeyelash.command.exe()
+
+    - name:       Eyelash Generator Option
+      type:       Python
+      command:    import cymayaeyelash;cymayaeyelash.ui.show()
+      optionBox:  True
+
+    - name:       Lod Builder
+      label:      Lod Builder...
+      shelfName:  Lod Builder
+      type:       Python
+      command:    import cymayalodbuilder;cymayalodbuilder.ui.show()
+
+    - name:       Assign Object Vertex Color
+      label:      Assign Object Vertex Color
+      shelfName:  Assign Object Vertex Color
+      type:       Python
+      command:    import object_vertex_color;object_vertex_color.run()
+
+    - name:       Exploded View
+      label:      Exploded View
+      shelfName:  Exploded View
+      type:       Python
+      command:    import exploded_view;exploded_view.run()
+
+    - name:       Auto Hose Generation
+      label:      Auto Hose Generation
+      shelfName:  Auto Hose Generation
+      type:       Python
+      command:    import auto_hose_generation;auto_hose_generation.run()
+
+    - name:       Set Scale By Locater
+      label:      Set Scale By Locater
+      shelfName:  Set Scale By Locater
+      type:       Python
+      command:    from mdltools.set_scale_by_locater import set_scale_by_locater as ssblu;ssblu.main()
+
+    - name:       Set LightMap UV Tool
+      label:      Set LightMap UV Tool
+      shelfName:  Set LightMap UV Tool
+      type:       Python
+      command:    from mdltools.set_lightmap_uv_tool import set_lightmap_uv_tool as slut;slut.main()
+
+
+  - Material:
+    - Create New:
+      - name:     WorldSkin
+        label:    World Skin Shader
+        type:     Python
+        command:  from material_tools import utils as mtl_utils;mtl_utils.create_glslshader('w:/tools/MayaShader/shaders/WorldSkin.ogsfx')
+      - name:     WorldToon
+        label:    World Toon Shader
+        type:     Python
+        command:  from material_tools import utils as mtl_utils;mtl_utils.create_glslshader('W:/tools/MayaShader/shaders/WorldToon.ogsfx')
+      - name:     WorldOutline
+        label:    World Outline Shader
+        type:     Python
+        command:  from material_tools import utils as mtl_utils;mtl_utils.create_glslshader('W:/tools/MayaShader/shaders/WorldOutline.ogsfx')
+
+    - Assign New:
+      - name:     WorldSkin
+        label:    World Skin Shader
+        type:     Python
+        command:  from material_tools import utils as mtl_utils;mtl_utils.assign_new_glslshader('w:/tools/MayaShader/shaders/WorldSkin.ogsfx')
+      - name:     WorldToon
+        label:    World Toon Shader
+        type:     Python
+        command:  from material_tools import utils as mtl_utils;mtl_utils.assign_new_glslshader('W:/tools/MayaShader/shaders/WorldToon.ogsfx')
+      - name:     WorldOutline
+        label:    World Outline Shader
+        type:     Python
+        command:  from material_tools import utils as mtl_utils;mtl_utils.assign_new_glslshader('W:/tools/MayaShader/shaders/WorldOutline.ogsfx')
+
+    - name:       Set Key Color on World Toon
+      label:      Set Key Color on World Toon
+      shelfName:  Set Key Color on World Toon
+      type:       Python
+      command:    from set_key_color import set_key_color;set_key_color.run()
+
+
+  - Rigging:
+    - name:       CopySkinWeight
+      label:      Copy Skin Weight
+      shelfName:  CopySkinWeight
+      type:       Python
+      annotation: Select a source mesh(or joint), then a target mesh(or joint).
+      command:    import rigtools.skin;rigtools.skin.weight_cmds.copy_weight()
+
+    - name:       CopySkinWeightOption
+      type:       Python
+      command:    import rigtools.skin;rigtools.skin.weight_import_opt.show_copy_opt()
+      optionBox:  True
+
+    - name:       ImportSkinWeight
+      label:      Import Skin Weight...
+      shelfName:  ImportSkinWeight
+      type:       Python
+      annotation: Select target mesh(es) and(or) joint(s).
+      command:    import rigtools.skin;rigtools.skin.weight_cmds.import_weight()
+
+    - name:       ImportSkinWeightOption
+      type:       Python
+      command:    import rigtools.skin;rigtools.skin.weight_import_opt.show_import_opt()
+      optionBox:  True
+
+    - name:       ExportSkinWeight
+      label:      Export Skin Weight...
+      shelfName:  ExportSkinWeight
+      type:       Python
+      annotation: Select target mesh(es) and(or) joint(s).
+      command:    import rigtools.skin;rigtools.skin.weight_cmds.export_weight()
+
+    - name:       Retarget Skeleton
+      label :     Retarget Skeleton
+      shelfName:  Retarget Skeleton
+      type:       Python
+      annotation: Select a source joint, then target mesh(es).
+      command:    import rigtools.skeleton;rigtools.skeleton.transfer_skeleton_cmds.exe();
+
+    - name:       RetargetOption
+      type:       Python
+      command:    import rigtools.skeleton;rigtools.skeleton.transfer_skeleton_ui.show();
+      optionBox:  True
+
+    - name:       Deformation Transfer
+      label :     Deformation Transfer
+      shelfName:  Deformation Transfer
+      type:       Python
+      annotation: Select a source reference, a deformed source(or group), and target reference.
+      command:    import cymayadtransfer;cymayadtransfer.command.exe()
+
+    - name:       Deformation Transfer Option
+      type:       Python
+      command:    import cymayadtransfer;cymayadtransfer.ui.show()
+      optionBox:  True
+
+    - name:       RoundAttrs
+      label:      RoundAttrs...
+      shelfName:  RoundAttrs
+      type:       Python
+      annotation: Select transform(s) and(or) joint(s).
+      command:    import rig.attribute.round as attribute_round;attribute_round.round_transform_attrs();
+
+    - Diagnosis:
+      - referenceEdit:
+        - name:       CleanUp male00
+          label:      CleanUp male00
+          shelfName:  CleanUp male00
+          type:       Python
+          annotation: CleanUp referenceEdit
+          command:    import rig.rigDiagnosis.rigNodes as rigNodes;rig_nodes = rigNodes.RigNodes();rig_nodes.worldRig_male00_all1000_mdl_defRN_do();
+
+        - name:       Check LockedNodes male00
+          label:      Check LockedNodes male00
+          shelfName:  Check LockedNodes male00
+          type:       Python
+          annotation: Check referenceEdit
+          command:    import rig.rigDiagnosis.rigNodes as rigNodes;rig_nodes = rigNodes.RigNodes();rig_nodes.worldRig_male00_all1000_mdl_defRN_check_locked_nodes();
+
+  - Utilities:
+    - name:       Batch Tool
+      label :     Batch Tool...
+      shelfName:  Batch Tool
+      type:       Python
+      annotation: Open batch tool.
+      command:    import utiltools.batchtool;utiltools.batchtool.ui.show()
+
+    - name:       Regex Renamer
+      label :     Regex Renamer...
+      shelfName:  Regex Renamer
+      type:       Python
+      annotation: Node renamer with regular expression.
+      command:    import node_renamer;node_renamer.show()
+
+    - Locator:
+      - name:       Create curve locator
+        label :     Create curve locator
+        shelfName:  Create curve locator
+        type:       Python
+        annotation: Convert curves to a locator
+        command:    import utiltools.create_curve_locator.cmds;utiltools.create_curve_locator.cmds.convert()
+
+      - name:       Create curve locator (option)
+        type:       Python
+        command:    import utiltools.create_curve_locator.ui;utiltools.create_curve_locator.ui.show()
+        optionBox:  True
+
+      - name:       Custom Locator Manager
+        label :     Custom Locator Manager...
+        shelfName:  Custom Locator Manager
+        type:       Python
+        annotation: Open custom locator manager.
+        command:    import utiltools.custom_locator_manager.ui;utiltools.custom_locator_manager.ui.show()
+
+      - name:       Import Edge from UE4
+        label :     Import Edge from UE4
+        shelfName:  Import Edge from UE4
+        type:       Python
+        annotation: Import Edge information from UE4
+        command:    import import_edge_from_ue;import_edge_from_ue.run()
+
+  - Separator:
+    - placeholder
+
+  - Third Party:
+    - name:       TFK Rivet
+      label:      TFK Rivet
+      shelfName:  TFK Rivet
+      type:       Python
+      annotation: Select 2 points or edges and it will create a locator
+      command:    import TFK_Rivet.TFK_Rivet;TFK_Rivet.TFK_Rivet.bRivet()
+    - name:       Skin Wrangler
+      label:      Skin Wrangler
+      shelfName:  Skin Wrangler
+      type:       Python
+      annotation:
+      command:    from chrisevans3d.skinwrangler import skinWrangler as sw;skinWranglerWindow = sw.show()
+
+  - Separator:
+    - placeholder
+
+  - Develop:
+    - name:       Retarget Attached Mesh
+      label :     Retarget Attached Mesh
+      shelfName:  Retarget Attached Mesh
+      type:       Python
+      annotation: Select a source mesh(or a group), a attached mesh(or a group), then a target mesh(or group).
+      command:    import rigtools.skeleton;rigtools.skeleton.retarget_attachedmesh_cmds.exe();
+    - name:       RetargetOption
+      type:       Python
+      command:    import rigtools.skeleton;rigtools.skeleton.retarget_attachedmesh_ui.show();
+      optionBox:  True
+
+  - Obsolete:
+    - Modeling:
+      - name:       miscTools
+        label:      Misc Tools
+        shelfName:  miscTools
+        type:       Python
+        command:    import mdltools.misc_tools;mdltools.misc_tools.ui();

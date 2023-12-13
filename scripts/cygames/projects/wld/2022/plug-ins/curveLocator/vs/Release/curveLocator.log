@@ -1,0 +1,10 @@
+﻿  curveLocatorNode.cpp
+D:\perforce\techartist\tools\projects\world\inhouse\win\extension\maya\2022\plug-ins\curveLocator\vs\curveLocatorNode.cpp(125,31): warning C4996: 'Autodesk::Maya::OpenMaya20220000::MDagPath::getAPathTo': The function signature was inconsistent with the rest of the API. Please use the other MDagPath::getAPathTo method instead.
+D:\perforce\techartist\tools\projects\world\inhouse\win\extension\maya\2022\plug-ins\curveLocator\vs\curveLocatorNode.cpp(153,49): warning C4996: 'Autodesk::Maya::OpenMaya20220000::MUserData::MUserData': Please use MUserData() instead. MUserData should be managed with MSharedPtr<MUserData>.
+D:\perforce\techartist\tools\projects\world\inhouse\win\extension\maya\2022\plug-ins\curveLocator\vs\curveLocatorNode.cpp(371,25): warning C4996: 'Autodesk::Maya::OpenMaya20220000::MFnTypedAttribute::create': Use the other MFnTypedAttribute::create method instead.
+D:\perforce\techartist\tools\projects\world\inhouse\win\extension\maya\2022\plug-ins\curveLocator\vs\curveLocatorNode.cpp(376,29): warning C4996: 'Autodesk::Maya::OpenMaya20220000::MFnTypedAttribute::create': Use the other MFnTypedAttribute::create method instead.
+D:\perforce\techartist\tools\projects\world\inhouse\win\extension\maya\2022\plug-ins\curveLocator\vs\curveLocatorNode.cpp(379,23): warning C4996: 'Autodesk::Maya::OpenMaya20220000::MFnTypedAttribute::create': Use the other MFnTypedAttribute::create method instead.
+  pluginMain.cpp
+  コードを生成中...
+     ライブラリ Release\curveLocator.lib とオブジェクト Release\curveLocator.exp を作成中
+  curveLocator.vcxproj -> D:\perforce\techartist\tools\projects\world\inhouse\win\extension\maya\2022\plug-ins\curveLocator\vs\Release\curveLocator.mll

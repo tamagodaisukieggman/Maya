@@ -1,0 +1,13 @@
+*.obj
+*.exp
+*.lastbuildstate
+*.lib
+*.user
+*.pdb
+*.tlog
+*.filters
+*.idb
+*.ilk
+Release
+Debug
+.vs

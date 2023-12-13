@@ -1,0 +1,9 @@
+PYTHONPATH:
+    - value : c:\cygames\wiz2\tools\python\3.7.7\Lib\site-packages
+      is_abspath : 1
+    - value : c:\cygames\wiz2\tools\python\3.7.7\modules\Deadline\10.0.23.4\python
+      is_abspath : 1
+    - value : c:\cygames\wiz2\tools\python\3.7.7\modules\mysql\8.0.15
+      is_abspath : 1
+    - value : c:\cygames\wiz2\tools\python\3.7.7\Lib\site-packages\fbx\2020.2
+      is_abspath : 1

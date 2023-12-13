@@ -1,0 +1,5 @@
+Lod_Builder:
+  Description: |
+    LODグループのトップノードを選択（複数選択可）して実行します。（例）"mesh"、"LOD0"など。
+    
+

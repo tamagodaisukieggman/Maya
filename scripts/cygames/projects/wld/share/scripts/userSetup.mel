@@ -1,0 +1,11 @@
+optionVar
+ -sv "workingUnitAngularDefault" "deg"
+ -sv "workingUnitLinear" "cm"
+ -sv "workingUnitLinearDefault" "cm"
+ -sv "workingUnitTime" "ntscf"
+ -sv "workingUnitTimeDefault" "ntscf";
+
+
+ 
+ 
+ 

@@ -1,0 +1,9 @@
+LODs:
+- name: !!python/unicode 'LOD0'
+  percent: 1.0
+- name: !!python/unicode 'LOD1'
+  percent: 0.5
+- name: !!python/unicode 'LOD2'
+  percent: 0.2
+- name: !!python/unicode 'LOD3'
+  percent: 0.05

@@ -1,0 +1,20 @@
+PYTHONPATH:
+    - value : W:\production\tools\python\3.7.7\Lib\site-packages
+      is_abspath : 1
+    - value : <TOOLS_ROOT>\tools\projects\<PROJECT>\thirdparty\win\extension\maya\share\python
+      is_abspath : 1  
+    - value : W:\production\tools\python\3.7.7\modules\Deadline\10.0.23.4\python
+      is_abspath : 1
+    - value : W:\production\tools\python\3.7.7\modules\mysql\8.0.15
+      is_abspath : 1
+    - value : W:\production\tools\python\3.7.7\Lib\site-packages\cgkit #本来は必要ないがPython3の相対参照の仕様上追記
+      is_abspath : 1
+    - value : W:\production\tools\python\3.7.7\modules\pyside2
+      is_abspath : 1
+    - value : W:\production\tools\python\3.7.7\modules\shiboken2
+      is_abspath : 1
+      
+
+
+
+      

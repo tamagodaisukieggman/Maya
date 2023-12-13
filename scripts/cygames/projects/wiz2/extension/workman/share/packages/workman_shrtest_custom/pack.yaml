@@ -1,0 +1,31 @@
+PYTHONPATH:
+    - python
+WM_PLUGIN_PATH:
+    - python
+WM_MODULE: workman_shrtest_custom
+WORKMAN_WORLD_CUSTOM_VERSION: <VERSION>
+
+
+WM_P4_ROOT_DIR: Y:\
+WM_TMP_DIR: Q:\70_personal\takeuchi_kengo\tools\tmp
+WM_SHARE_ROOT: Q:\70_personal\takeuchi_kengo\production
+WM_SHARE_CACHED_ROOT: D:\workman\shr\cache\production
+WM_RESOURCE_ROOT: Y:\production
+WM_ENGINE_ROOT: Y:\client\world\Assets
+WM_PUBLIC_WORK_ROOT: Y:\production\work
+WM_LOCAL_WORK_ROOT: D:\workman\shr\work
+WM_CUSTOM_ASSETEXT: shenron
+WM_PROJECT: world
+WM_DB_HOST: CG5209
+WM_DB_NAME: shenron_assetdb
+WM_CONFIG_FILE: Q:\70_personal\takeuchi_kengo\tools\config\wm_config.yaml
+WM_CONFIG_FILE_DEBUG: Q:\70_personal\takeuchi_kengo\tools\config\wm_config_develop.yaml
+DEADLINE_WEBSERVICE_HOST: CG5209
+FFMPEG_EXE: W:/production/tools/cygames/thirdparty/win/standalone/FFmpeg/v4.0.2/bin/ffmpeg.exe
+WM_TAGTREE_CACHE: Q:\70_personal\takeuchi_kengo\tools\workman\cache\tagtree.cache
+WM_HIERARCHY_CONTENTS_CACHE: Q:\70_personal\takeuchi_kengo\tools\workman\cache\hierarchy_contents.cache
+_P4TICKETS: Q:\70_personal\takeuchi_kengo\tools\workman\p4\p4tickets.txt
+WM_SLACK_BOT_TOKEN: xoxb-391432910274-925010817297-MJNyAw8I7wOTsueqMxE4X7p6
+
+
+

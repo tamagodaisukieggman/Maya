@@ -1,0 +1,4 @@
+PYTHONPATH:
+    - .
+WM_MODULE: postproc_set_editor_maya
+POSTPROC_SET_EDITOR_MAYA_VERSION: <VERSION>

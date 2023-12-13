@@ -1,0 +1,28 @@
+PYTHONPATH:
+    - python
+WM_PLUGIN_PATH:
+    - python
+WM_MODULE: workman_world_custom
+
+WM_P4_ROOT_DIR: c:\cygames\wiz2
+WM_TMP_DIR: C:\cygames\wiz2\share\tools\workman\tmp
+WM_SHARE_ROOT: c:\cygames\wiz2
+WM_SHARE_CACHED_ROOT: D:\workman\wiz2\cache
+WM_RESOURCE_ROOT: c:\cygames\wiz2
+WM_PUBLIC_WORK_ROOT: c:\cygames\wiz2\work
+WM_LOCAL_WORK_ROOT: d:\workman\wiz2\work
+WM_CUSTOM_ASSETEXT: world
+WM_PROJECT: wizard2 # cyclos' project name.
+WM_DB_HOST: CG5209
+WM_DB_NAME: world_assetdb
+WM_CONFIG_FILE: \\cydrive01\104_projects\148_wizard2\30_design\05_techart\share\tools\workman\config\wm_config.yaml
+WM_CONFIG_FILE_DEBUG: \\cydrive01\104_projects\148_wizard2\30_design\05_techart\share\tools\workman\config\wm_config.yaml
+DEADLINE_WEBSERVICE_HOST: CG5209
+FFMPEG_EXE: C:/cygames/wiz2/tools/projects/cygames/thirdparty/win/standalone/FFmpeg/v4.0.2/bin/ffmpeg.exe
+WM_TAGTREE_CACHE: C:\cygames\wiz2\share\tools\workman\cache\tagtree.cache
+WM_HIERARCHY_CONTENTS_CACHE: C:\cygames\wiz2\share\tools\workman\cache\hierarchy_contents.cache
+_P4TICKETS: C:\cygames\wiz2\share\tools\p4\tickets\p4tickets.txt
+WM_SLACK_BOT_TOKEN: xoxb-391432910274-925010817297-MJNyAw8I7wOTsueqMxE4X7p6
+
+
+

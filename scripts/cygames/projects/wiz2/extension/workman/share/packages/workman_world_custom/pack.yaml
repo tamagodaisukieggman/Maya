@@ -1,0 +1,32 @@
+PYTHONPATH:
+    - python
+WM_PLUGIN_PATH:
+    - python
+WM_MODULE: workman_world_custom
+WORKMAN_WORLD_CUSTOM_VERSION: <VERSION>
+
+
+WM_P4_ROOT_DIR: w:\
+WM_TMP_DIR: P:\production\tools\tmp
+WM_SHARE_ROOT: P:\production
+WM_SHARE_ROOT_ALT: //CGS-STR-FAS05/100_projects/051_world/production
+WM_SHARE_CACHED_ROOT: D:\workman\cache\production
+WM_RESOURCE_ROOT: w:/production
+WM_ENGINE_ROOT: w:\client\world\Assets
+WM_PUBLIC_WORK_ROOT: w:\production\work
+WM_LOCAL_WORK_ROOT: d:\workman\work
+WM_CUSTOM_ASSETEXT: world
+WM_PROJECT: world
+WM_DB_HOST: CG5209
+WM_DB_NAME: world_assetdb
+WM_CONFIG_FILE: P:\production\share\config\wm_config.yaml
+WM_CONFIG_FILE_DEBUG: P:\production\share\config\wm_config_develop.yaml
+DEADLINE_WEBSERVICE_HOST: CG5209
+FFMPEG_EXE: W:/production/tools/cygames/thirdparty/win/standalone/FFmpeg/v4.0.2/bin/ffmpeg.exe
+WM_TAGTREE_CACHE: P:\production\tools\workman\cache\tagtree.cache
+WM_HIERARCHY_CONTENTS_CACHE: P:\production\tools\workman\cache\hierarchy_contents.cache
+_P4TICKETS: P:\document\techartist\tools\p4\tickets\p4tickets.txt
+WM_SLACK_BOT_TOKEN: xoxb-391432910274-925010817297-MJNyAw8I7wOTsueqMxE4X7p6
+
+
+
