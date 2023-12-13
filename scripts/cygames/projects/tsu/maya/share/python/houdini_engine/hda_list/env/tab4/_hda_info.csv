@@ -1,4 +1,0 @@
-<Display Name>,<Operator Name>,<HDA Name>,<Help URL>,<Sample File>
-Auto Collision,Sop/auto_collision,auto_collision.hda,https://wisdom.cygames.jp/display/tsubasa/Auto+Collision,D:/cygames/tsubasa/tools/dcc_user/maya/share/python/houdini_engine/hda_list/env/tab4/sample/scenes/auto_collision.mb
-Shrink Wrapping,Sop/shrink_wrapping,shrink_wrapping.hda,https://wisdom.cygames.jp/display/tsubasa/Shrink+Wrapping,D:/cygames/tsubasa/tools/dcc_user/maya/share/python/houdini_engine/hda_list/env/tab4/sample/scenes/shrink_wrapping.mb
-Offset By Normal,Sop/offset_by_normal,offset_by_normal.hda,https://wisdom.cygames.jp/display/tsubasa/Offset+By+Normal,

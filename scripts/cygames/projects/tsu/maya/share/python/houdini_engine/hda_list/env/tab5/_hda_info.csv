@@ -1,5 +1,0 @@
-<Display Name>,<Operator Name>,<HDA Name>,<Help URL>,<Sample File>
-Export Volume Slice,Sop/export_volume_slice,export_volume_slice.hda,https://wisdom.cygames.jp/display/tsubasa/Export+Volume+Slice,
-Flowmap Maker,Sop/flowmap_maker,flowmap_maker.hda,https://wisdom.cygames.jp/display/tsubasa/Flowmap+Maker,D:/cygames/tsubasa/tools/dcc_user/maya/share/python/houdini_engine/hda_list/env/tab5/sample/scenes/flowmap_maker.mb
-Flowmap Maker (Simple),Sop/flowmap_maker_simple,flowmap_maker_simple.hda,https://wisdom.cygames.jp/pages/viewpage.action?pageId=278777859,D:/cygames/tsubasa/tools/dcc_user/maya/share/python/houdini_engine/hda_list/env/tab5/sample/scenes/flowmap_maker_simple.mb
-Smooth Normal,Sop/smooth_normal,smooth_normal.hda,https://wisdom.cygames.jp/display/tsubasa/Smooth+Normal,D:/cygames/tsubasa/tools/dcc_user/maya/share/python/houdini_engine/hda_list/env/tab5/sample/scenes/smooth_normal.mb

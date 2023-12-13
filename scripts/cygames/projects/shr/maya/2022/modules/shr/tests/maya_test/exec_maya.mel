@@ -1,4 +1,0 @@
-python("exec(compile(open(\"Z:/mtk/tools/maya/2022/modules/mtk/tests/maya_test/app.py\", \"rb\").read(), \"Z:/mtk/tools/maya/2022/modules/mtk/tests/maya_test/app.py\", \"exec\"))");
-
-
-

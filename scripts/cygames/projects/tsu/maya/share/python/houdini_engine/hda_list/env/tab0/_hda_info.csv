@@ -1,7 +1,0 @@
-<Display Name>,<Operator Name>,<HDA Name>,<Help URL>,<Sample File>
-Chipping,Sop/chipping,chipping.hda,https://wisdom.cygames.jp/display/tsubasa/Chipping,D:/cygames/tsubasa/tools/dcc_user/maya/share/python/houdini_engine/hda_list/env/tab0/sample/scenes/chipping.mb
-Tie Ropes,Sop/tieropes,tieropes.hda,https://wisdom.cygames.jp/display/tsubasa/Tie+Ropes,D:/cygames/tsubasa/tools/dcc_user/maya/share/python/houdini_engine/hda_list/env/tab0/sample/scenes/tieropes.mb
-Triangulate Mesh,Sop/triangulatemesh,triangulatemesh.hda,https://wisdom.cygames.jp/display/tsubasa/Triangulate+Mesh,D:/cygames/tsubasa/tools/dcc_user/maya/share/python/houdini_engine/hda_list/env/tab0/sample/scenes/triangulatemesh.mb
-Mesh from Heightmap,Sop/meshfromheightmap,meshfromheightmap.hda,https://wisdom.cygames.jp/display/tsubasa/Mesh+from+Heightmap,D:/cygames/tsubasa/tools/dcc_user/maya/share/python/houdini_engine/hda_list/env/tab0/sample/scenes/meshfromheightmap.mb
-Houdini Noise,Sop/houdini_noise,houdini_noise.hda,https://wisdom.cygames.jp/display/tsubasa/Houdini+Noise,D:/cygames/tsubasa/tools/dcc_user/maya/share/python/houdini_engine/hda_list/env/tab0/sample/scenes/houdini_noise.mb
-MRI Object,Sop/mri_object,mri_object.hda,https://wisdom.cygames.jp/display/tsubasa/MRI+Object,

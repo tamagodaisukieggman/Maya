@@ -1,3 +1,0 @@
-<Display Name>,<Operator Name>,<HDA Name>,<Help URL>,<Sample File>
-Fix Flipped UV,Sop/fixflippeduv,fixflippeduv.hda,https://wisdom.cygames.jp/display/tsubasa/Fix+Flipped+UV,
-Unify UV Direction,Sop/unifyuvdirection,unifyuvdirection.hda,https://wisdom.cygames.jp/display/tsubasa/Unify+UV+Direction,D:/cygames/tsubasa/tools/dcc_user/maya/share/python/houdini_engine/hda_list/env/tab3/sample/scenes/unifyuvdirection.mb

@@ -1,7 +1,0 @@
-﻿HOUDINI_VERSION: 19.5
-HOUDINI_SUB_VERSION: 403
-HOUDINI_PATH: C:/Program Files/Side Effects Software
-HOUDINI_ENGINE_PATH: C:/cygames/shrdev/shr/tools/in/ext/maya/share/packages/houdini_engine
-HDA_PATH: C:/cygames/shrdev/shr/tools/in/ext/maya/share/hda
-HOUDINI_ENGINE_TIMEOUT: 15000
-DEV_MODE: true
