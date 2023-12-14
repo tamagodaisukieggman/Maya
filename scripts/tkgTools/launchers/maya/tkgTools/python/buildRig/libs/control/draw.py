@@ -102,7 +102,7 @@ class Draw(object):
 
         return cv_pose
 
-    def create_curve(self, name="default", shape="circle", axis="y", scale=1):
+    def create_curve(self, name="default", shape="circle", axis=[0,0,0], scale=1):
         file_path = "{}/{}.json".format(SHAPE_DIR, shape)
         if os.path.isfile(file_path):
             try:
@@ -144,8 +144,7 @@ class Draw(object):
         # fix_shapes
         brCommon.fix_shapes(self.curve)
 
-        if not axis == "y":
-            self.set_axis(axis)
+        self.set_axis(axis)
 
         # Unlock RotateOrder
         cmds.setAttr(self.curve+'.rotateOrder', k=True)
@@ -175,14 +174,7 @@ class Draw(object):
             if not cmds.listRelatives(transform, ad=True):
                 cmds.delete(transform)
 
-    def set_axis(self, axis="y"):
-        axis_dict = {"x":[0,0,-90],
-                     "-x":[0,0,90],
-                     "y":[0,0,0],
-                     "-y":[0,0,180],
-                     "z":[90,0,0],
-                     "-z":[-90,0,0]}
-
-        cmds.setAttr(self.curve + ".rotate", *axis_dict[axis])
+    def set_axis(self, axis=[0,0,0]):
+        cmds.setAttr(self.curve + ".rotate", *axis)
         cmds.refresh()
         cmds.makeIdentity(self.curve, apply=True)

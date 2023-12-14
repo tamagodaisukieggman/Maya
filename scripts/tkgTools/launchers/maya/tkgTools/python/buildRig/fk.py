@@ -27,8 +27,9 @@ class Fk(brGrp.RigModule):
                  rig_ctrls_parent=None,
                  joints=None,
                  shape='cube',
-                 axis='x',
-                 scale=5):
+                 axis=[0,0,0],
+                 scale=5,
+                 prefix='FK_'):
         """
         Params:
         module = string<モジュール名を指定する>
@@ -37,7 +38,7 @@ class Fk(brGrp.RigModule):
         rig_ctrls_parent = string<コントローラをペアレントする親を指定する>
         joints = list[string]<ベースになるジョイントのリストを指定する>
         shape = string<コントローラのタイプを指定する>
-        axis = string<コントローラの向き'x', 'y', 'z'のどれかを指定する>
+        axis = list[float, float, float]
         scale = float<コントローラのサイズを指定する>
         """
         super(Fk, self).__init__(module=module,
@@ -48,6 +49,7 @@ class Fk(brGrp.RigModule):
         self.shape = shape
         self.axis = axis
         self.scale = scale
+        self.prefix = prefix
 
         self.jnt_object = None
         self.trs_object = None
@@ -71,7 +73,7 @@ class Fk(brGrp.RigModule):
         self.connection()
 
     def create_joints(self):
-        self.jnt_object = brJnt.create_joints(nodes=self.joints, prefix='FK_', suffix=None, replace=['_copy', ''])
+        self.jnt_object = brJnt.create_joints(nodes=self.joints, prefix=self.prefix, suffix=None, replace=['_copy', ''])
         for node in self.jnt_object.node_list:
             node.freezeTransform()
             node.set_preferredAngle()

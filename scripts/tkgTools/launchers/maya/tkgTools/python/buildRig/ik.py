@@ -34,22 +34,24 @@ class Ik(brGrp.RigModule):
                  rig_ctrls_parent=None,
                  joints=None,
                  ik_base_shape='cube',
-                 ik_base_axis='x',
+                 ik_base_axis=[0,0,0],
                  ik_base_scale=5,
                  ik_main_shape='jack',
-                 ik_main_axis='x',
+                 ik_main_axis=[0,0,0],
                  ik_main_scale=5,
                  ik_pv_shape='locator_3d',
-                 ik_pv_axis='x',
+                 ik_pv_axis=[0,0,0],
                  ik_pv_scale=5,
                  ik_local_shape='cube',
-                 ik_local_axis='x',
+                 ik_local_axis=[0,0,0],
                  ik_local_scale=5,
                  stretchy_axis='x',
                  softik=None,
                  solver=1,
                  dForwardAxis='x',
-                 dWorldUpAxis='z'):
+                 dWorldUpAxis='z',
+                 roll_fk_axis='z',
+                 roll_fk_ctrl_axis=[0,90,0]):
         """
         Params:
         module = string<モジュール名を指定する>
@@ -100,27 +102,33 @@ reload(brIk)
 
 
 sel = cmds.ls(os=True, type='joint')
-ik = brIk.Ik(module=None,
-             side=None,
-             rig_joints_parent=None,
-             rig_ctrls_parent=None,
-             joints=sel,
-             ik_base_shape='cube',
-             ik_base_axis='x',
-             ik_base_scale=1000,
-             ik_main_shape='jack',
-             ik_main_axis='x',
-             ik_main_scale=1000,
-             ik_pv_shape='locator_3d',
-             ik_pv_axis='x',
-             ik_pv_scale=1000,
-             ik_local_shape='cube',
-             ik_local_axis='x',
-             ik_local_scale=1000,
-             stretchy_axis='x',
-             solver=2,
-             dForwardAxis='-z',
-             dWorldUpAxis='x')
+try:
+    ik = brIk.Ik(module=None,
+                 side=None,
+                 rig_joints_parent=None,
+                 rig_ctrls_parent=None,
+                 joints=sel,
+                 ik_base_shape='cube',
+                 ik_base_axis=[0,0,0],
+                 ik_base_scale=1000,
+                 ik_main_shape='jack',
+                 ik_main_axis=[0,0,0],
+                 ik_main_scale=1000,
+                 ik_pv_shape='locator_3d',
+                 ik_pv_axis=[0,0,0],
+                 ik_pv_scale=1000,
+                 ik_local_shape='cube',
+                 ik_local_axis=[0,0,0],
+                 ik_local_scale=1000,
+                 stretchy_axis='z',
+                 solver=2,
+                 dForwardAxis='-z',
+                 dWorldUpAxis='x',
+                 roll_fk_axis='z',
+                 roll_fk_ctrl_axis=[0,90,0])
+
+except:
+    print(traceback.format_exc())
 
 ik.base_connection()
         """
@@ -168,6 +176,10 @@ ik.base_connection()
 
         self.dForwardAxis = dForwardAxis
         self.dWorldUpAxis = dWorldUpAxis
+
+        # roll fk
+        self.roll_fk_axis = roll_fk_axis
+        self.roll_fk_ctrl_axis = roll_fk_ctrl_axis
 
         # Controller
         self.draw = brDraw.Draw()
@@ -376,7 +388,7 @@ ik.base_connection()
             ik_mid_ctrls = OrderedDict()
             for i, iksj in enumerate(self.ik_spline_joints):
                 if i != 0 and i != len(self.ik_spline_joints)-1:
-                    self.draw.create_curve(name=iksj + '_CURVE', shape='octahedron', axis='y', scale=self.ik_main_scale / 1.5)
+                    self.draw.create_curve(name=iksj + '_CURVE', shape='octahedron', axis=[0,0,0], scale=self.ik_main_scale / 1.5)
                     cmds.matchTransform(self.draw.curve, iksj)
                     self.trs_object = brTrs.create_transforms(nodes=['GRP', 'OFFSET', 'SPACE', 'MOCAP', 'DRV', self.draw.curve], offsets=True,
                                                             prefix=None, suffix=None, replace=['_CURVE', '_MID_'+str(i).zfill(2)+'_CTRL'])
@@ -403,7 +415,27 @@ ik.base_connection()
                 cmds.parent(ik_mid_ctrls[fsp].nodes[0], self.ik_base_ctrl_object.nodes[-1])
 
             for bsp in back_spl:
-                cmds.parent(ik_mid_ctrls[bsp].nodes[0], self.ik_main_ctrl_object.nodes[-1])
+                cmds.parent(ik_mid_ctrls[bsp].nodes[0], self.ik_base_ctrl_object.nodes[-1])
+
+            # """
+            # constしないほうがいい？
+            # back constraint
+            back_const_fsp = front_spl[len(front_spl) - 1]
+            back_const_node = ik_mid_ctrls[back_const_fsp].nodes[-1]
+            back_parent_ctrl = None
+            for bsp in back_spl[::-1]:
+                if back_parent_ctrl:
+                    cmds.pointConstraint(back_parent_ctrl, ik_mid_ctrls[bsp].nodes[0], w=True, mo=True)
+                    cmds.pointConstraint(back_const_node, ik_mid_ctrls[bsp].nodes[0], w=True, mo=True)
+                back_parent_ctrl = ik_mid_ctrls[bsp].nodes[-1]
+
+            keys = list(ik_mid_ctrls.keys())
+            last_key = keys[-1]
+            last_mid_const_node = ik_mid_ctrls[last_key].nodes[0]
+            cmds.pointConstraint(self.ik_main_ctrl_object.nodes[-1], last_mid_const_node, w=True, mo=True)
+            cmds.pointConstraint(back_const_node, last_mid_const_node, w=True, mo=True)
+            # print('ik_mid_ctrls', ik_mid_ctrls[last_key])
+            # """
 
             if mid_spl:
                 pac_mid_spl = cmds.parentConstraint(self.ik_base_ctrl_object.nodes[-1], ik_mid_ctrls[mid_spl].nodes[0], w=True, mo=True)[0]
@@ -518,44 +550,27 @@ ik.base_connection()
         self.soft_ik_loc = create_softik(ik_ctrl=self.ik_main_ctrl_object.nodes[-1], ikhandle=self.ikh)
 
     def create_ikSpline_for_fk(self):
-        fk = brFk.Fk(module=self.module,
+        # segment fk
+        seg_fk = brFk.Fk(module=self.module,
                          side=self.side,
                          rig_joints_parent=self.rig_joints_parent,
                          rig_ctrls_parent=self.rig_ctrls_parent,
                          joints=self.ik_joints,
                          shape='cube',
-                         axis='x',
-                         scale=self.ik_main_scale / 2)
+                         axis=[0,0,0],
+                         scale=self.ik_main_scale / 2,
+                         prefix='SEG_')
 
-        [self.trs_objects.append(trs_object) for trs_object in fk.trs_objects]
-        for trs_object in fk.trs_objects:
+        [self.trs_objects.append(trs_object) for trs_object in seg_fk.trs_objects]
+        for trs_object in seg_fk.trs_objects:
             try:
                 cmds.parent(trs_object.nodes[0], self.trs_ctrl_ik.nodes[-1])
             except:
                 pass
 
-        self.ik_spline_fkik_jnts = fk.jnt_object.nodes
 
-        for ik_jnt, trs_object in zip(self.ik_joints, fk.trs_objects):
+        for ik_jnt, trs_object in zip(self.ik_joints, seg_fk.trs_objects):
             self.ik_spline_fk_ctrls.append(trs_object.nodes[-1])
-
-            # pos rot pairblend
-            # pbn = cmds.createNode('pairBlend', n=trs_object.nodes[1]+'_POS_ROT_PBN', ss=True)
-            # cmds.setAttr(pbn+'.rotInterpolation', 1)
-
-            # pos
-            # pma = cmds.createNode('plusMinusAverage', n=trs_object.nodes[1]+'_POS_ROT_PMA', ss=True)
-            # ik_jnt_local_pos = cmds.getAttr(ik_jnt+'.t')[0]
-            # ik_jnt_local_pos = [v*-1 for v in ik_jnt_local_pos]
-            # cmds.setAttr(pma+'.input3D[1]', *ik_jnt_local_pos)
-            #
-            # cmds.connectAttr(ik_jnt+'.t', pma+'.input3D[0]', f=True)
-            # cmds.connectAttr(pma+'.output3D', pbn+'.inTranslate2', f=True)
-            # cmds.connectAttr(pbn+'.outTranslate', trs_object.nodes[1]+'.t', f=True)
-
-            # rot
-            # cmds.connectAttr(ik_jnt+'.r', pbn+'.inRotate2', f=True)
-            # cmds.connectAttr(pbn+'.outRotate', trs_object.nodes[1]+'.r', f=True)
 
             cmds.pointConstraint(ik_jnt, trs_object.nodes[1], w=True)
             cmds.orientConstraint(ik_jnt, trs_object.nodes[1], w=True)
@@ -574,6 +589,52 @@ ik.base_connection()
             cmds.connectAttr(trs_object.nodes[1]+'.s', mdn+'.input2', f=True)
             cmds.connectAttr(mdn+'.output', trs_object.nodes[2]+'.s', f=True)
 
+        # roll fk
+        roll_fk = brFk.Fk(module=self.module,
+                         side=self.side,
+                         rig_joints_parent=self.rig_joints_parent,
+                         rig_ctrls_parent=self.rig_ctrls_parent,
+                         joints=self.ik_joints,
+                         shape='cylinder',
+                         axis=self.roll_fk_ctrl_axis,
+                         scale=self.ik_main_scale / 1.2,
+                         prefix='ROLL_')
+
+        [self.trs_objects.append(trs_object) for trs_object in seg_fk.trs_objects]
+
+        self.ik_spline_fkik_jnts = roll_fk.jnt_object.nodes
+
+        roll_fk_ctrl = None
+        roll_fk_length = len(roll_fk.trs_objects)
+        for i, (seg_trs_object, roll_trs_object) in enumerate(zip(seg_fk.trs_objects, roll_fk.trs_objects)):
+            try:
+                cmds.parent(roll_trs_object.nodes[0], self.trs_ctrl_ik.nodes[-1])
+            except:
+                pass
+            
+            cmds.parentConstraint(seg_trs_object.nodes[-1], roll_trs_object.nodes[0], w=True, mo=True)
+
+            if roll_fk_ctrl:
+                for j in range(roll_fk_length - i):
+                    roll_space_parent = roll_fk.trs_objects[roll_fk_length-(j+1)].nodes[0]
+
+                    roll_space = brTrs.create_transforms(nodes=['PARENT_{}_GRP'.format(str(i).zfill(2)), roll_fk.trs_objects[roll_fk_length-(j+1)].nodes[1]], offsets=True,
+                                        prefix=None, suffix=None, replace=None)
+
+                    cmds.parent(roll_space.nodes[0], roll_space_parent)
+                    cmds.parent(roll_space.nodes[1], roll_space.nodes[0])
+
+                    cmds.connectAttr(roll_fk_ctrl+'.r'+self.roll_fk_axis, roll_space.nodes[0]+'.r'+self.roll_fk_axis, f=True)
+
+                roll_fk_spaces = cmds.listRelatives(roll_trs_object.nodes[0], c=True)
+                roll_fk_spaces.sort()
+                roll_fk_parent = None
+                for rfs in roll_fk_spaces:
+                    if roll_fk_parent:
+                        cmds.parent(rfs, roll_fk_parent)
+                    roll_fk_parent = rfs
+
+            roll_fk_ctrl = roll_trs_object.nodes[-1]
 
     def create_ikSpline_sineDeformer(self):
         type = 'sine'
@@ -582,7 +643,7 @@ ik.base_connection()
         aim_con = cmds.aimConstraint(self.ik_main_ctrl_object.nodes[-1], nonLinDef[1], aimVector=[0,1,0], upVector=[0,0,1], worldUpType='vector', worldUpVector=[0,1,0])[0]
         cmds.delete(aim_con)
 
-        self.draw.create_curve(name=nonLinDef[0] + '_CURVE', shape='sphere', axis='y', scale=self.ik_main_scale / 1.5)
+        self.draw.create_curve(name=nonLinDef[0] + '_CURVE', shape='sphere', axis=[0,0,0], scale=self.ik_main_scale / 1.5)
 
         # addAttr
         cmds.addAttr(self.draw.curve, ln='envelope', at='double', dv=1, max=1, min=0, k=True)

@@ -13,6 +13,7 @@ class Node:
     def __init__(self, node=None, parent=None):
         self.node = node
         self.parent = parent
+        self.children = None
         self.full_path = None
 
         self.buf_rename = None
@@ -27,6 +28,7 @@ class Node:
 
     def get_values(self):
         self.get_parent()
+        self.get_children()
         self.get_full_path()
         self.get_wld_trs()
         self.get_jo()
@@ -35,6 +37,10 @@ class Node:
     def get_parent(self):
         parent = cmds.listRelatives(self.node, p=True, f=True) or None
         if parent: self.parent = parent[0]
+
+    def get_children(self):
+        children = cmds.listRelatives(self.node, c=True, f=True) or None
+        if children: self.children = children
 
     def get_full_path(self):
         full_path = cmds.ls(self.node, l=True) or None
