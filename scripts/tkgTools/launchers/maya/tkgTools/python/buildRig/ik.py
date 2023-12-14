@@ -2,11 +2,13 @@
 from collections import OrderedDict
 from imp import reload
 import re
+import traceback
 
 import maya.cmds as cmds
 import maya.mel as mel
 
 import buildRig.common as brCommon
+import buildRig.connecter as brConnecter
 import buildRig.node as brNode
 import buildRig.grps as brGrp
 import buildRig.joint as brJnt
@@ -15,6 +17,7 @@ import buildRig.transform as brTrs
 import buildRig.aim as brAim
 import buildRig.fk as brFk
 reload(brCommon)
+reload(brConnecter)
 reload(brNode)
 reload(brGrp)
 reload(brJnt)
@@ -86,6 +89,17 @@ ik = brIk.Ik(module=None,
              softik=True,
              solver=1)
 
+# -*- coding: utf-8 -*-
+import maya.cmds as cmds
+import maya.mel as mel
+from imp import reload
+import traceback
+
+import buildRig.ik as brIk
+reload(brIk)
+
+
+sel = cmds.ls(os=True, type='joint')
 ik = brIk.Ik(module=None,
              side=None,
              rig_joints_parent=None,
@@ -107,6 +121,8 @@ ik = brIk.Ik(module=None,
              solver=2,
              dForwardAxis='-z',
              dWorldUpAxis='x')
+
+ik.base_connection()
         """
         super(Ik, self).__init__(module=module,
                                  side=side)
@@ -125,6 +141,10 @@ ik = brIk.Ik(module=None,
         self.ik_local_shape = ik_local_shape
         self.ik_local_axis = ik_local_axis
         self.ik_local_scale = ik_local_scale
+
+        # ikSplineFkCtrls
+        self.ik_spline_fk_ctrls = []
+        self.ik_spline_fkik_jnts = []
 
         # stretchy
         self.stretchy_axis = stretchy_axis
@@ -151,6 +171,10 @@ ik = brIk.Ik(module=None,
 
         # Controller
         self.draw = brDraw.Draw()
+
+        # モジュールのノードを追加
+        self.trs_module_ik = brTrs.create_transforms(nodes=[self.module_grp, self.module_grp + '_IK'], offsets=False)
+        self.trs_ctrl_ik = brTrs.create_transforms(nodes=[self.ctrl_grp, self.ctrl_grp + '_IK'], offsets=False)
 
         self.create_ik_module()
 
@@ -358,6 +382,7 @@ ik = brIk.Ik(module=None,
                                                             prefix=None, suffix=None, replace=['_CURVE', '_MID_'+str(i).zfill(2)+'_CTRL'])
 
                     self.ik_spline_mid_ctrl = self.trs_object
+                    self.trs_objects.append(self.trs_object)
 
                     ik_mid_ctrls[iksj] = self.ik_spline_mid_ctrl
                     pac_ik_mid = cmds.parentConstraint(self.ik_spline_mid_ctrl.nodes[-1], iksj, w=True, mo=True)[0]
@@ -384,7 +409,7 @@ ik = brIk.Ik(module=None,
                 pac_mid_spl = cmds.parentConstraint(self.ik_base_ctrl_object.nodes[-1], ik_mid_ctrls[mid_spl].nodes[0], w=True, mo=True)[0]
                 pac_mid_spl = cmds.parentConstraint(self.ik_main_ctrl_object.nodes[-1], ik_mid_ctrls[mid_spl].nodes[0], w=True, mo=True)[0]
                 cmds.setAttr(pac_mid_spl+'.interpType', 2)
-                cmds.parent(ik_mid_ctrls[mid_spl].nodes[0], self.rig_ctrls_parent)
+                cmds.parent(ik_mid_ctrls[mid_spl].nodes[0], self.trs_ctrl_ik.nodes[-1])
 
         #
         for trs_object in self.trs_objects:
@@ -395,9 +420,6 @@ ik = brIk.Ik(module=None,
         self.top_ik_ctrl_nodes = list(set(self.top_ik_ctrl_nodes))
 
     def create_rig_module(self):
-        self.trs_module_ik = brTrs.create_transforms(nodes=[self.module_grp, self.module_grp + '_IK'], offsets=False)
-        self.trs_ctrl_ik = brTrs.create_transforms(nodes=[self.ctrl_grp, self.ctrl_grp + '_IK'], offsets=False)
-
         # リグ用のジョイントをペアレント化させる
         if not self.rig_joints_parent:
             self.rig_joints_parent = self.trs_module_ik.nodes[-1]
@@ -410,7 +432,13 @@ ik = brIk.Ik(module=None,
             self.rig_ctrls_parent = self.trs_ctrl_ik.nodes[-1]
 
         for ctrl in self.top_ik_ctrl_nodes:
-            cmds.parent(ctrl, self.rig_ctrls_parent)
+            # ctrl_pa = cmds.listRelatives(ctrl, p=True) or None
+            # parent用に例外処理
+            try:
+                cmds.parent(ctrl, self.rig_ctrls_parent)
+            except:
+                # print(traceback.format_exc())
+                pass
 
     def stretchy(self):
         base_ctrl = self.ik_base_ctrl_object.nodes[-1]
@@ -499,12 +527,53 @@ ik = brIk.Ik(module=None,
                          axis='x',
                          scale=self.ik_main_scale / 2)
 
-        for ik_jnt, trs_object in zip(self.ik_joints, fk.trs_objects):
-            pbn = cmds.createNode('pairBlend', n=trs_object.nodes[1]+'_PBN', ss=True)
-            cmds.setAttr(pbn+'.rotInterpolation', 1)
+        [self.trs_objects.append(trs_object) for trs_object in fk.trs_objects]
+        for trs_object in fk.trs_objects:
+            try:
+                cmds.parent(trs_object.nodes[0], self.trs_ctrl_ik.nodes[-1])
+            except:
+                pass
 
-            cmds.connectAttr(ik_jnt+'.r', pbn+'.inRotate2', f=True)
-            cmds.connectAttr(pbn+'.outRotate', trs_object.nodes[1]+'.r', f=True)
+        self.ik_spline_fkik_jnts = fk.jnt_object.nodes
+
+        for ik_jnt, trs_object in zip(self.ik_joints, fk.trs_objects):
+            self.ik_spline_fk_ctrls.append(trs_object.nodes[-1])
+
+            # pos rot pairblend
+            # pbn = cmds.createNode('pairBlend', n=trs_object.nodes[1]+'_POS_ROT_PBN', ss=True)
+            # cmds.setAttr(pbn+'.rotInterpolation', 1)
+
+            # pos
+            # pma = cmds.createNode('plusMinusAverage', n=trs_object.nodes[1]+'_POS_ROT_PMA', ss=True)
+            # ik_jnt_local_pos = cmds.getAttr(ik_jnt+'.t')[0]
+            # ik_jnt_local_pos = [v*-1 for v in ik_jnt_local_pos]
+            # cmds.setAttr(pma+'.input3D[1]', *ik_jnt_local_pos)
+            #
+            # cmds.connectAttr(ik_jnt+'.t', pma+'.input3D[0]', f=True)
+            # cmds.connectAttr(pma+'.output3D', pbn+'.inTranslate2', f=True)
+            # cmds.connectAttr(pbn+'.outTranslate', trs_object.nodes[1]+'.t', f=True)
+
+            # rot
+            # cmds.connectAttr(ik_jnt+'.r', pbn+'.inRotate2', f=True)
+            # cmds.connectAttr(pbn+'.outRotate', trs_object.nodes[1]+'.r', f=True)
+
+            cmds.pointConstraint(ik_jnt, trs_object.nodes[1], w=True)
+            cmds.orientConstraint(ik_jnt, trs_object.nodes[1], w=True)
+
+            # scale direct
+            cmds.connectAttr(ik_jnt+'.s', trs_object.nodes[1]+'.s', f=True)
+            # cmds.connectAttr(ik_jnt+'.shear', trs_object.nodes[1]+'.shear', f=True)
+
+            # inverse scale
+            mdn = cmds.createNode('multiplyDivide', n=trs_object.nodes[2]+'_SCL_MDN', ss=True)
+            cmds.setAttr(mdn+'.operation', 2)
+            cmds.setAttr(mdn+'.input1X', 1)
+            cmds.setAttr(mdn+'.input1Y', 1)
+            cmds.setAttr(mdn+'.input1Z', 1)
+
+            cmds.connectAttr(trs_object.nodes[1]+'.s', mdn+'.input2', f=True)
+            cmds.connectAttr(mdn+'.output', trs_object.nodes[2]+'.s', f=True)
+
 
     def create_ikSpline_sineDeformer(self):
         type = 'sine'
@@ -539,6 +608,7 @@ ik = brIk.Ik(module=None,
 
 
         self.ik_spline_sine_ctrl = self.trs_object
+        self.trs_objects.append(self.trs_object)
 
         cmds.parent(self.ik_spline_sine_ctrl.nodes[0], self.ik_base_ctrl_object.nodes[-1])
         cmds.parent(nonLinDef[1], self.trs_module_ik.nodes[-1])
@@ -576,6 +646,18 @@ ik = brIk.Ik(module=None,
             # local pairBlend addAttr
             cmds.addAttr(self.ik_local_ctrl_object.nodes[-1], ln='autoPose', sn='ap', at='double', dv=0, max=1, min=0, k=True)
             cmds.connectAttr(self.ik_local_ctrl_object.nodes[-1]+'.ap', pbn+'.weight', f=True)
+
+    def base_connection(self, to_nodes=None, pos=True, rot=True, scl=True, mo=True):
+        if not self.solver in ['ikSplineSolver']:
+            nodes = self.ik_joints
+        else:
+            nodes = self.ik_spline_fkik_jnts
+        if not to_nodes:
+            to_nodes=self.joints
+
+        connects = brConnecter.Connecters(nodes=nodes, to_nodes=to_nodes)
+        connects.constraints_nodes(pos, rot, scl, mo)
+
 
 def create_softik_locators(start=None, end=None, startMatchFlag=None, endMatchFlag=None):
     startloc = '{0}_softik_st_loc'.format(start)

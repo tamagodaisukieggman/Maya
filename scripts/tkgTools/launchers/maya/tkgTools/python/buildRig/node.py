@@ -69,6 +69,7 @@ class Node:
         if pa:
             cmds.parent(self.node, w=True)
 
+
 class Nodes:
     def __init__(self, nodes=None):
         self.nodes = nodes

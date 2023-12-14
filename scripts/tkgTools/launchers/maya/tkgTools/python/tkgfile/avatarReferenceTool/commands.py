@@ -199,7 +199,7 @@ def replace_ref(ref_name=None, path=None, type='avatar'):
         elif type == 'prop':
             create_prop_temp_ctrls(prop_namespace=ref_name, path=path)
 
-@the_world
+# @the_world
 def delete_ref(ref_name=None):
     # 着せ替えの削除
     joint_connection(namespace=ref_name, connect=False)
