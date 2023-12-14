@@ -6,11 +6,13 @@ import re
 import maya.cmds as cmds
 import maya.mel as mel
 
+import buildRig.connecter as brConnecter
 import buildRig.node as brNode
 import buildRig.grps as brGrp
 import buildRig.joint as brJnt
 import buildRig.libs.control.draw as brDraw
 import buildRig.transform as brTrs
+reload(brConnecter)
 reload(brNode)
 reload(brGrp)
 reload(brJnt)
@@ -56,6 +58,10 @@ class Fk(brGrp.RigModule):
         # Controller
         self.draw = brDraw.Draw()
 
+        # モジュールのノードを追加
+        self.trs_module_fk = brTrs.create_transforms(nodes=[self.module_grp, self.module_grp + '_FK'], offsets=False)
+        self.trs_ctrl_fk = brTrs.create_transforms(nodes=[self.ctrl_grp, self.ctrl_grp + '_FK'], offsets=False)
+
         self.create_fk_module()
 
     def create_fk_module(self):
@@ -92,9 +98,6 @@ class Fk(brGrp.RigModule):
         self.top_fk_ctrl_nodes = list(set(self.top_fk_ctrl_nodes))
 
     def create_rig_module(self):
-        self.trs_module_fk = brTrs.create_transforms(nodes=[self.module_grp, self.module_grp + '_FK'], offsets=False)
-        self.trs_ctrl_fk = brTrs.create_transforms(nodes=[self.ctrl_grp, self.ctrl_grp + '_FK'], offsets=False)
-
         # リグ用のジョイントをペアレント化させる
         if not self.rig_joints_parent:
             self.rig_joints_parent = self.trs_module_fk.nodes[-1]
@@ -113,6 +116,8 @@ class Fk(brGrp.RigModule):
         for ctrl_object, jnt in zip(self.trs_objects, self.jnt_object.nodes):
             ctrl = ctrl_object.nodes[-1]
 
+            """
+            splineIKのFKコントローラが機能しないので普通にコンストしてみる
             # pairBlend
             pbn = cmds.createNode('pairBlend', n=jnt+'_PBN', ss=True)
 
@@ -127,6 +132,19 @@ class Fk(brGrp.RigModule):
             cmds.connectAttr(jnt+'.rotateOrder', pbn+'.rotateOrder', f=True)
 
             cmds.connectAttr(ctrl+'.s', jnt+'.s', f=True)
+            """
 
             #
             cmds.pointConstraint(ctrl, jnt, w=True)
+            cmds.orientConstraint(ctrl, jnt, w=True)
+
+            cmds.connectAttr(ctrl+'.s', jnt+'.s', f=True)
+            cmds.connectAttr(ctrl+'.shear', jnt+'.shear', f=True)
+            # cmds.scaleConstraint(ctrl, jnt, w=True)
+
+    def base_connection(self, to_nodes=None, pos=True, rot=True, scl=True, mo=True):
+        if not to_nodes:
+            to_nodes=self.joints
+
+        connects = brConnecter.Connecters(nodes=self.jnt_object.nodes, to_nodes=to_nodes)
+        connects.constraints_nodes(pos, rot, scl, mo)

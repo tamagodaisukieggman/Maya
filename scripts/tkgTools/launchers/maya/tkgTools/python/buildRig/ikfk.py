@@ -7,6 +7,7 @@ import maya.cmds as cmds
 import maya.mel as mel
 
 import buildRig.common as brCommon
+import buildRig.connecter as brConnecter
 import buildRig.node as brNode
 import buildRig.grps as brGrp
 import buildRig.joint as brJnt
@@ -17,6 +18,7 @@ import buildRig.fk as brFk
 import buildRig.ik as brIk
 import buildRig.switch as brSwitch
 reload(brCommon)
+reload(brConnecter)
 reload(brNode)
 reload(brGrp)
 reload(brJnt)
@@ -46,6 +48,7 @@ class Ikfk(brGrp.RigModule):
                  ik_local_shape='cube',
                  ik_local_axis='x',
                  ik_local_scale=10,
+                 stretchy_axis='x',
                  ik_solver=1,
                  dForwardAxis='-z',
                  dWorldUpAxis='x',
@@ -94,6 +97,7 @@ ikfk = brIkfk.Ikfk(module=None,
                  ik_local_shape='cube',
                  ik_local_axis='x',
                  ik_local_scale=700,
+                 stretchy_axis='x',
                  ik_solver=1,
                  dForwardAxis='-z',
                  dWorldUpAxis='x',
@@ -132,6 +136,7 @@ ikfk = brIkfk.Ikfk(module=None,
         self.ik_local_shape = ik_local_shape
         self.ik_local_axis = ik_local_axis
         self.ik_local_scale = ik_local_scale
+        self.stretchy_axis = stretchy_axis
         self.ik_solver = ik_solver
         self.dForwardAxis = dForwardAxis
         self.dWorldUpAxis = dWorldUpAxis
@@ -179,6 +184,7 @@ ikfk = brIkfk.Ikfk(module=None,
                      ik_local_shape=self.ik_local_shape,
                      ik_local_axis=self.ik_local_axis,
                      ik_local_scale=self.ik_local_scale,
+                     stretchy_axis=self.stretchy_axis,
                      solver=self.ik_solver,
                      dForwardAxis=self.dForwardAxis,
                      dWorldUpAxis=self.dWorldUpAxis)

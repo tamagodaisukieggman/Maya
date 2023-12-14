@@ -67,6 +67,10 @@ class Switch(brGrp.RigModule):
         # Controller
         self.draw = brDraw.Draw()
 
+        # モジュールのノードを追加
+        self.trs_module_switch = brTrs.create_transforms(nodes=[self.module_grp, self.module_grp + '_' + self.rig_type], offsets=False)
+        self.trs_ctrl_switch = brTrs.create_transforms(nodes=[self.ctrl_grp, self.ctrl_grp + '_' + self.rig_type], offsets=False)
+
         self.create_switch_module()
 
     def create_switch_module(self):
@@ -102,9 +106,6 @@ class Switch(brGrp.RigModule):
         self.top_switch_ctrl_nodes = list(set(self.top_switch_ctrl_nodes))
 
     def create_rig_module(self):
-        self.trs_module_switch = brTrs.create_transforms(nodes=[self.module_grp, self.module_grp + '_' + self.rig_type], offsets=False)
-        self.trs_ctrl_switch = brTrs.create_transforms(nodes=[self.ctrl_grp, self.ctrl_grp + '_' + self.rig_type], offsets=False)
-
         # リグ用のジョイントをペアレント化させる
         if not self.rig_joints_parent:
             self.rig_joints_parent = self.trs_module_switch.nodes[-1]
@@ -144,6 +145,8 @@ class Switch(brGrp.RigModule):
         cmds.addAttr(self.switch_ctrl_object.nodes[-1], ln='switch', sn='swh', at='double', dv=0, max=1, min=0, k=True)
 
         for i, (fk_jnt, ik_jnt, switch_jnt) in enumerate(zip(self.switch_fk_joints, self.switch_ik_joints, self.jnt_object.nodes)):
+            ##################
+            # orientConstraint
             pac = cmds.orientConstraint(fk_jnt, switch_jnt, w=True)[0]
             cmds.orientConstraint(ik_jnt, switch_jnt, w=True)[0]
             cmds.setAttr(pac+'.interpType', 2)
@@ -153,10 +156,41 @@ class Switch(brGrp.RigModule):
             [cmds.connectAttr(pac+'.w1', s+'.v', f=True) for s in self.ik_ctrl_shapes]
 
             # FK connection
-            rev = cmds.createNode('reverse', n=switch_jnt + '_REV', ss=True)
+            rev = cmds.createNode('reverse', n=switch_jnt + '_ROT_REV', ss=True)
             cmds.connectAttr(self.switch_ctrl_object.nodes[-1]+'.swh', rev+'.inputX', f=True)
             cmds.connectAttr(rev+'.outputX', pac+'.w0', f=True)
             [cmds.connectAttr(pac+'.w0', s+'.v', f=True) for s in self.fk_ctrl_shapes]
+
+            ##################
+            # pointConstraint
+            pac = cmds.pointConstraint(fk_jnt, switch_jnt, w=True)[0]
+            cmds.pointConstraint(ik_jnt, switch_jnt, w=True)[0]
+
+            # IK connection
+            cmds.connectAttr(self.switch_ctrl_object.nodes[-1]+'.swh', pac+'.w1', f=True)
+            [cmds.connectAttr(pac+'.w1', s+'.v', f=True) for s in self.ik_ctrl_shapes]
+
+            # FK connection
+            rev = cmds.createNode('reverse', n=switch_jnt + '_POS_REV', ss=True)
+            cmds.connectAttr(self.switch_ctrl_object.nodes[-1]+'.swh', rev+'.inputX', f=True)
+            cmds.connectAttr(rev+'.outputX', pac+'.w0', f=True)
+            [cmds.connectAttr(pac+'.w0', s+'.v', f=True) for s in self.fk_ctrl_shapes]
+
+            ##################
+            # scaleConstraint
+            pac = cmds.scaleConstraint(fk_jnt, switch_jnt, w=True)[0]
+            cmds.scaleConstraint(ik_jnt, switch_jnt, w=True)[0]
+
+            # IK connection
+            cmds.connectAttr(self.switch_ctrl_object.nodes[-1]+'.swh', pac+'.w1', f=True)
+            [cmds.connectAttr(pac+'.w1', s+'.v', f=True) for s in self.ik_ctrl_shapes]
+
+            # FK connection
+            rev = cmds.createNode('reverse', n=switch_jnt + '_SCL_REV', ss=True)
+            cmds.connectAttr(self.switch_ctrl_object.nodes[-1]+'.swh', rev+'.inputX', f=True)
+            cmds.connectAttr(rev+'.outputX', pac+'.w0', f=True)
+            [cmds.connectAttr(pac+'.w0', s+'.v', f=True) for s in self.fk_ctrl_shapes]
+
 
         # for ctrl_object, jnt in zip(self.trs_objects, self.jnt_object.nodes):
         #     ctrl = ctrl_object.nodes[-1]
