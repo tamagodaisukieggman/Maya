@@ -100,7 +100,7 @@ import traceback
 import buildRig.ik as brIk
 reload(brIk)
 
-
+# tails
 sel = cmds.ls(os=True, type='joint')
 try:
     ik = brIk.Ik(module=None,
@@ -131,6 +131,81 @@ except:
     print(traceback.format_exc())
 
 ik.base_connection()
+
+
+# -*- coding: utf-8 -*-
+import maya.cmds as cmds
+import maya.mel as mel
+from imp import reload
+import traceback
+
+import buildRig.ik as brIk
+reload(brIk)
+
+# spine - head
+sel = cmds.ls(os=True, type='joint')
+try:
+    ik = brIk.Ik(module=None,
+                 side=None,
+                 rig_joints_parent=None,
+                 rig_ctrls_parent=None,
+                 joints=sel,
+                 ik_base_shape='cube',
+                 ik_base_axis=[0,0,0],
+                 ik_base_scale=1000,
+                 ik_main_shape='jack',
+                 ik_main_axis=[0,0,0],
+                 ik_main_scale=1000,
+                 ik_pv_shape='locator_3d',
+                 ik_pv_axis=[0,0,0],
+                 ik_pv_scale=1000,
+                 ik_local_shape='cube',
+                 ik_local_axis=[0,0,0],
+                 ik_local_scale=1000,
+                 stretchy_axis='y',
+                 solver=2,
+                 dForwardAxis='-z',
+                 dWorldUpAxis='x',
+                 roll_fk_axis='y',
+                 roll_fk_ctrl_axis=[0,0,90])
+
+except:
+    print(traceback.format_exc())
+
+ik.base_connection()
+
+# WingA
+sel = cmds.ls(os=True, type='joint')
+try:
+    ik = brIk.Ik(module=None,
+                 side=None,
+                 rig_joints_parent=None,
+                 rig_ctrls_parent=None,
+                 joints=sel,
+                 ik_base_shape='cube',
+                 ik_base_axis=[0,0,0],
+                 ik_base_scale=1000,
+                 ik_main_shape='jack',
+                 ik_main_axis=[0,0,0],
+                 ik_main_scale=1000,
+                 ik_pv_shape='locator_3d',
+                 ik_pv_axis=[0,0,0],
+                 ik_pv_scale=1000,
+                 ik_local_shape='cube',
+                 ik_local_axis=[0,0,0],
+                 ik_local_scale=1000,
+                 stretchy_axis='x',
+                 solver=2,
+                 dForwardAxis='x',
+                 dWorldUpAxis='y',
+                 roll_fk_axis='x',
+                 roll_fk_ctrl_axis=[0,0,0])
+
+except:
+    print(traceback.format_exc())
+
+ik.base_connection()
+
         """
         super(Ik, self).__init__(module=module,
                                  side=side)
@@ -420,26 +495,27 @@ ik.base_connection()
             # """
             # constしないほうがいい？
             # back constraint
-            back_const_fsp = front_spl[len(front_spl) - 1]
-            back_const_node = ik_mid_ctrls[back_const_fsp].nodes[-1]
-            back_parent_ctrl = None
-            for bsp in back_spl[::-1]:
-                if back_parent_ctrl:
-                    cmds.pointConstraint(back_parent_ctrl, ik_mid_ctrls[bsp].nodes[0], w=True, mo=True)
-                    cmds.pointConstraint(back_const_node, ik_mid_ctrls[bsp].nodes[0], w=True, mo=True)
-                back_parent_ctrl = ik_mid_ctrls[bsp].nodes[-1]
+            if front_spl:
+                back_const_fsp = front_spl[len(front_spl) - 1]
+                back_const_node = ik_mid_ctrls[back_const_fsp].nodes[-1]
+                back_parent_ctrl = None
+                for bsp in back_spl[::-1]:
+                    if back_parent_ctrl:
+                        cmds.pointConstraint(back_parent_ctrl, ik_mid_ctrls[bsp].nodes[0], w=True, mo=True)
+                        cmds.pointConstraint(back_const_node, ik_mid_ctrls[bsp].nodes[0], w=True, mo=True)
+                    back_parent_ctrl = ik_mid_ctrls[bsp].nodes[-1]
 
-            keys = list(ik_mid_ctrls.keys())
-            last_key = keys[-1]
-            last_mid_const_node = ik_mid_ctrls[last_key].nodes[0]
-            cmds.pointConstraint(self.ik_main_ctrl_object.nodes[-1], last_mid_const_node, w=True, mo=True)
-            cmds.pointConstraint(back_const_node, last_mid_const_node, w=True, mo=True)
-            # print('ik_mid_ctrls', ik_mid_ctrls[last_key])
-            # """
+                keys = list(ik_mid_ctrls.keys())
+                last_key = keys[-1]
+                last_mid_const_node = ik_mid_ctrls[last_key].nodes[0]
+                cmds.pointConstraint(self.ik_main_ctrl_object.nodes[-1], last_mid_const_node, w=True, mo=True)
+                cmds.pointConstraint(back_const_node, last_mid_const_node, w=True, mo=True)
+                # print('ik_mid_ctrls', ik_mid_ctrls[last_key])
+                # """
 
             if mid_spl:
                 pac_mid_spl = cmds.parentConstraint(self.ik_base_ctrl_object.nodes[-1], ik_mid_ctrls[mid_spl].nodes[0], w=True, mo=True)[0]
-                pac_mid_spl = cmds.parentConstraint(self.ik_main_ctrl_object.nodes[-1], ik_mid_ctrls[mid_spl].nodes[0], w=True, mo=True)[0]
+                # pac_mid_spl = cmds.parentConstraint(self.ik_main_ctrl_object.nodes[-1], ik_mid_ctrls[mid_spl].nodes[0], w=True, mo=True)[0]
                 cmds.setAttr(pac_mid_spl+'.interpType', 2)
                 cmds.parent(ik_mid_ctrls[mid_spl].nodes[0], self.trs_ctrl_ik.nodes[-1])
 
@@ -536,7 +612,8 @@ ik.base_connection()
         cmds.connectAttr(shrink_bta+'.output', cdn+'.colorIfTrueR', f=True)
 
         for ikj in self.ik_joints:
-            cmds.connectAttr(cdn+'.outColorR', ikj+'.s'+self.stretchy_axis, f=True)
+            if not ikj == self.ik_joints[-1]:
+                cmds.connectAttr(cdn+'.outColorR', ikj+'.s'+self.stretchy_axis, f=True)
 
         # addAttr
         cmds.addAttr(main_ctrl, ln='stretchy', at='double', dv=0, max=1, min=0, k=True)
@@ -611,7 +688,7 @@ ik.base_connection()
                 cmds.parent(roll_trs_object.nodes[0], self.trs_ctrl_ik.nodes[-1])
             except:
                 pass
-            
+
             cmds.parentConstraint(seg_trs_object.nodes[-1], roll_trs_object.nodes[0], w=True, mo=True)
 
             if roll_fk_ctrl:
@@ -708,7 +785,7 @@ ik.base_connection()
             cmds.addAttr(self.ik_local_ctrl_object.nodes[-1], ln='autoPose', sn='ap', at='double', dv=0, max=1, min=0, k=True)
             cmds.connectAttr(self.ik_local_ctrl_object.nodes[-1]+'.ap', pbn+'.weight', f=True)
 
-    def base_connection(self, to_nodes=None, pos=True, rot=True, scl=True, mo=True):
+    def base_connection(self, to_nodes=None, pos=True, rot=True, scl=True, mo=True, stretchy_axis='x'):
         if not self.solver in ['ikSplineSolver']:
             nodes = self.ik_joints
         else:
@@ -717,7 +794,7 @@ ik.base_connection()
             to_nodes=self.joints
 
         connects = brConnecter.Connecters(nodes=nodes, to_nodes=to_nodes)
-        connects.constraints_nodes(pos, rot, scl, mo)
+        connects.constraints_nodes(pos, rot, scl, mo, self.stretchy_axis)
 
 
 def create_softik_locators(start=None, end=None, startMatchFlag=None, endMatchFlag=None):

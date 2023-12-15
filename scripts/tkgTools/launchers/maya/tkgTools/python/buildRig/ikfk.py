@@ -52,6 +52,8 @@ class Ikfk(brGrp.RigModule):
                  ik_solver=1,
                  dForwardAxis='-z',
                  dWorldUpAxis='x',
+                 roll_fk_axis='x',
+                 roll_fk_ctrl_axis=[0,0,0],
 
                  fk_rig_joints_parent=None,
                  fk_rig_ctrls_parent=None,
@@ -101,6 +103,8 @@ ikfk = brIkfk.Ikfk(module=None,
                  ik_solver=1,
                  dForwardAxis='-z',
                  dWorldUpAxis='x',
+                 roll_fk_axis='x',
+                 roll_fk_ctrl_axis=[0,0,0])
 
                  fk_rig_joints_parent=None,
                  fk_rig_ctrls_parent=None,
@@ -140,6 +144,8 @@ ikfk = brIkfk.Ikfk(module=None,
         self.ik_solver = ik_solver
         self.dForwardAxis = dForwardAxis
         self.dWorldUpAxis = dWorldUpAxis
+        self.roll_fk_axis = roll_fk_axis
+        self.roll_fk_ctrl_axis = roll_fk_ctrl_axis
 
         # FK module settings
         self.fk_rig_joints_parent = fk_rig_joints_parent
@@ -187,7 +193,9 @@ ikfk = brIkfk.Ikfk(module=None,
                      stretchy_axis=self.stretchy_axis,
                      solver=self.ik_solver,
                      dForwardAxis=self.dForwardAxis,
-                     dWorldUpAxis=self.dWorldUpAxis)
+                     dWorldUpAxis=self.dWorldUpAxis,
+                     roll_fk_axis = self.roll_fk_axis,
+                     roll_fk_ctrl_axis = self.roll_fk_ctrl_axis)
 
     def create_fk_module(self):
         self.fk = brFk.Fk(module=self.module,
@@ -216,3 +224,11 @@ ikfk = brIkfk.Ikfk(module=None,
 
     def connection(self):
         pass
+
+    def base_connection(self, to_nodes=None, pos=True, rot=True, scl=True, mo=True):
+        nodes = self.switch.jnt_object.nodes
+        if not to_nodes:
+            to_nodes=self.switch_joints
+
+        connects = brConnecter.Connecters(nodes=nodes, to_nodes=to_nodes)
+        connects.constraints_nodes(pos, rot, scl, mo)

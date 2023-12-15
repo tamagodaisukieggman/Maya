@@ -26,12 +26,13 @@ class Switch(brGrp.RigModule):
                  rig_type='IKFK',
                  joints=None,
                  shape='switch',
-                 axis='x',
+                 axis=[0,0,0],
                  scale=5,
                  switch_fk_joints=None,
                  switch_fk_ctrls=None,
                  switch_ik_joints=None,
-                 switch_ik_ctrls=None):
+                 switch_ik_ctrls=None,
+                 stretchy_axis='x'):
         """
         Params:
         module = string<モジュール名を指定する>
@@ -63,6 +64,9 @@ class Switch(brGrp.RigModule):
         self.switch_fk_ctrls = switch_fk_ctrls
         self.switch_ik_joints = switch_ik_joints
         self.switch_ik_ctrls = switch_ik_ctrls
+
+        # stretchy
+        self.stretchy_axis = stretchy_axis
 
         # Controller
         self.draw = brDraw.Draw()
@@ -140,6 +144,9 @@ class Switch(brGrp.RigModule):
                             self.ik_ctrl_shapes.append(iks)
 
     def connection(self):
+        skip_ops = ['x', 'y', 'z']
+        skip_ops.remove(self.stretchy_axis)
+
         cmds.pointConstraint(self.jnt_object.nodes[-1], self.top_switch_ctrl_nodes[0], w=True)
 
         cmds.addAttr(self.switch_ctrl_object.nodes[-1], ln='switch', sn='swh', at='double', dv=0, max=1, min=0, k=True)
@@ -178,8 +185,8 @@ class Switch(brGrp.RigModule):
 
             ##################
             # scaleConstraint
-            pac = cmds.scaleConstraint(fk_jnt, switch_jnt, w=True)[0]
-            cmds.scaleConstraint(ik_jnt, switch_jnt, w=True)[0]
+            pac = cmds.scaleConstraint(fk_jnt, switch_jnt, w=True, skip=skip_ops)[0]
+            cmds.scaleConstraint(ik_jnt, switch_jnt, w=True, skip=skip_ops)[0]
 
             # IK connection
             cmds.connectAttr(self.switch_ctrl_object.nodes[-1]+'.swh', pac+'.w1', f=True)

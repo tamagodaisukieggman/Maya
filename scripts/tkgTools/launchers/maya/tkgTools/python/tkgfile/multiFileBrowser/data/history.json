@@ -1,13 +1,6 @@
 {
     "Multi_File_Browser": {
         "path": [
-            "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/data/projects/wizard2/data/20231003/arisa01/scenes/pro_c_arisa01_03.ma",
-            "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/data/projects/wizard2/data/20231003/arisa01/scenes/pro_c_arisa01_01.ma",
-            "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/data/projects/wizard2/data/20231003/arisa01/scenes/pro_c_arisa01_02.ma",
-            "//cydrive01/104_projects/148_wizard2/30_design/02_3DCG/03_motion/check/231003/tanaka/an_p1_cmn_fishing_btl_LOOP_L_v000.ma",
-            "//cydrive01/104_projects/148_wizard2/30_design/02_3DCG/05_rig/to_mot/tap_gimic/20231003/231003/BGb00001_TapGimic_test01_t01.ma",
-            "//cydrive01/104_projects/148_wizard2/99_other/10_tsuruda_ryota/to_3d/to_takagi/231003/BGb00001_TapGimic_test01_t01.ma",
-            "//cydrive01/104_projects/148_wizard2/30_design/02_3DCG/05_rig/to_mot/tap_gimmick/20231003/BGb00001_TapGimic_test01_t01.ma",
             "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/scripts/build/types/biped/wizard2_base_00_000/000_data/rig/20231004/p2_rig_20231004_125004830661_2022.ma",
             "C:/cygames/wiz2/team/3dcg/mot/ava/p1/cmn/scenes/an_p2_cmn_walk.ma",
             "C:/cygames/wiz2/team/3dcg/mot/ava/p2/cmn/scenes/an_p2_cmn_walk.ma",
@@ -84,7 +77,6 @@
             "F:/myTechData/Maya/scripts/tkgTools/launchers/maya/tkgTools/python/tkgRigBuild/library/buildPackage/projectName/charaType/000_data/biped_guide_000.ma",
             "C:/cygames/wiz2/team/3dcg/mot/ava/p1/cmn/scenes/an_p1_cmn_emote_001.ma",
             "C:/cygames/wiz2/team/3dcg/mot/ava/p2/cmn/scenes/an_p2_cmn_emote_502.ma",
-            "C:/cygames/wiz2/team/3dcg/mot/ava/p2/cmn/scenes/an_p2_cmn_emote_503.ma",
             "C:/cygames/wiz2/team/3dcg/rig/work/share/ply/albert01/scenes/p1_c_albert01.ma",
             "C:/cygames/wiz2/team/3dcg/chr/ply/costume/albert01/scenes/p1_c_albert01.ma",
             "C:/cygames/wiz2/team/3dcg/env/battle/BGb01/scenes/BGb00001_d025_fine_01.ma",
@@ -96,11 +88,19 @@
             "//cydrive01/104_projects/148_wizard2/99_other/01_saito_ryota/_to/to_takagi/231026/weight_hair/an_p0_h_rawcutbangs01_soft_error.ma",
             "//cydrive01/104_projects/148_wizard2/99_other/01_saito_ryota/_to/to_takagi/231026/weight_hair/an_p0_h_mediumperm01_soft_error.ma",
             "C:/cygames/wiz2/team/3dcg/chr/ply/costume/garan01/scenes/p1_c_garan01.ma",
-            "C:/cygames/wiz2/team/3dcg/mot/ava/p2/cmn/scenes/an_p2_cmn_emote_505.ma",
             "C:/cygames/wiz2/team/3dcg/chr/ply/bottoms/pleatedskirt01/scenes/p2_b_pleatedskirt01.ma",
             "c:\\cygames\\wiz2\\team\\3dcg\\chr\\ply\\bottoms\\frillyskirt01\\scenes\\p2_b_frillyskirt01.ma",
             "C:/cygames/wiz2/team/3dcg/chr/ply/bottoms/frillyskirt01/scenes/p2_b_frillyskirt01.ma",
-            "F:/Google Drive/マイドライブ/CG/maya/rig/library/sheriff_public.ma"
+            "F:/Google Drive/マイドライブ/CG/maya/rig/library/sheriff_public.ma",
+            "C:/cygames/wiz2/team/3dcg/mot/ava/p2/cmn/scenes/an_p2_cmn_emote_102.ma",
+            "C:/cygames/wiz2/team/3dcg/mot/ava/p2/cmn/scenes/an_p2_cmn_emote_505.ma",
+            "//cydrive01/104_projects/148_wizard2/99_other/01_saito_ryota/_to/to_takagi/231214/an_p1_cmn_emote_503_3_fin.ma",
+            "C:/Users/CF0990/Desktop/Maya-main/sandbox/cygames/wizard2/chr/bahamut/maya/Bahamut_add_joints_cage.ma",
+            "//cydrive01/104_projects/148_wizard2/99_personal/141_石川第五郎/20231215/bahamut/maya/Bahamut.ma",
+            "C:/cygames/wiz2/team/3dcg/chr/ply/costume/erika01/scenes/p2_c_erika01.ma",
+            "C:/cygames/wiz2/team/3dcg/mot/ava/p2/cmn/scenes/an_p2_cmn_emote_503.ma",
+            "C:/cygames/wiz2/team/3dcg/chr/pro/costume/erika01/scenes/pro_c_erika01.ma",
+            "C:/cygames/wiz2/team/3dcg/rig/work/development/pro/erika01/scenes/pro_c_erika01.ma"
         ],
         "bookmark": {
             "world": {
@@ -150,6 +150,6 @@
                 ]
             }
         },
-        "curpath": "F:/Google Drive/マイドライブ/CG/maya/rig/library/sheriff_public.ma"
+        "curpath": "C:/cygames/wiz2/team/3dcg/rig/work/development/pro/erika01/scenes/pro_c_erika01.ma"
     }
 }

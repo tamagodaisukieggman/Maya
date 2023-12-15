@@ -1176,13 +1176,23 @@ class PropDialog(MayaQWidgetDockableMixin, QMainWindow):
             # pickerを起動するシグナル
             prop_ref_func_picker_btn.clicked.connect(partial(self.show_picker, prop_ref_sel_qle))
 
+
             prop_fbx_to_rig_btn = QPushButton('FBX to Rig')
             prop_ref_sel_layout.addWidget(prop_fbx_to_rig_btn)
             prop_fbx_to_rig_btn.clicked.connect(partial(self.fbx_to_rig, prop_ctrl_qle, prop_ref_sel_qle))
 
+            # FBX to Rig Layout
+            prop_fbx_to_rig_layout = QHBoxLayout(self)
+            prop_ref_sel_layout.addLayout(prop_fbx_to_rig_layout)
+
+            prop_fbx_to_rig_rot_cbox = QCheckBox('Force Rotate')
+            prop_fbx_to_rig_layout.addWidget(prop_fbx_to_rig_rot_cbox)
+            prop_fbx_to_rig_rot_cbox.setChecked(False)
+
             prop_cleanup_fbx_to_rig_btn = QPushButton('CleanUp FBX to Rig')
-            prop_ref_sel_layout.addWidget(prop_cleanup_fbx_to_rig_btn)
-            prop_cleanup_fbx_to_rig_btn.clicked.connect(partial(self.cleanup_fbx_to_rig))
+            prop_fbx_to_rig_layout.addWidget(prop_cleanup_fbx_to_rig_btn)
+
+            prop_cleanup_fbx_to_rig_btn.clicked.connect(partial(self.cleanup_fbx_to_rig, prop_ctrl_rot_cmbox, prop_fbx_to_rig_rot_cbox))
 
             self.prop_ui_object_dict[prop_ctrl]['RootCtrl'] = prop_ref_sel_root_ctrl_qle
 
@@ -1370,13 +1380,22 @@ class PropDialog(MayaQWidgetDockableMixin, QMainWindow):
             cmds.select(text, r=True)
 
     def fbx_to_rig(self, prop_ctrl_qle=None, prop_ref_sel_qle=None):
-        attach_ctrl = prop_ctrl_qle.text()
+        self.fbx_to_rig_prop_ctrl = prop_ctrl_qle.text()
+        self.fbx_to_rig_prop_ctrl_nss = '{}:'.format(':'.join(self.fbx_to_rig_prop_ctrl.split(':')[0:-1]))
         jnt = prop_ref_sel_qle.text()
+        self.fbx_to_rig_prop_ctrl_Root = jnt.split(':')[-1]
         ref_name = '{}'.format(':'.join(jnt.split(':')[0:-1]))
-        self.ftr_bake_objects, self.ftr_delete_objects = avatarReferenceTool.fbx_to_rig_for_prop(attach_ctrl=attach_ctrl, ref_name=ref_name)
+        self.ftr_bake_objects, self.ftr_delete_objects = avatarReferenceTool.fbx_to_rig_for_prop(attach_ctrl=self.fbx_to_rig_prop_ctrl, ref_name=ref_name)
 
-    def cleanup_fbx_to_rig(self):
+    def cleanup_fbx_to_rig(self, prop_ctrl_rot_cmbox=None, prop_fbx_to_rig_rot_cbox=None):
         if self.ftr_bake_objects and self.ftr_delete_objects:
+            rot_sts = prop_fbx_to_rig_rot_cbox.isChecked()
+            rot = prop_ctrl_rot_cmbox.currentText()
+            avatarReferenceTool.prop_force_match_bake(self.fbx_to_rig_prop_ctrl,
+                                                      self.fbx_to_rig_prop_ctrl_Root,
+                                                      self.fbx_to_rig_prop_ctrl_nss,
+                                                      rot_sts,
+                                                      rot)
             avatarReferenceTool.fullbake(self.ftr_bake_objects)
             [cmds.delete(n) for n in self.ftr_delete_objects if cmds.objExists(n)]
             self.ftr_bake_objects = []

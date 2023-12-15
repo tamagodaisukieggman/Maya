@@ -143,6 +143,30 @@ def the_world(func):
 
     return wrapper
 
+def bake_with_func(func):
+    # 1フレームごとに処理する
+    def wrapper(*args, **kwargs):
+        try:
+            cmds.refresh(su=1)
+
+            # get
+            start, end, animstart, animend, curtime, autoKeyState = get_animation_status()
+
+            for i in range (int(start), int(end+1)):
+                cmds.currentTime(i, e=True)
+                func(*args, **kwargs)
+
+            # set
+            set_animation_status(start, end, animstart, animend, curtime, autoKeyState)
+
+            cmds.refresh(su=0)
+
+        except:
+            cmds.refresh(su=0)
+            print(traceback.format_exc())
+
+    return wrapper
+
 @the_world
 def create_ref(ref_name=None, path=None, type='avatar'):
     # 着せ替えの作成
@@ -427,9 +451,9 @@ def fbx_to_rig_for_prop(attach_ctrl=None, ref_name=None):
             con = cmds.orientConstraint(jnt, ctrl, w=True)
             all_consts.append(con[0])
 
-            cmds.connectAttr(jnt+'.rx', ctrl+'.rx', f=True)
-            cmds.connectAttr(jnt+'.ry', ctrl+'.ry', f=True)
-            cmds.connectAttr(jnt+'.rz', ctrl+'.rz', f=True)
+            # cmds.connectAttr(jnt+'.rx', ctrl+'.rx', f=True)
+            # cmds.connectAttr(jnt+'.ry', ctrl+'.ry', f=True)
+            # cmds.connectAttr(jnt+'.rz', ctrl+'.rz', f=True)
 
             cmds.connectAttr(jnt+'.sx', ctrl+'.sx', f=True)
             cmds.connectAttr(jnt+'.sy', ctrl+'.sy', f=True)
@@ -441,6 +465,33 @@ def fbx_to_rig_for_prop(attach_ctrl=None, ref_name=None):
     [delete_objects.append(con) for con in all_consts]
 
     return bake_objects, delete_objects
+
+@bake_with_func
+def prop_force_match_bake(prop_ctrl=None, root=None, chr_nss=None, rot_sts=None, rot=None):
+    go_to_bindPose_for_rig(chr_nss)
+    go_to_bindPose_for_rig(chr_nss)
+
+    lt = cmds.xform(root, q=True, t=True)
+    lr = cmds.xform(root, q=True, ro=True)
+
+    cmds.xform(prop_ctrl, t=[0,0,0], a=True)
+    cmds.matchTransform(root, prop_ctrl, pos=True, rot=False, scl=False)
+    cmds.xform(prop_ctrl, t=lt, a=True)
+    cmds.matchTransform(root, prop_ctrl, pos=True, rot=False, scl=False)
+    cmds.setKeyframe(root, at='translate')
+    #cmds.setKeyframe(prop_ctrl, at='translate')
+
+    i = cmds.currentTime(q=True)
+    cmds.currentTime(i, e=True)
+
+    cmds.xform(prop_ctrl, t=lt, a=True)
+    cmds.xform(prop_ctrl, ro=lr, a=True)
+    if rot_sts:
+        prop_rotate_from(prop_ctrl, rot)
+    cmds.matchTransform(root, prop_ctrl, pos=True, rot=True, scl=False)
+    cmds.setKeyframe(root, at='translate')
+    cmds.setKeyframe(root, at='rotate')
+
 
 def parent_constraint(src, dst):
     pos_con = cmds.pointConstraint(src, dst, w=True)
@@ -798,36 +849,6 @@ def delete_anim_curves(nodes=None, delete_types=None):
     else:
         cmds.delete(anim_curves)
 
-def bake_with_func(func):
-    def wrapper(*args, **kwargs):
-        try:
-            cmds.refresh(su=1)
-
-            cur_time=cmds.currentTime(q=1)
-            if cmds.autoKeyframe(q=True, st=True):
-                autoKeyState = True
-            else:
-                autoKeyState = False
-
-            cmds.autoKeyframe(st=0)
-
-            start = cmds.playbackOptions(q=1, min=1)
-            end = cmds.playbackOptions(q=1, max=1)
-
-            for i in range (int(start), int(end+1)):
-                cmds.currentTime(i, e=True)
-                func(*args, **kwargs)
-
-            cmds.currentTime(cur_time)
-            cmds.autoKeyframe(state=autoKeyState)
-
-            cmds.refresh(su=0)
-
-        except:
-            cmds.refresh(su=0)
-            print(traceback.format_exc())
-
-    return wrapper
 
 def quaternionToEuler(obj=None):
     rot = cmds.xform(obj, q=True, ro=True, os=True)

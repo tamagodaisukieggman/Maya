@@ -26,7 +26,7 @@ class Connecter(brNode.Node):
         for at in attrs:
             cmds.connectAttr(self.node+'.{}'.format(at), self.to_node+'.{}'.format(at), f=True)
 
-    def constraints(self, pos=True, rot=True, scl=True, mo=False):
+    def constraints(self, pos=True, rot=True, scl=True, mo=False, stretchy_axis='x'):
         options = {
             'mo':mo
         }
@@ -36,6 +36,9 @@ class Connecter(brNode.Node):
             ori_con = cmds.orientConstraint(self.node, self.to_node, w=True, **options)[0]
             cmds.setAttr(ori_con+'.interpType', 2)
         if scl:
+            skip_ops = ['x', 'y', 'z']
+            skip_ops.remove(stretchy_axis)
+            options['skip'] = skip_ops
             cmds.scaleConstraint(self.node, self.to_node, w=True, **options)
 
 class Connecters:
@@ -54,13 +57,13 @@ class Connecters:
                 connecter = Connecter(n, tn)
                 connecter.connect_same_attrs(attrs)
 
-    def constraints_nodes(self, pos=True, rot=True, scl=True, mo=False):
+    def constraints_nodes(self, pos=True, rot=True, scl=True, mo=False, stretchy_axis='x'):
         if len(self.nodes) == 1:
             for tn in self.to_nodes:
                 for n in self.nodes:
                     connecter = Connecter(n, tn)
-                    connecter.constraints(pos, rot, scl, mo)
+                    connecter.constraints(pos, rot, scl, mo, stretchy_axis)
         else:
             for n, tn in zip(self.nodes, self.to_nodes):
                 connecter = Connecter(n, tn)
-                connecter.constraints(pos, rot, scl, mo)
+                connecter.constraints(pos, rot, scl, mo, stretchy_axis)
