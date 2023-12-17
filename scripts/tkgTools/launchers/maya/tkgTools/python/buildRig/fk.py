@@ -44,6 +44,31 @@ class Fk(brGrp.RigModule):
         shape = string<コントローラのタイプを指定する>
         axis = list[float, float, float]
         scale = float<コントローラのサイズを指定する>
+from imp import reload
+import re
+import traceback
+
+import maya.cmds as cmds
+import maya.mel as mel
+
+import buildRig.fk as brFk
+reload(brFk)
+
+try:
+    sel = cmds.ls(os=True)
+    fk = brFk.Fk(module='arm',
+                 side='left',
+                 rig_joints_parent=None,
+                 rig_ctrls_parent=None,
+                 joints=sel,
+                 shape='cube',
+                 axis=[0,0,0],
+                 scale=1000,
+                 prefix='FK_')
+except:
+    print(traceback.format_exc())
+
+fk.base_connection()
         """
         super(Fk, self).__init__(module=module,
                                  side=side)
