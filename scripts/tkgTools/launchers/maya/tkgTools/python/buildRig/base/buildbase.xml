@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<buildbasetype>
+  <characters>
+    <character charaID="chr0005" basejoint="" savefilepath="" />
+    <character charaID="chr0006" basejoint="" savefilepath="" />
+    <character charaID="p2" basejoint="" savefilepath="" />
+    <character charaID="p1" basejoint="" savefilepath="" />
+    <character charaID="armgimmick" basejoint="" savefilepath="" />
+  </characters>
+</buildbasetype>
