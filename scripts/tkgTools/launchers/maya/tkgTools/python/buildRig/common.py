@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import codecs
 from collections import OrderedDict
+import fnmatch
 from imp import reload
 import json
 import re
@@ -168,6 +169,48 @@ def fn_addNumAttr(obj=None, longName=None, shortName=None, minValue=None, maxVal
         num_att_fn.setMin(minValue)
 
     m_dependency_node.addAttribute(attr)
+
+def set_rgb_color(ctrl=None, color=[1,1,1]):
+    rgb = ("R","G","B")
+    shape = cmds.listRelatives(ctrl, s=True, f=True)[0]
+    cmds.setAttr(shape + ".overrideEnabled",1)
+    cmds.setAttr(shape + ".overrideRGBColors",1)
+    for channel, color in zip(rgb, color):
+        cmds.setAttr(shape + ".overrideColor{}".format(channel), color)
+
+def set_obj_color(obj=None, color=[0.5, 0.5, 0.5], outliner=None):
+    cmds.setAttr(obj+'.useObjectColor', 2)
+    cmds.setAttr(obj+'.wireColorRGB', *color)
+
+    if outliner:
+        cmds.setAttr(obj+'.useOutlinerColor', 1)
+        cmds.setAttr(obj+'.outlinerColor', *color)
+
+def filter_items(source_items=None, search_txt_list=None, remover=None):
+    """
+    source_items = cmds.ls(os=True, type='joint', dag=True)
+
+    search_txt_list = [
+        '*cloth_test*',
+        '*proxy_*',
+        '*ik_*'
+    ]
+
+    filtered_items = filter_items(source_items=source_items, search_txt_list=search_txt_list, remover=False)
+    """
+
+    filtered_items = list()
+    filters = list()
+    for search_txt in search_txt_list:
+        filtered = list(set(fnmatch.filter(source_items, search_txt)))
+        [filters.append(fil) for fil in filtered]
+
+    if remover:
+        [filtered_items.append(item) for item in source_items if not item in filters]
+    else:
+        [filtered_items.append(item) for item in source_items if item in filters]
+
+    return filtered_items
 
 def json_transfer(file_name=None, operation=None, export_values=None):
     if operation == 'export':

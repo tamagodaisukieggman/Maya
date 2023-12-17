@@ -7,17 +7,21 @@ import maya.cmds as cmds
 import maya.mel as mel
 
 import buildRig.connecter as brConnecter
+import buildRig.common as brCommon
 import buildRig.node as brNode
 import buildRig.grps as brGrp
 import buildRig.joint as brJnt
 import buildRig.libs.control.draw as brDraw
 import buildRig.transform as brTrs
+import buildRig.file as brFile
 reload(brConnecter)
+reload(brCommon)
 reload(brNode)
 reload(brGrp)
 reload(brJnt)
 reload(brDraw)
 reload(brTrs)
+reload(brFile)
 
 class Fk(brGrp.RigModule):
     def __init__(self,
@@ -43,6 +47,10 @@ class Fk(brGrp.RigModule):
         """
         super(Fk, self).__init__(module=module,
                                  side=side)
+        
+        self.settings = brFile.Settings()
+        self.fk_settings = self.settings.setting_dict['FK']
+
         self.rig_joints_parent = rig_joints_parent
         self.rig_ctrls_parent = rig_ctrls_parent
         self.joints = joints
@@ -81,14 +89,41 @@ class Fk(brGrp.RigModule):
         self.top_fk_joint_nodes.append(self.jnt_object.node_list[0].full_path.split('|')[1])
 
     def create_ctrls(self):
+        ctrl_names = self.fk_settings['ctrl']
+        ctrl_colors = self.fk_settings['colors']
+        color_dict = {}
+        for side, values in ctrl_colors.items():
+            filtered_items = brCommon.filter_items(source_items=self.jnt_object.nodes,
+                                                    search_txt_list=values['filter'],
+                                                    remover=False)
+            for jnt in filtered_items:
+                color_dict[jnt] = values['value']
+
         for i, jnt in enumerate(self.jnt_object.node_list):
             self.draw.create_curve(name=jnt.node + '_CURVE', shape=self.shape, axis=self.axis, scale=self.scale)
+            if jnt.node in color_dict.keys():
+                brCommon.set_rgb_color(ctrl=self.draw.curve,
+                                    color=color_dict[jnt.node])
+                brCommon.set_obj_color(obj=self.draw.curve,
+                                    color=color_dict[jnt.node],
+                                    outliner=True)
+
             cmds.matchTransform(self.draw.curve, jnt.node)
-            self.trs_object = brTrs.create_transforms(nodes=['GRP', 'OFFSET', 'SPACE', 'MOCAP', 'DRV', self.draw.curve], offsets=True,
-                                                    prefix=None, suffix=None, replace=['_CURVE', '_CTRL'])
+            nodes = self.fk_settings['offsets'] + [self.draw.curve]
+            settings = {
+                'nodes':nodes,
+                'offsets':True,
+                'prefix':ctrl_names[0],
+                'suffix':ctrl_names[1],
+                'replace':ctrl_names[2]
+            }
+            self.trs_object = brTrs.create_transforms(**settings)
             self.trs_objects.append(self.trs_object)
             if jnt.parent:
-                parent_ctrl = jnt.parent.split('|')[-1] + '_CTRL'
+                parent_ctrl = brCommon.rename(obj=jnt.parent.split('|')[-1] + '_CURVE',
+                                              prefix=ctrl_names[0],
+                                              suffix=ctrl_names[1],
+                                              replace=ctrl_names[2])
                 if cmds.objExists(parent_ctrl):
                     cmds.parent(self.trs_object.nodes[0], parent_ctrl)
 

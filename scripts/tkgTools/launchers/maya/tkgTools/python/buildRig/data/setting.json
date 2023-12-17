@@ -1,0 +1,132 @@
+{
+    "FK": {
+        "offsets": [
+            "GRP",
+            "OFFSET",
+            "SPACE",
+            "MOCAP",
+            "DRV"
+        ],
+        "ctrl": [
+            "",
+            "",
+            [
+                "_CURVE",
+                "_CTRL"
+            ]
+        ],
+        "colors": {
+            "center": {
+                "value": [
+                    1.0,
+                    1.0,
+                    0
+                ],
+                "filter": [
+                    "center",
+                    "C_*",
+                    "*_C"
+                ]
+            },
+            "left": {
+                "value": [
+                    1.0,
+                    0,
+                    0
+                ],
+                "filter": [
+                    "left",
+                    "L_*",
+                    "*_L"
+                ]
+            },
+            "right": {
+                "value": [
+                    0,
+                    0,
+                    1.0
+                ],
+                "filter": [
+                    "right",
+                    "R_*",
+                    "*_R"
+                ]
+            },
+            "other": {
+                "value": [
+                    0.5,
+                    0.5,
+                    0.8
+                ],
+                "filter": [
+                    ""
+                ]
+            }
+        }
+    },
+    "IK": {
+        "offsets": [
+            "GRP",
+            "OFFSET",
+            "SPACE",
+            "MOCAP",
+            "DRV"
+        ],
+        "ctrl": [
+            "",
+            "",
+            [
+                "_CURVE",
+                "_CTRL"
+            ]
+        ],
+        "colors": {
+            "center": {
+                "value": [
+                    1.0,
+                    1.0,
+                    0
+                ],
+                "filter": [
+                    "center",
+                    "C_*",
+                    "*_C"
+                ]
+            },
+            "left": {
+                "value": [
+                    1.0,
+                    0,
+                    0
+                ],
+                "filter": [
+                    "left",
+                    "L_*",
+                    "*_L"
+                ]
+            },
+            "right": {
+                "value": [
+                    0,
+                    0,
+                    1.0
+                ],
+                "filter": [
+                    "right",
+                    "R_*",
+                    "*_R"
+                ]
+            },
+            "other": {
+                "value": [
+                    0.5,
+                    0.5,
+                    0.8
+                ],
+                "filter": [
+                    ""
+                ]
+            }
+        }
+    }
+}

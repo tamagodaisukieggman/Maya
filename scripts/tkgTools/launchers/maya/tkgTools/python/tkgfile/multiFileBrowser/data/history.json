@@ -1,7 +1,6 @@
 {
     "Multi_File_Browser": {
         "path": [
-            "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/scripts/build/types/biped/wizard2_base_00_000/000_data/rig/20231004/p1_rig_20231004_172947687239_2022.ma",
             "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/scripts/build/types/biped/wizard2_base_00_000/000_data/rig/20231004/p1_rig_20231004_17361720382_2022.ma",
             "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/scripts/build/types/biped/wizard2_base_00_000/000_data/rig/20231004/p1_rig_20231004_174257901439_2022.ma",
             "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/scripts/build/types/biped/wizard2_base_00_000/000_data/rig/20231004/armgimmick_rig_20231004_174258561368_2022.ma",
@@ -96,11 +95,12 @@
             "F:/Google Drive/マイドライブ/CG/maya/rig/library/UltimateCopMech_Rigged_V2.mb",
             "F:/Google Drive/マイドライブ/CG/maya/rig/library/turtle_rig.mb",
             "F:/Google Drive/マイドライブ/CG/maya/rig/library/niceGuy_rig_v004.ma",
-            "F:/myTechData/Maya/sandbox/cygames/wizard2/chr/bahamut/maya/Bahamut.ma",
             "C:/Users/kesun/Documents/maya/scripts/tkgTools/tkgRig/scripts/build/types/biped/mtk_base_00_000/000_data/proxy_joints_mob99_m_000.ma",
             "C:/Users/kesun/Documents/maya/scripts/tkgTools/tkgRig/scripts/build/types/biped/mtk_base_00_000/000_data/published/200227/rig_ply00_m_000.ma",
             "F:/Google Drive/マイドライブ/CG/maya/rig/library/maya_eye_collision.mb",
-            "F:/Google Drive/マイドライブ/CG/maya/rig/library/sheriff_public.ma"
+            "F:/Google Drive/マイドライブ/CG/maya/rig/library/sheriff_public.ma",
+            "F:/myTechData/Maya/sandbox/cygames/wizard2/chr/bahamut/maya/Bahamut_joints.ma",
+            "F:/myTechData/Maya/sandbox/cygames/wizard2/chr/bahamut/maya/Bahamut.ma"
         ],
         "bookmark": {
             "world": {
@@ -150,6 +150,6 @@
                 ]
             }
         },
-        "curpath": "F:/Google Drive/マイドライブ/CG/maya/rig/library/sheriff_public.ma"
+        "curpath": "F:/myTechData/Maya/sandbox/cygames/wizard2/chr/bahamut/maya/Bahamut.ma"
     }
 }
