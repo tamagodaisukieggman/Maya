@@ -33,6 +33,7 @@ class Fk(brGrp.RigModule):
                  shape='cube',
                  axis=[0,0,0],
                  scale=5,
+                 scale_step=0,
                  prefix='FK_'):
         """
         Params:
@@ -64,6 +65,7 @@ try:
                  shape='cube',
                  axis=[0,0,0],
                  scale=1000,
+                 scale_step=0,
                  prefix='FK_')
 except:
     print(traceback.format_exc())
@@ -82,6 +84,7 @@ fk.base_connection()
         self.shape = shape
         self.axis = axis
         self.scale = scale
+        self.scale_step = scale_step
         self.prefix = prefix
 
         self.jnt_object = None
@@ -124,8 +127,10 @@ fk.base_connection()
             for jnt in filtered_items:
                 color_dict[jnt] = values['value']
 
+        scale_steps = 0
         for i, jnt in enumerate(self.jnt_object.node_list):
-            self.draw.create_curve(name=jnt.node + '_CURVE', shape=self.shape, axis=self.axis, scale=self.scale)
+            self.draw.create_curve(name=jnt.node + '_CURVE', shape=self.shape, axis=self.axis, scale=self.scale + scale_steps)
+            scale_steps += self.scale_step
             if jnt.node in color_dict.keys():
                 brCommon.set_rgb_color(ctrl=self.draw.curve,
                                     color=color_dict[jnt.node])
@@ -174,6 +179,9 @@ fk.base_connection()
 
         for ctrl in self.top_fk_ctrl_nodes:
             cmds.parent(ctrl, self.rig_ctrls_parent)
+
+    def connect_children(self):
+        pass
 
     def connection(self):
         for ctrl_object, jnt in zip(self.trs_objects, self.jnt_object.nodes):

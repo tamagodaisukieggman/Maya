@@ -61,6 +61,7 @@ class Ikfk(brGrp.RigModule):
                  fk_shape='cube',
                  fk_axis='x',
                  fk_scale=10,
+                 fk_scale_step=0,
 
                  switch_rig_joints_parent=None,
                  switch_rig_ctrls_parent=None,
@@ -157,6 +158,7 @@ except:
         self.fk_shape = fk_shape
         self.fk_axis = fk_axis
         self.fk_scale = fk_scale
+        self.fk_scale_step = fk_scale_step
 
         # Switch module settings
         self.switch_rig_joints_parent = switch_rig_joints_parent
@@ -208,7 +210,8 @@ except:
                      joints=self.fk_joints,
                      shape=self.fk_shape,
                      axis=self.fk_axis,
-                     scale=self.fk_scale)
+                     scale=self.fk_scale,
+                     scale_step=self.fk_scale_step)
 
     def create_switch_module(self):
         self.switch = brSwitch.Switch(module=self.module,

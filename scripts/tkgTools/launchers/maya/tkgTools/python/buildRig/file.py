@@ -78,7 +78,7 @@ settings.export_settings()
                 },
                 'other':{
                     'value':[0.7, 0.7, 0.1],
-                    'filter':['']
+                    'filter':['*']
                 }
             }
         }

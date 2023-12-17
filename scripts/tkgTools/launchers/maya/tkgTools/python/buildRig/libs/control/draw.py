@@ -149,6 +149,9 @@ class Draw(object):
         # Unlock RotateOrder
         cmds.setAttr(self.curve+'.rotateOrder', k=True)
 
+        # deselect
+        cmds.select(cl=True)
+
         return self.curve
 
     def combine_curves(self, curve=None, shapes=None):
