@@ -181,7 +181,20 @@ fk.base_connection()
             cmds.parent(ctrl, self.rig_ctrls_parent)
 
     def connect_children(self):
-        pass
+        first_trs_object = self.trs_objects[0]
+        first_ctrl = first_trs_object.nodes[-1]
+
+        cmds.addAttr(first_ctrl, ln='rotChildren', at='double', dv=0, k=True)
+
+        for i, trs_object in enumerate(self.trs_objects):
+            if i != 0:
+                pbn = cmds.createNode('pairBlend', n=trs_object.nodes[-2]+'_ROT_PBN', ss=True)
+                cmds.setAttr(pbn+'.rotInterpolation', 1)
+
+                cmds.connectAttr(first_ctrl+'.r', pbn+'.inRotate2', f=True)
+                cmds.connectAttr(pbn+'.outRotate', trs_object.nodes[-2]+'.r', f=True)
+
+                cmds.connectAttr(first_ctrl+'.rotChildren', pbn+'.w', f=True)
 
     def connection(self):
         for ctrl_object, jnt in zip(self.trs_objects, self.jnt_object.nodes):
