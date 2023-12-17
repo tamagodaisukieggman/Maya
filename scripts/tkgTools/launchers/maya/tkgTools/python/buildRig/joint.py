@@ -51,11 +51,17 @@ jnts.copy()
 jnts.rename(prefix='prefix_', suffix=None, replace=None)
 jnts.do_rename()
     """
-    def __init__(self, nodes=None):
+    def __init__(self, nodes=None, namespace=None):
         super(Joints, self).__init__(nodes=nodes)
         self.copies = []
+        self.namespace = namespace
+
+        if self.namespace:
+            self.nodes = [self.namespace+':'+n for n in self.nodes]
 
     def copy(self, new_name=['', '_copy', None]):
+        if self.namespace:
+            new_name[2] = [self.namespace+':', '']
         for j in self.nodes:
             jnt = Joint(j)
             jnt.duplicate(new_name)
@@ -76,8 +82,8 @@ jnts.do_rename()
             jnt = Joint(j)
             jnt.set_ssc()
 
-def create_joints(nodes=None, prefix=None, suffix=None, replace=['_copy', '']):
-    jnts = Joints(nodes=nodes)
+def create_joints(namespace=None, nodes=None, prefix=None, suffix=None, replace=['_copy', '']):
+    jnts = Joints(nodes=nodes, namespace=namespace)
     jnts.copy()
     copy_jnts = Joints(nodes=jnts.copies)
     copy_jnts.rename(prefix=prefix, suffix=suffix, replace=replace)

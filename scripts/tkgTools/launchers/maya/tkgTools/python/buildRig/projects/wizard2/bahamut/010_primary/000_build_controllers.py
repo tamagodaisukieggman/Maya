@@ -1,131 +1,54 @@
 # -*- coding: utf-8 -*-
-import maya.cmds as cmds
 from imp import reload
 import os
 import traceback
 
-import tkgRigBuild.build.buildPart as tkgPart
-import tkgRigBuild.build.rigModule as tkgModule
-reload(tkgPart)
-reload(tkgModule)
-rigModule = tkgModule.RigModule()
+import maya.cmds as cmds
+import maya.mel as mel
 
-rep_build_file = build_file.replace('\\', '/')
-data_path = '{}/{}'.format('/'.join(rep_build_file.split('/')[:-2]), '000_data')
-sandbox_path = '{}/{}'.format('/'.join(rep_build_file.split('/')[:-5]), 'sandbox')
+import buildRig.fk as brFk
+reload(brFk)
 
-mp = "c:/cygames/wiz2/team/3dcg/chr/cmn/sotai/sotai01/scenes/p2_sotai01.ma"
-gp = "{}/biped_guide_000.ma".format(data_path)
+##############
+# chr reference
+namespace = 'chr'
+rig_chara_ref_dict = {
+    'bahamut':"F:/myTechData/Maya/sandbox/cygames/wizard2/chr/bahamut/maya/Bahamut.ma"
+}
+if rig_setup_id in rig_chara_ref_dict.keys():
+    ref_path = rig_chara_ref_dict[rig_setup_id]
 
-if not os.path.isfile(mp):
-    mp = '{}/humanBody.ma'.format(sandbox_path)
+cmds.file(ref_path, ignoreVersion=True, namespace=namespace, r=True, gl=True, mergeNamespacesOnClash=True, options="v=0;")
 
-tkgPart.build_module(module_type="root", side="Cn", part="root", global_name='global',
-                root_01_name='world',
-                root_02_name='local', model_path=mp, guide_path=gp)
+##############
+# FK setup
+# tails
+tail_joints = ['Tail_01',
+ 'Tail_02',
+ 'Tail_03',
+ 'Tail_04',
+ 'Tail_05',
+ 'Tail_06',
+ 'Tail_07',
+ 'Tail_08']
+tail_fk = brFk.Fk(module='tail',
+             side='Cn',
+             rig_joints_parent=None,
+             rig_ctrls_parent=None,
+             joints=tail_joints,
+             namespace=namespace,
+             shape='cube_pointer',
+             axis=[0,90,0],
+             scale=1000,
+             scale_step=-90,
+             prefix='FK_')
 
-if mp:
-    cmds.viewFit("perspShape", fitFactor=1, all=True, animate=True)
+tail_fk.connect_children()
+tail_fk.base_connection()
 
-hip = tkgPart.build_module(module_type="hip", side="Cn", part="hip", guide_list=["proxy_Hip"])
 
-chest = tkgPart.build_module(module_type="chest", side="Cn", part="chest", guide_list=["proxy_Spine3"])
 
-spine = tkgPart.build_module(module_type="spine",
-                            side="Cn",
-                            part="spine",
-                            local_ctrl=False,
-                            joint_num=4,
-                            guide_list=["proxy_Hip",
-                                        "proxy_Spine1",
-                                        "proxy_Spine2",
-                                        "proxy_Spine3"],
-                            ctrl_scale=10)
-
-neck = tkgPart.build_module(module_type="neck",
-                            side="Cn",
-                            part="neck",
-                            guide_list=["proxy_Neck",
-                                        "proxy_Head"],
-                            ctrl_scale=10)
-
-head = tkgPart.build_module(module_type="head",
-                            side="Cn",
-                            part="head",
-                            guide_list=["proxy_Head"],
-                            ctrl_scale=40)
-
-sides = ['Lf', 'Rt']
-force_sides = ['_L', '_R']
-
-for s, fs in zip(sides, force_sides):
-    if fs == '_L':
-        edge_axis = '-x'
-    else:
-        edge_axis = 'x'
-
-    arm = tkgPart.build_module(module_type="bipedLimb",
-                              side=s, part="arm",
-            guide_list=["proxy_Arm" + fs, "proxy_Elbow" + fs, "proxy_Wrist" + fs],
-            ctrl_scale=9, fk_ctrl_edge_axis=edge_axis,
-            pv_guide='proxy_Elbow{}_match_loc'.format(fs), soft_ik=True)
-
-    clavicle = tkgPart.build_module(module_type="clavicle",
-                              side=s, part="clavicle",
-            guide_list=["proxy_Shoulder" + fs, "proxy_Arm" + fs],
-            local_orient=True,
-            ctrl_scale=9)
-
-    hand = tkgPart.build_module(module_type="hand",
-                              side=s, part="hand",
-            guide_list=["proxy_Wrist" + fs],
-            ctrl_scale=6)
-
-for s, fs in zip(sides, force_sides):
-    if fs == '_L':
-        edge_axis = '-x'
-    else:
-        edge_axis = 'x'
-
-    leg = tkgPart.build_module(module_type="bipedLimb",
-                              side=s, part="leg",
-            guide_list=["proxy_Thigh" + fs, "proxy_Knee" + fs, "proxy_Ankle" + fs],
-            ctrl_scale=9, fk_ctrl_edge_axis=edge_axis,
-            pv_guide='proxy_Knee{}_match_loc'.format(fs), soft_ik=True)
-
-    endJnt = rigModule.create_endJnt(base='proxy_Toe' + fs, wt=[0,0,5], awt_obj=None)
-    foot = tkgPart.build_module(module_type="foot",
-                              side=s, part="foot",
-            guide_list=["proxy_Ankle" + fs, "proxy_Toe" + fs, endJnt],
-            ctrl_scale=9)
-
-for s, fs in zip(sides, force_sides):
-    if fs == '_L':
-        edge_axis = '-x'
-    else:
-        edge_axis = 'x'
-
-    pinky = tkgPart.build_module(module_type="finger",
-                              side=s, part="pinky",
-            guide_list=["proxy_Pinky_01" + fs, "proxy_Pinky_02" + fs, "proxy_Pinky_03" + fs],
-            ctrl_scale=2, remove_last=False, fk_ctrl_edge_axis=edge_axis,)
-
-    ring = tkgPart.build_module(module_type="finger",
-                              side=s, part="ring",
-            guide_list=["proxy_Ring_01" + fs, "proxy_Ring_02" + fs, "proxy_Ring_03" + fs],
-            ctrl_scale=2, remove_last=False, fk_ctrl_edge_axis=edge_axis,)
-
-    middle = tkgPart.build_module(module_type="finger",
-                              side=s, part="middle",
-            guide_list=["proxy_Middle_01" + fs, "proxy_Middle_02" + fs, "proxy_Middle_03" + fs],
-            ctrl_scale=2, remove_last=False, fk_ctrl_edge_axis=edge_axis,)
-
-    index = tkgPart.build_module(module_type="finger",
-                              side=s, part="index",
-            guide_list=["proxy_Index_01" + fs, "proxy_Index_02" + fs, "proxy_Index_03" + fs],
-            ctrl_scale=2, remove_last=False, fk_ctrl_edge_axis=edge_axis,)
-
-    thumb = tkgPart.build_module(module_type="finger",
-                              side=s, part="thumb",
-            guide_list=["proxy_Thumb_01" + fs, "proxy_Thumb_02" + fs, "proxy_Thumb_03" + fs],
-            ctrl_scale=2, remove_last=False, fk_ctrl_edge_axis=edge_axis,)
+##############
+# chr parent MODEL
+ref_top_nodes = cmds.ls(rn=True, assemblies=True)
+[cmds.parent(rfn, 'MODEL') for rfn in ref_top_nodes]

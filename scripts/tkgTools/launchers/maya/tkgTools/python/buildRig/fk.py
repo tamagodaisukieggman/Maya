@@ -29,6 +29,7 @@ class Fk(brGrp.RigModule):
                  side=None,
                  rig_joints_parent=None,
                  rig_ctrls_parent=None,
+                 namespace=None,
                  joints=None,
                  shape='cube',
                  axis=[0,0,0],
@@ -61,6 +62,7 @@ try:
                  side='left',
                  rig_joints_parent=None,
                  rig_ctrls_parent=None,
+                 namespace='chr',
                  joints=sel,
                  shape='cube',
                  axis=[0,0,0],
@@ -80,6 +82,7 @@ fk.base_connection()
 
         self.rig_joints_parent = rig_joints_parent
         self.rig_ctrls_parent = rig_ctrls_parent
+        self.namespace = namespace
         self.joints = joints
         self.shape = shape
         self.axis = axis
@@ -109,7 +112,7 @@ fk.base_connection()
         self.connection()
 
     def create_joints(self):
-        self.jnt_object = brJnt.create_joints(nodes=self.joints, prefix=self.prefix, suffix=None, replace=['_copy', ''])
+        self.jnt_object = brJnt.create_joints(namespace=self.namespace, nodes=self.joints, prefix=self.prefix, suffix=None, replace=['_copy', ''])
         for node in self.jnt_object.node_list:
             node.freezeTransform()
             node.set_preferredAngle()
@@ -228,6 +231,9 @@ fk.base_connection()
 
     def base_connection(self, to_nodes=None, pos=True, rot=True, scl=True, mo=True):
         if not to_nodes:
+            if self.namespace:
+                self.joints = [self.namespace+':'+n for n in self.joints]
+
             to_nodes=self.joints
 
         connects = brConnecter.Connecters(nodes=self.jnt_object.nodes, to_nodes=to_nodes)
