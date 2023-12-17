@@ -77,7 +77,7 @@ settings.export_settings()
                     'filter':['right', 'R_*', '*_R']
                 },
                 'other':{
-                    'value':[0.5, 0.5, 0.8],
+                    'value':[0.7, 0.7, 0.1],
                     'filter':['']
                 }
             }
