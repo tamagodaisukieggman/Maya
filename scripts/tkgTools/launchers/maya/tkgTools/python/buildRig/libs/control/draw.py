@@ -17,10 +17,10 @@ reload(brNode)
 reload(brTrs)
 
 '''
-import tkgRigBuild.libs.control.draw as tkgDraw
-reload(tkgDraw)
+import buildRig.libs.control.draw as brDraw
+reload(brDraw)
 
-draw_util = tkgDraw.Draw()
+draw_util = brDraw.Draw()
 draw_util.write_curve(control=None, name=None, force=None)
 draw_util.create_curve(name="cool_name", shape="nurbsCircle3", axis="z", scale=5)
 '''
