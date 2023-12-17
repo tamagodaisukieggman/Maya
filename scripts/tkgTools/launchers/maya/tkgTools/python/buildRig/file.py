@@ -36,8 +36,6 @@ settings.export_settings()
     """
     def __init__(self):
         self.setting_dict = OrderedDict()
-        self.setting_dict['FK'] = OrderedDict()
-        self.setting_dict['IK'] = OrderedDict()
 
         DATA_PATH = DIR_PATH + '/data'
         self.setting_json = DATA_PATH + '/setting.json'
@@ -60,6 +58,10 @@ settings.export_settings()
         self.setting_dict = brCommon.json_transfer(self.setting_json, 'import')
 
     def default_settings(self):
+        self.setting_dict['FK'] = OrderedDict()
+        self.setting_dict['IK'] = OrderedDict()
+        self.setting_dict['ROOT'] = OrderedDict()
+
         names = {
             'offsets':['GRP', 'OFFSET', 'SPACE', 'MOCAP', 'DRV'],
             'ctrl':['', '', ['_CURVE', '_CTRL']],

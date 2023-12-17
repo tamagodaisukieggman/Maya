@@ -6,7 +6,9 @@ import traceback
 import maya.cmds as cmds
 import maya.mel as mel
 
+import buildRig.root as brRoot
 import buildRig.fk as brFk
+reload(brRoot)
 reload(brFk)
 
 ##############
@@ -19,6 +21,28 @@ if rig_setup_id in rig_chara_ref_dict.keys():
     ref_path = rig_chara_ref_dict[rig_setup_id]
 
 cmds.file(ref_path, ignoreVersion=True, namespace=namespace, r=True, gl=True, mergeNamespacesOnClash=True, options="v=0;")
+
+##############
+# root setup
+# roots
+root_joints = ['Global', 'Local', 'Root']
+
+try:
+    root = brRoot.Root(module='root',
+                 side='Cn',
+                 rig_joints_parent=None,
+                 rig_ctrls_parent=None,
+                 joints=root_joints,
+                 namespace=namespace,
+                 shapes=['gnomon', 'pacman', 'arrow_one_way_z'],
+                 axis=[0,0,0],
+                 scale=3000,
+                 scale_step=-500,
+                 prefix=None)
+except:
+    print(traceback.format_exc())
+
+root.base_connection()
 
 ##############
 # FK setup

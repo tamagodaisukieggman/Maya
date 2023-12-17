@@ -128,5 +128,70 @@
                 ]
             }
         }
+    },
+    "ROOT": {
+        "offsets": [
+            "GRP",
+            "OFFSET",
+            "SPACE",
+            "MOCAP",
+            "DRV"
+        ],
+        "ctrl": [
+            "",
+            "",
+            [
+                "_CURVE",
+                "_CTRL"
+            ]
+        ],
+        "colors": {
+            "center": {
+                "value": [
+                    0.199,
+                    0.108,
+                    0.315
+                ],
+                "filter": [
+                    "*Global*",
+                    "C_*",
+                    "*_C"
+                ]
+            },
+            "left": {
+                "value": [
+                    0.069,
+                    0.377,
+                    0.694
+                ],
+                "filter": [
+                    "*Local*",
+                    "L_*",
+                    "*_L"
+                ]
+            },
+            "right": {
+                "value": [
+                    1,
+                    1,
+                    0.24
+                ],
+                "filter": [
+                    "*Root*",
+                    "R_*",
+                    "*_R"
+                ]
+            },
+            "other": {
+                "value": [
+                    0.7,
+                    0.7,
+                    0.1
+                ],
+                "filter": [
+                    ""
+                ]
+            }
+        }
     }
 }
