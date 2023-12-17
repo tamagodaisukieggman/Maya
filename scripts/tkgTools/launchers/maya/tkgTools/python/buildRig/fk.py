@@ -134,6 +134,7 @@ fk.base_connection()
                                     outliner=True)
 
             cmds.matchTransform(self.draw.curve, jnt.node)
+
             nodes = self.fk_settings['offsets'] + [self.draw.curve]
             settings = {
                 'nodes':nodes,

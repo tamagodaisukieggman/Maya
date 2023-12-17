@@ -170,13 +170,18 @@ def fn_addNumAttr(obj=None, longName=None, shortName=None, minValue=None, maxVal
 
     m_dependency_node.addAttribute(attr)
 
-def set_rgb_color(ctrl=None, color=[1,1,1]):
+def set_rgb(node, color):
     rgb = ("R","G","B")
-    shape = cmds.listRelatives(ctrl, s=True, f=True)[0]
-    cmds.setAttr(shape + ".overrideEnabled",1)
-    cmds.setAttr(shape + ".overrideRGBColors",1)
     for channel, color in zip(rgb, color):
-        cmds.setAttr(shape + ".overrideColor{}".format(channel), color)
+        cmds.setAttr(node + ".overrideColor{}".format(channel), color)
+
+def set_rgb_color(ctrl=None, color=[1,1,1]):
+    # shape = cmds.listRelatives(ctrl, s=True, f=True)[0]
+    shapes = cmds.listRelatives(ctrl, s=True, f=True)
+    for shape in shapes:
+        cmds.setAttr(shape + ".overrideEnabled",1)
+        cmds.setAttr(shape + ".overrideRGBColors",1)
+        set_rgb(shape, color)
 
 def set_obj_color(obj=None, color=[0.5, 0.5, 0.5], outliner=None):
     cmds.setAttr(obj+'.useObjectColor', 2)
