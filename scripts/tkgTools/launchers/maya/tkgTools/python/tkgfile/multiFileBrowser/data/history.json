@@ -1,14 +1,6 @@
 {
     "Multi_File_Browser": {
         "path": [
-            "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/scripts/build/types/biped/wizard2_base_00_000/000_data/rig/20231004/p2_rig_20231004_125004830661_2022.ma",
-            "C:/cygames/wiz2/team/3dcg/mot/ava/p1/cmn/scenes/an_p2_cmn_walk.ma",
-            "C:/cygames/wiz2/team/3dcg/mot/ava/p2/cmn/scenes/an_p2_cmn_walk.ma",
-            "C:/cygames/wiz2/team/3dcg/rig/sandbox/mimikoko01/scenes/mimikoko01_00.ma",
-            "//cydrive01/104_projects/148_wizard2/30_design/02_3DCG/01_キャラ/モデルチェック/バトルエフェクト/ディアロジアーレ/01_check/20231003/armgimmick01/scenes/armgimmick01.ma",
-            "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/scripts/build/types/biped/wizard2_base_00_000/000_data/rig/20231004/p1_rig_20231004_170621762927_2022.ma",
-            "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/scripts/build/types/biped/wizard2_base_00_000/000_data/rig/20231004/armgimmick_rig_20231004_170622481500_2022.ma",
-            "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/scripts/build/types/biped/wizard2_base_00_000/000_data/rig/20231004/p1_rig_20231004_172645754139_2022.ma",
             "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/scripts/build/types/biped/wizard2_base_00_000/000_data/rig/20231004/p1_rig_20231004_172947687239_2022.ma",
             "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/scripts/build/types/biped/wizard2_base_00_000/000_data/rig/20231004/p1_rig_20231004_17361720382_2022.ma",
             "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/scripts/build/types/biped/wizard2_base_00_000/000_data/rig/20231004/p1_rig_20231004_174257901439_2022.ma",
@@ -91,7 +83,6 @@
             "C:/cygames/wiz2/team/3dcg/chr/ply/bottoms/pleatedskirt01/scenes/p2_b_pleatedskirt01.ma",
             "c:\\cygames\\wiz2\\team\\3dcg\\chr\\ply\\bottoms\\frillyskirt01\\scenes\\p2_b_frillyskirt01.ma",
             "C:/cygames/wiz2/team/3dcg/chr/ply/bottoms/frillyskirt01/scenes/p2_b_frillyskirt01.ma",
-            "F:/Google Drive/マイドライブ/CG/maya/rig/library/sheriff_public.ma",
             "C:/cygames/wiz2/team/3dcg/mot/ava/p2/cmn/scenes/an_p2_cmn_emote_102.ma",
             "C:/cygames/wiz2/team/3dcg/mot/ava/p2/cmn/scenes/an_p2_cmn_emote_505.ma",
             "//cydrive01/104_projects/148_wizard2/99_other/01_saito_ryota/_to/to_takagi/231214/an_p1_cmn_emote_503_3_fin.ma",
@@ -100,7 +91,16 @@
             "C:/cygames/wiz2/team/3dcg/chr/ply/costume/erika01/scenes/p2_c_erika01.ma",
             "C:/cygames/wiz2/team/3dcg/mot/ava/p2/cmn/scenes/an_p2_cmn_emote_503.ma",
             "C:/cygames/wiz2/team/3dcg/chr/pro/costume/erika01/scenes/pro_c_erika01.ma",
-            "C:/cygames/wiz2/team/3dcg/rig/work/development/pro/erika01/scenes/pro_c_erika01.ma"
+            "C:/cygames/wiz2/team/3dcg/rig/work/development/pro/erika01/scenes/pro_c_erika01.ma",
+            "F:/Google Drive/マイドライブ/CG/maya/rig/library/wyvern_download.mb",
+            "F:/Google Drive/マイドライブ/CG/maya/rig/library/UltimateCopMech_Rigged_V2.mb",
+            "F:/Google Drive/マイドライブ/CG/maya/rig/library/turtle_rig.mb",
+            "F:/Google Drive/マイドライブ/CG/maya/rig/library/niceGuy_rig_v004.ma",
+            "F:/myTechData/Maya/sandbox/cygames/wizard2/chr/bahamut/maya/Bahamut.ma",
+            "C:/Users/kesun/Documents/maya/scripts/tkgTools/tkgRig/scripts/build/types/biped/mtk_base_00_000/000_data/proxy_joints_mob99_m_000.ma",
+            "C:/Users/kesun/Documents/maya/scripts/tkgTools/tkgRig/scripts/build/types/biped/mtk_base_00_000/000_data/published/200227/rig_ply00_m_000.ma",
+            "F:/Google Drive/マイドライブ/CG/maya/rig/library/maya_eye_collision.mb",
+            "F:/Google Drive/マイドライブ/CG/maya/rig/library/sheriff_public.ma"
         ],
         "bookmark": {
             "world": {
@@ -150,6 +150,6 @@
                 ]
             }
         },
-        "curpath": "C:/cygames/wiz2/team/3dcg/rig/work/development/pro/erika01/scenes/pro_c_erika01.ma"
+        "curpath": "F:/Google Drive/マイドライブ/CG/maya/rig/library/sheriff_public.ma"
     }
 }

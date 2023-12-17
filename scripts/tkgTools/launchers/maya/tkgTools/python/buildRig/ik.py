@@ -495,29 +495,37 @@ ik.base_connection()
             # """
             # constしないほうがいい？
             # back constraint
-            if front_spl:
-                back_const_fsp = front_spl[len(front_spl) - 1]
-                back_const_node = ik_mid_ctrls[back_const_fsp].nodes[-1]
-                back_parent_ctrl = None
-                for bsp in back_spl[::-1]:
-                    if back_parent_ctrl:
-                        cmds.pointConstraint(back_parent_ctrl, ik_mid_ctrls[bsp].nodes[0], w=True, mo=True)
-                        cmds.pointConstraint(back_const_node, ik_mid_ctrls[bsp].nodes[0], w=True, mo=True)
-                    back_parent_ctrl = ik_mid_ctrls[bsp].nodes[-1]
+            # if front_spl:
+            #     back_const_fsp = front_spl[len(front_spl) - 1]
+            #     back_const_node = ik_mid_ctrls[back_const_fsp].nodes[-1]
+            #     back_parent_ctrl = None
+            #     for bsp in back_spl[::-1]:
+            #         if back_parent_ctrl:
+            #             cmds.pointConstraint(back_parent_ctrl, ik_mid_ctrls[bsp].nodes[0], w=True, mo=True)
+            #             cmds.pointConstraint(back_const_node, ik_mid_ctrls[bsp].nodes[0], w=True, mo=True)
+            #         back_parent_ctrl = ik_mid_ctrls[bsp].nodes[-1]
 
-                keys = list(ik_mid_ctrls.keys())
-                last_key = keys[-1]
-                last_mid_const_node = ik_mid_ctrls[last_key].nodes[0]
-                cmds.pointConstraint(self.ik_main_ctrl_object.nodes[-1], last_mid_const_node, w=True, mo=True)
-                cmds.pointConstraint(back_const_node, last_mid_const_node, w=True, mo=True)
-                # print('ik_mid_ctrls', ik_mid_ctrls[last_key])
-                # """
+            #     keys = list(ik_mid_ctrls.keys())
+            #     last_key = keys[-1]
+            #     last_mid_const_node = ik_mid_ctrls[last_key].nodes[0]
+            #     cmds.pointConstraint(self.ik_main_ctrl_object.nodes[-1], last_mid_const_node, w=True, mo=True)
+            #     cmds.pointConstraint(back_const_node, last_mid_const_node, w=True, mo=True)
+            #     # print('ik_mid_ctrls', ik_mid_ctrls[last_key])
+            #     # """
 
             if mid_spl:
                 pac_mid_spl = cmds.parentConstraint(self.ik_base_ctrl_object.nodes[-1], ik_mid_ctrls[mid_spl].nodes[0], w=True, mo=True)[0]
                 # pac_mid_spl = cmds.parentConstraint(self.ik_main_ctrl_object.nodes[-1], ik_mid_ctrls[mid_spl].nodes[0], w=True, mo=True)[0]
                 cmds.setAttr(pac_mid_spl+'.interpType', 2)
                 cmds.parent(ik_mid_ctrls[mid_spl].nodes[0], self.trs_ctrl_ik.nodes[-1])
+
+            # addAttr roll
+            cmds.addAttr(self.ik_main_ctrl_object.nodes[-1], ln='roll', at='double', dv=0, k=True)
+            cmds.connectAttr(self.ik_main_ctrl_object.nodes[-1]+'.roll', self.ikh+'.roll', f=True)
+
+        # addAttr twist
+        cmds.addAttr(self.ik_main_ctrl_object.nodes[-1], ln='twist', at='double', dv=0, k=True)
+        cmds.connectAttr(self.ik_main_ctrl_object.nodes[-1]+'.twist', self.ikh+'.twist', f=True)
 
         #
         for trs_object in self.trs_objects:
@@ -636,82 +644,88 @@ ik.base_connection()
                          shape='cube',
                          axis=[0,0,0],
                          scale=self.ik_main_scale / 2,
-                         prefix='SEG_')
+                         prefix='SEG_FK_')
 
         [self.trs_objects.append(trs_object) for trs_object in seg_fk.trs_objects]
-        for trs_object in seg_fk.trs_objects:
-            try:
-                cmds.parent(trs_object.nodes[0], self.trs_ctrl_ik.nodes[-1])
-            except:
-                pass
+        # for trs_object in seg_fk.trs_objects:
+        #     try:
+        #         cmds.parent(trs_object.nodes[0], self.trs_ctrl_ik.nodes[-1])
+        #     except:
+        #         pass
 
+        top_fk_trs_object = seg_fk.trs_objects[0]
 
         for ik_jnt, trs_object in zip(self.ik_joints, seg_fk.trs_objects):
             self.ik_spline_fk_ctrls.append(trs_object.nodes[-1])
 
-            cmds.pointConstraint(ik_jnt, trs_object.nodes[1], w=True)
-            cmds.orientConstraint(ik_jnt, trs_object.nodes[1], w=True)
-
-            # scale direct
+            cmds.connectAttr(ik_jnt+'.r', trs_object.nodes[1]+'.r', f=True)
             cmds.connectAttr(ik_jnt+'.s', trs_object.nodes[1]+'.s', f=True)
-            # cmds.connectAttr(ik_jnt+'.shear', trs_object.nodes[1]+'.shear', f=True)
 
-            # inverse scale
-            mdn = cmds.createNode('multiplyDivide', n=trs_object.nodes[2]+'_SCL_MDN', ss=True)
-            cmds.setAttr(mdn+'.operation', 2)
-            cmds.setAttr(mdn+'.input1X', 1)
-            cmds.setAttr(mdn+'.input1Y', 1)
-            cmds.setAttr(mdn+'.input1Z', 1)
+            # cmds.pointConstraint(ik_jnt, trs_object.nodes[1], w=True)
+            # cmds.orientConstraint(ik_jnt, trs_object.nodes[1], w=True)
 
-            cmds.connectAttr(trs_object.nodes[1]+'.s', mdn+'.input2', f=True)
-            cmds.connectAttr(mdn+'.output', trs_object.nodes[2]+'.s', f=True)
+            # # scale direct
+            # cmds.connectAttr(ik_jnt+'.s', trs_object.nodes[1]+'.s', f=True)
+            # # cmds.connectAttr(ik_jnt+'.shear', trs_object.nodes[1]+'.shear', f=True)
 
-        # roll fk
-        roll_fk = brFk.Fk(module=self.module,
-                         side=self.side,
-                         rig_joints_parent=self.rig_joints_parent,
-                         rig_ctrls_parent=self.rig_ctrls_parent,
-                         joints=self.ik_joints,
-                         shape='cylinder',
-                         axis=self.roll_fk_ctrl_axis,
-                         scale=self.ik_main_scale / 1.2,
-                         prefix='ROLL_')
+            # # inverse scale
+            # mdn = cmds.createNode('multiplyDivide', n=trs_object.nodes[2]+'_SCL_MDN', ss=True)
+            # cmds.setAttr(mdn+'.operation', 2)
+            # cmds.setAttr(mdn+'.input1X', 1)
+            # cmds.setAttr(mdn+'.input1Y', 1)
+            # cmds.setAttr(mdn+'.input1Z', 1)
 
-        [self.trs_objects.append(trs_object) for trs_object in seg_fk.trs_objects]
+            # cmds.connectAttr(trs_object.nodes[1]+'.s', mdn+'.input2', f=True)
+            # cmds.connectAttr(mdn+'.output', trs_object.nodes[2]+'.s', f=True)
 
-        self.ik_spline_fkik_jnts = roll_fk.jnt_object.nodes
+        self.ik_spline_fkik_jnts = seg_fk.jnt_object.nodes
 
-        roll_fk_ctrl = None
-        roll_fk_length = len(roll_fk.trs_objects)
-        for i, (seg_trs_object, roll_trs_object) in enumerate(zip(seg_fk.trs_objects, roll_fk.trs_objects)):
-            try:
-                cmds.parent(roll_trs_object.nodes[0], self.trs_ctrl_ik.nodes[-1])
-            except:
-                pass
+        # # roll fk
+        # roll_fk = brFk.Fk(module=self.module,
+        #                  side=self.side,
+        #                  rig_joints_parent=self.rig_joints_parent,
+        #                  rig_ctrls_parent=self.rig_ctrls_parent,
+        #                  joints=self.ik_joints,
+        #                  shape='cylinder',
+        #                  axis=self.roll_fk_ctrl_axis,
+        #                  scale=self.ik_main_scale / 1.2,
+        #                  prefix='ROLL_')
 
-            cmds.parentConstraint(seg_trs_object.nodes[-1], roll_trs_object.nodes[0], w=True, mo=True)
+        # [self.trs_objects.append(trs_object) for trs_object in seg_fk.trs_objects]
 
-            if roll_fk_ctrl:
-                for j in range(roll_fk_length - i):
-                    roll_space_parent = roll_fk.trs_objects[roll_fk_length-(j+1)].nodes[0]
+        # # self.ik_spline_fkik_jnts = roll_fk.jnt_object.nodes
 
-                    roll_space = brTrs.create_transforms(nodes=['PARENT_{}_GRP'.format(str(i).zfill(2)), roll_fk.trs_objects[roll_fk_length-(j+1)].nodes[1]], offsets=True,
-                                        prefix=None, suffix=None, replace=None)
+        # roll_fk_ctrl = None
+        # roll_fk_length = len(roll_fk.trs_objects)
+        # for i, (seg_trs_object, roll_trs_object) in enumerate(zip(seg_fk.trs_objects, roll_fk.trs_objects)):
+        #     try:
+        #         cmds.parent(roll_trs_object.nodes[0], self.trs_ctrl_ik.nodes[-1])
+        #     except:
+        #         pass
 
-                    cmds.parent(roll_space.nodes[0], roll_space_parent)
-                    cmds.parent(roll_space.nodes[1], roll_space.nodes[0])
+        #     cmds.parentConstraint(seg_trs_object.nodes[-1], roll_trs_object.nodes[0], w=True, mo=True)
 
-                    cmds.connectAttr(roll_fk_ctrl+'.r'+self.roll_fk_axis, roll_space.nodes[0]+'.r'+self.roll_fk_axis, f=True)
+        #     if roll_fk_ctrl:
+        #         for j in range(roll_fk_length - i):
+        #             roll_space_parent = roll_fk.trs_objects[roll_fk_length-(j+1)].nodes[0]
 
-                roll_fk_spaces = cmds.listRelatives(roll_trs_object.nodes[0], c=True)
-                roll_fk_spaces.sort()
-                roll_fk_parent = None
-                for rfs in roll_fk_spaces:
-                    if roll_fk_parent:
-                        cmds.parent(rfs, roll_fk_parent)
-                    roll_fk_parent = rfs
+        #             roll_space = brTrs.create_transforms(nodes=['PARENT_{}_GRP'.format(str(i).zfill(2)), roll_fk.trs_objects[roll_fk_length-(j+1)].nodes[1]], offsets=True,
+        #                                 prefix=None, suffix=None, replace=None)
 
-            roll_fk_ctrl = roll_trs_object.nodes[-1]
+        #             cmds.parent(roll_space.nodes[0], roll_space_parent)
+        #             cmds.parent(roll_space.nodes[1], roll_space.nodes[0])
+
+        #             cmds.connectAttr(roll_fk_ctrl+'.r'+self.roll_fk_axis, roll_space.nodes[0]+'.r'+self.roll_fk_axis, f=True)
+
+        #         roll_fk_spaces = cmds.listRelatives(roll_trs_object.nodes[0], c=True)
+        #         roll_fk_spaces.sort()
+        #         roll_fk_parent = None
+        #         for rfs in roll_fk_spaces:
+        #             if roll_fk_parent:
+        #                 cmds.parent(rfs, roll_fk_parent)
+        #             roll_fk_parent = rfs
+
+        #     roll_fk_ctrl = roll_trs_object.nodes[-1]
 
     def create_ikSpline_sineDeformer(self):
         type = 'sine'

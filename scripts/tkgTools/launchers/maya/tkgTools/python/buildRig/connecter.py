@@ -67,3 +67,11 @@ class Connecters:
             for n, tn in zip(self.nodes, self.to_nodes):
                 connecter = Connecter(n, tn)
                 connecter.constraints(pos, rot, scl, mo, stretchy_axis)
+
+    def connect_inverse_scale(self, ):
+        parent_fk = None
+        for n in self.nodes:
+            if parent_fk:
+                
+                cmds.connectAttr(parent_fk+'.inverseMatrix', n+'.offsetParentMatrix', f=True)
+            parent_fk = n
