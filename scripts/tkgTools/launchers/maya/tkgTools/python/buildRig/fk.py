@@ -36,7 +36,8 @@ class Fk(brGrp.RigModule):
                  axis=[0,0,0],
                  scale=5,
                  scale_step=0,
-                 prefix='FK_'):
+                 prefix='FK_',
+                 override_offsets=None):
         """
         Params:
         module = string<モジュール名を指定する>
@@ -91,6 +92,7 @@ fk.base_connection()
         self.scale = scale
         self.scale_step = scale_step
         self.prefix = prefix
+        self.override_offsets = override_offsets
 
         self.jnt_object = None
         self.trs_object = None
@@ -151,6 +153,9 @@ fk.base_connection()
                                     outliner=True)
 
             cmds.matchTransform(self.draw.curve, jnt.node)
+
+            if self.override_offsets:
+                self.fk_settings['offsets'] = self.override_offsets
 
             nodes = self.fk_settings['offsets'] + [self.draw.curve]
             settings = {

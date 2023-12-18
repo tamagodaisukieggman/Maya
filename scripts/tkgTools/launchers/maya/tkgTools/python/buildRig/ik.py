@@ -371,6 +371,10 @@ ik.base_connection()
         self.trs_objects.append(self.trs_object)
         self.ik_main_ctrl_object = self.trs_object
 
+        self.ikh_const_node = cmds.createNode('transform', n=self.ikh+'_CONST_NODE', ss=True)
+        cmds.matchTransform(self.ikh_const_node, self.ik_main_ctrl_object.nodes[-1])
+        cmds.parent(self.ikh_const_node, self.ik_main_ctrl_object.nodes[-1])
+
         # local
         self.ik_local = self.jnt_object.node_list[-1]
         self.draw.create_curve(name=self.ik_local.node + '_CURVE', shape=self.ik_local_shape, axis=self.ik_local_axis, scale=self.ik_local_scale)
@@ -559,6 +563,7 @@ ik.base_connection()
     def stretchy(self):
         base_ctrl = self.ik_base_ctrl_object.nodes[-1]
         main_ctrl = self.ik_main_ctrl_object.nodes[-1]
+        # main_ctrl = self.ikh_const_node
         ik_chain_length = brCommon.chain_length(chain_list=self.ik_joints)
 
         mdns = []
@@ -569,7 +574,7 @@ ik.base_connection()
 
         dbn = cmds.createNode('distanceBetween', n=main_ctrl+'_DBN', ss=True)
         cmds.connectAttr(base_ctrl+'.worldMatrix[0]', dbn+'.inMatrix1', f=True)
-        cmds.connectAttr(main_ctrl+'.worldMatrix[0]', dbn+'.inMatrix2', f=True)
+        cmds.connectAttr(self.ikh_const_node+'.worldMatrix[0]', dbn+'.inMatrix2', f=True)
         cmds.addAttr(dbn, ln='stretchLength', sn='sl',
                      at='double', dv=sum(ik_chain_length), max=sum(ik_chain_length), min=sum(ik_chain_length))
 
@@ -633,6 +638,209 @@ ik.base_connection()
         if self.ik_main_pac:
             cmds.delete(self.ik_main_pac)
         self.soft_ik_loc = create_softik(ik_ctrl=self.ik_main_ctrl_object.nodes[-1], ikhandle=self.ikh)
+
+    def create_roll(self):
+        in_piv = 'in_piv'
+        out_piv = 'out_piv'
+        heel_piv = 'heel_piv'
+        toe_piv = 'toe_piv'
+
+        ball = 'Character1_LeftToeBase'
+        ankle = 'Character1_LeftFoot'
+
+        ball_piv = cmds.spaceLocator(n='ball_piv')[0]
+        cmds.matchTransform(ball_piv, ball, pos=True, rot=False, scl=False)
+
+        ankle_piv = cmds.spaceLocator(n='ankle_piv')[0]
+        cmds.matchTransform(ankle_piv, ankle, pos=True, rot=False, scl=False)
+
+        toe_piv_sweivel = cmds.spaceLocator(n=toe_piv+'_sweivel')[0]
+        cmds.matchTransform(toe_piv_sweivel, toe_piv, pos=True, rot=False, scl=False)
+
+        ball_sweivel = cmds.spaceLocator(n=ball+'_sweivel')[0]
+        cmds.matchTransform(ball_sweivel, ball, pos=True, rot=False, scl=False)
+
+        roll_list = [
+            toe_piv_sweivel,
+            ball_sweivel,
+            heel_piv,
+            in_piv,
+            out_piv,
+            toe_piv,
+            ball_piv,
+            ankle_piv
+        ]
+
+        roll_jnts = []
+        parent = None
+        for n in roll_list:
+            roll_jnt = cmds.createNode('joint', n=n+'_rot', ss=True)
+            roll_jnts.append(roll_jnt)
+            cmds.matchTransform(roll_jnt, n, pos=True, rot=False, scl=False)
+            if parent:
+                cmds.parent(roll_jnt, parent)
+
+            parent = roll_jnt
+
+        cmds.makeIdentity(roll_jnts[0], apply=True, t=True, r=True, s=True, n=False, pn=True)
+
+        # 
+        ik_ctrl = 'IK_Character1_LeftFoot_MAIN_CTRL'
+        roll_parent = 'IK_Character1_LeftFoot_LOCAL_CTRL'
+
+        roll_fk = brFk.Fk(module='roll',
+                    side='Dummy',
+                    rig_joints_parent=None,
+                    rig_ctrls_parent=roll_parent,
+                    rig_ctrls_parent_const=None,
+                    joints=roll_jnts,
+                    namespace=None,
+                    shape='cube',
+                    axis=[0,0,0],
+                    scale=1,
+                    scale_step=0,
+                    prefix='ROLL_',
+                    override_offsets=['GRP', 'OFFSET', 'BANK', 'ROLL', 'SWIVEL', 'BEND'])
+
+        # foot roll
+        heel_roll_space = roll_fk.trs_objects[2].nodes[2]
+        ball_roll_space = roll_fk.trs_objects[6].nodes[2]
+
+        cmds.addAttr(ik_ctrl, ln='footRoll', at='double', dv=0, max=10, min=-10, k=True)
+
+        heel_roll_space_rmv = cmds.createNode('remapValue', n=heel_roll_space+'_RMV', ss=True)
+        cmds.setAttr(heel_roll_space_rmv+'.inputMax', -10)
+        cmds.setAttr(heel_roll_space_rmv+'.outputMax', -90)
+
+        ball_roll_space_rmv = cmds.createNode('remapValue', n=ball_roll_space+'_RMV', ss=True)
+        cmds.setAttr(ball_roll_space_rmv+'.inputMax', 10)
+        cmds.setAttr(ball_roll_space_rmv+'.outputMax', 90)
+
+        cmds.connectAttr(ik_ctrl+'.footRoll', heel_roll_space_rmv+'.inputValue', f=True)
+        cmds.connectAttr(ik_ctrl+'.footRoll', ball_roll_space_rmv+'.inputValue', f=True)
+
+        cmds.connectAttr(heel_roll_space_rmv+'.outValue', heel_roll_space+'.rx', f=True)
+        cmds.connectAttr(ball_roll_space_rmv+'.outValue', ball_roll_space+'.rx', f=True)
+
+
+        # banking
+        in_roll_space = roll_fk.trs_objects[3].nodes[2]
+        out_roll_space = roll_fk.trs_objects[4].nodes[2]
+
+        cmds.addAttr(ik_ctrl, ln='banking', at='double', dv=0, max=10, min=-10, k=True)
+
+        in_roll_space_rmv = cmds.createNode('remapValue', n=in_roll_space+'_RMV', ss=True)
+        cmds.setAttr(in_roll_space_rmv+'.inputMax', -10)
+        cmds.setAttr(in_roll_space_rmv+'.outputMax', 90)
+
+        out_roll_space_rmv = cmds.createNode('remapValue', n=out_roll_space+'_RMV', ss=True)
+        cmds.setAttr(out_roll_space_rmv+'.inputMax', 10)
+        cmds.setAttr(out_roll_space_rmv+'.outputMax', -90)
+
+        cmds.connectAttr(ik_ctrl+'.banking', in_roll_space_rmv+'.inputValue', f=True)
+        cmds.connectAttr(ik_ctrl+'.banking', out_roll_space_rmv+'.inputValue', f=True)
+
+        cmds.connectAttr(in_roll_space_rmv+'.outValue', in_roll_space+'.rz', f=True)
+        cmds.connectAttr(out_roll_space_rmv+'.outValue', out_roll_space+'.rz', f=True)
+
+        # tip
+        toe_roll_space = roll_fk.trs_objects[5].nodes[3]
+
+        cmds.addAttr(ik_ctrl, ln='tip', at='double', dv=0, max=10, min=-10, k=True)
+
+        toe_roll_space_rmv = cmds.createNode('remapValue', n=toe_roll_space+'_RMV', ss=True)
+        cmds.setAttr(toe_roll_space_rmv+'.inputMin', -10)
+        cmds.setAttr(toe_roll_space_rmv+'.inputMax', 10)
+        cmds.setAttr(toe_roll_space_rmv+'.outputMin', -90)
+        cmds.setAttr(toe_roll_space_rmv+'.outputMax', 90)
+
+        cmds.connectAttr(ik_ctrl+'.tip', toe_roll_space_rmv+'.inputValue', f=True)
+        cmds.connectAttr(toe_roll_space_rmv+'.outValue', toe_roll_space+'.rx', f=True)
+
+        # heel
+        heel_roll_space = roll_fk.trs_objects[2].nodes[3]
+
+        cmds.addAttr(ik_ctrl, ln='heel', at='double', dv=0, max=10, min=-10, k=True)
+
+        heel_roll_space_rmv = cmds.createNode('remapValue', n=heel_roll_space+'_RMV', ss=True)
+        cmds.setAttr(heel_roll_space_rmv+'.inputMin', -10)
+        cmds.setAttr(heel_roll_space_rmv+'.inputMax', 10)
+        cmds.setAttr(heel_roll_space_rmv+'.outputMin', 90)
+        cmds.setAttr(heel_roll_space_rmv+'.outputMax', -90)
+
+        cmds.connectAttr(ik_ctrl+'.heel', heel_roll_space_rmv+'.inputValue', f=True)
+        cmds.connectAttr(heel_roll_space_rmv+'.outValue', heel_roll_space+'.rx', f=True)
+
+        # heel
+        heel_sweivel_space = roll_fk.trs_objects[2].nodes[4]
+
+        cmds.addAttr(ik_ctrl, ln='heelSweivel', at='double', dv=0, max=10, min=-10, k=True)
+
+        heel_sweivel_space_rmv = cmds.createNode('remapValue', n=heel_sweivel_space+'_RMV', ss=True)
+        cmds.setAttr(heel_sweivel_space_rmv+'.inputMin', -10)
+        cmds.setAttr(heel_sweivel_space_rmv+'.inputMax', 10)
+        cmds.setAttr(heel_sweivel_space_rmv+'.outputMin', -90)
+        cmds.setAttr(heel_sweivel_space_rmv+'.outputMax', 90)
+
+        cmds.connectAttr(ik_ctrl+'.heelSweivel', heel_sweivel_space_rmv+'.inputValue', f=True)
+        cmds.connectAttr(heel_sweivel_space_rmv+'.outValue', heel_sweivel_space+'.ry', f=True)
+
+        # ball
+        ball_sweivel_space = roll_fk.trs_objects[1].nodes[4]
+
+        cmds.addAttr(ik_ctrl, ln='ballSweivel', at='double', dv=0, max=10, min=-10, k=True)
+
+        ball_sweivel_space_rmv = cmds.createNode('remapValue', n=ball_sweivel_space+'_RMV', ss=True)
+        cmds.setAttr(ball_sweivel_space_rmv+'.inputMin', -10)
+        cmds.setAttr(ball_sweivel_space_rmv+'.inputMax', 10)
+        cmds.setAttr(ball_sweivel_space_rmv+'.outputMin', -90)
+        cmds.setAttr(ball_sweivel_space_rmv+'.outputMax', 90)
+
+        cmds.connectAttr(ik_ctrl+'.ballSweivel', ball_sweivel_space_rmv+'.inputValue', f=True)
+        cmds.connectAttr(ball_sweivel_space_rmv+'.outValue', ball_sweivel_space+'.ry', f=True)
+
+        # tip
+        toe_sweivel_space = roll_fk.trs_objects[0].nodes[4]
+
+        cmds.addAttr(ik_ctrl, ln='tipSweivel', at='double', dv=0, max=10, min=-10, k=True)
+
+        toe_sweivel_space_rmv = cmds.createNode('remapValue', n=toe_sweivel_space+'_RMV', ss=True)
+        cmds.setAttr(toe_sweivel_space_rmv+'.inputMin', -10)
+        cmds.setAttr(toe_sweivel_space_rmv+'.inputMax', 10)
+        cmds.setAttr(toe_sweivel_space_rmv+'.outputMin', -90)
+        cmds.setAttr(toe_sweivel_space_rmv+'.outputMax', 90)
+
+        cmds.connectAttr(ik_ctrl+'.tipSweivel', toe_sweivel_space_rmv+'.inputValue', f=True)
+        cmds.connectAttr(toe_sweivel_space_rmv+'.outValue', toe_sweivel_space+'.ry', f=True)
+
+        # ankle
+        ankle_sweivel_space = roll_fk.trs_objects[6].nodes[4]
+
+        cmds.addAttr(ik_ctrl, ln='ankleSweivel', at='double', dv=0, max=10, min=-10, k=True)
+
+        ankle_sweivel_space_rmv = cmds.createNode('remapValue', n=ankle_sweivel_space+'_RMV', ss=True)
+        cmds.setAttr(ankle_sweivel_space_rmv+'.inputMin', -10)
+        cmds.setAttr(ankle_sweivel_space_rmv+'.inputMax', 10)
+        cmds.setAttr(ankle_sweivel_space_rmv+'.outputMin', -90)
+        cmds.setAttr(ankle_sweivel_space_rmv+'.outputMax', 90)
+
+        cmds.connectAttr(ik_ctrl+'.ankleSweivel', ankle_sweivel_space_rmv+'.inputValue', f=True)
+        cmds.connectAttr(ankle_sweivel_space_rmv+'.outValue', ankle_sweivel_space+'.ry', f=True)
+
+        # ankle bend
+        ankle_bend_space = roll_fk.trs_objects[6].nodes[5]
+
+        cmds.addAttr(ik_ctrl, ln='ankleBend', at='double', dv=0, max=10, min=-10, k=True)
+
+        ankle_bend_space_rmv = cmds.createNode('remapValue', n=ankle_bend_space+'_RMV', ss=True)
+        cmds.setAttr(ankle_bend_space_rmv+'.inputMin', -10)
+        cmds.setAttr(ankle_bend_space_rmv+'.inputMax', 10)
+        cmds.setAttr(ankle_bend_space_rmv+'.outputMin', -90)
+        cmds.setAttr(ankle_bend_space_rmv+'.outputMax', 90)
+
+        cmds.connectAttr(ik_ctrl+'.ankleBend', ankle_bend_space_rmv+'.inputValue', f=True)
+        cmds.connectAttr(ankle_bend_space_rmv+'.outValue', ankle_bend_space+'.rx', f=True)
+
 
     def create_ikSpline_for_fk(self):
         # segment fk
@@ -770,13 +978,38 @@ ik.base_connection()
     def connection(self):
         if not self.solver in ['ikSplineSolver']:
             # base
-            cmds.pointConstraint(self.ik_base_ctrl_object.nodes[-1], self.ik_joints[0], w=True)
+            ik_base_dcmx = cmds.createNode('decomposeMatrix', n=self.ik_base_ctrl_object.nodes[-1]+'_DCMX', ss=True)
+            cmds.connectAttr(self.ik_base_ctrl_object.nodes[-1]+'.worldMatrix[0]', ik_base_dcmx+'.inputMatrix', f=True)
+            cmds.connectAttr(ik_base_dcmx+'.outputTranslate', self.ik_joints[0]+'.t', f=True)
+
+            # cmds.pointConstraint(self.ik_base_ctrl_object.nodes[-1], self.ik_joints[0], w=True)
 
             # main
-            self.ik_main_pac = cmds.pointConstraint(self.ik_main_ctrl_object.nodes[-1], self.ikh, w=True)[0]
+            ikh_mmx = cmds.createNode('multMatrix', n=self.ikh+'_MMX', ss=True)
+            ikh_dcmx = cmds.createNode('decomposeMatrix', n=self.ikh+'_DCMX', ss=True)
+
+            cmds.connectAttr(self.ikh_const_node+'.worldMatrix[0]', ikh_mmx+'.matrixIn[0]', f=True)
+            cmds.connectAttr(self.ikh+'.parentInverseMatrix[0]', ikh_mmx+'.matrixIn[1]', f=True)
+            cmds.connectAttr(ikh_mmx+'.matrixSum', ikh_dcmx+'.inputMatrix', f=True)
+            cmds.connectAttr(ikh_dcmx+'.outputTranslate', self.ikh+'.t', f=True)
+
+            # self.ik_main_pac = cmds.pointConstraint(self.ik_main_ctrl_object.nodes[-1], self.ikh, w=True)[0]
 
             # poleVector
-            cmds.poleVectorConstraint(self.ik_pv_ctrl_object.nodes[-1], self.ikh, w=True)
+            ik_pv_dcmx = cmds.createNode('decomposeMatrix', n=self.ik_pv_ctrl_object.nodes[-1]+'_PV_DCMX', ss=True)
+            ik_base_pv_dcmx = cmds.createNode('decomposeMatrix', n=self.ik_base_ctrl_object.nodes[-1]+'_PV_DCMX', ss=True)
+            ik_pv_pma = cmds.createNode('plusMinusAverage', n=self.ik_pv_ctrl_object.nodes[-1]+'_PV_PMA', ss=True)
+            cmds.setAttr(ik_pv_pma+'.operation', 2)
+
+            cmds.connectAttr(self.ik_pv_ctrl_object.nodes[-1]+'.worldMatrix[0]', ik_pv_dcmx+'.inputMatrix', f=True)
+            cmds.connectAttr(ik_pv_dcmx+'.outputTranslate', ik_pv_pma+'.input3D[0]', f=True)
+
+            cmds.connectAttr(self.ik_base_ctrl_object.nodes[-1]+'.worldMatrix[0]', ik_base_pv_dcmx+'.inputMatrix', f=True)
+            cmds.connectAttr(ik_base_pv_dcmx+'.outputTranslate', ik_pv_pma+'.input3D[1]', f=True)
+
+            cmds.connectAttr(ik_pv_pma+'.output3D', self.ikh+'.poleVector', f=True)
+
+            # cmds.poleVectorConstraint(self.ik_pv_ctrl_object.nodes[-1], self.ikh, w=True)
 
             # local
             ori_con = cmds.orientConstraint(self.ik_local_ctrl_object.nodes[-1], self.ik_joints[-1], w=True)[0]
