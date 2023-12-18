@@ -1,0 +1,689 @@
+
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+Build Date:2023/12/18(MON) 09:47:42
+
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+>>>>>>>>>>
+Build Path:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/
+>>>>>>>>>>
+
+----------
+Build File List
+['C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/buildbase.xml']
+
+----------
+##########
+Setup Characters:['bahamut']
+Import Joints:['']
+Save File Paths:[None]
+##########
+Rig Setup:bahamut
+##########
+
+########## bahamut:010_primary Start##########
+
+----------Build:bahamut:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/010_primary/000_build_controllers.py
+
+########## bahamut:010_primary End ##########
+
+
+########## bahamut:040_init Start##########
+
+----------Build:bahamut:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/040_init/000_initialize.py
+
+!!!!!!!!!! bahamut:ERROR Start !!!!!!!!!! 
+ File:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/040_init/000_initialize.py 
+ Line:  File "<string>", line 22, in <module>
+ 
+ Message:'NoneType' object is not iterable 
+ 
+
+!!!!!!!!!! bahamut:ERROR End !!!!!!!!!!
+
+>>>>>>>>>> bahamut:RESUME Process >>>>>>>>>>
+
+
+
+########## bahamut:040_init End ##########
+
+
+++++++++++ Save File ++++++++++
+
+Saved:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/000_data/rig/20231218/bahamut_rig_20231218_094747349135_2022.ma
+Build Rigs: ['bahamut']
+Build Error: [('bahamut', 'C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/040_init/000_initialize.py', '  File "<string>", line 22, in <module>\n', TypeError("'NoneType' object is not iterable"))]
+
+====================
+
+C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/000_data/rig/20231218/bahamut_rig_20231218_094747349135_2022.ma
+
+====================
+
+
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+Build Date:2023/12/18(MON) 12:20:18
+
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+>>>>>>>>>>
+Build Path:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/
+>>>>>>>>>>
+
+----------
+Build File List
+['C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/buildbase.xml']
+
+----------
+##########
+Setup Characters:['bahamut']
+Import Joints:['']
+Save File Paths:[None]
+##########
+Rig Setup:bahamut
+##########
+
+########## bahamut:010_primary Start##########
+
+----------Build:bahamut:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/010_primary/000_build_controllers.py
+
+########## bahamut:010_primary End ##########
+
+
+########## bahamut:040_init Start##########
+
+----------Build:bahamut:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/040_init/000_initialize.py
+
+########## bahamut:040_init End ##########
+
+
+++++++++++ Save File ++++++++++
+
+Saved:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/000_data/rig/20231218/bahamut_rig_20231218_122021542013_2022.ma
+Build Rigs: ['bahamut']
+Build Error: []
+
+====================
+
+C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/000_data/rig/20231218/bahamut_rig_20231218_122021542013_2022.ma
+
+====================
+
+
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+Build Date:2023/12/18(MON) 12:51:01
+
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+>>>>>>>>>>
+Build Path:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/
+>>>>>>>>>>
+
+----------
+Build File List
+['C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/buildbase.xml']
+
+----------
+##########
+Setup Characters:['bahamut']
+Import Joints:['']
+Save File Paths:[None]
+##########
+Rig Setup:bahamut
+##########
+
+########## bahamut:010_primary Start##########
+
+----------Build:bahamut:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/010_primary/000_build_controllers.py
+
+!!!!!!!!!! bahamut:ERROR Start !!!!!!!!!! 
+ File:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/010_primary/000_build_controllers.py 
+ Line:  File "<string>", line 48, in <module>
+ 
+ Message:name 'root' is not defined 
+ 
+
+!!!!!!!!!! bahamut:ERROR End !!!!!!!!!!
+
+>>>>>>>>>> bahamut:RESUME Process >>>>>>>>>>
+
+
+
+########## bahamut:010_primary End ##########
+
+
+########## bahamut:040_init Start##########
+
+----------Build:bahamut:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/040_init/000_initialize.py
+
+########## bahamut:040_init End ##########
+
+
+++++++++++ Save File ++++++++++
+
+Saved:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/000_data/rig/20231218/bahamut_rig_20231218_12510267528_2022.ma
+Build Rigs: ['bahamut']
+Build Error: [('bahamut', 'C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/010_primary/000_build_controllers.py', '  File "<string>", line 48, in <module>\n', NameError("name 'root' is not defined"))]
+
+====================
+
+C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/000_data/rig/20231218/bahamut_rig_20231218_12510267528_2022.ma
+
+====================
+
+
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+Build Date:2023/12/18(MON) 12:59:35
+
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+>>>>>>>>>>
+Build Path:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/
+>>>>>>>>>>
+
+----------
+Build File List
+['C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/buildbase.xml']
+
+----------
+##########
+Setup Characters:['bahamut']
+Import Joints:['']
+Save File Paths:[None]
+##########
+Rig Setup:bahamut
+##########
+
+########## bahamut:010_primary Start##########
+
+----------Build:bahamut:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/010_primary/000_build_controllers.py
+
+########## bahamut:010_primary End ##########
+
+
+########## bahamut:040_init Start##########
+
+----------Build:bahamut:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/040_init/000_initialize.py
+
+########## bahamut:040_init End ##########
+
+
+++++++++++ Save File ++++++++++
+
+Saved:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/000_data/rig/20231218/bahamut_rig_20231218_125938149667_2022.ma
+Build Rigs: ['bahamut']
+Build Error: []
+
+====================
+
+C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/000_data/rig/20231218/bahamut_rig_20231218_125938149667_2022.ma
+
+====================
+
+
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+Build Date:2023/12/18(MON) 14:21:11
+
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+>>>>>>>>>>
+Build Path:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/
+>>>>>>>>>>
+
+----------
+Build File List
+['C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/buildbase.xml']
+
+----------
+##########
+Setup Characters:['bahamut']
+Import Joints:['']
+Save File Paths:[None]
+##########
+Rig Setup:bahamut
+##########
+
+########## bahamut:010_primary Start##########
+
+----------Build:bahamut:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/010_primary/000_build_controllers.py
+
+########## bahamut:010_primary End ##########
+
+
+########## bahamut:040_init Start##########
+
+----------Build:bahamut:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/040_init/000_initialize.py
+
+########## bahamut:040_init End ##########
+
+
+++++++++++ Save File ++++++++++
+
+Saved:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/000_data/rig/20231218/bahamut_rig_20231218_142114317663_2022.ma
+Build Rigs: ['bahamut']
+Build Error: []
+
+====================
+
+C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/000_data/rig/20231218/bahamut_rig_20231218_142114317663_2022.ma
+
+====================
+
+
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+Build Date:2023/12/18(MON) 14:23:00
+
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+>>>>>>>>>>
+Build Path:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/
+>>>>>>>>>>
+
+----------
+Build File List
+['C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/buildbase.xml']
+
+----------
+##########
+Setup Characters:['bahamut']
+Import Joints:['']
+Save File Paths:[None]
+##########
+Rig Setup:bahamut
+##########
+
+########## bahamut:010_primary Start##########
+
+----------Build:bahamut:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/010_primary/000_build_controllers.py
+
+########## bahamut:010_primary End ##########
+
+
+########## bahamut:040_init Start##########
+
+----------Build:bahamut:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/040_init/000_initialize.py
+
+########## bahamut:040_init End ##########
+
+
+++++++++++ Save File ++++++++++
+
+Saved:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/000_data/rig/20231218/bahamut_rig_20231218_142303453426_2022.ma
+Build Rigs: ['bahamut']
+Build Error: []
+
+====================
+
+C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/000_data/rig/20231218/bahamut_rig_20231218_142303453426_2022.ma
+
+====================
+
+
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+Build Date:2023/12/18(MON) 14:27:24
+
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+>>>>>>>>>>
+Build Path:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/
+>>>>>>>>>>
+
+----------
+Build File List
+['C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/buildbase.xml']
+
+----------
+##########
+Setup Characters:['bahamut']
+Import Joints:['']
+Save File Paths:[None]
+##########
+Rig Setup:bahamut
+##########
+
+########## bahamut:010_primary Start##########
+
+----------Build:bahamut:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/010_primary/000_build_controllers.py
+
+########## bahamut:010_primary End ##########
+
+
+########## bahamut:040_init Start##########
+
+----------Build:bahamut:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/040_init/000_initialize.py
+
+########## bahamut:040_init End ##########
+
+
+++++++++++ Save File ++++++++++
+
+Saved:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/000_data/rig/20231218/bahamut_rig_20231218_142727747566_2022.ma
+Build Rigs: ['bahamut']
+Build Error: []
+
+====================
+
+C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/000_data/rig/20231218/bahamut_rig_20231218_142727747566_2022.ma
+
+====================
+
+
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+Build Date:2023/12/18(MON) 15:18:08
+
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+>>>>>>>>>>
+Build Path:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/
+>>>>>>>>>>
+
+----------
+Build File List
+['C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/buildbase.xml']
+
+----------
+##########
+Setup Characters:['bahamut']
+Import Joints:['']
+Save File Paths:[None]
+##########
+Rig Setup:bahamut
+##########
+
+########## bahamut:010_primary Start##########
+
+----------Build:bahamut:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/010_primary/000_build_controllers.py
+
+########## bahamut:010_primary End ##########
+
+
+########## bahamut:040_init Start##########
+
+----------Build:bahamut:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/040_init/000_initialize.py
+
+########## bahamut:040_init End ##########
+
+
+++++++++++ Save File ++++++++++
+
+Saved:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/000_data/rig/20231218/bahamut_rig_20231218_151810997029_2022.ma
+Build Rigs: ['bahamut']
+Build Error: []
+
+====================
+
+C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/000_data/rig/20231218/bahamut_rig_20231218_151810997029_2022.ma
+
+====================
+
+
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+Build Date:2023/12/18(MON) 15:24:26
+
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+>>>>>>>>>>
+Build Path:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/
+>>>>>>>>>>
+
+----------
+Build File List
+['C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/buildbase.xml']
+
+----------
+##########
+Setup Characters:['bahamut']
+Import Joints:['']
+Save File Paths:[None]
+##########
+Rig Setup:bahamut
+##########
+
+########## bahamut:010_primary Start##########
+
+----------Build:bahamut:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/010_primary/000_build_controllers.py
+
+########## bahamut:010_primary End ##########
+
+
+########## bahamut:040_init Start##########
+
+----------Build:bahamut:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/040_init/000_initialize.py
+
+########## bahamut:040_init End ##########
+
+
+++++++++++ Save File ++++++++++
+
+Saved:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/000_data/rig/20231218/bahamut_rig_20231218_152429996746_2022.ma
+Build Rigs: ['bahamut']
+Build Error: []
+
+====================
+
+C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/000_data/rig/20231218/bahamut_rig_20231218_152429996746_2022.ma
+
+====================
+
+
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+Build Date:2023/12/18(MON) 15:30:46
+
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+>>>>>>>>>>
+Build Path:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/
+>>>>>>>>>>
+
+----------
+Build File List
+['C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/buildbase.xml']
+
+----------
+##########
+Setup Characters:['bahamut']
+Import Joints:['']
+Save File Paths:[None]
+##########
+Rig Setup:bahamut
+##########
+
+########## bahamut:010_primary Start##########
+
+----------Build:bahamut:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/010_primary/000_build_controllers.py
+
+########## bahamut:010_primary End ##########
+
+
+########## bahamut:040_init Start##########
+
+----------Build:bahamut:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/040_init/000_initialize.py
+
+########## bahamut:040_init End ##########
+
+
+++++++++++ Save File ++++++++++
+
+Saved:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/000_data/rig/20231218/bahamut_rig_20231218_153049643871_2022.ma
+Build Rigs: ['bahamut']
+Build Error: []
+
+====================
+
+C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/000_data/rig/20231218/bahamut_rig_20231218_153049643871_2022.ma
+
+====================
+
+
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+Build Date:2023/12/18(MON) 15:34:52
+
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+>>>>>>>>>>
+Build Path:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/
+>>>>>>>>>>
+
+----------
+Build File List
+['C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/buildbase.xml']
+
+----------
+##########
+Setup Characters:['bahamut']
+Import Joints:['']
+Save File Paths:[None]
+##########
+Rig Setup:bahamut
+##########
+
+########## bahamut:010_primary Start##########
+
+----------Build:bahamut:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/010_primary/000_build_controllers.py
+
+!!!!!!!!!! bahamut:ERROR Start !!!!!!!!!! 
+ File:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/010_primary/000_build_controllers.py 
+ Line:  File "<string>", line 458, in <module>
+ 
+ Message:No object matches name: MODEL 
+ 
+
+!!!!!!!!!! bahamut:ERROR End !!!!!!!!!!
+
+>>>>>>>>>> bahamut:RESUME Process >>>>>>>>>>
+
+
+
+########## bahamut:010_primary End ##########
+
+
+########## bahamut:040_init Start##########
+
+----------Build:bahamut:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/040_init/000_initialize.py
+
+########## bahamut:040_init End ##########
+
+
+++++++++++ Save File ++++++++++
+
+Saved:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/000_data/rig/20231218/bahamut_rig_20231218_153456522591_2022.ma
+Build Rigs: ['bahamut']
+Build Error: [('bahamut', 'C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/010_primary/000_build_controllers.py', '  File "<string>", line 458, in <module>\n', ValueError('No object matches name: MODEL'))]
+
+====================
+
+C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/000_data/rig/20231218/bahamut_rig_20231218_153456522591_2022.ma
+
+====================
+
+
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+Build Date:2023/12/18(MON) 15:36:13
+
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+>>>>>>>>>>
+Build Path:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/
+>>>>>>>>>>
+
+----------
+Build File List
+['C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/buildbase.xml']
+
+----------
+##########
+Setup Characters:['bahamut']
+Import Joints:['']
+Save File Paths:[None]
+##########
+Rig Setup:bahamut
+##########
+
+########## bahamut:010_primary Start##########
+
+----------Build:bahamut:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/010_primary/000_build_controllers.py
+
+########## bahamut:010_primary End ##########
+
+
+########## bahamut:040_init Start##########
+
+----------Build:bahamut:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/040_init/000_initialize.py
+
+########## bahamut:040_init End ##########
+
+
+++++++++++ Save File ++++++++++
+
+Saved:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/000_data/rig/20231218/bahamut_rig_20231218_153616607768_2022.ma
+Build Rigs: ['bahamut']
+Build Error: []
+
+====================
+
+C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/000_data/rig/20231218/bahamut_rig_20231218_153616607768_2022.ma
+
+====================
+
+
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+Build Date:2023/12/18(MON) 15:40:38
+
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+>>>>>>>>>>
+Build Path:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/
+>>>>>>>>>>
+
+----------
+Build File List
+['C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/buildbase.xml']
+
+----------
+##########
+Setup Characters:['bahamut']
+Import Joints:['']
+Save File Paths:[None]
+##########
+Rig Setup:bahamut
+##########
+
+########## bahamut:010_primary Start##########
+
+----------Build:bahamut:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/010_primary/000_build_controllers.py
+
+########## bahamut:010_primary End ##########
+
+
+########## bahamut:040_init Start##########
+
+----------Build:bahamut:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/040_init/000_initialize.py
+
+########## bahamut:040_init End ##########
+
+
+++++++++++ Save File ++++++++++
+
+Saved:C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/000_data/rig/20231218/bahamut_rig_20231218_154041320473_2022.ma
+Build Rigs: ['bahamut']
+Build Error: []
+
+====================
+
+C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/000_data/rig/20231218/bahamut_rig_20231218_154041320473_2022.ma
+
+====================
+

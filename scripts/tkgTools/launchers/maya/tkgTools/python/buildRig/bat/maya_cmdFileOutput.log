@@ -15,18 +15,10 @@
 // Warning: Bifrost: Loading library: riv, from: Autodesk. // 
 // Warning: Bifrost: Loading library: scatter_pack, from: Autodesk. // 
 // Warning: Bifrost: Loading library: graphs, from: Autodesk. // 
-// Warning: file: C:\Users\kesun\Documents\maya\2022\prefs\filePathEditorRegistryPrefs.mel line 4: filePathEditor: Attribute 'aiImage.filename' is invalid or is not designated 'usedAsFilename'. // 
-// Warning: file: C:\Users\kesun\Documents\maya\2022\prefs\filePathEditorRegistryPrefs.mel line 5: filePathEditor: Attribute 'aiPhotometricLight.aiFilename' is invalid or is not designated 'usedAsFilename'. // 
-// Warning: file: C:\Users\kesun\Documents\maya\2022\prefs\filePathEditorRegistryPrefs.mel line 6: filePathEditor: Attribute 'aiStandIn.dso' is invalid or is not designated 'usedAsFilename'. // 
-// Warning: file: C:\Users\kesun\Documents\maya\2022\prefs\filePathEditorRegistryPrefs.mel line 7: filePathEditor: Attribute 'aiVolume.filename' is invalid or is not designated 'usedAsFilename'. // 
-// Error: file: C:/Program Files/Autodesk/Maya2022/scripts/startup/autoLoadPlugin.mel line 40: Plug-in, "CharcoalEditor2", was not found on MAYA_PLUG_IN_PATH. // 
-// Warning: file: C:/Program Files/Autodesk/Maya2022/scripts/startup/initialStartup.mel line 184: Y-axis is already the Up-axis // 
-loadPlugin renderSetup;
-// Result: renderSetup // 
-// Error: TypeError: file C:\Users\kesun\Documents\maya\scripts\tkgTools\launchers\maya\thirdparty\python\maya-skinning-tools-master\scripts\skinning\install.py line 126: argument of type 'bool' is not iterable // 
-file -f -new;
-// Result: untitled // 
-python("import rigbuild;rb=rigbuild.Build(buildPath='F:/myTechData/Maya/scripts/tkgTools/launchers/maya/tkgTools/python/tkgRigBuild/projects/projectName/charaType/');rb.main()");
+// Warning: file: C:\Users\CF0990\Documents\maya\2022\prefs\filePathEditorRegistryPrefs.mel line 4: filePathEditor: Attribute 'aiImage.filename' is invalid or is not designated 'usedAsFilename'. // 
+// Warning: file: C:\Users\CF0990\Documents\maya\2022\prefs\filePathEditorRegistryPrefs.mel line 5: filePathEditor: Attribute 'aiPhotometricLight.aiFilename' is invalid or is not designated 'usedAsFilename'. // 
+// Warning: file: C:\Users\CF0990\Documents\maya\2022\prefs\filePathEditorRegistryPrefs.mel line 6: filePathEditor: Attribute 'aiStandIn.dso' is invalid or is not designated 'usedAsFilename'. // 
+// Warning: file: C:\Users\CF0990\Documents\maya\2022\prefs\filePathEditorRegistryPrefs.mel line 7: filePathEditor: Attribute 'aiVolume.filename' is invalid or is not designated 'usedAsFilename'. // 
 // Warning: line 1: filePathEditor: Attribute 'aiStandIn.dso' and label 'Standin' have been saved already. // 
 // Warning: line 1: filePathEditor: Attribute 'aiVolume.filename' and label 'VDB' have been saved already. // 
 // Warning: line 1: filePathEditor: Attribute 'aiImage.filename' and label 'Image' have been saved already. // 
@@ -34,48 +26,12 @@ python("import rigbuild;rb=rigbuild.Build(buildPath='F:/myTechData/Maya/scripts/
 import arnold
 import mtoa
 import mtoa.cmds.registerArnoldRenderer;mtoa.cmds.registerArnoldRenderer.registerArnoldRenderer()
-// Warning: file: C:/Users/kesun/Documents/maya/scripts/tkgTools/tkgRig/data/projects/wizard2/data/p2/p2_sotai01.ma line 45752: You must either select the affected nodes or specify them on the command line. // 
-# Warning: Frame rate mismatch:  The imported scene frame rate '30 fps' differs from the existing frame rate '24 fps'.
+// Warning: file: C:/Program Files/Autodesk/Maya2022/scripts/startup/initialStartup.mel line 184: Y-axis is already the Up-axis // 
+file -f -new;
+// Result: untitled // 
+python("import rigbuild;rb=rigbuild.Build(buildPath='C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/', logFolder='C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/\log');rb.main()");
+// Warning: file: //cydrive01/104_projects/148_wizard2/30_design/02_3DCG/05_rig/env/bahamut/20231215/Bahamut.ma line 53214: Unrecognized node type 'nodeGraphEditorInfo'; preserving node information during this session. // 
+// Warning: file: //cydrive01/104_projects/148_wizard2/30_design/02_3DCG/05_rig/env/bahamut/20231215/Bahamut.ma line 66152: You must either select the affected nodes or specify them on the command line. // 
+# Warning: Frame rate mismatch:  The imported scene frame rate '59.94 fps' differs from the existing frame rate '60 fps'.
 Imported animation keys may not match scene frames and become fractional. # 
-# Warning: Cn_global_CTRL has no group padding # 
-# Warning: color_CTRL has no group padding # 
-# Warning: switch_CTRL has no group padding # 
-# Warning: visibility_CTRL has no group padding # 
-# Warning: ['Cn_root_JNT'] does not exist, skipping... # 
-# Warning: Name 'parentSpace' of new attribute clashes with an existing attribute of node 'Cn_hip_01_CTRL'. # 
-// Warning: file: C:/Users/kesun/Documents/maya/scripts/tkgTools/tkgRig/data/projects/wizard2/data/p2/p2_sotai01.ma line 45752: You must either select the affected nodes or specify them on the command line. // 
-# Warning: Frame rate mismatch:  The imported scene frame rate '30 fps' differs from the existing frame rate '24 fps'.
-Imported animation keys may not match scene frames and become fractional. # 
-# Warning: Cn_global_CTRL has no group padding # 
-# Warning: color_CTRL has no group padding # 
-# Warning: switch_CTRL has no group padding # 
-# Warning: visibility_CTRL has no group padding # 
-# Warning: ['Cn_root_JNT'] does not exist, skipping... # 
-# Warning: Name 'parentSpace' of new attribute clashes with an existing attribute of node 'Cn_hip_01_CTRL'. # 
-// Warning: file: C:/Users/kesun/Documents/maya/scripts/tkgTools/tkgRig/data/projects/wizard2/data/p2/p2_sotai01.ma line 45752: You must either select the affected nodes or specify them on the command line. // 
-# Warning: Frame rate mismatch:  The imported scene frame rate '30 fps' differs from the existing frame rate '24 fps'.
-Imported animation keys may not match scene frames and become fractional. # 
-# Warning: Cn_global_CTRL has no group padding # 
-# Warning: color_CTRL has no group padding # 
-# Warning: switch_CTRL has no group padding # 
-# Warning: visibility_CTRL has no group padding # 
-# Warning: ['Cn_root_JNT'] does not exist, skipping... # 
-# Warning: Name 'parentSpace' of new attribute clashes with an existing attribute of node 'Cn_hip_01_CTRL'. # 
-// Warning: file: C:/Users/kesun/Documents/maya/scripts/tkgTools/tkgRig/data/projects/wizard2/data/p2/p2_sotai01.ma line 45752: You must either select the affected nodes or specify them on the command line. // 
-# Warning: Frame rate mismatch:  The imported scene frame rate '30 fps' differs from the existing frame rate '24 fps'.
-Imported animation keys may not match scene frames and become fractional. # 
-# Warning: Cn_global_CTRL has no group padding # 
-# Warning: color_CTRL has no group padding # 
-# Warning: switch_CTRL has no group padding # 
-# Warning: visibility_CTRL has no group padding # 
-# Warning: ['Cn_root_JNT'] does not exist, skipping... # 
-# Warning: Name 'parentSpace' of new attribute clashes with an existing attribute of node 'Cn_hip_01_CTRL'. # 
-// Warning: file: C:/Users/kesun/Documents/maya/scripts/tkgTools/tkgRig/data/projects/wizard2/data/p2/p2_sotai01.ma line 45752: You must either select the affected nodes or specify them on the command line. // 
-# Warning: Frame rate mismatch:  The imported scene frame rate '30 fps' differs from the existing frame rate '24 fps'.
-Imported animation keys may not match scene frames and become fractional. # 
-# Warning: Cn_global_CTRL has no group padding # 
-# Warning: color_CTRL has no group padding # 
-# Warning: switch_CTRL has no group padding # 
-# Warning: visibility_CTRL has no group padding # 
-# Warning: ['Cn_root_JNT'] does not exist, skipping... # 
-# Warning: Name 'parentSpace' of new attribute clashes with an existing attribute of node 'Cn_hip_01_CTRL'. # 
+# Warning: Errors have occurred while reading this scene that may result in data loss. # 

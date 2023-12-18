@@ -1,23 +1,6 @@
 {
     "Multi_File_Browser": {
         "path": [
-            "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/scripts/build/types/biped/wizard2_base_00_000/000_data/rig/20231004/p1_rig_20231004_174257901439_2022.ma",
-            "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/scripts/build/types/biped/wizard2_base_00_000/000_data/rig/20231004/armgimmick_rig_20231004_174258561368_2022.ma",
-            "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/scripts/build/types/biped/wizard2_base_00_000/000_data/rig/20231004/p1_rig_20231004_174533138188_2022.ma",
-            "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/data/projects/wizard2/data/20231005/mariamaris01/scenes/p2_c_mariamaris01.ma",
-            "//cydrive01/104_projects/148_wizard2/30_design/02_3DCG/01_キャラ/モデルチェック/キャラ揺れ骨追加確認/01_check/20231004/mariamaris01/scenes/p2_c_mariamaris01.ma",
-            "C:/cygames/wiz2/team/3dcg/chr/pro/costume/arisa01/scenes/pro_c_arisa01_01.ma",
-            "C:/cygames/wiz2/team/3dcg/chr/ply/onepiece/onepiece04/scenes/p2_o_onepiece04.ma",
-            "//cydrive01/104_projects/148_wizard2/30_design/02_3DCG/01_キャラ/モデルチェック/キャラ揺れ骨追加確認/01_check/20231005/rowenspear01/pro_c_rowenspear01.ma",
-            "//cydrive01/104_projects/148_wizard2/30_design/02_3DCG/01_キャラ/モデルチェック/キャラ揺れ骨追加確認/01_check/20231005/filenespear01/pro_c_filenespear01.ma",
-            "//cydrive01/104_projects/148_wizard2/30_design/02_3DCG/01_キャラ/モデルチェック/キャラ揺れ骨追加確認/01_check/20231005/erisstaff01/pro_c_erisstaff01.ma",
-            "//cydrive01/104_projects/148_wizard2/30_design/02_3DCG/01_キャラ/モデルチェック/propbookjoint/pro/general/book01/scenes/pro_g_book01_231005_01.ma",
-            "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/data/projects/wizard2/data/20231005/book01/scenes/pro_g_book01_231005_01.ma",
-            "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/scripts/build/types/biped/wizard2_base_00_000/000_data/rig/20231006/armgimmick_rig_20231006_111532105230_2022.ma",
-            "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/scripts/build/types/biped/wizard2_base_00_000/000_data/rig/20231006/p2_rig_20231006_111529662543_2022.ma",
-            "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/scripts/build/types/biped/wizard2_base_00_000/000_data/rig/20231006/armgimmick_rig_20231006_122424352245_2022.ma",
-            "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/scripts/build/types/biped/wizard2_base_00_000/000_data/rig/20231006/armgimmick_rig_20231006_123008557147_2022.ma",
-            "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/scripts/build/types/biped/wizard2_base_00_000/000_data/rig/20231006/armgimmick_rig_20231006_123221245771_2022.ma",
             "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/scripts/build/types/biped/wizard2_base_00_000/000_data/rig/20231006/armgimmick_rig_20231006_123415501654_2022.ma",
             "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/scripts/build/types/biped/wizard2_base_00_000/000_data/rig/20231006/armgimmick_rig_20231006_123650491353_2022.ma",
             "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/scripts/build/types/biped/wizard2_base_00_000/000_data/rig/20231006/p1_rig_20231006_123649710366_2022.ma",
@@ -66,7 +49,6 @@
             "C:/cygames/wiz2/team/3dcg/rig/orivia01/eff/scenes/eff_b_orivia01_01.ma",
             "F:/myTechData/Maya/scripts/tkgTools/launchers/maya/tkgTools/python/tkgRigBuild/library/buildPackage/projectName/charaType/000_data/biped_guide_000.ma",
             "C:/cygames/wiz2/team/3dcg/mot/ava/p1/cmn/scenes/an_p1_cmn_emote_001.ma",
-            "C:/cygames/wiz2/team/3dcg/mot/ava/p2/cmn/scenes/an_p2_cmn_emote_502.ma",
             "C:/cygames/wiz2/team/3dcg/rig/work/share/ply/albert01/scenes/p1_c_albert01.ma",
             "C:/cygames/wiz2/team/3dcg/chr/ply/costume/albert01/scenes/p1_c_albert01.ma",
             "C:/cygames/wiz2/team/3dcg/env/battle/BGb01/scenes/BGb00001_d025_fine_01.ma",
@@ -87,9 +69,6 @@
             "C:/Users/CF0990/Desktop/Maya-main/sandbox/cygames/wizard2/chr/bahamut/maya/Bahamut_add_joints_cage.ma",
             "//cydrive01/104_projects/148_wizard2/99_personal/141_石川第五郎/20231215/bahamut/maya/Bahamut.ma",
             "C:/cygames/wiz2/team/3dcg/chr/ply/costume/erika01/scenes/p2_c_erika01.ma",
-            "C:/cygames/wiz2/team/3dcg/mot/ava/p2/cmn/scenes/an_p2_cmn_emote_503.ma",
-            "C:/cygames/wiz2/team/3dcg/chr/pro/costume/erika01/scenes/pro_c_erika01.ma",
-            "C:/cygames/wiz2/team/3dcg/rig/work/development/pro/erika01/scenes/pro_c_erika01.ma",
             "F:/Google Drive/マイドライブ/CG/maya/rig/library/wyvern_download.mb",
             "F:/Google Drive/マイドライブ/CG/maya/rig/library/UltimateCopMech_Rigged_V2.mb",
             "F:/Google Drive/マイドライブ/CG/maya/rig/library/turtle_rig.mb",
@@ -100,7 +79,28 @@
             "F:/Google Drive/マイドライブ/CG/maya/rig/library/sheriff_public.ma",
             "F:/myTechData/Maya/sandbox/cygames/wizard2/chr/bahamut/maya/Bahamut_joints.ma",
             "F:/myTechData/Maya/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/libs/buildPackage/projectName/charaType/000_data/biped_guide_000.ma",
-            "F:/myTechData/Maya/sandbox/cygames/wizard2/chr/bahamut/maya/Bahamut.ma"
+            "F:/myTechData/Maya/sandbox/cygames/wizard2/chr/bahamut/maya/Bahamut.ma",
+            "C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/000_data/rig/20231218/bahamut_rig_20231218_094747349135_2022.ma",
+            "//cydrive01/104_projects/148_wizard2/30_design/02_3DCG/05_rig/env/bahamut/20231215/Bahamut.ma",
+            "C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/000_data/rig/20231218/bahamut_rig_20231218_122021542013_2022.ma",
+            "C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/000_data/rig/20231218/bahamut_rig_20231218_12510267528_2022.ma",
+            "C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/000_data/rig/20231218/bahamut_rig_20231218_125938149667_2022.ma",
+            "C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/000_data/rig/20231218/bahamut_rig_20231218_142303453426_2022.ma",
+            "C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/000_data/rig/20231218/bahamut_rig_20231218_142727747566_2022.ma",
+            "C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/000_data/rig/20231218/bahamut_rig_20231218_151810997029_2022.ma",
+            "C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/000_data/rig/20231218/bahamut_rig_20231218_152429996746_2022.ma",
+            "c:\\cygames\\wiz2\\team\\3dcg\\rig\\p2\\cmn\\scenes\\p2_00.ma",
+            "C:/cygames/wiz2/team/3dcg/rig/p2/cmn/scenes/p2_00.ma",
+            "C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/000_data/rig/20231218/bahamut_rig_20231218_153049643871_2022.ma",
+            "C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/000_data/rig/20231218/bahamut_rig_20231218_153616607768_2022.ma",
+            "C:/Users/CF0990/Desktop/Maya-main/scripts/tkgTools/launchers/maya/tkgTools/python/buildRig/projects/wizard2/bahamut/000_data/rig/20231218/bahamut_rig_20231218_154041320473_2022.ma",
+            "//cydrive01/104_projects/148_wizard2/30_design/02_3DCG/05_rig/env/bahamut/20231218/rig/bahamut/env/scenes/bahamut_00.ma",
+            "C:/cygames/wiz2/team/3dcg/mot/ava/p2/cmn/scenes/an_p2_cmn_emote_503.ma",
+            "C:/cygames/wiz2/team/3dcg/mot/ava/p2/cmn/scenes/an_p2_cmn_emote_502.ma",
+            "C:/cygames/wiz2/team/3dcg/mot/ava/p2/cmn/scenes/an_p2_cmn_emote_504.ma",
+            "C:/cygames/wiz2/team/3dcg/rig/work/development/pro/erika01/scenes/pro_c_erika01.ma",
+            "C:/cygames/wiz2/team/3dcg/rig/work/share/pro/erika01/scenes/pro_c_erika01.ma",
+            "C:/cygames/wiz2/team/3dcg/chr/pro/costume/erika01/scenes/pro_c_erika01.ma"
         ],
         "bookmark": {
             "world": {
@@ -150,6 +150,6 @@
                 ]
             }
         },
-        "curpath": "F:/myTechData/Maya/sandbox/cygames/wizard2/chr/bahamut/maya/Bahamut.ma"
+        "curpath": "C:/cygames/wiz2/team/3dcg/chr/pro/costume/erika01/scenes/pro_c_erika01.ma"
     }
 }
