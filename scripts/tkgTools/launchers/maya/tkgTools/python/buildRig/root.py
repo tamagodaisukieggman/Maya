@@ -76,7 +76,7 @@ fk.base_connection()
         """
         super(Root, self).__init__(module=module,
                                  side=side)
-        
+
         self.settings = brFile.Settings()
         self.root_settings = self.settings.setting_dict['ROOT']
 
@@ -99,6 +99,9 @@ fk.base_connection()
         # Controller
         self.draw = brDraw.Draw()
 
+        # Exist Roots
+        self.exist_roots = []
+
         # モジュールのノードを追加
         self.trs_module_root = brTrs.create_transforms(nodes=[self.module_grp, self.module_grp + '_ROOT'], offsets=False)
         self.trs_ctrl_root = brTrs.create_transforms(nodes=[self.ctrl_grp, self.ctrl_grp + '_ROOT'], offsets=False)
@@ -113,14 +116,13 @@ fk.base_connection()
 
     def create_joints(self):
         parent = None
-        exist_roots = []
         for n in self.joints:
             if self.namespace:
                 n = self.namespace + ':' + n
             if not cmds.objExists(n):
                 cmds.createNode('joint', n=n, ss=True)
                 cmds.parent(n, parent)
-            exist_roots.append(n)
+            self.exist_roots.append(n)
             parent = n
 
         self.jnt_object = brJnt.create_joints(namespace=self.namespace, nodes=self.joints, prefix=self.prefix, suffix=None, replace=['_copy', ''])
@@ -245,6 +247,10 @@ fk.base_connection()
             cmds.connectAttr(ctrl+'.s', jnt+'.s', f=True)
             cmds.connectAttr(ctrl+'.shear', jnt+'.shear', f=True)
             # cmds.scaleConstraint(ctrl, jnt, w=True)
+
+        cmds.connectAttr(self.char_grp+'.jntVisibility', '{}.v'.format(self.exist_roots[-1]), f=1)
+        cmds.connectAttr(self.char_grp+'.jntOverrideEnabled', '{}.overrideEnabled'.format(self.exist_roots[-1]), f=1)
+        cmds.connectAttr(self.char_grp+'.jntChangeDisplayType', '{}.overrideDisplayType'.format(self.exist_roots[-1]), f=1)
 
     def base_connection(self, to_nodes=None, pos=True, rot=True, scl=True, mo=True):
         if not to_nodes:

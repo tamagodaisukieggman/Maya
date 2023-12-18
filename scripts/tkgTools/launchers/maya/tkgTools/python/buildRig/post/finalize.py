@@ -9,7 +9,7 @@ import re
 import maya.cmds as cmds
 import maya.mel as mel
 
-def set_environment(set_fps=30, set_focalLength=100):
+def set_environment(set_fps=30, set_focalLength=100, set_farClipPlane=10000, set_nearClipPlane=0.1):
     # fps
     cmds.currentUnit(time = '{0}fps'.format(set_fps))
     cmds.playbackOptions(min=0, max=1, ast=0, aet=1)
@@ -19,6 +19,8 @@ def set_environment(set_fps=30, set_focalLength=100):
     # cmds.viewSet(home=True)
     persp_cam_shape = cmds.ls('*persp*', type='camera')[0]
     cmds.setAttr('{0}.focalLength'.format(persp_cam_shape), set_focalLength)
+    cmds.setAttr('{0}.farClipPlane'.format(persp_cam_shape), set_farClipPlane)
+    cmds.setAttr('{0}.nearClipPlane'.format(persp_cam_shape), set_nearClipPlane)
     cmds.viewFit(persp_cam_shape, fitFactor=1, all=True)
 
     # turtle

@@ -29,6 +29,7 @@ class Fk(brGrp.RigModule):
                  side=None,
                  rig_joints_parent=None,
                  rig_ctrls_parent=None,
+                 rig_ctrls_parent_const=None,
                  namespace=None,
                  joints=None,
                  shape='cube',
@@ -76,12 +77,13 @@ fk.base_connection()
         """
         super(Fk, self).__init__(module=module,
                                  side=side)
-        
+
         self.settings = brFile.Settings()
         self.fk_settings = self.settings.setting_dict['FK']
 
         self.rig_joints_parent = rig_joints_parent
         self.rig_ctrls_parent = rig_ctrls_parent
+        self.rig_ctrls_parent_const = rig_ctrls_parent_const
         self.namespace = namespace
         self.joints = joints
         self.shape = shape
@@ -123,10 +125,17 @@ fk.base_connection()
         ctrl_names = self.fk_settings['ctrl']
         ctrl_colors = self.fk_settings['colors']
         color_dict = {}
+        filtered_items = []
         for side, values in ctrl_colors.items():
-            filtered_items = brCommon.filter_items(source_items=self.jnt_object.nodes,
-                                                    search_txt_list=values['filter'],
-                                                    remover=False)
+            if side in ['center', 'left', 'right']:
+                filtered_items = brCommon.filter_items(source_items=self.jnt_object.nodes,
+                                                        search_txt_list=values['filter'],
+                                                        remover=False)
+
+            else:
+                filtered_items = brCommon.filter_items(source_items=self.jnt_object.nodes,
+                                                        search_txt_list=values['filter'],
+                                                        remover=False)
             for jnt in filtered_items:
                 color_dict[jnt] = values['value']
 
@@ -182,6 +191,10 @@ fk.base_connection()
 
         for ctrl in self.top_fk_ctrl_nodes:
             cmds.parent(ctrl, self.rig_ctrls_parent)
+
+        if self.rig_ctrls_parent_const:
+            for ctrl in self.top_fk_ctrl_nodes:
+                cmds.parentConstraint(self.rig_ctrls_parent_const, ctrl, w=True, mo=True)
 
     def connect_children(self):
         first_trs_object = self.trs_objects[0]

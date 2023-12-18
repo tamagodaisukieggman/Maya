@@ -5,6 +5,7 @@ import fnmatch
 from imp import reload
 import json
 import re
+import traceback
 
 import maya.cmds as cmds
 import maya.mel as mel
@@ -190,6 +191,61 @@ def set_obj_color(obj=None, color=[0.5, 0.5, 0.5], outliner=None):
     if outliner:
         cmds.setAttr(obj+'.useOutlinerColor', 1)
         cmds.setAttr(obj+'.outlinerColor', *color)
+
+def create_spaces(base_ctrl=None,
+                  base_ctrl_space=None,
+                  space_ctrls=None,
+                  spaces=None,
+                  const_type='parent',
+                  space_type='enum'):
+
+    if not cmds.objExists(base_ctrl):
+        return
+
+    # print('{}...{}'.format(spaces, space_ctrls))
+
+    for i, (sp, cl) in enumerate(zip(spaces, space_ctrls)):
+        space_node = '{}_{}_spc'.format(base_ctrl, sp)
+
+        cmds.createNode('transform', n=space_node)
+        cmds.matchTransform(space_node, base_ctrl)
+
+        if cmds.objExists(cl):
+            cmds.parent(space_node, cl)
+
+        if const_type == 'parent':
+            cnst = cmds.parentConstraint(space_node, base_ctrl_space, w=1, mo=True)
+
+        if const_type == 'pos':
+            cnst = cmds.pointConstraint(space_node, base_ctrl_space, w=1, mo=True)
+
+        if const_type == 'rot':
+            cnst = cmds.orientConstraint(space_node, base_ctrl_space, w=1, mo=True)
+            cmds.setAttr('{}.interpType'.format(cnst[0]), 2)
+
+        if space_type == 'double':
+            cmds.addAttr(base_ctrl, ln='{}Space'.format(sp), at='double', max=1, min=0, dv=0, k=1)
+            cmds.connectAttr('{}.{}Space'.format(base_ctrl, sp), cnst[0]+'.w{}'.format(i), f=1)
+
+        if space_type == 'enum':
+            #
+            spcdn = base_ctrl + '_' + sp + '_cdn'
+            if not cmds.objExists(spcdn):
+                cmds.createNode('condition', n=spcdn)
+
+            if cmds.objExists(base_ctrl + '.space'):
+                get_en_attrs = cmds.addAttr(base_ctrl + '.space', q=True, en=True)
+                get_en_attrs = get_en_attrs + ':' + sp
+                cmds.addAttr(base_ctrl + '.space', e=True, en=get_en_attrs)
+            else:
+                cmds.addAttr(base_ctrl, ln='space', at='enum', en=sp, k=1)
+
+            cmds.setAttr(spcdn + '.secondTerm'.format(spcdn), i)
+            cmds.setAttr(spcdn + '.colorIfTrueR'.format(spcdn), 1)
+            cmds.setAttr(spcdn + '.colorIfFalseR'.format(spcdn), 0)
+
+            cmds.connectAttr(base_ctrl + '.space', '{0}.firstTerm'.format(spcdn), f=1)
+            cmds.connectAttr('{0}.outColorR'.format(spcdn), cnst[0]+'.w{}'.format(i), f=1)
 
 def filter_items(source_items=None, search_txt_list=None, remover=None):
     """
