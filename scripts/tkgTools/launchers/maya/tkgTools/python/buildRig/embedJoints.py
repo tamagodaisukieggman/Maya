@@ -678,6 +678,7 @@ class EmbedJoints:
         # adjustment
         adjustment_nodes = cmds.ls('adjustment_GRP', dag=True, type='transform')
         nodes = brNode.Nodes(adjustment_nodes)
+        nodes.store_nodes_values()
 
         cmds.addAttr('root', ln='adjustmentDict', dt='string')
         cmds.setAttr('root.adjustmentDict', '{}'.format(nodes.nodes_values), type='string')
@@ -688,6 +689,7 @@ class EmbedJoints:
         # footroll
         footroll_nodes = cmds.ls('foot_roll_piv_GRP', dag=True, type='transform')
         nodes = brNode.Nodes(footroll_nodes)
+        nodes.store_nodes_values()
 
         cmds.addAttr('root', ln='footrollDict', dt='string')
         cmds.setAttr('root.footrollDict', '{}'.format(nodes.nodes_values), type='string')

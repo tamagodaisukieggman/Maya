@@ -71,8 +71,8 @@ def get_transform(node):
     else:
         return None
 
-def order_dags(dags=None, type='transform'):
-    parent_dag = cmds.ls(dags[0], l=1, type=type)[0].split('|')[1]
+def order_dags(dags=None):
+    parent_dag = cmds.ls(dags[0], l=1)[0].split('|')[1]
 
     all_hir = cmds.listRelatives(parent_dag, ad=True, f=True)
     hir_split_counter = {}

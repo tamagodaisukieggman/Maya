@@ -96,7 +96,7 @@ class Nodes:
         self.get_node_objects()
         self.nodes_values = OrderedDict()
 
-        self.store_nodes_values()
+        # self.store_nodes_values()
 
     def rename(self, prefix=None, suffix=None, replace=None):
         self.nodes = [node.rename(prefix, suffix, replace) for
