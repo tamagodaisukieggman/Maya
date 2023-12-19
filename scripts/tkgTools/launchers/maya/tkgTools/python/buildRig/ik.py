@@ -639,209 +639,6 @@ ik.base_connection()
             cmds.delete(self.ik_main_pac)
         self.soft_ik_loc = create_softik(ik_ctrl=self.ik_main_ctrl_object.nodes[-1], ikhandle=self.ikh)
 
-    def create_roll(self):
-        in_piv = 'in_piv'
-        out_piv = 'out_piv'
-        heel_piv = 'heel_piv'
-        toe_piv = 'toe_piv'
-
-        ball = 'Character1_LeftToeBase'
-        ankle = 'Character1_LeftFoot'
-
-        ball_piv = cmds.spaceLocator(n='ball_piv')[0]
-        cmds.matchTransform(ball_piv, ball, pos=True, rot=False, scl=False)
-
-        ankle_piv = cmds.spaceLocator(n='ankle_piv')[0]
-        cmds.matchTransform(ankle_piv, ankle, pos=True, rot=False, scl=False)
-
-        toe_piv_sweivel = cmds.spaceLocator(n=toe_piv+'_sweivel')[0]
-        cmds.matchTransform(toe_piv_sweivel, toe_piv, pos=True, rot=False, scl=False)
-
-        ball_sweivel = cmds.spaceLocator(n=ball+'_sweivel')[0]
-        cmds.matchTransform(ball_sweivel, ball, pos=True, rot=False, scl=False)
-
-        roll_list = [
-            toe_piv_sweivel,
-            ball_sweivel,
-            heel_piv,
-            in_piv,
-            out_piv,
-            toe_piv,
-            ball_piv,
-            ankle_piv
-        ]
-
-        roll_jnts = []
-        parent = None
-        for n in roll_list:
-            roll_jnt = cmds.createNode('joint', n=n+'_rot', ss=True)
-            roll_jnts.append(roll_jnt)
-            cmds.matchTransform(roll_jnt, n, pos=True, rot=False, scl=False)
-            if parent:
-                cmds.parent(roll_jnt, parent)
-
-            parent = roll_jnt
-
-        cmds.makeIdentity(roll_jnts[0], apply=True, t=True, r=True, s=True, n=False, pn=True)
-
-        # 
-        ik_ctrl = 'IK_Character1_LeftFoot_MAIN_CTRL'
-        roll_parent = 'IK_Character1_LeftFoot_LOCAL_CTRL'
-
-        roll_fk = brFk.Fk(module='roll',
-                    side='Dummy',
-                    rig_joints_parent=None,
-                    rig_ctrls_parent=roll_parent,
-                    rig_ctrls_parent_const=None,
-                    joints=roll_jnts,
-                    namespace=None,
-                    shape='cube',
-                    axis=[0,0,0],
-                    scale=1,
-                    scale_step=0,
-                    prefix='ROLL_',
-                    override_offsets=['GRP', 'OFFSET', 'BANK', 'ROLL', 'SWIVEL', 'BEND'])
-
-        # foot roll
-        heel_roll_space = roll_fk.trs_objects[2].nodes[2]
-        ball_roll_space = roll_fk.trs_objects[6].nodes[2]
-
-        cmds.addAttr(ik_ctrl, ln='footRoll', at='double', dv=0, max=10, min=-10, k=True)
-
-        heel_roll_space_rmv = cmds.createNode('remapValue', n=heel_roll_space+'_RMV', ss=True)
-        cmds.setAttr(heel_roll_space_rmv+'.inputMax', -10)
-        cmds.setAttr(heel_roll_space_rmv+'.outputMax', -90)
-
-        ball_roll_space_rmv = cmds.createNode('remapValue', n=ball_roll_space+'_RMV', ss=True)
-        cmds.setAttr(ball_roll_space_rmv+'.inputMax', 10)
-        cmds.setAttr(ball_roll_space_rmv+'.outputMax', 90)
-
-        cmds.connectAttr(ik_ctrl+'.footRoll', heel_roll_space_rmv+'.inputValue', f=True)
-        cmds.connectAttr(ik_ctrl+'.footRoll', ball_roll_space_rmv+'.inputValue', f=True)
-
-        cmds.connectAttr(heel_roll_space_rmv+'.outValue', heel_roll_space+'.rx', f=True)
-        cmds.connectAttr(ball_roll_space_rmv+'.outValue', ball_roll_space+'.rx', f=True)
-
-
-        # banking
-        in_roll_space = roll_fk.trs_objects[3].nodes[2]
-        out_roll_space = roll_fk.trs_objects[4].nodes[2]
-
-        cmds.addAttr(ik_ctrl, ln='banking', at='double', dv=0, max=10, min=-10, k=True)
-
-        in_roll_space_rmv = cmds.createNode('remapValue', n=in_roll_space+'_RMV', ss=True)
-        cmds.setAttr(in_roll_space_rmv+'.inputMax', -10)
-        cmds.setAttr(in_roll_space_rmv+'.outputMax', 90)
-
-        out_roll_space_rmv = cmds.createNode('remapValue', n=out_roll_space+'_RMV', ss=True)
-        cmds.setAttr(out_roll_space_rmv+'.inputMax', 10)
-        cmds.setAttr(out_roll_space_rmv+'.outputMax', -90)
-
-        cmds.connectAttr(ik_ctrl+'.banking', in_roll_space_rmv+'.inputValue', f=True)
-        cmds.connectAttr(ik_ctrl+'.banking', out_roll_space_rmv+'.inputValue', f=True)
-
-        cmds.connectAttr(in_roll_space_rmv+'.outValue', in_roll_space+'.rz', f=True)
-        cmds.connectAttr(out_roll_space_rmv+'.outValue', out_roll_space+'.rz', f=True)
-
-        # tip
-        toe_roll_space = roll_fk.trs_objects[5].nodes[3]
-
-        cmds.addAttr(ik_ctrl, ln='tip', at='double', dv=0, max=10, min=-10, k=True)
-
-        toe_roll_space_rmv = cmds.createNode('remapValue', n=toe_roll_space+'_RMV', ss=True)
-        cmds.setAttr(toe_roll_space_rmv+'.inputMin', -10)
-        cmds.setAttr(toe_roll_space_rmv+'.inputMax', 10)
-        cmds.setAttr(toe_roll_space_rmv+'.outputMin', -90)
-        cmds.setAttr(toe_roll_space_rmv+'.outputMax', 90)
-
-        cmds.connectAttr(ik_ctrl+'.tip', toe_roll_space_rmv+'.inputValue', f=True)
-        cmds.connectAttr(toe_roll_space_rmv+'.outValue', toe_roll_space+'.rx', f=True)
-
-        # heel
-        heel_roll_space = roll_fk.trs_objects[2].nodes[3]
-
-        cmds.addAttr(ik_ctrl, ln='heel', at='double', dv=0, max=10, min=-10, k=True)
-
-        heel_roll_space_rmv = cmds.createNode('remapValue', n=heel_roll_space+'_RMV', ss=True)
-        cmds.setAttr(heel_roll_space_rmv+'.inputMin', -10)
-        cmds.setAttr(heel_roll_space_rmv+'.inputMax', 10)
-        cmds.setAttr(heel_roll_space_rmv+'.outputMin', 90)
-        cmds.setAttr(heel_roll_space_rmv+'.outputMax', -90)
-
-        cmds.connectAttr(ik_ctrl+'.heel', heel_roll_space_rmv+'.inputValue', f=True)
-        cmds.connectAttr(heel_roll_space_rmv+'.outValue', heel_roll_space+'.rx', f=True)
-
-        # heel
-        heel_sweivel_space = roll_fk.trs_objects[2].nodes[4]
-
-        cmds.addAttr(ik_ctrl, ln='heelSweivel', at='double', dv=0, max=10, min=-10, k=True)
-
-        heel_sweivel_space_rmv = cmds.createNode('remapValue', n=heel_sweivel_space+'_RMV', ss=True)
-        cmds.setAttr(heel_sweivel_space_rmv+'.inputMin', -10)
-        cmds.setAttr(heel_sweivel_space_rmv+'.inputMax', 10)
-        cmds.setAttr(heel_sweivel_space_rmv+'.outputMin', -90)
-        cmds.setAttr(heel_sweivel_space_rmv+'.outputMax', 90)
-
-        cmds.connectAttr(ik_ctrl+'.heelSweivel', heel_sweivel_space_rmv+'.inputValue', f=True)
-        cmds.connectAttr(heel_sweivel_space_rmv+'.outValue', heel_sweivel_space+'.ry', f=True)
-
-        # ball
-        ball_sweivel_space = roll_fk.trs_objects[1].nodes[4]
-
-        cmds.addAttr(ik_ctrl, ln='ballSweivel', at='double', dv=0, max=10, min=-10, k=True)
-
-        ball_sweivel_space_rmv = cmds.createNode('remapValue', n=ball_sweivel_space+'_RMV', ss=True)
-        cmds.setAttr(ball_sweivel_space_rmv+'.inputMin', -10)
-        cmds.setAttr(ball_sweivel_space_rmv+'.inputMax', 10)
-        cmds.setAttr(ball_sweivel_space_rmv+'.outputMin', -90)
-        cmds.setAttr(ball_sweivel_space_rmv+'.outputMax', 90)
-
-        cmds.connectAttr(ik_ctrl+'.ballSweivel', ball_sweivel_space_rmv+'.inputValue', f=True)
-        cmds.connectAttr(ball_sweivel_space_rmv+'.outValue', ball_sweivel_space+'.ry', f=True)
-
-        # tip
-        toe_sweivel_space = roll_fk.trs_objects[0].nodes[4]
-
-        cmds.addAttr(ik_ctrl, ln='tipSweivel', at='double', dv=0, max=10, min=-10, k=True)
-
-        toe_sweivel_space_rmv = cmds.createNode('remapValue', n=toe_sweivel_space+'_RMV', ss=True)
-        cmds.setAttr(toe_sweivel_space_rmv+'.inputMin', -10)
-        cmds.setAttr(toe_sweivel_space_rmv+'.inputMax', 10)
-        cmds.setAttr(toe_sweivel_space_rmv+'.outputMin', -90)
-        cmds.setAttr(toe_sweivel_space_rmv+'.outputMax', 90)
-
-        cmds.connectAttr(ik_ctrl+'.tipSweivel', toe_sweivel_space_rmv+'.inputValue', f=True)
-        cmds.connectAttr(toe_sweivel_space_rmv+'.outValue', toe_sweivel_space+'.ry', f=True)
-
-        # ankle
-        ankle_sweivel_space = roll_fk.trs_objects[6].nodes[4]
-
-        cmds.addAttr(ik_ctrl, ln='ankleSweivel', at='double', dv=0, max=10, min=-10, k=True)
-
-        ankle_sweivel_space_rmv = cmds.createNode('remapValue', n=ankle_sweivel_space+'_RMV', ss=True)
-        cmds.setAttr(ankle_sweivel_space_rmv+'.inputMin', -10)
-        cmds.setAttr(ankle_sweivel_space_rmv+'.inputMax', 10)
-        cmds.setAttr(ankle_sweivel_space_rmv+'.outputMin', -90)
-        cmds.setAttr(ankle_sweivel_space_rmv+'.outputMax', 90)
-
-        cmds.connectAttr(ik_ctrl+'.ankleSweivel', ankle_sweivel_space_rmv+'.inputValue', f=True)
-        cmds.connectAttr(ankle_sweivel_space_rmv+'.outValue', ankle_sweivel_space+'.ry', f=True)
-
-        # ankle bend
-        ankle_bend_space = roll_fk.trs_objects[6].nodes[5]
-
-        cmds.addAttr(ik_ctrl, ln='ankleBend', at='double', dv=0, max=10, min=-10, k=True)
-
-        ankle_bend_space_rmv = cmds.createNode('remapValue', n=ankle_bend_space+'_RMV', ss=True)
-        cmds.setAttr(ankle_bend_space_rmv+'.inputMin', -10)
-        cmds.setAttr(ankle_bend_space_rmv+'.inputMax', 10)
-        cmds.setAttr(ankle_bend_space_rmv+'.outputMin', -90)
-        cmds.setAttr(ankle_bend_space_rmv+'.outputMax', 90)
-
-        cmds.connectAttr(ik_ctrl+'.ankleBend', ankle_bend_space_rmv+'.inputValue', f=True)
-        cmds.connectAttr(ankle_bend_space_rmv+'.outValue', ankle_bend_space+'.rx', f=True)
-
-
     def create_ikSpline_for_fk(self):
         # segment fk
         seg_fk = brFk.Fk(module=self.module,
@@ -1015,17 +812,17 @@ ik.base_connection()
             ori_con = cmds.orientConstraint(self.ik_local_ctrl_object.nodes[-1], self.ik_joints[-1], w=True)[0]
             cmds.setAttr(ori_con+'.interpType', 2)
 
-            switch_ori_con = cmds.orientConstraint(self.ik_joints[1], self.ik_local_ctrl_object.nodes[2], w=True, mo=True)[0]
-            cmds.setAttr(switch_ori_con+'.interpType', 2)
-            cmds.disconnectAttr(switch_ori_con+'.constraintRotateX', self.ik_local_ctrl_object.nodes[2]+'.rx')
-            cmds.disconnectAttr(switch_ori_con+'.constraintRotateY', self.ik_local_ctrl_object.nodes[2]+'.ry')
-            cmds.disconnectAttr(switch_ori_con+'.constraintRotateZ', self.ik_local_ctrl_object.nodes[2]+'.rz')
+            self.switch_ori_con = cmds.orientConstraint(self.ik_joints[1], self.ik_local_ctrl_object.nodes[2], w=True, mo=True)[0]
+            cmds.setAttr(self.switch_ori_con+'.interpType', 2)
+            cmds.disconnectAttr(self.switch_ori_con+'.constraintRotateX', self.ik_local_ctrl_object.nodes[2]+'.rx')
+            cmds.disconnectAttr(self.switch_ori_con+'.constraintRotateY', self.ik_local_ctrl_object.nodes[2]+'.ry')
+            cmds.disconnectAttr(self.switch_ori_con+'.constraintRotateZ', self.ik_local_ctrl_object.nodes[2]+'.rz')
 
             # local pairBlend
             pbn = cmds.createNode('pairBlend', n=self.ik_local_ctrl_object.nodes[2]+'_PBN', ss=True)
             cmds.setAttr(pbn+'.rotInterpolation', 1)
 
-            cmds.connectAttr(switch_ori_con+'.constraintRotate', pbn+'.inRotate2', f=True)
+            cmds.connectAttr(self.switch_ori_con+'.constraintRotate', pbn+'.inRotate2', f=True)
             cmds.connectAttr(pbn+'.outRotate', self.ik_local_ctrl_object.nodes[2]+'.r', f=True)
 
             # local pairBlend addAttr
@@ -1169,3 +966,198 @@ def create_softik(ik_ctrl=None, ikhandle=None):
     cmds.connectAttr('{0}.tz'.format(dup_len_loc[0]), '{0}.tz'.format(endloc), f=1)
 
     return startloc
+
+def add_roll(space=None, ctrl=None, roll_attr=None, space_at=None,
+            inputMin=0, inputMax=0, outputMin=0, outputMax=0):
+    if not cmds.objExists(ctrl+'.'+roll_attr):
+        cmds.addAttr(ctrl, ln=roll_attr, at='double', dv=0, max=10, min=-10, k=True)
+
+    space_rmv = cmds.createNode('remapValue', n=space+'_RMV', ss=True)
+    cmds.setAttr(space_rmv+'.inputMin', inputMin)
+    cmds.setAttr(space_rmv+'.inputMax', inputMax)
+    cmds.setAttr(space_rmv+'.outputMin', outputMin)
+    cmds.setAttr(space_rmv+'.outputMax', outputMax)
+
+    cmds.connectAttr(ctrl+'.'+roll_attr, space_rmv+'.inputValue', f=True)
+    cmds.connectAttr(space_rmv+'.outValue', space+'.'+space_at, f=True)
+
+def create_roll(in_piv = 'in_piv',
+                out_piv = 'out_piv',
+                heel_piv = 'heel_piv',
+                toe_piv = 'toe_piv',
+                ball = 'Character1_LeftToeBase',
+                ankle = 'Character1_LeftFoot',
+                ik_ctrl = 'IK_Character1_LeftFoot_MAIN_CTRL',
+                roll_parent = 'IK_Character1_LeftFoot_LOCAL_CTRL',
+                foot_roll_joints = ['left_ankle', 'left_ball'],
+                create_foot_roll_end = True
+                ):
+    ball_piv = cmds.spaceLocator(n='ball_piv')[0]
+    cmds.matchTransform(ball_piv, ball, pos=True, rot=False, scl=False)
+
+    ankle_piv = cmds.spaceLocator(n='ankle_piv')[0]
+    cmds.matchTransform(ankle_piv, ankle, pos=True, rot=False, scl=False)
+
+    toe_piv_sweivel = cmds.spaceLocator(n=toe_piv+'_sweivel')[0]
+    cmds.matchTransform(toe_piv_sweivel, toe_piv, pos=True, rot=False, scl=False)
+
+    ball_sweivel = cmds.spaceLocator(n=ball+'_sweivel')[0]
+    cmds.matchTransform(ball_sweivel, ball, pos=True, rot=False, scl=False)
+
+    roll_list = [
+        toe_piv_sweivel,
+        ball_sweivel,
+        heel_piv,
+        in_piv,
+        out_piv,
+        toe_piv,
+        ball_piv,
+        ankle_piv
+    ]
+
+    roll_jnts = []
+    parent = None
+    for n in roll_list:
+        roll_jnt = cmds.createNode('joint', n=n+'_rot', ss=True)
+        roll_jnts.append(roll_jnt)
+        cmds.matchTransform(roll_jnt, n, pos=True, rot=False, scl=False)
+        if parent:
+            cmds.parent(roll_jnt, parent)
+
+        parent = roll_jnt
+
+    cmds.makeIdentity(roll_jnts[0], apply=True, t=True, r=True, s=True, n=False, pn=True)
+
+    # create ctrls
+    roll_fk = brFk.Fk(module='roll',
+                side='Dummy',
+                rig_joints_parent=None,
+                rig_ctrls_parent=roll_parent,
+                rig_ctrls_parent_const=None,
+                joints=roll_jnts,
+                namespace=None,
+                shape='cube',
+                axis=[0,0,0],
+                scale=1,
+                scale_step=0,
+                prefix='ROLL_',
+                override_offsets=['GRP', 'OFFSET', 'BANK', 'ROLL', 'SWIVEL', 'BEND'])
+
+    # foot roll
+    heel_roll_space = roll_fk.trs_objects[2].nodes[2]
+    ball_roll_space = roll_fk.trs_objects[6].nodes[2]
+
+    add_roll(space=heel_roll_space, ctrl=ik_ctrl, roll_attr='footRoll', space_at='rx',
+            inputMin=0, inputMax=-10, outputMin=0, outputMax=-90)
+
+    add_roll(space=ball_roll_space, ctrl=ik_ctrl, roll_attr='footRoll', space_at='rx',
+            inputMin=0, inputMax=10, outputMin=0, outputMax=90)
+
+
+    # banking
+    in_roll_space = roll_fk.trs_objects[3].nodes[2]
+    out_roll_space = roll_fk.trs_objects[4].nodes[2]
+
+    add_roll(space=in_roll_space, ctrl=ik_ctrl, roll_attr='banking', space_at='rz',
+            inputMin=0, inputMax=-10, outputMin=0, outputMax=90)
+
+    add_roll(space=out_roll_space, ctrl=ik_ctrl, roll_attr='banking', space_at='rz',
+            inputMin=0, inputMax=10, outputMin=0, outputMax=-90)
+
+
+    # tip
+    toe_roll_space = roll_fk.trs_objects[5].nodes[3]
+
+    add_roll(space=toe_roll_space, ctrl=ik_ctrl, roll_attr='tip', space_at='rx',
+            inputMin=-10, inputMax=10, outputMin=-90, outputMax=90)
+
+    # heel
+    heel_roll_space = roll_fk.trs_objects[2].nodes[3]
+
+    add_roll(space=heel_roll_space, ctrl=ik_ctrl, roll_attr='heel', space_at='rx',
+            inputMin=-10, inputMax=10, outputMin=90, outputMax=-90)
+
+
+    # heel
+    heel_sweivel_space = roll_fk.trs_objects[2].nodes[4]
+
+    add_roll(space=heel_sweivel_space, ctrl=ik_ctrl, roll_attr='heelSweivel', space_at='ry',
+            inputMin=-10, inputMax=10, outputMin=-90, outputMax=90)
+
+
+    # ball
+    ball_sweivel_space = roll_fk.trs_objects[1].nodes[4]
+
+    add_roll(space=ball_sweivel_space, ctrl=ik_ctrl, roll_attr='ballSweivel', space_at='ry',
+            inputMin=-10, inputMax=10, outputMin=-90, outputMax=90)
+
+
+    # tip
+    toe_sweivel_space = roll_fk.trs_objects[0].nodes[4]
+
+    add_roll(space=toe_sweivel_space, ctrl=ik_ctrl, roll_attr='tipSweivel', space_at='ry',
+            inputMin=-10, inputMax=10, outputMin=-90, outputMax=90)
+
+    # ankle
+    ankle_sweivel_space = roll_fk.trs_objects[6].nodes[4]
+
+    add_roll(space=ankle_sweivel_space, ctrl=ik_ctrl, roll_attr='ankleSweivel', space_at='ry',
+            inputMin=-10, inputMax=10, outputMin=-90, outputMax=90)
+
+    # ankle bend
+    ankle_bend_space = roll_fk.trs_objects[6].nodes[5]
+
+    add_roll(space=ankle_bend_space, ctrl=ik_ctrl, roll_attr='ankleBend', space_at='rx',
+            inputMin=-10, inputMax=10, outputMin=-90, outputMax=90)
+
+
+    # foot roll ik
+    ball = foot_roll_joints[-1]
+    ball_wt = cmds.xform(ball, q=True, t=True, ws=True)
+    toe_wt = cmds.xform(toe_piv, q=True, t=True, ws=True)
+
+    if create_foot_roll_end:
+        ball_end = cmds.createNode('joint', n=ball+'_END', ss=True)
+        cmds.matchTransform(ball_end, ball, pos=True, rot=True, scl=False)
+        cmds.xform(ball_end, t=[0, 0, toe_wt[2]-ball_wt[2]], r=True, ws=True)
+        cmds.parent(ball_end, ball)
+        foot_roll_joints.append(ball_end)
+
+    else:
+        ball_end = foot_roll_joints[-1]
+
+    foot_roll_prefix = 'IK_FOOT_ROLL_'
+    jnt_object = brJnt.create_joints(namespace=None,
+                                    nodes=foot_roll_joints,
+                                    prefix=foot_roll_prefix,
+                                    suffix=None,
+                                    replace=['_copy', ''])
+
+    for node in jnt_object.node_list:
+        node.freezeTransform()
+        node.set_preferredAngle()
+        node.get_values()
+
+    # ball piv ctrlに下のball ikhを入れる
+    ball_piv_ctrl = roll_fk.trs_objects[6].nodes[-1]
+    ball_ikh = cmds.ikHandle(n=jnt_object.nodes[1]+'_IKH',
+                            sj=jnt_object.nodes[0],
+                            ee=jnt_object.nodes[1],
+                            sol='ikSCsolver',
+                            s='sticky')[0]
+    cmds.parent(ball_ikh, ball_piv_ctrl)
+
+    # toe piv ctrlの中にtoe ctrlのgrpごと入れて下のball end ikhを入れる
+    ball_end_ikh = cmds.ikHandle(n=jnt_object.nodes[2]+'_IKH',
+                            sj=jnt_object.nodes[1],
+                            ee=jnt_object.nodes[2],
+                            sol='ikSCsolver',
+                            s='sticky')
+
+    # roll ik jointsのペアレント
+    ankle_piv_ctrl = roll_fk.trs_objects[-1].nodes[-1]
+    cmds.parent(jnt_object.nodes[0], ankle_piv_ctrl)
+
+    # ikhandleコンスト用のノードをankle_piv_rot_ctrlに入れてもいいが、
+    # IK_left_ankle_LOCAL_CTRLのSPACEのコンストとAutoPoseをオフにしておく必要がある
+
