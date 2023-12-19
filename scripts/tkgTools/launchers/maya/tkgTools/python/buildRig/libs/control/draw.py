@@ -181,3 +181,29 @@ class Draw(object):
         cmds.setAttr(self.curve + ".rotate", *axis)
         cmds.refresh()
         cmds.makeIdentity(self.curve, apply=True)
+
+def create_manip_ctrl(name='manip_CTRL'):
+    draw_util = Draw()
+
+    # X
+    manipX = draw_util.create_curve(name="manipX", shape="manip", axis=[0,0,0], scale=1)
+    cmds.delete([manipX+'.cv[0:17]', manipX+'.cv[19:40]', manipX+'.cv[43:44]'])
+    brCommon.set_rgb_color(ctrl=manipX, color=[1,0,0])
+
+    # Y
+    manipY = draw_util.create_curve(name="manipY", shape="manip", axis=[0,0,0], scale=1)
+    cmds.delete([manipY+'.cv[19:41]', manipY+'.cv[43:62]'])
+    brCommon.set_rgb_color(ctrl=manipY, color=[0,1,0])
+
+    brCommon.merge_curves([manipX, manipY])
+
+    # Z
+    manipZ = draw_util.create_curve(name="manipZ", shape="manip", axis=[0,0,0], scale=1)
+    cmds.delete([manipZ+'.cv[0:17]', manipZ+'.cv[37:41]', manipZ+'.cv[43:62]'])
+    brCommon.set_rgb_color(ctrl=manipZ, color=[0,0,1])
+
+    brCommon.merge_curves([manipY, manipZ])
+
+    cmds.rename(manipZ, name)
+
+    return name

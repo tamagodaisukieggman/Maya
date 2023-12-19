@@ -247,6 +247,127 @@ def create_spaces(base_ctrl=None,
             cmds.connectAttr(base_ctrl + '.space', '{0}.firstTerm'.format(spcdn), f=1)
             cmds.connectAttr('{0}.outColorR'.format(spcdn), cnst[0]+'.w{}'.format(i), f=1)
 
+def closest_hit_point_on_mesh(point=None, mesh=None, axis='z'):
+    axis_dict = {
+        'x':[1,0,0],
+        'y':[0,1,0],
+        'z':[0,0,1],
+        '-x':[-1,0,0],
+        '-y':[0,-1,0],
+        '-z':[0,0,-1]
+    }
+
+    direction = om2.MVector(*axis_dict[axis])  # Z軸方向
+    startPoint = om2.MPoint(*point)
+
+
+    # メッシュのダグパスを取得
+    selectionList = om2.MSelectionList()
+    selectionList.add(mesh)
+    dagPath = selectionList.getDagPath(0)
+
+    # メッシュの形状ノードを取得
+    meshFn = om2.MFnMesh(dagPath)
+
+    try:
+        # レイの作成と交点の取得
+        hitPoint = meshFn.closestIntersection(
+            om2.MFloatPoint(startPoint),  # レイの開始点
+            om2.MFloatVector(direction),  # レイの方向
+            om2.MSpace.kWorld,            # ワールド座標系
+            10000,                       # 最大距離
+            False                        # 任意の交点ではなく最も近い点
+        )[0]
+    except:
+        return point
+
+    return [hitPoint.x, hitPoint.y, hitPoint.z]
+
+def get_finger_tip(mesh=None):
+    sel = cmds.ls(os=True)
+    # 選択されたメッシュの頂点を取得
+    vertices = cmds.polyListComponentConversion(mesh, toVertex=True)
+    vertices = cmds.filterExpand(vertices, selectionMask=31)
+
+    # 条件に合う頂点を探索
+    max_x = float('-inf')
+    min_y = float('inf')
+    target_vertex = None
+
+    for vertex in vertices:
+        # 頂点の座標を取得
+        position = cmds.pointPosition(vertex, world=True)
+
+        # Xが最大でYが最小の頂点を探す
+        if position[0] > max_x or (position[0] == max_x and position[1] < min_y):
+            max_x = position[0]
+            min_y = position[1]
+            target_vertex = vertex
+
+    persp_wt = cmds.xform('persp', q=True, t=True, ws=True)
+    persp_wr = cmds.xform('persp', q=True, ro=True, ws=True)
+
+    cmds.xform('persp', t=[0,0,0], ro=[0,0,0], a=True)
+    cmds.viewFit()
+
+    cmds.select(target_vertex, r=True)
+
+    pw_count = 30
+    for i in range(pw_count):
+        cmds.pickWalk(d='down')
+
+    finger_tip = cmds.ls(os=True)[0]
+
+    cmds.xform('persp', t=persp_wt, ws=True)
+    cmds.xform('persp', ro=persp_wr, ws=True)
+
+    if sel:
+        cmds.select(sel, r=True)
+
+    cmds.FrameSelectedWithoutChildren()
+
+    return finger_tip
+
+def get_perpendicular_point(pos1, pos2, obj_pos):
+    # 2点間の座標を取得
+    # pos1 = cmds.xform(line_point1, q=True, ws=True, t=True)
+    # pos2 = cmds.xform(line_point2, q=True, ws=True, t=True)
+
+    # 2点間のベクトル（直線の方向）を計算
+    line_vector = [pos2[0] - pos1[0], pos2[1] - pos1[1], pos2[2] - pos1[2]]
+
+    # 別のオブジェクトの位置を取得
+    # obj_pos = cmds.xform(other_object, q=True, ws=True, t=True)
+
+    # オブジェクトから直線への最短距離ベクトルを計算
+    obj_vector = [obj_pos[0] - pos1[0], obj_pos[1] - pos1[1], obj_pos[2] - pos1[2]]
+    dot_product = sum(p*q for p, q in zip(obj_vector, line_vector))
+    line_length_squared = sum(p*p for p in line_vector)
+    t = dot_product / line_length_squared
+
+    # 最も近い点を計算
+    closest_point = [pos1[0] + t * line_vector[0], pos1[1] + t * line_vector[1], pos1[2] + t * line_vector[2]]
+
+    return closest_point
+
+def merge_curves(sel=None):
+    if not sel:
+        sel = cmds.ls(os=True)
+    # cmds.select(sel[0], r=True)
+    # cmds.makeIdentity(apply=True, t=True, r=True, s=True, n=False, pn=True)
+    if not sel:
+        return
+    shape = cmds.listRelatives(sel[0], s=True, f=True) or list()
+    # cmds.select(sel[0], r=True)
+    # mel.eval('channelBoxCommand -freezeAll;')
+    if shape:
+        for sh in shape:
+            cmds.parent(sh, sel[1], s=True, r=True)
+
+    cmds.delete(sel[0])
+
+    cmds.select(sel[1], r=True)
+
 def filter_items(source_items=None, search_txt_list=None, remover=None):
     """
     source_items = cmds.ls(os=True, type='joint', dag=True)

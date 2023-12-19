@@ -81,6 +81,9 @@ class Nodes:
         self.nodes = nodes
         self.node_list = []
         self.get_node_objects()
+        self.nodes_values = OrderedDict()
+
+        self.store_nodes_values()
 
     def rename(self, prefix=None, suffix=None, replace=None):
         self.nodes = [node.rename(prefix, suffix, replace) for
@@ -94,3 +97,20 @@ class Nodes:
         for n in self.nodes:
             node = Node(n)
             self.node_list.append(node)
+
+    def store_nodes_values(self):
+        ordered_dags = brCommon.order_dags(self.nodes)
+        for odd in ordered_dags:
+            node = Node(odd)
+            node.get_values()
+
+            self.node_values = OrderedDict()
+            self.node_values['parent'] = node.parent
+            self.node_values['children'] = node.children
+            self.node_values['full_path'] = node.full_path
+            self.node_values['wld_pos'] = node.wld_pos
+            self.node_values['wld_rot'] = node.wld_rot
+            self.node_values['jnt_orient'] = node.jnt_orient
+            self.node_values['shapes'] = node.shapes
+
+            self.nodes_values[odd] = self.node_values
