@@ -1,0 +1,569 @@
+{
+    "foot_roll_piv_GRP": {
+        "parent": null,
+        "children": [
+            "|foot_roll_piv_GRP|left_toe_piv_loc",
+            "|foot_roll_piv_GRP|left_heel_piv_loc",
+            "|foot_roll_piv_GRP|left_in_piv_loc",
+            "|foot_roll_piv_GRP|left_out_piv_loc",
+            "|foot_roll_piv_GRP|right_toe_piv_loc",
+            "|foot_roll_piv_GRP|right_heel_piv_loc",
+            "|foot_roll_piv_GRP|right_in_piv_loc",
+            "|foot_roll_piv_GRP|right_out_piv_loc",
+            "|foot_roll_piv_GRP|mirror_foot_roll_piv_GRP"
+        ],
+        "full_path": "|foot_roll_piv_GRP",
+        "wld_pos": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "wld_rot": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_toe_piv_loc": {
+        "parent": "|foot_roll_piv_GRP",
+        "children": [
+            "|foot_roll_piv_GRP|left_toe_piv_loc|left_toe_piv_locShape"
+        ],
+        "full_path": "|foot_roll_piv_GRP|left_toe_piv_loc",
+        "wld_pos": [
+            16.832110106313927,
+            0.0,
+            16.410198627712017
+        ],
+        "wld_rot": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": [
+            "left_toe_piv_locShape"
+        ],
+        "userDefineAttrs": {}
+    },
+    "left_heel_piv_loc": {
+        "parent": "|foot_roll_piv_GRP",
+        "children": [
+            "|foot_roll_piv_GRP|left_heel_piv_loc|left_heel_piv_locShape"
+        ],
+        "full_path": "|foot_roll_piv_GRP|left_heel_piv_loc",
+        "wld_pos": [
+            14.774007797241211,
+            0.0,
+            -9.427043701955387
+        ],
+        "wld_rot": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": [
+            "left_heel_piv_locShape"
+        ],
+        "userDefineAttrs": {}
+    },
+    "left_in_piv_loc": {
+        "parent": "|foot_roll_piv_GRP",
+        "children": [
+            "|foot_roll_piv_GRP|left_in_piv_loc|left_in_piv_locShape"
+        ],
+        "full_path": "|foot_roll_piv_GRP|left_in_piv_loc",
+        "wld_pos": [
+            12.477913183822356,
+            0.0,
+            9.18201565739461
+        ],
+        "wld_rot": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": [
+            "left_in_piv_locShape"
+        ],
+        "userDefineAttrs": {}
+    },
+    "left_out_piv_loc": {
+        "parent": "|foot_roll_piv_GRP",
+        "children": [
+            "|foot_roll_piv_GRP|left_out_piv_loc|left_out_piv_locShape"
+        ],
+        "full_path": "|foot_roll_piv_GRP|left_out_piv_loc",
+        "wld_pos": [
+            22.33435413068339,
+            -7.105427357601002e-15,
+            6.0393716573726195
+        ],
+        "wld_rot": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": [
+            "left_out_piv_locShape"
+        ],
+        "userDefineAttrs": {}
+    },
+    "right_toe_piv_loc": {
+        "parent": "|foot_roll_piv_GRP",
+        "children": [
+            "|foot_roll_piv_GRP|right_toe_piv_loc|right_toe_piv_locShape",
+            "|foot_roll_piv_GRP|right_toe_piv_loc|right_toe_piv_loc_pointConstraint1",
+            "|foot_roll_piv_GRP|right_toe_piv_loc|right_toe_piv_loc_orientConstraint1"
+        ],
+        "full_path": "|foot_roll_piv_GRP|right_toe_piv_loc",
+        "wld_pos": [
+            -16.832110106313927,
+            0.0,
+            16.410198627712017
+        ],
+        "wld_rot": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": [
+            "right_toe_piv_locShape"
+        ],
+        "userDefineAttrs": {}
+    },
+    "right_heel_piv_loc": {
+        "parent": "|foot_roll_piv_GRP",
+        "children": [
+            "|foot_roll_piv_GRP|right_heel_piv_loc|right_heel_piv_locShape",
+            "|foot_roll_piv_GRP|right_heel_piv_loc|right_heel_piv_loc_pointConstraint1",
+            "|foot_roll_piv_GRP|right_heel_piv_loc|right_heel_piv_loc_orientConstraint1"
+        ],
+        "full_path": "|foot_roll_piv_GRP|right_heel_piv_loc",
+        "wld_pos": [
+            -14.774007797241211,
+            0.0,
+            -9.427043701955387
+        ],
+        "wld_rot": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": [
+            "right_heel_piv_locShape"
+        ],
+        "userDefineAttrs": {}
+    },
+    "right_in_piv_loc": {
+        "parent": "|foot_roll_piv_GRP",
+        "children": [
+            "|foot_roll_piv_GRP|right_in_piv_loc|right_in_piv_locShape",
+            "|foot_roll_piv_GRP|right_in_piv_loc|right_in_piv_loc_pointConstraint1",
+            "|foot_roll_piv_GRP|right_in_piv_loc|right_in_piv_loc_orientConstraint1"
+        ],
+        "full_path": "|foot_roll_piv_GRP|right_in_piv_loc",
+        "wld_pos": [
+            -12.477913183822356,
+            0.0,
+            9.18201565739461
+        ],
+        "wld_rot": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": [
+            "right_in_piv_locShape"
+        ],
+        "userDefineAttrs": {}
+    },
+    "right_out_piv_loc": {
+        "parent": "|foot_roll_piv_GRP",
+        "children": [
+            "|foot_roll_piv_GRP|right_out_piv_loc|right_out_piv_locShape",
+            "|foot_roll_piv_GRP|right_out_piv_loc|right_out_piv_loc_pointConstraint1",
+            "|foot_roll_piv_GRP|right_out_piv_loc|right_out_piv_loc_orientConstraint1"
+        ],
+        "full_path": "|foot_roll_piv_GRP|right_out_piv_loc",
+        "wld_pos": [
+            -22.33435413068339,
+            -7.105427357601002e-15,
+            6.0393716573726195
+        ],
+        "wld_rot": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": [
+            "right_out_piv_locShape"
+        ],
+        "userDefineAttrs": {}
+    },
+    "mirror_foot_roll_piv_GRP": {
+        "parent": "|foot_roll_piv_GRP",
+        "children": [
+            "|foot_roll_piv_GRP|mirror_foot_roll_piv_GRP|mirror_left_toe_piv_loc",
+            "|foot_roll_piv_GRP|mirror_foot_roll_piv_GRP|mirror_left_heel_piv_loc",
+            "|foot_roll_piv_GRP|mirror_foot_roll_piv_GRP|mirror_left_in_piv_loc",
+            "|foot_roll_piv_GRP|mirror_foot_roll_piv_GRP|mirror_left_out_piv_loc",
+            "|foot_roll_piv_GRP|mirror_foot_roll_piv_GRP|mirror_right_toe_piv_loc",
+            "|foot_roll_piv_GRP|mirror_foot_roll_piv_GRP|mirror_right_heel_piv_loc",
+            "|foot_roll_piv_GRP|mirror_foot_roll_piv_GRP|mirror_right_in_piv_loc",
+            "|foot_roll_piv_GRP|mirror_foot_roll_piv_GRP|mirror_right_out_piv_loc"
+        ],
+        "full_path": "|foot_roll_piv_GRP|mirror_foot_roll_piv_GRP",
+        "wld_pos": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "wld_rot": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "right_toe_piv_loc_pointConstraint1": {
+        "parent": "|foot_roll_piv_GRP|right_toe_piv_loc",
+        "children": null,
+        "full_path": "|foot_roll_piv_GRP|right_toe_piv_loc|right_toe_piv_loc_pointConstraint1",
+        "wld_pos": [
+            -16.832110106313927,
+            0.0,
+            16.410198627712017
+        ],
+        "wld_rot": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {
+            "mirror_left_toe_piv_locW0": [
+                "double",
+                1.0
+            ]
+        }
+    },
+    "right_toe_piv_loc_orientConstraint1": {
+        "parent": "|foot_roll_piv_GRP|right_toe_piv_loc",
+        "children": null,
+        "full_path": "|foot_roll_piv_GRP|right_toe_piv_loc|right_toe_piv_loc_orientConstraint1",
+        "wld_pos": [
+            -16.832110106313927,
+            0.0,
+            16.410198627712017
+        ],
+        "wld_rot": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {
+            "mirror_left_toe_piv_locW0": [
+                "double",
+                1.0
+            ]
+        }
+    },
+    "right_heel_piv_loc_pointConstraint1": {
+        "parent": "|foot_roll_piv_GRP|right_heel_piv_loc",
+        "children": null,
+        "full_path": "|foot_roll_piv_GRP|right_heel_piv_loc|right_heel_piv_loc_pointConstraint1",
+        "wld_pos": [
+            -14.774007797241211,
+            0.0,
+            -9.427043701955387
+        ],
+        "wld_rot": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {
+            "mirror_left_heel_piv_locW0": [
+                "double",
+                1.0
+            ]
+        }
+    },
+    "right_heel_piv_loc_orientConstraint1": {
+        "parent": "|foot_roll_piv_GRP|right_heel_piv_loc",
+        "children": null,
+        "full_path": "|foot_roll_piv_GRP|right_heel_piv_loc|right_heel_piv_loc_orientConstraint1",
+        "wld_pos": [
+            -14.774007797241211,
+            0.0,
+            -9.427043701955387
+        ],
+        "wld_rot": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {
+            "mirror_left_heel_piv_locW0": [
+                "double",
+                1.0
+            ]
+        }
+    },
+    "right_in_piv_loc_pointConstraint1": {
+        "parent": "|foot_roll_piv_GRP|right_in_piv_loc",
+        "children": null,
+        "full_path": "|foot_roll_piv_GRP|right_in_piv_loc|right_in_piv_loc_pointConstraint1",
+        "wld_pos": [
+            -12.477913183822356,
+            0.0,
+            9.18201565739461
+        ],
+        "wld_rot": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {
+            "mirror_left_in_piv_locW0": [
+                "double",
+                1.0
+            ]
+        }
+    },
+    "right_in_piv_loc_orientConstraint1": {
+        "parent": "|foot_roll_piv_GRP|right_in_piv_loc",
+        "children": null,
+        "full_path": "|foot_roll_piv_GRP|right_in_piv_loc|right_in_piv_loc_orientConstraint1",
+        "wld_pos": [
+            -12.477913183822356,
+            0.0,
+            9.18201565739461
+        ],
+        "wld_rot": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {
+            "mirror_left_in_piv_locW0": [
+                "double",
+                1.0
+            ]
+        }
+    },
+    "right_out_piv_loc_pointConstraint1": {
+        "parent": "|foot_roll_piv_GRP|right_out_piv_loc",
+        "children": null,
+        "full_path": "|foot_roll_piv_GRP|right_out_piv_loc|right_out_piv_loc_pointConstraint1",
+        "wld_pos": [
+            -22.33435413068339,
+            -7.105427357601002e-15,
+            6.0393716573726195
+        ],
+        "wld_rot": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {
+            "mirror_left_out_piv_locW0": [
+                "double",
+                1.0
+            ]
+        }
+    },
+    "right_out_piv_loc_orientConstraint1": {
+        "parent": "|foot_roll_piv_GRP|right_out_piv_loc",
+        "children": null,
+        "full_path": "|foot_roll_piv_GRP|right_out_piv_loc|right_out_piv_loc_orientConstraint1",
+        "wld_pos": [
+            -22.33435413068339,
+            -7.105427357601002e-15,
+            6.0393716573726195
+        ],
+        "wld_rot": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {
+            "mirror_left_out_piv_locW0": [
+                "double",
+                1.0
+            ]
+        }
+    },
+    "mirror_left_toe_piv_loc": {
+        "parent": "|foot_roll_piv_GRP|mirror_foot_roll_piv_GRP",
+        "children": null,
+        "full_path": "|foot_roll_piv_GRP|mirror_foot_roll_piv_GRP|mirror_left_toe_piv_loc",
+        "wld_pos": [
+            -16.832110106313927,
+            0.0,
+            16.410198627712017
+        ],
+        "wld_rot": [
+            0.0,
+            180.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "mirror_left_heel_piv_loc": {
+        "parent": "|foot_roll_piv_GRP|mirror_foot_roll_piv_GRP",
+        "children": null,
+        "full_path": "|foot_roll_piv_GRP|mirror_foot_roll_piv_GRP|mirror_left_heel_piv_loc",
+        "wld_pos": [
+            -14.774007797241211,
+            0.0,
+            -9.427043701955387
+        ],
+        "wld_rot": [
+            0.0,
+            180.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "mirror_left_in_piv_loc": {
+        "parent": "|foot_roll_piv_GRP|mirror_foot_roll_piv_GRP",
+        "children": null,
+        "full_path": "|foot_roll_piv_GRP|mirror_foot_roll_piv_GRP|mirror_left_in_piv_loc",
+        "wld_pos": [
+            -12.477913183822356,
+            0.0,
+            9.18201565739461
+        ],
+        "wld_rot": [
+            0.0,
+            180.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "mirror_left_out_piv_loc": {
+        "parent": "|foot_roll_piv_GRP|mirror_foot_roll_piv_GRP",
+        "children": null,
+        "full_path": "|foot_roll_piv_GRP|mirror_foot_roll_piv_GRP|mirror_left_out_piv_loc",
+        "wld_pos": [
+            -22.33435413068339,
+            -7.105427357601002e-15,
+            6.0393716573726195
+        ],
+        "wld_rot": [
+            0.0,
+            180.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "mirror_right_toe_piv_loc": {
+        "parent": "|foot_roll_piv_GRP|mirror_foot_roll_piv_GRP",
+        "children": null,
+        "full_path": "|foot_roll_piv_GRP|mirror_foot_roll_piv_GRP|mirror_right_toe_piv_loc",
+        "wld_pos": [
+            15.772758483886719,
+            0.0,
+            15.87965202331543
+        ],
+        "wld_rot": [
+            0.0,
+            180.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "mirror_right_heel_piv_loc": {
+        "parent": "|foot_roll_piv_GRP|mirror_foot_roll_piv_GRP",
+        "children": null,
+        "full_path": "|foot_roll_piv_GRP|mirror_foot_roll_piv_GRP|mirror_right_heel_piv_loc",
+        "wld_pos": [
+            14.774007797241211,
+            0.0,
+            -8.907000541687012
+        ],
+        "wld_rot": [
+            0.0,
+            180.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "mirror_right_in_piv_loc": {
+        "parent": "|foot_roll_piv_GRP|mirror_foot_roll_piv_GRP",
+        "children": null,
+        "full_path": "|foot_roll_piv_GRP|mirror_foot_roll_piv_GRP|mirror_right_in_piv_loc",
+        "wld_pos": [
+            14.09520435333252,
+            0.0,
+            5.115346908569336
+        ],
+        "wld_rot": [
+            0.0,
+            180.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "mirror_right_out_piv_loc": {
+        "parent": "|foot_roll_piv_GRP|mirror_foot_roll_piv_GRP",
+        "children": null,
+        "full_path": "|foot_roll_piv_GRP|mirror_foot_roll_piv_GRP|mirror_right_out_piv_loc",
+        "wld_pos": [
+            17.62672996520996,
+            0.0,
+            5.115346908569336
+        ],
+        "wld_rot": [
+            0.0,
+            180.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    }
+}

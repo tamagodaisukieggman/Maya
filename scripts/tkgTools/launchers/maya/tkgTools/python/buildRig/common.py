@@ -94,6 +94,15 @@ def get_mid_point(pos1, pos2, percentage=0.5):
                  pos1[2] + (pos2[2] - pos1[2]) * percentage]
     return mid_point
 
+def mid_point(objA=None, objB=None, percentage=0.5):
+    pos1 = cmds.xform(objA, q=True, t=True, ws=True)
+    pos2 = cmds.xform(objB, q=True, t=True, ws=True)
+    return get_mid_point(pos1, pos2, percentage)
+
+def set_mid_point(objA=None, objB=None, objC=None, percentage=0.5):
+    mid_pos = mid_point(objA, objB, percentage)
+    cmds.xform(objC, t=mid_pos, ws=True, a=True)
+
 def vector_from_two_points(point_a=None, point_b=None):
     pos_a = get_world_pose(point_a)
     pos_b = get_world_pose(point_b)

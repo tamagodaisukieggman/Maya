@@ -23,6 +23,8 @@ class Node:
         self.jnt_orient = None
         self.shapes = None
 
+        self.userDefineAttrs = {}
+
         if cmds.objExists(self.node):
             self.get_values()
 
@@ -33,6 +35,7 @@ class Node:
         self.get_wld_trs()
         self.get_jo()
         self.get_shapes()
+        self.get_userDefineAttrs()
 
     def get_parent(self):
         parent = cmds.listRelatives(self.node, p=True, f=True) or None
@@ -63,6 +66,16 @@ class Node:
 
     def get_shapes(self):
         self.shapes = cmds.listRelatives(self.node, s=True) or None
+
+    def get_userDefineAttrs(self):
+        list_ud_attrs = cmds.listAttr(self.node, ud=True) or None
+        if list_ud_attrs:
+            for luat in list_ud_attrs:
+                self.userDefineAttrs[luat] = [
+                    cmds.getAttr(self.node+'.'+luat, type=True),
+                    cmds.getAttr(self.node+'.'+luat)
+                    ]
+
 
     def freezeTransform(self, pos=True, rot=True, scl=True):
         cmds.makeIdentity(self.node, apply=True, t=pos, r=rot, s=scl, n=False, pn=True)
@@ -112,5 +125,6 @@ class Nodes:
             self.node_values['wld_rot'] = node.wld_rot
             self.node_values['jnt_orient'] = node.jnt_orient
             self.node_values['shapes'] = node.shapes
+            self.node_values['userDefineAttrs'] = node.userDefineAttrs
 
             self.nodes_values[odd] = self.node_values

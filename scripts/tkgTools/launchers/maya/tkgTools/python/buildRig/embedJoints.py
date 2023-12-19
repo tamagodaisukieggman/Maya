@@ -5,13 +5,16 @@ import maya.mel as mel
 import datetime
 from imp import reload
 import os
+import traceback
 
 import buildRig.common as brCommon
+import buildRig.node as brNode
 import buildRig.aim as brAim
 import buildRig.modifyJoints as brMJ
 import buildRig.libs.control.draw as brDraw
 import buildRig.lock as brLock
 reload(brCommon)
+reload(brNode)
 reload(brAim)
 reload(brMJ)
 reload(brDraw)
@@ -39,9 +42,8 @@ embed = brEJ.EmbedJoints(mesh=sel[0],
                  spine_count=3,
                  neck_count=1,
                  knee_count=1,
-                 type='biped')
-
-embed.create_biped_joints()
+                 type='biped',
+                 create=True)
 
 embed.set_arm_axis_pv_up(shoulder_aim_axis='x',
                          shoulder_up_axis='-y',
@@ -69,9 +71,18 @@ embed.set_leg_axis_pv_up(leg_aim_axis='x',
                          ankle_worldSpace=False,
                          ankle_world_axis='y')
 
-
+embed.set_spine_axis_pv_up(spine_aim_axis='y',
+                           spine_up_axis='z',
+                           offset_aim_rotate=0)
 
 embed.publish_adjust_joints()
+
+# select 2 verts and locator
+import buildRig.common as brCommon
+reload(brCommon)
+sel = cmds.ls(os=True, fl=True)
+mid_pos = brCommon.set_mid_point(*sel, 0.5)
+
 
 """
 
@@ -103,9 +114,15 @@ class EmbedJoints:
         self.type = type
         self.create = create
 
+        self.guide_cur_adj_json = GUIDE_PATH + '/current_adjustment.json'
+        self.guide_cur_footroll_json = GUIDE_PATH + '/current_footroll.json'
+
         if self.create:
             if self.type == 'biped':
                 self.create_biped_joints()
+                self.set_adjustment_nodes_values(type='adjustment')
+                self.set_adjustment_nodes_values(type='footroll')
+
 
     def create_biped_joints(self):
         # First select the shape, not the transform.
@@ -657,10 +674,66 @@ class EmbedJoints:
         [cmds.delete(cn) for cn in cnsts]
         cmds.delete('mirror_foot_roll_piv_GRP')
 
+    def save_adjustment_nodes_values(self):
+        # adjustment
+        adjustment_nodes = cmds.ls('adjustment_GRP', dag=True, type='transform')
+        nodes = brNode.Nodes(adjustment_nodes)
+
+        cmds.addAttr('root', ln='adjustmentDict', dt='string')
+        cmds.setAttr('root.adjustmentDict', '{}'.format(nodes.nodes_values), type='string')
+        cmds.setAttr('root.adjustmentDict', l=True)
+
+        brCommon.json_transfer(self.guide_cur_adj_json, 'export', nodes.nodes_values)
+
+        # footroll
+        footroll_nodes = cmds.ls('foot_roll_piv_GRP', dag=True, type='transform')
+        nodes = brNode.Nodes(footroll_nodes)
+
+        cmds.addAttr('root', ln='footrollDict', dt='string')
+        cmds.setAttr('root.footrollDict', '{}'.format(nodes.nodes_values), type='string')
+        cmds.setAttr('root.footrollDict', l=True)
+
+        brCommon.json_transfer(self.guide_cur_footroll_json, 'export', nodes.nodes_values)
+
+    def set_adjustment_nodes_values(self, type='adjustment'):
+        if type == 'adjustment':
+            json_file = self.guide_cur_adj_json
+        elif type == 'footroll':
+            json_file = self.guide_cur_footroll_json
+        # nodes_values = eval(cmds.getAttr('root.adjustmentDict'))
+        if not os.path.isfile(json_file):
+            return
+        
+        nodes_values = brCommon.json_transfer(json_file, 'import')
+        for n, vals in nodes_values.items():
+            parent = vals['parent']
+            children = vals['children']
+            full_path = vals['full_path']
+            wld_pos = vals['wld_pos']
+            wld_rot = vals['wld_rot']
+            jnt_orient = vals['jnt_orient']
+            shapes = vals['shapes']
+            userDefineAttrs = vals['userDefineAttrs']
+
+            if cmds.objExists(n):
+                cmds.xform(n, t=wld_pos, ro=wld_rot, ws=True, a=True, p=True)
+                if userDefineAttrs:
+                    for udattr, attrval in userDefineAttrs.items():
+                        try:
+                            if attrval[0] in ['double']:
+                                cmds.setAttr(n+'.'+udattr, attrval[1])
+                            else:
+                                cmds.setAttr(n+'.'+udattr, attrval[1], type=attrval[0])
+                        except:
+                            print(traceback.format_exc())
+
+
     def publish_adjust_joints(self):
+        self.save_adjustment_nodes_values()
         self.delete_adjust_rig()
 
         cmds.viewFit()
+
         now = datetime.datetime.now()
         file_name = now.strftime("adjust_joints_%Y%m%d%H%M.ma")
         cmds.file(rn=GUIDE_PATH + '/' + file_name)
