@@ -69,6 +69,31 @@ def aim_nodes(base=None, target=None, aim_axis='z', up_axis='y', worldUpType='ob
     cmds.delete(aim_obj)
     cmds.delete(up_obj)
 
+def force_world_aim(obj=None, wld_front_axis='z', wld_left_axis='x'):
+    if not obj:
+        obj = cmds.ls(os=True)[0]
+    # wld_front_axis = 'z'
+    # wld_left_axis = '-x'
+    wld_front_aim_loc = cmds.spaceLocator()[0]
+
+    cmds.matchTransform(wld_front_aim_loc, obj)
+    cmds.xform(wld_front_aim_loc, t=[v*10 for v in [0,0,1]], r=True, ws=True)
+
+    wld_left_aim_loc = cmds.spaceLocator()[0]
+    cmds.matchTransform(wld_left_aim_loc, obj)
+    cmds.xform(wld_left_aim_loc, t=[v*10 for v in [1,0,0]], r=True, ws=True)
+
+    aim_nodes(base=wld_front_aim_loc,
+                    target=obj,
+                    aim_axis=wld_front_axis,
+                    up_axis=wld_left_axis,
+                    worldUpType='object',
+                    worldUpObject=wld_left_aim_loc,
+                    worldSpace=True,
+                    world_axis=wld_left_axis)
+    cmds.delete(wld_front_aim_loc)
+    cmds.delete(wld_left_aim_loc)
+
 def aim_nodes_from_root(root_jnt=None, type='jonit', aim_axis='x', up_axis='y', worldUpType='object', worldUpObject=None, worldSpace=False, world_axis='y'):
     # 選択したトップジョイントを選択して実行
     joints = cmds.ls(root_jnt, dag=True, type=type)

@@ -1,6 +1,7 @@
 from collections import OrderedDict
 import math
 from functools import partial
+import re
 
 from maya import cmds, mel
 

@@ -127,9 +127,9 @@
             -3.522495269775393
         ],
         "wld_rot": [
-            179.9407332140706,
-            0.7891306561729898,
-            -4.295209542396668
+            -180.05926678592945,
+            0.7891306561729894,
+            -4.29520954239667
         ],
         "jnt_orient": null,
         "shapes": null,
@@ -156,9 +156,9 @@
             3.7189712524414062
         ],
         "wld_rot": [
-            0.45016174958345745,
-            5.967406474994772,
-            -85.67809526585076
+            0.45016174958345795,
+            5.967406474994771,
+            -85.67809526585074
         ],
         "jnt_orient": null,
         "shapes": null,
@@ -214,7 +214,7 @@
             -1.8991537114579635
         ],
         "wld_rot": [
-            7.349611878666061,
+            7.349611878666059,
             0.0,
             0.0
         ],
@@ -322,7 +322,7 @@
         "wld_pos": [
             39.92316205724756,
             94.06501662408671,
-            -3.5967038169132413
+            -3.5967038169132377
         ],
         "wld_rot": [
             176.82141691549458,
@@ -340,14 +340,14 @@
         ],
         "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP",
         "wld_pos": [
-            8.30970764160156,
+            8.309707641601559,
             140.11347198486328,
             -3.522495269775394
         ],
         "wld_rot": [
-            179.9407332140706,
-            0.7891306561729898,
-            -4.295209542396667
+            179.94073321407055,
+            0.7891306561729894,
+            -4.29520954239667
         ],
         "jnt_orient": null,
         "shapes": null,
@@ -361,12 +361,12 @@
         "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP",
         "wld_pos": [
             8.547119140625009,
-            93.42219543457027,
-            3.7189712524413983
+            93.42219543457026,
+            3.718971252441397
         ],
         "wld_rot": [
-            0.45016174958345745,
-            5.967406474994772,
+            0.45016174958345756,
+            5.967406474994773,
             -85.67809526585076
         ],
         "jnt_orient": null,
@@ -405,7 +405,7 @@
             -1.8991537114579635
         ],
         "wld_rot": [
-            7.349611878666061,
+            7.349611878666059,
             0.0,
             0.0
         ],
@@ -488,7 +488,7 @@
         "wld_pos": [
             39.923162057247566,
             94.0650166240867,
-            -3.5967038169132395
+            -3.596703816913236
         ],
         "wld_rot": [
             176.82141691549458,
@@ -506,14 +506,14 @@
         ],
         "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP",
         "wld_pos": [
-            8.30970764160156,
+            8.309707641601559,
             140.11347198486328,
             -3.522495269775394
         ],
         "wld_rot": [
-            179.9407332140706,
-            0.7891306561729898,
-            -4.295209542396667
+            179.94073321407055,
+            0.7891306561729894,
+            -4.29520954239667
         ],
         "jnt_orient": null,
         "shapes": null,
@@ -527,12 +527,12 @@
         "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP",
         "wld_pos": [
             8.547119140625005,
-            93.42219543457027,
-            3.7189712524413983
+            93.42219543457026,
+            3.718971252441397
         ],
         "wld_rot": [
-            0.45016174958345745,
-            5.967406474994772,
+            0.45016174958345756,
+            5.967406474994773,
             -85.67809526585076
         ],
         "jnt_orient": null,
@@ -571,7 +571,7 @@
             -1.8991537114579635
         ],
         "wld_rot": [
-            7.349611878666061,
+            7.349611878666059,
             0.0,
             0.0
         ],
@@ -650,14 +650,14 @@
         ],
         "full_path": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_left_thigh",
         "wld_pos": [
-            -8.547119140625,
-            93.42219543457031,
-            3.718971252441403
+            -8.547119140624996,
+            93.42219543457033,
+            3.718971252441405
         ],
         "wld_rot": [
-            -11.927448520981784,
+            -11.927448520981377,
             184.41022552815815,
-            85.1243532113782
+            85.12435321137822
         ],
         "jnt_orient": [
             0.0,
@@ -679,8 +679,8 @@
             3.71897
         ],
         "wld_rot": [
-            0.4501617495834579,
-            5.967406474994773,
+            0.45016174958345795,
+            5.9674064749947755,
             94.32190473414927
         ],
         "jnt_orient": [
@@ -700,7 +700,7 @@
         "wld_pos": [
             39.92316205724756,
             94.06501662408671,
-            -3.5967038169132413
+            -3.5967038169132377
         ],
         "wld_rot": [
             176.82141691549458,
@@ -722,14 +722,14 @@
         ],
         "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC",
         "wld_pos": [
-            5.192028999328608,
+            5.192028999328606,
             148.41201782226562,
             7.1532368659973145
         ],
         "wld_rot": [
-            179.9407332140706,
-            0.7891306561729898,
-            -4.295209542396667
+            179.94073321407055,
+            0.7891306561729894,
+            -4.29520954239667
         ],
         "jnt_orient": null,
         "shapes": [
@@ -749,12 +749,12 @@
         "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC",
         "wld_pos": [
             8.547119140625009,
-            93.42219543457027,
-            3.7189712524413983
+            93.42219543457026,
+            3.718971252441397
         ],
         "wld_rot": [
-            0.45016174958345745,
-            5.967406474994772,
+            0.45016174958345756,
+            5.967406474994773,
             -85.67809526585076
         ],
         "jnt_orient": null,
@@ -800,7 +800,7 @@
             -1.8991537114579635
         ],
         "wld_rot": [
-            7.349611878666061,
+            7.349611878666059,
             0.0,
             0.0
         ],
@@ -887,14 +887,14 @@
         ],
         "full_path": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_left_thigh|mirror_left_knee",
         "wld_pos": [
-            -12.333770610878243,
-            49.031120331945644,
-            0.2828612031203117
+            -12.333770610878245,
+            49.031120331945594,
+            0.2828612031203077
         ],
         "wld_rot": [
-            -168.10808211501364,
-            0.4059259833406983,
-            -95.72075099589689
+            -168.10808211501404,
+            0.40592598334083346,
+            -95.72075099589682
         ],
         "jnt_orient": [
             0.0,
@@ -912,12 +912,12 @@
         "full_path": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_right_thigh|mirror_right_knee",
         "wld_pos": [
             11.894900000000007,
-            49.12449999999999,
+            49.1245,
             -0.924628999999999
         ],
         "wld_rot": [
             -0.4501617495834583,
-            -5.967406474994779,
+            -5.967406474994783,
             94.32190473414927
         ],
         "jnt_orient": [
@@ -935,14 +935,14 @@
         ],
         "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_shoulder_ROT_LOC_GRP",
         "wld_pos": [
-            5.192028999328608,
-            148.41201782226565,
-            7.153236865997317
+            5.192028999328605,
+            148.41201782226562,
+            7.1532368659973145
         ],
         "wld_rot": [
-            179.9407332140706,
-            0.7891306561729898,
-            -4.295209542396667
+            179.94073321407055,
+            0.7891306561729894,
+            -4.29520954239667
         ],
         "jnt_orient": null,
         "shapes": null,
@@ -956,13 +956,13 @@
         "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP",
         "wld_pos": [
             14.85291767120361,
-            147.68642425537118,
-            7.019794940948489
+            147.6864242553711,
+            7.019794940948487
         ],
         "wld_rot": [
-            182.81708195771142,
-            5.830846011734965,
-            -64.156324532526
+            182.81708195771148,
+            5.830846011734968,
+            -64.15632453252599
         ],
         "jnt_orient": null,
         "shapes": null,
@@ -975,13 +975,13 @@
         ],
         "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_thigh_ROT_LOC_GRP",
         "wld_pos": [
-            8.547119140625009,
-            93.42219543457027,
-            3.7189712524413965
+            8.54711914062501,
+            93.42219543457024,
+            3.718971252441394
         ],
         "wld_rot": [
-            0.45016174958345745,
-            5.967406474994772,
+            0.45016174958345756,
+            5.967406474994773,
             -85.67809526585076
         ],
         "jnt_orient": null,
@@ -995,13 +995,13 @@
         ],
         "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_knee_POS_LOC_GRP",
         "wld_pos": [
-            11.89490890502927,
-            49.12453126907344,
-            -0.9246292114257928
+            11.894908905029276,
+            49.1245312690734,
+            -0.9246292114257986
         ],
         "wld_rot": [
-            0.45016174958345745,
-            5.967406474994772,
+            0.45016174958345756,
+            5.967406474994773,
             -85.67809526585076
         ],
         "jnt_orient": null,
@@ -1015,14 +1015,14 @@
         ],
         "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ankle_POS_LOC_GRP",
         "wld_pos": [
-            14.77400810241694,
-            11.028540086746162,
-            -4.918125610351576
+            14.77400810241695,
+            11.028540086746105,
+            -4.918125610351584
         ],
         "wld_rot": [
-            -4.756416424709844,
-            -62.044884874079855,
-            -84.61874153504075
+            -4.756416424709802,
+            -62.04488487407984,
+            -84.61874153504078
         ],
         "jnt_orient": null,
         "shapes": null,
@@ -1035,14 +1035,14 @@
         ],
         "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ball_POS_LOC_GRP",
         "wld_pos": [
-            15.772758483886655,
-            0.4258487224578289,
-            15.148818969726538
+            15.772758483886665,
+            0.42584872245777206,
+            15.14881896972654
         ],
         "wld_rot": [
-            -4.75641642470984,
-            -62.04488487407987,
-            -84.61874153504073
+            -4.756416424709817,
+            -62.044884874079855,
+            -84.61874153504078
         ],
         "jnt_orient": null,
         "shapes": null,
@@ -1076,8 +1076,8 @@
         "full_path": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP",
         "wld_pos": [
             0.0,
-            113.13111877441413,
-            1.8052864074707031
+            113.13111877441409,
+            1.8052864074707018
         ],
         "wld_rot": [
             -5.390388121333945,
@@ -1100,7 +1100,7 @@
             -1.8991537114579635
         ],
         "wld_rot": [
-            7.349611878666061,
+            7.349611878666059,
             0.0,
             0.0
         ],
@@ -1181,14 +1181,14 @@
         ],
         "full_path": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_left_thigh|mirror_left_knee|mirror_left_ankle",
         "wld_pos": [
-            -15.155696090470771,
-            8.890850783390988,
-            -5.668898201669821
+            -15.155696090470773,
+            8.890850783390995,
+            -5.668898201669819
         ],
         "wld_rot": [
-            63.65435711175392,
-            110.90547139674634,
-            147.0214146156499
+            63.654357111752105,
+            110.90547139674577,
+            147.0214146156482
         ],
         "jnt_orient": [
             0.0,
@@ -1206,13 +1206,13 @@
         "full_path": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_right_thigh|mirror_right_knee|mirror_right_ankle",
         "wld_pos": [
             14.774000000000001,
-            11.028499999999994,
-            -4.918129999999998
+            11.028500000000001,
+            -4.918129999999996
         ],
         "wld_rot": [
-            -8.783903135742806,
-            -73.924593032743,
-            99.13543471518774
+            -8.78390313574278,
+            -73.92459303274299,
+            99.13543471518773
         ],
         "jnt_orient": [
             0.0,
@@ -1229,14 +1229,14 @@
         ],
         "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_shoulder_ROT_LOC_GRP|left_shoulder_ROT_LOC_OFFSET_GRP",
         "wld_pos": [
-            5.192028999328608,
+            5.192028999328607,
             148.41201782226565,
-            7.153236865997317
+            7.153236865997318
         ],
         "wld_rot": [
-            164.04224082948383,
-            36.23657428047661,
-            -25.814831606263947
+            164.04224082948392,
+            36.23657428047664,
+            -25.81483160626368
         ],
         "jnt_orient": null,
         "shapes": null,
@@ -1250,14 +1250,14 @@
         ],
         "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP",
         "wld_pos": [
-            14.852917671203608,
+            14.85291767120361,
             147.6864242553711,
             7.019794940948487
         ],
         "wld_rot": [
             -200.6859166030297,
-            10.168170836263126,
-            -64.94195022092687
+            10.16817083626311,
+            -64.94195022092684
         ],
         "jnt_orient": null,
         "shapes": null,
@@ -1270,14 +1270,14 @@
         ],
         "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_thigh_ROT_LOC_GRP|left_thigh_ROT_LOC_OFFSET_GRP",
         "wld_pos": [
-            8.54711914062501,
-            93.42219543457027,
-            3.7189712524413956
+            8.547119140625009,
+            93.42219543457026,
+            3.7189712524413934
         ],
         "wld_rot": [
-            -11.92744852098178,
-            4.410225528158166,
-            -85.1243532113782
+            -11.927448520981395,
+            4.410225528158154,
+            -85.12435321137826
         ],
         "jnt_orient": null,
         "shapes": null,
@@ -1290,13 +1290,13 @@
         ],
         "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_knee_POS_LOC_GRP|left_knee_POS_LOC_OFFSET_GRP",
         "wld_pos": [
-            11.894908905029272,
+            11.894908905029274,
             49.12453126907346,
-            -0.9246292114257897
+            -0.9246292114257891
         ],
         "wld_rot": [
-            0.45016174958345745,
-            5.967406474994772,
+            0.45016174958345717,
+            5.96740647499477,
             -85.67809526585076
         ],
         "jnt_orient": null,
@@ -1311,13 +1311,13 @@
         "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ankle_POS_LOC_GRP|left_ankle_POS_LOC_OFFSET_GRP",
         "wld_pos": [
             14.774008102416936,
-            11.028540086746162,
-            -4.918125610351584
+            11.028540086746164,
+            -4.918125610351585
         ],
         "wld_rot": [
-            -4.756416424709856,
+            -4.756416424709824,
             -62.044884874079855,
-            -84.61874153504071
+            -84.61874153504077
         ],
         "jnt_orient": null,
         "shapes": null,
@@ -1331,13 +1331,13 @@
         "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ball_POS_LOC_GRP|left_ball_POS_LOC_OFFSET_GRP",
         "wld_pos": [
             15.772758483886653,
-            0.4258487224578287,
-            15.148818969726547
+            0.425848722457828,
+            15.148818969726548
         ],
         "wld_rot": [
-            -4.75641642470984,
-            -62.04488487407987,
-            -84.61874153504073
+            -4.756416424709824,
+            -62.044884874079855,
+            -84.61874153504077
         ],
         "jnt_orient": null,
         "shapes": null,
@@ -1395,7 +1395,7 @@
             -1.8991537114579635
         ],
         "wld_rot": [
-            7.349611878666061,
+            7.349611878666059,
             0.0,
             0.0
         ],
@@ -1450,14 +1450,14 @@
         ],
         "full_path": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03|mirror_left_shoulder",
         "wld_pos": [
-            -5.192028999328621,
-            148.4120178222657,
-            7.153236865997301
+            -5.192028999328623,
+            148.41201782226568,
+            7.1532368659973
         ],
         "wld_rot": [
-            176.79153504066753,
-            220.26975561121802,
-            17.896251850447516
+            176.7915350406676,
+            220.269755611218,
+            17.89625185044726
         ],
         "jnt_orient": [
             0.0,
@@ -1504,7 +1504,7 @@
         ],
         "wld_rot": [
             -169.30500350888772,
-            1.5779754510169788,
+            1.577975451016978,
             175.9275838323239
         ],
         "jnt_orient": [
@@ -1520,14 +1520,14 @@
         "children": null,
         "full_path": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_left_thigh|mirror_left_knee|mirror_left_ankle|mirror_left_ball",
         "wld_pos": [
-            -17.04830689441258,
-            1.5189983573592132,
-            9.419931665791196
+            -17.04830689441259,
+            1.5189983573592114,
+            9.419931665791191
         ],
         "wld_rot": [
-            12.489219743209578,
-            243.23326107765166,
-            75.60116077794798
+            -0.3453608974411888,
+            217.85400052477206,
+            89.65463910255866
         ],
         "jnt_orient": [
             0.0,
@@ -1542,13 +1542,13 @@
         "children": null,
         "full_path": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_right_thigh|mirror_right_knee|mirror_right_ankle|mirror_right_ball",
         "wld_pos": [
-            15.772800000000004,
+            15.772800000000005,
             0.42584900000000836,
-            15.14879999999999
+            15.148799999999989
         ],
         "wld_rot": [
-            4.756416424709699,
-            62.04488487407997,
+            4.756416424709667,
+            62.04488487407993,
             95.3812584649592
         ],
         "jnt_orient": [
@@ -1566,14 +1566,14 @@
         ],
         "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_shoulder_ROT_LOC_GRP|left_shoulder_ROT_LOC_OFFSET_GRP|left_shoulder_ROT_LOC_SDK_GRP",
         "wld_pos": [
-            5.192028999328621,
-            148.4120178222657,
-            7.153236865997302
+            5.192028999328623,
+            148.41201782226568,
+            7.1532368659973
         ],
         "wld_rot": [
-            164.04224082948383,
-            36.23657428047662,
-            -25.814831606263947
+            164.04224082948392,
+            36.23657428047664,
+            -25.814831606263688
         ],
         "jnt_orient": null,
         "shapes": null,
@@ -1586,14 +1586,14 @@
         ],
         "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP",
         "wld_pos": [
-            14.85291767120359,
+            14.852917671203594,
             147.6864242553711,
-            7.019794940948494
+            7.019794940948498
         ],
         "wld_rot": [
-            159.3140833969703,
-            10.168170836263123,
-            -64.94195022092687
+            159.31408339697026,
+            10.168170836263112,
+            -64.94195022092686
         ],
         "jnt_orient": null,
         "shapes": null,
@@ -1604,14 +1604,14 @@
         "children": null,
         "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_OFFSET_GRP_aimConstraint1",
         "wld_pos": [
-            14.85291767120359,
+            14.852917671203594,
             147.6864242553711,
-            7.019794940948494
+            7.019794940948498
         ],
         "wld_rot": [
-            159.3140833969703,
-            10.168170836263123,
-            -64.94195022092687
+            159.31408339697026,
+            10.168170836263112,
+            -64.94195022092686
         ],
         "jnt_orient": null,
         "shapes": null,
@@ -1629,14 +1629,14 @@
         ],
         "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_thigh_ROT_LOC_GRP|left_thigh_ROT_LOC_OFFSET_GRP|left_thigh_ROT_LOC_SDK_GRP",
         "wld_pos": [
-            8.547119140625,
-            93.42219543457031,
-            3.718971252441403
+            8.547119140624996,
+            93.42219543457033,
+            3.718971252441405
         ],
         "wld_rot": [
-            -11.92744852098178,
-            4.410225528158164,
-            -85.1243532113782
+            -11.927448520981391,
+            4.410225528158154,
+            -85.12435321137824
         ],
         "jnt_orient": null,
         "shapes": null,
@@ -1649,13 +1649,13 @@
         ],
         "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_knee_POS_LOC_GRP|left_knee_POS_LOC_OFFSET_GRP|left_knee_POS_LOC_SDK_GRP",
         "wld_pos": [
-            11.894908905029272,
+            11.894908905029274,
             49.12453126907346,
-            -0.9246292114257888
+            -0.9246292114257882
         ],
         "wld_rot": [
-            0.45016174958345745,
-            5.967406474994772,
+            0.45016174958345717,
+            5.96740647499477,
             -85.67809526585076
         ],
         "jnt_orient": null,
@@ -1670,13 +1670,13 @@
         "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ankle_POS_LOC_GRP|left_ankle_POS_LOC_OFFSET_GRP|left_ankle_POS_LOC_SDK_GRP",
         "wld_pos": [
             14.774008102416936,
-            11.028540086746162,
-            -4.918125610351584
+            11.028540086746164,
+            -4.918125610351585
         ],
         "wld_rot": [
-            -4.756416424709856,
+            -4.756416424709824,
             -62.044884874079855,
-            -84.61874153504071
+            -84.61874153504077
         ],
         "jnt_orient": null,
         "shapes": null,
@@ -1689,14 +1689,14 @@
         ],
         "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ball_POS_LOC_GRP|left_ball_POS_LOC_OFFSET_GRP|left_ball_POS_LOC_SDK_GRP",
         "wld_pos": [
-            15.77275848388665,
-            0.42584872245782945,
-            15.148818969726545
+            15.772758483886651,
+            0.425848722457828,
+            15.148818969726547
         ],
         "wld_rot": [
-            -4.75641642470984,
-            -62.04488487407987,
-            -84.61874153504073
+            -4.756416424709824,
+            -62.044884874079855,
+            -84.61874153504077
         ],
         "jnt_orient": null,
         "shapes": null,
@@ -1754,7 +1754,7 @@
             -1.8991537114579635
         ],
         "wld_rot": [
-            7.349611878666061,
+            7.349611878666059,
             0.0,
             0.0
         ],
@@ -1809,14 +1809,14 @@
         ],
         "full_path": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03|mirror_left_shoulder|mirror_left_arm",
         "wld_pos": [
-            -16.080639827495936,
-            143.14477992179405,
-            -1.7113303419110464
+            -16.08063982749594,
+            143.14477992179408,
+            -1.711330341911033
         ],
         "wld_rot": [
-            91.49754962246244,
-            29.506999993126463,
-            -99.20989919194936
+            91.49754962246267,
+            29.506999993126488,
+            -99.20989919194942
         ],
         "jnt_orient": [
             1.2424041724466862e-17,
@@ -1833,11 +1833,11 @@
         "wld_pos": [
             0.0,
             167.79171114095732,
-            0.08736927904359915
+            0.08736927904359826
         ],
         "wld_rot": [
-            172.65038812133395,
-            8.827812596100317e-32,
+            165.30077624266795,
+            1.765562519220063e-31,
             180.0
         ],
         "jnt_orient": [
@@ -1855,14 +1855,14 @@
         ],
         "full_path": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03|mirror_right_shoulder|mirror_right_arm",
         "wld_pos": [
-            17.97060000000001,
-            139.38799999999995,
+            17.970600000000015,
+            139.38799999999992,
             -3.6559400000000006
         ],
         "wld_rot": [
             -175.75278786137204,
-            5.139182235194795,
-            115.98038455673554
+            5.139182235194793,
+            115.98038455673557
         ],
         "jnt_orient": [
             -1.2424041724466862e-17,
@@ -1881,14 +1881,14 @@
         ],
         "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_shoulder_ROT_LOC_GRP|left_shoulder_ROT_LOC_OFFSET_GRP|left_shoulder_ROT_LOC_SDK_GRP|left_shoulder_ROT_LOC",
         "wld_pos": [
-            5.192028999328621,
-            148.4120178222657,
-            7.153236865997302
+            5.192028999328623,
+            148.41201782226568,
+            7.1532368659973
         ],
         "wld_rot": [
-            164.04224082948383,
-            36.23657428047662,
-            -25.814831606263947
+            164.04224082948392,
+            36.23657428047664,
+            -25.814831606263688
         ],
         "jnt_orient": null,
         "shapes": [
@@ -1908,14 +1908,14 @@
         ],
         "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC",
         "wld_pos": [
-            16.08063982749591,
+            16.080639827495904,
             143.14477992179403,
             -1.7113303419110268
         ],
         "wld_rot": [
-            159.3140833969703,
-            10.168170836263123,
-            -64.94195022092687
+            159.31408339697026,
+            10.168170836263112,
+            -64.94195022092686
         ],
         "jnt_orient": null,
         "shapes": [
@@ -1932,14 +1932,14 @@
         ],
         "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_thigh_ROT_LOC_GRP|left_thigh_ROT_LOC_OFFSET_GRP|left_thigh_ROT_LOC_SDK_GRP|left_thigh_ROT_LOC",
         "wld_pos": [
-            8.547119140625,
-            93.42219543457031,
-            3.718971252441403
+            8.547119140624996,
+            93.42219543457033,
+            3.718971252441405
         ],
         "wld_rot": [
-            -11.92744852098178,
-            4.410225528158164,
-            -85.1243532113782
+            -11.927448520981391,
+            4.410225528158154,
+            -85.12435321137824
         ],
         "jnt_orient": null,
         "shapes": [
@@ -1957,13 +1957,13 @@
         ],
         "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_knee_POS_LOC_GRP|left_knee_POS_LOC_OFFSET_GRP|left_knee_POS_LOC_SDK_GRP|left_knee_POS_LOC",
         "wld_pos": [
-            12.33377061087826,
-            49.03112033194564,
-            0.2828612031203068
+            12.333770610878261,
+            49.03112033194563,
+            0.2828612031203076
         ],
         "wld_rot": [
-            0.45016174958345745,
-            5.967406474994772,
+            0.45016174958345717,
+            5.96740647499477,
             -85.67809526585076
         ],
         "jnt_orient": null,
@@ -1981,13 +1981,13 @@
         "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ankle_POS_LOC_GRP|left_ankle_POS_LOC_OFFSET_GRP|left_ankle_POS_LOC_SDK_GRP|left_ankle_POS_LOC",
         "wld_pos": [
             15.155696090470764,
-            8.890850783390993,
+            8.890850783390992,
             -5.668898201669829
         ],
         "wld_rot": [
-            -4.756416424709856,
+            -4.756416424709824,
             -62.044884874079855,
-            -84.61874153504071
+            -84.61874153504077
         ],
         "jnt_orient": null,
         "shapes": [
@@ -2004,13 +2004,13 @@
         "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ball_POS_LOC_GRP|left_ball_POS_LOC_OFFSET_GRP|left_ball_POS_LOC_SDK_GRP|left_ball_POS_LOC",
         "wld_pos": [
             17.048306894412583,
-            1.5189983573592114,
+            1.518998357359212,
             9.419931665791186
         ],
         "wld_rot": [
-            -4.75641642470984,
-            -62.04488487407987,
-            -84.61874153504073
+            -4.756416424709824,
+            -62.044884874079855,
+            -84.61874153504077
         ],
         "jnt_orient": null,
         "shapes": [
@@ -2082,7 +2082,7 @@
             -1.8991537114579635
         ],
         "wld_rot": [
-            7.349611878666061,
+            7.349611878666059,
             0.0,
             0.0
         ],
@@ -2108,7 +2108,7 @@
             0.08736927904359856
         ],
         "wld_rot": [
-            7.349611878666061,
+            7.792358969585616e-14,
             0.0,
             0.0
         ],
@@ -2153,14 +2153,14 @@
         ],
         "full_path": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03|mirror_left_shoulder|mirror_left_arm|mirror_left_elbow",
         "wld_pos": [
-            -31.797134129973458,
-            116.69912440065164,
-            -2.8352670848102814
+            -31.79713412997345,
+            116.69912440065175,
+            -2.8352670848102584
         ],
         "wld_rot": [
-            -17.0242719010548,
-            17.732775931871117,
-            -125.44287545923757
+            -17.024271901055048,
+            17.732775931870997,
+            -125.44287545923775
         ],
         "jnt_orient": [
             3.975693351829396e-16,
@@ -2178,7 +2178,7 @@
         "full_path": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03|mirror_right_shoulder|mirror_right_arm|mirror_right_elbow",
         "wld_pos": [
             29.498999999999988,
-            115.58699999999997,
+            115.58699999999999,
             -6.356640000000004
         ],
         "wld_rot": [
@@ -2201,14 +2201,14 @@
         ],
         "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_arm_ROT_LOC_GRP",
         "wld_pos": [
-            16.08063982749595,
-            143.14477992179397,
-            -1.7113303419110353
+            16.080639827495922,
+            143.14477992179403,
+            -1.711330341911031
         ],
         "wld_rot": [
-            159.3140833969703,
-            10.168170836263123,
-            -64.94195022092687
+            159.31408339697026,
+            10.168170836263112,
+            -64.94195022092686
         ],
         "jnt_orient": null,
         "shapes": null,
@@ -2221,14 +2221,14 @@
         ],
         "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP",
         "wld_pos": [
-            27.16302815176125,
-            119.44125104058281,
-            -6.404390372239267
+            27.163028151761225,
+            119.44125104058287,
+            -6.404390372239259
         ],
         "wld_rot": [
-            153.70345612055118,
-            -1.2400315365829329,
-            -60.02253558328693
+            153.7034561205512,
+            -1.2400315365829218,
+            -60.02253558328692
         ],
         "jnt_orient": null,
         "shapes": null,
@@ -2241,14 +2241,14 @@
         ],
         "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP",
         "wld_pos": [
-            39.1879627034251,
-            98.59452194619581,
-            -5.883451664474605
+            39.187962703425086,
+            98.59452194619584,
+            -5.8834516644746016
         ],
         "wld_rot": [
             153.70345612055118,
-            -1.2400315365829249,
-            -60.02253558328692
+            -1.2400315365829235,
+            -60.0225355832869
         ],
         "jnt_orient": null,
         "shapes": null,
@@ -2261,13 +2261,13 @@
         ],
         "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_knee_POS_LOC_GRP|left_knee_POS_LOC_OFFSET_GRP|left_knee_POS_LOC_SDK_GRP|left_knee_POS_LOC|left_knee_ROT_LOC_GRP",
         "wld_pos": [
-            12.33377061087825,
-            49.03112033194565,
-            0.28286120312030294
+            12.333770610878261,
+            49.03112033194562,
+            0.282861203120306
         ],
         "wld_rot": [
-            0.45016174958345745,
-            5.967406474994772,
+            0.45016174958345717,
+            5.96740647499477,
             -85.67809526585076
         ],
         "jnt_orient": null,
@@ -2281,14 +2281,14 @@
         ],
         "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ankle_POS_LOC_GRP|left_ankle_POS_LOC_OFFSET_GRP|left_ankle_POS_LOC_SDK_GRP|left_ankle_POS_LOC|left_ankle_ROT_LOC_GRP",
         "wld_pos": [
-            15.155696090470771,
-            8.890850783390995,
-            -5.668898201669824
+            15.155696090470766,
+            8.890850783390992,
+            -5.668898201669831
         ],
         "wld_rot": [
-            -4.756416424709856,
+            -4.756416424709824,
             -62.044884874079855,
-            -84.61874153504071
+            -84.61874153504077
         ],
         "jnt_orient": null,
         "shapes": null,
@@ -2301,14 +2301,14 @@
         ],
         "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ball_POS_LOC_GRP|left_ball_POS_LOC_OFFSET_GRP|left_ball_POS_LOC_SDK_GRP|left_ball_POS_LOC|left_ball_ROT_LOC_GRP",
         "wld_pos": [
-            17.04830689441259,
-            1.5189983573592098,
-            9.419931665791195
+            17.048306894412583,
+            1.5189983573592105,
+            9.41993166579119
         ],
         "wld_rot": [
-            -4.75641642470984,
-            -62.04488487407987,
-            -84.61874153504073
+            -4.756416424709824,
+            -62.044884874079855,
+            -84.61874153504077
         ],
         "jnt_orient": null,
         "shapes": null,
@@ -2359,14 +2359,14 @@
         "children": null,
         "full_path": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03|mirror_left_shoulder|mirror_left_arm|mirror_left_elbow|mirror_left_hand",
         "wld_pos": [
-            -42.764391904348884,
-            94.3103550937846,
+            -42.76439190434886,
+            94.31035509378462,
             3.1785620259637755
         ],
         "wld_rot": [
-            -48.319985286643416,
-            -15.350149011338162,
-            -109.49887573351309
+            -48.31998528664392,
+            -15.350149011338013,
+            -109.49887573351313
         ],
         "jnt_orient": [
             -3.975693351829396e-16,
@@ -2381,14 +2381,14 @@
         "children": null,
         "full_path": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03|mirror_right_shoulder|mirror_right_arm|mirror_right_elbow|mirror_right_hand",
         "wld_pos": [
-            39.92319999999999,
-            94.06499999999998,
-            -3.5966999999999936
+            39.92319999999998,
+            94.065,
+            -3.5966999999999962
         ],
         "wld_rot": [
             -176.82141691549455,
-            6.583662937754997,
-            115.8436754674739
+            6.583662937754994,
+            115.84367546747396
         ],
         "jnt_orient": [
             0.0,
@@ -2405,14 +2405,14 @@
         ],
         "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_arm_ROT_LOC_GRP|left_arm_ROT_LOC_OFFSET_GRP",
         "wld_pos": [
-            16.080639827495936,
+            16.080639827495947,
             143.144779921794,
-            -1.7113303419110353
+            -1.7113303419110362
         ],
         "wld_rot": [
-            196.20364884174796,
-            2.092369590219046,
-            -59.27723837738369
+            196.20364884174822,
+            2.0923695902189947,
+            -59.27723837738355
         ],
         "jnt_orient": null,
         "shapes": null,
@@ -2426,13 +2426,13 @@
         ],
         "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP|left_elbow_POS_LOC_OFFSET_GRP",
         "wld_pos": [
-            28.951242752223163,
-            117.29916761437723,
-            -1.8733835270200796
+            28.951242752223116,
+            117.29916761437724,
+            -1.8733835270200583
         ],
         "wld_rot": [
             153.70345612055118,
-            -1.2400315365829282,
+            -1.2400315365829233,
             -60.0225355832869
         ],
         "jnt_orient": null,
@@ -2447,9 +2447,9 @@
         ],
         "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP|left_hand_POS_LOC_OFFSET_GRP",
         "wld_pos": [
-            42.03640272296625,
-            94.41788056081661,
-            1.1215408368205235
+            42.03640272296627,
+            94.41788056081663,
+            1.1215408368205209
         ],
         "wld_rot": [
             153.70345612055118,
@@ -2468,12 +2468,12 @@
         "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_knee_POS_LOC_GRP|left_knee_POS_LOC_OFFSET_GRP|left_knee_POS_LOC_SDK_GRP|left_knee_POS_LOC|left_knee_ROT_LOC_GRP|left_knee_ROT_LOC_OFFSET_GRP",
         "wld_pos": [
             12.33377061087825,
-            49.03112033194567,
-            0.28286120312030516
+            49.031120331945665,
+            0.28286120312030416
         ],
         "wld_rot": [
-            -12.022910137276861,
-            8.41355902124527,
+            -12.022910137276483,
+            8.413559021245128,
             -85.97863084060042
         ],
         "jnt_orient": null,
@@ -2487,14 +2487,14 @@
         ],
         "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ankle_POS_LOC_GRP|left_ankle_POS_LOC_OFFSET_GRP|left_ankle_POS_LOC_SDK_GRP|left_ankle_POS_LOC|left_ankle_ROT_LOC_GRP|left_ankle_ROT_LOC_OFFSET_GRP",
         "wld_pos": [
-            15.15569609047077,
+            15.155696090470771,
             8.890850783390995,
-            -5.668898201669826
+            -5.668898201669827
         ],
         "wld_rot": [
             -12.598403821417874,
-            -63.233261077651704,
-            -75.60116077794801
+            -63.23326107765163,
+            -75.60116077794795
         ],
         "jnt_orient": null,
         "shapes": null,
@@ -2509,11 +2509,11 @@
         "wld_pos": [
             17.04830689441259,
             1.518998357359208,
-            9.4199316657912
+            9.419931665791202
         ],
         "wld_rot": [
-            -12.707587899626223,
-            -63.233261077651655,
+            -12.70758789962622,
+            -63.23326107765167,
             -75.60116077794797
         ],
         "jnt_orient": null,
@@ -2567,14 +2567,14 @@
         ],
         "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_arm_ROT_LOC_GRP|left_arm_ROT_LOC_OFFSET_GRP|left_arm_ROT_LOC_SDK_GRP",
         "wld_pos": [
-            16.08063982749594,
-            143.14477992179405,
-            -1.7113303419110395
+            16.08063982749595,
+            143.14477992179408,
+            -1.7113303419110353
         ],
         "wld_rot": [
-            -163.796351158252,
-            2.092369590219047,
-            -59.277238377383675
+            -163.79635115825178,
+            2.0923695902189974,
+            -59.27723837738353
         ],
         "jnt_orient": null,
         "shapes": null,
@@ -2587,13 +2587,13 @@
         ],
         "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP|left_elbow_POS_LOC_OFFSET_GRP|left_elbow_POS_LOC_SDK_GRP",
         "wld_pos": [
-            30.04322652429711,
-            117.13787941382908,
-            1.212148256694848
+            30.40722111498845,
+            117.08411668031307,
+            2.2406588512664776
         ],
         "wld_rot": [
             153.70345612055118,
-            -1.2400315365829282,
+            -1.2400315365829233,
             -60.0225355832869
         ],
         "jnt_orient": null,
@@ -2605,13 +2605,13 @@
         "children": null,
         "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP|left_elbow_POS_LOC_OFFSET_GRP|left_elbow_POS_LOC_OFFSET_GRP_pointConstraint1",
         "wld_pos": [
-            30.04322652429711,
-            117.13787941382908,
-            1.212148256694848
+            30.40722111498845,
+            117.08411668031307,
+            2.2406588512664776
         ],
         "wld_rot": [
             153.70345612055118,
-            -1.2400315365829282,
+            -1.2400315365829233,
             -60.0225355832869
         ],
         "jnt_orient": null,
@@ -2634,9 +2634,9 @@
         ],
         "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP|left_hand_POS_LOC_OFFSET_GRP|left_hand_POS_LOC_SDK_GRP",
         "wld_pos": [
-            42.0364027229663,
+            42.03640272296632,
             94.41788056081661,
-            1.1215408368205242
+            1.1215408368205284
         ],
         "wld_rot": [
             153.70345612055118,
@@ -2652,9 +2652,9 @@
         "children": null,
         "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP|left_hand_POS_LOC_OFFSET_GRP|left_hand_POS_LOC_OFFSET_GRP_pointConstraint1",
         "wld_pos": [
-            42.0364027229663,
+            42.03640272296632,
             94.41788056081661,
-            1.1215408368205242
+            1.1215408368205284
         ],
         "wld_rot": [
             153.70345612055118,
@@ -2679,11 +2679,11 @@
         "wld_pos": [
             12.333770610878242,
             49.03112033194563,
-            0.28286120312031043
+            0.2828612031203105
         ],
         "wld_rot": [
-            -12.022910137276858,
-            8.413559021245268,
+            -12.022910137276483,
+            8.413559021245128,
             -85.97863084060042
         ],
         "jnt_orient": null,
@@ -2697,14 +2697,14 @@
         ],
         "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ankle_POS_LOC_GRP|left_ankle_POS_LOC_OFFSET_GRP|left_ankle_POS_LOC_SDK_GRP|left_ankle_POS_LOC|left_ankle_ROT_LOC_GRP|left_ankle_ROT_LOC_OFFSET_GRP|left_ankle_ROT_LOC_SDK_GRP",
         "wld_pos": [
-            15.155696090470771,
+            15.155696090470773,
             8.890850783390992,
             -5.668898201669819
         ],
         "wld_rot": [
-            -12.598403821417877,
-            -63.2332610776517,
-            -75.60116077794804
+            -12.598403821417898,
+            -63.23326107765163,
+            -75.60116077794798
         ],
         "jnt_orient": null,
         "shapes": null,
@@ -2718,13 +2718,13 @@
         "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ball_POS_LOC_GRP|left_ball_POS_LOC_OFFSET_GRP|left_ball_POS_LOC_SDK_GRP|left_ball_POS_LOC|left_ball_ROT_LOC_GRP|left_ball_ROT_LOC_OFFSET_GRP|left_ball_ROT_LOC_SDK_GRP",
         "wld_pos": [
             17.048306894412587,
-            1.5189983573592103,
-            9.419931665791193
+            1.5189983573592094,
+            9.419931665791191
         ],
         "wld_rot": [
-            -12.707587899626203,
-            -63.23326107765163,
-            -75.60116077794801
+            -12.70758789962622,
+            -63.23326107765167,
+            -75.60116077794798
         ],
         "jnt_orient": null,
         "shapes": null,
@@ -2779,14 +2779,14 @@
         ],
         "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_arm_ROT_LOC_GRP|left_arm_ROT_LOC_OFFSET_GRP|left_arm_ROT_LOC_SDK_GRP|left_arm_ROT_LOC",
         "wld_pos": [
-            16.08063982749594,
-            143.14477992179405,
-            -1.7113303419110395
+            16.08063982749595,
+            143.14477992179408,
+            -1.7113303419110353
         ],
         "wld_rot": [
-            -163.796351158252,
-            2.092369590219047,
-            -59.277238377383675
+            -163.79635115825178,
+            2.0923695902189974,
+            -59.27723837738353
         ],
         "jnt_orient": null,
         "shapes": [
@@ -2804,13 +2804,13 @@
         ],
         "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP|left_elbow_POS_LOC_OFFSET_GRP|left_elbow_POS_LOC_SDK_GRP|left_elbow_POS_LOC",
         "wld_pos": [
-            32.88911790204738,
-            116.53783620010353,
-            0.2502646989045778
+            31.79713412997341,
+            116.69912440065168,
+            -2.8352670848102832
         ],
         "wld_rot": [
             153.70345612055118,
-            -1.2400315365829282,
+            -1.2400315365829233,
             -60.0225355832869
         ],
         "jnt_orient": null,
@@ -2827,9 +2827,9 @@
         ],
         "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP|left_hand_POS_LOC_OFFSET_GRP|left_hand_POS_LOC_SDK_GRP|left_hand_POS_LOC",
         "wld_pos": [
-            42.76439190434895,
-            94.31035509378457,
-            3.1785620259637692
+            42.76439190434894,
+            94.31035509378458,
+            3.1785620259637724
         ],
         "wld_rot": [
             153.70345612055118,
@@ -2853,11 +2853,11 @@
         "wld_pos": [
             12.333770610878242,
             49.03112033194563,
-            0.28286120312031043
+            0.2828612031203105
         ],
         "wld_rot": [
-            -12.022910137276858,
-            8.413559021245268,
+            -12.022910137276483,
+            8.413559021245128,
             -85.97863084060042
         ],
         "jnt_orient": null,
@@ -2877,14 +2877,14 @@
         ],
         "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ankle_POS_LOC_GRP|left_ankle_POS_LOC_OFFSET_GRP|left_ankle_POS_LOC_SDK_GRP|left_ankle_POS_LOC|left_ankle_ROT_LOC_GRP|left_ankle_ROT_LOC_OFFSET_GRP|left_ankle_ROT_LOC_SDK_GRP|left_ankle_ROT_LOC",
         "wld_pos": [
-            15.155696090470771,
+            15.155696090470773,
             8.890850783390992,
             -5.668898201669819
         ],
         "wld_rot": [
-            -12.598403821417877,
-            -63.2332610776517,
-            -75.60116077794804
+            -12.598403821417898,
+            -63.23326107765163,
+            -75.60116077794798
         ],
         "jnt_orient": null,
         "shapes": [
@@ -2904,13 +2904,13 @@
         "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ball_POS_LOC_GRP|left_ball_POS_LOC_OFFSET_GRP|left_ball_POS_LOC_SDK_GRP|left_ball_POS_LOC|left_ball_ROT_LOC_GRP|left_ball_ROT_LOC_OFFSET_GRP|left_ball_ROT_LOC_SDK_GRP|left_ball_ROT_LOC",
         "wld_pos": [
             17.048306894412587,
-            1.5189983573592103,
-            9.419931665791193
+            1.5189983573592094,
+            9.419931665791191
         ],
         "wld_rot": [
-            -12.707587899626203,
-            -63.23326107765163,
-            -75.60116077794801
+            -89.99999999999982,
+            -90.0,
+            0.0
         ],
         "jnt_orient": null,
         "shapes": [
@@ -2976,13 +2976,13 @@
         ],
         "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP|left_elbow_POS_LOC_OFFSET_GRP|left_elbow_POS_LOC_SDK_GRP|left_elbow_POS_LOC|left_elbow_ROT_LOC_GRP",
         "wld_pos": [
-            31.79713412997344,
-            116.69912440065164,
-            -2.8352670848103054
+            31.79713412997342,
+            116.69912440065167,
+            -2.8352670848102797
         ],
         "wld_rot": [
             153.70345612055118,
-            -1.2400315365829282,
+            -1.2400315365829233,
             -60.0225355832869
         ],
         "jnt_orient": null,
@@ -2996,9 +2996,9 @@
         ],
         "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP|left_hand_POS_LOC_OFFSET_GRP|left_hand_POS_LOC_SDK_GRP|left_hand_POS_LOC|left_hand_ROT_LOC_GRP",
         "wld_pos": [
-            42.7643919043489,
-            94.31035509378457,
-            3.1785620259637746
+            42.76439190434893,
+            94.31035509378458,
+            3.1785620259637803
         ],
         "wld_rot": [
             153.70345612055118,
@@ -3036,14 +3036,14 @@
         ],
         "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP|left_elbow_POS_LOC_OFFSET_GRP|left_elbow_POS_LOC_SDK_GRP|left_elbow_POS_LOC|left_elbow_ROT_LOC_GRP|left_elbow_ROT_LOC_OFFSET_GRP",
         "wld_pos": [
-            31.797134129973422,
-            116.69912440065158,
-            -2.8352670848102983
+            31.79713412997342,
+            116.69912440065167,
+            -2.8352670848102797
         ],
         "wld_rot": [
-            196.6703520628765,
-            -13.561929694331054,
-            -63.90183091398697
+            196.6703520628772,
+            -13.561929694331067,
+            -63.90183091398682
         ],
         "jnt_orient": null,
         "shapes": null,
@@ -3057,8 +3057,8 @@
         "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP|left_hand_POS_LOC_OFFSET_GRP|left_hand_POS_LOC_SDK_GRP|left_hand_POS_LOC|left_hand_ROT_LOC_GRP|left_hand_ROT_LOC_OFFSET_GRP",
         "wld_pos": [
             42.76439190434889,
-            94.31035509378458,
-            3.178562025963774
+            94.3103550937846,
+            3.1785620259637604
         ],
         "wld_rot": [
             153.70345612055118,
@@ -3096,14 +3096,14 @@
         ],
         "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP|left_elbow_POS_LOC_OFFSET_GRP|left_elbow_POS_LOC_SDK_GRP|left_elbow_POS_LOC|left_elbow_ROT_LOC_GRP|left_elbow_ROT_LOC_OFFSET_GRP|left_elbow_ROT_LOC_SDK_GRP",
         "wld_pos": [
-            31.797134129973436,
-            116.69912440065164,
-            -2.835267084810293
+            31.797134129973458,
+            116.69912440065174,
+            -2.835267084810265
         ],
         "wld_rot": [
-            -163.32964793712347,
-            -13.561929694331058,
-            -63.901830913986984
+            -163.3296479371228,
+            -13.561929694331067,
+            -63.90183091398681
         ],
         "jnt_orient": null,
         "shapes": null,
@@ -3116,9 +3116,9 @@
         ],
         "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP|left_hand_POS_LOC_OFFSET_GRP|left_hand_POS_LOC_SDK_GRP|left_hand_POS_LOC|left_hand_ROT_LOC_GRP|left_hand_ROT_LOC_OFFSET_GRP|left_hand_ROT_LOC_SDK_GRP",
         "wld_pos": [
-            42.76439190434888,
-            94.31035509378461,
-            3.1785620259637737
+            42.76439190434886,
+            94.31035509378462,
+            3.1785620259637724
         ],
         "wld_rot": [
             153.70345612055118,
@@ -3158,14 +3158,14 @@
         ],
         "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP|left_elbow_POS_LOC_OFFSET_GRP|left_elbow_POS_LOC_SDK_GRP|left_elbow_POS_LOC|left_elbow_ROT_LOC_GRP|left_elbow_ROT_LOC_OFFSET_GRP|left_elbow_ROT_LOC_SDK_GRP|left_elbow_ROT_LOC",
         "wld_pos": [
-            31.797134129973436,
-            116.69912440065164,
-            -2.835267084810293
+            31.797134129973458,
+            116.69912440065174,
+            -2.835267084810265
         ],
         "wld_rot": [
-            -163.32964793712347,
-            -13.561929694331058,
-            -63.901830913986984
+            -163.3296479371228,
+            -13.561929694331067,
+            -63.90183091398681
         ],
         "jnt_orient": null,
         "shapes": [
@@ -3184,14 +3184,14 @@
         ],
         "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP|left_hand_POS_LOC_OFFSET_GRP|left_hand_POS_LOC_SDK_GRP|left_hand_POS_LOC|left_hand_ROT_LOC_GRP|left_hand_ROT_LOC_OFFSET_GRP|left_hand_ROT_LOC_SDK_GRP|left_hand_ROT_LOC",
         "wld_pos": [
-            42.76439190434888,
-            94.31035509378461,
-            3.1785620259637737
+            42.76439190434886,
+            94.31035509378462,
+            3.1785620259637724
         ],
         "wld_rot": [
             167.49758976452225,
-            -8.461992244465788,
-            -68.22787145542794
+            -8.46199224446579,
+            -68.22787145542796
         ],
         "jnt_orient": null,
         "shapes": [

@@ -452,6 +452,8 @@ class EmbedJoints:
         cmds.delete(left_hand_loc)
         cmds.delete(left_elbow_pvloc)
 
+        cmds.matchTransform(self.left_arm_pos_locs[2], self.left_arm_rot_locs[2], pos=True, rot=False, scl=False)
+        cmds.xform(self.left_arm_rot_locs[2]+'_OFFSET_GRP', t=[0,0,0], a=True)
 
     def set_leg_axis_pv_up(self, leg_aim_axis='x', leg_up_axis='z', leg_worldSpace=False, leg_world_axis='y',
                 ball_aim_axis='-x', ball_up_axis='z', ball_worldSpace=False, ball_world_axis='y',
@@ -647,6 +649,9 @@ class EmbedJoints:
         for obj in self.spine_rot_locs:
             cmds.rotate(*offset_rotate, obj, r=True, os=True, fo=True)
 
+    def set_world_aim(self, obj=None, wld_front_axis='z', wld_left_axis='x'):
+        brAim.force_world_aim(obj, wld_front_axis, wld_left_axis)
+
     def lock_guide_locators(self):
         pos_locs = cmds.ls('*_POS_LOC', tr=True)
         pos_ltrs = brLock.LockTransforms(pos_locs)
@@ -655,6 +660,10 @@ class EmbedJoints:
         rot_locs = cmds.ls('*_ROT_LOC', tr=True)
         rot_ltrs = brLock.LockTransforms(rot_locs)
         rot_ltrs.lock_and_hide(['t', 's', 'v'])
+
+        grps = cmds.ls('*_LOC_GRP', tr=True)
+        grps_ltrs = brLock.LockTransforms(grps)
+        grps_ltrs.lock_and_hide(['t', 'r', 's', 'v'])
 
     def delete_adjust_rig(self):
         # Temp Save
@@ -705,7 +714,7 @@ class EmbedJoints:
         # nodes_values = eval(cmds.getAttr('root.adjustmentDict'))
         if not os.path.isfile(json_file):
             return
-        
+
         nodes_values = brCommon.json_transfer(json_file, 'import')
         for n, vals in nodes_values.items():
             parent = vals['parent']
