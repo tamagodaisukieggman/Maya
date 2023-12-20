@@ -184,7 +184,7 @@ class Build(object):
 
                     logging.info('#'*10)
                     logging.info('Setup Characters:{}'.format(rig_setup_ids))
-                    logging.info('Import Joints:{}'.format(chara_paths))
+                    logging.info('Characters Path:{}'.format(chara_paths))
                     logging.info('Save File Paths:{}'.format(save_file_paths))
                     logging.info('#'*10)
 
