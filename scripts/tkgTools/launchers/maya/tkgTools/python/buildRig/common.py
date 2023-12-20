@@ -143,6 +143,24 @@ def chain_length(chain_list=None):
             chain_length.append(length)
     return chain_length
 
+def get_virtual_transform(obj=None, relative_move=[0,0,0]):
+    wt = cmds.xform(obj, q=True, t=True, ws=True)
+    wr = cmds.xform(obj, q=True, ro=True, ws=True)
+
+    virtual_loc = cmds.spaceLocator()[0]
+
+    cmds.xform(virtual_loc, t=wt, ws=True, a=True)
+    cmds.xform(virtual_loc, ro=wr, ws=True, a=True)
+
+    cmds.xform(virtual_loc, t=relative_move, os=True, r=True)
+
+    virtual_pos = cmds.xform(virtual_loc, q=True, t=True, ws=True)
+    virtual_rot = cmds.xform(virtual_loc, q=True, ro=True, ws=True)
+
+    cmds.delete(virtual_loc)
+
+    return [virtual_pos, virtual_rot]
+
 def split_list(lst):
     # リストの長さを取得
     length = len(lst)

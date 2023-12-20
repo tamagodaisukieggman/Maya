@@ -116,9 +116,7 @@ class EmbedJoints:
         self.create = create
         self.guide_name = guide_name
 
-        if self.guide_name:
-            self.guide_name_adj_json = GUIDE_PATH + '/{}_adjustment.json'.format(self.guide_name)
-            self.guide_name_footroll_json = GUIDE_PATH + '/{}_footroll.json'.format(self.guide_name)
+        self.set_json_file()
 
         self.guide_cur_adj_json = GUIDE_PATH + '/current_adjustment.json'
         self.guide_cur_footroll_json = GUIDE_PATH + '/current_footroll.json'
@@ -129,6 +127,11 @@ class EmbedJoints:
                 self.set_adjustment_nodes_values(type='adjustment')
                 self.set_adjustment_nodes_values(type='footroll')
                 self.match_all_pos_to_rot_locs()
+
+    def set_json_file(self):
+        if self.guide_name:
+            self.guide_name_adj_json = GUIDE_PATH + '/{}_adjustment.json'.format(self.guide_name)
+            self.guide_name_footroll_json = GUIDE_PATH + '/{}_footroll.json'.format(self.guide_name)
 
     def create_biped_joints(self):
         # First select the shape, not the transform.
@@ -159,6 +162,7 @@ class EmbedJoints:
         self.neck_segments = segments[2]
         self.left_knee_segments = segments[3]
         self.right_knee_segments = segments[4]
+
 
         self.mirror = ['left_', 'right_']
 
@@ -667,6 +671,94 @@ class EmbedJoints:
                 cmds.xform(rot_loc+'_OFFSET_GRP', t=[0,0,0], a=True)
             except:
                 print(traceback.format_exc())
+
+    def create_finger_joints(self, finger_root=None, finger_tip=None,
+                            thumb_num=3, index_num=3, middle_num=3, ring_num=3, pinky_num=3):
+
+        def insert_finger_joints(base=None, insert_range=None, num=None):
+            joints = []
+            parent = base
+            step = 1.0 / (num-1)
+
+            joints.append(parent)
+            for i in range(num-1):
+                dup = cmds.duplicate(parent)[0]
+                virtual_trs = brCommon.get_virtual_transform(obj=dup, relative_move=[insert_range*step,0,0])
+                cmds.xform(dup, t=virtual_trs[0], ro=virtual_trs[1], ws=True, a=True)
+                cmds.parent(dup, parent)
+                joints.append(dup)
+                
+                parent = dup
+                step = step*(i+1)
+
+            return joints
+
+        finger_tip_loc = cmds.spaceLocator()[0]
+        finger_tip_wt = cmds.xform(finger_tip, q=True, t=True, ws=True)
+        cmds.xform(finger_tip_loc, t=finger_tip_wt, ws=True, a=True)
+
+        # middle
+        left_middle_01 = cmds.createNode('joint', n='left_middle_01', ss=True)
+
+        brCommon.set_mid_point(finger_root, finger_tip, left_middle_01, 0.5)
+
+        brAim.aim_nodes(base=finger_tip_loc,
+                        target=left_middle_01,
+                        aim_axis='x',
+                        up_axis='z',
+                        worldUpType='object',
+                        worldUpObject=None,
+                        worldSpace=True,
+                        world_axis='y')
+
+        middle_tip_dis = brCommon.distance_between(left_middle_01, finger_tip)
+        finger_range = middle_tip_dis * 0.3
+
+        middle_joints = insert_finger_joints(base=left_middle_01, insert_range=middle_tip_dis, num=middle_num)
+
+        # index
+        left_index_01 = cmds.createNode('joint', n='left_index_01', ss=True)
+        index_virtual_trs = brCommon.get_virtual_transform(obj=left_middle_01, relative_move=[0,-finger_range/2,finger_range])
+        cmds.xform(left_index_01, t=index_virtual_trs[0], ro=index_virtual_trs[1], ws=True, a=True)
+
+        index_joints = insert_finger_joints(base=left_index_01, insert_range=middle_tip_dis, num=index_num)
+
+        # ring
+        left_ring_01 = cmds.createNode('joint', n='left_ring_01', ss=True)
+        ring_virtual_trs = brCommon.get_virtual_transform(obj=left_middle_01, relative_move=[0,-finger_range/2,-finger_range])
+        cmds.xform(left_ring_01, t=ring_virtual_trs[0], ro=ring_virtual_trs[1], ws=True, a=True)
+
+        ring_joints = insert_finger_joints(base=left_ring_01, insert_range=middle_tip_dis, num=ring_num)
+
+        # pinky
+        left_pinky_01 = cmds.createNode('joint', n='left_pinky_01', ss=True)
+        pinky_virtual_trs = brCommon.get_virtual_transform(obj=left_ring_01, relative_move=[0,-finger_range/2.5,-finger_range])
+        cmds.xform(left_pinky_01, t=pinky_virtual_trs[0], ro=pinky_virtual_trs[1], ws=True, a=True)
+
+        pinky_joints = insert_finger_joints(base=left_pinky_01, insert_range=middle_tip_dis, num=pinky_num)
+
+        # thumb
+        left_thumb_01 = cmds.createNode('joint', n='left_thumb_01', ss=True)
+        brCommon.set_mid_point(finger_root, finger_tip, left_thumb_01, 0.1)
+        brAim.aim_nodes(base=finger_tip_loc,
+                        target=left_thumb_01,
+                        aim_axis='x',
+                        up_axis='z',
+                        worldUpType='object',
+                        worldUpObject=None,
+                        worldSpace=True,
+                        world_axis='y')
+
+        thumb_virtual_trs = brCommon.get_virtual_transform(obj=left_thumb_01, relative_move=[0,-finger_range/2,finger_range/2])
+        cmds.xform(left_thumb_01, t=thumb_virtual_trs[0], ro=thumb_virtual_trs[1], ws=True, a=True)
+        cmds.xform(left_thumb_01, ro=[0, -45, -30], os=True, r=True)
+
+        thumb_joints = insert_finger_joints(base=left_thumb_01, insert_range=middle_tip_dis, num=thumb_num)
+
+        cmds.delete(finger_tip_loc)
+
+        return [thumb_joints, index_joints, middle_joints, ring_joints, pinky_joints]
+
 
     def lock_guide_locators(self):
         pos_locs = cmds.ls('*_POS_LOC', tr=True)
