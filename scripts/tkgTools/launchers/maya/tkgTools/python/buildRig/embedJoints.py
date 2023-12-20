@@ -163,10 +163,18 @@ class EmbedJoints:
         self.left_knee_segments = segments[3]
         self.right_knee_segments = segments[4]
 
+        # finger joints
+        self.create_finger_guides()
+        finger_root='left_hand'
 
-        self.mirror = ['left_', 'right_']
+        fingers = self.create_finger_joints(finger_root=finger_root, finger_tip=self.finger_tip,
+                                thumb_num=3, index_num=3, middle_num=3, ring_num=3, pinky_num=3)
+        for fing in fingers:
+            cmds.parent(fing[0], finger_root)
 
         # Mirror Joints
+        self.mirror = ['left_', 'right_']
+
         mirror_joints = self.simple_duplicate(root_jnt='root', prefix='mirror_')
 
         mirror_grp = cmds.createNode('transform', n='mirror_joints_GRP', ss=True)
@@ -334,10 +342,6 @@ class EmbedJoints:
 
         cmds.select(self.mesh, r=True)
         mel.eval('fitPanel -selectedNoChildren;')
-
-        # Fingers
-        self.create_finger_guides()
-        print('self.finger_tip', self.finger_tip)
 
         self.lock_guide_locators()
 
