@@ -1,0 +1,3230 @@
+{
+    "adjustment_GRP": {
+        "parent": null,
+        "children": [
+            "|adjustment_GRP|mirror_joints_GRP",
+            "|adjustment_GRP|left_shoulder_POS_LOC_AIM_GRP",
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP",
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP",
+            "|adjustment_GRP|spine_01_POS_LOC_GRP",
+            "|adjustment_GRP|neck_POS_LOC_GRP",
+            "|adjustment_GRP|head_POS_LOC_GRP",
+            "|adjustment_GRP|hips_POS_LOC_GRP"
+        ],
+        "full_path": "|adjustment_GRP",
+        "wld_pos": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "wld_rot": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {
+            "armPosLocsScale": [
+                "double",
+                15.600000000000001
+            ],
+            "armRotLocsScale": [
+                "double",
+                15.600000000000001
+            ],
+            "legPosLocsScale": [
+                "double",
+                15.600000000000001
+            ],
+            "legRotLocsScale": [
+                "double",
+                15.600000000000001
+            ],
+            "spinePosLocsScale": [
+                "double",
+                15.600000000000001
+            ],
+            "spineRotLocsScale": [
+                "double",
+                15.600000000000001
+            ],
+            "neckPosLocsScale": [
+                "double",
+                15.600000000000001
+            ],
+            "neckRotLocsScale": [
+                "double",
+                15.600000000000001
+            ],
+            "headPosLocsScale": [
+                "double",
+                15.600000000000001
+            ],
+            "headRotLocsScale": [
+                "double",
+                15.600000000000001
+            ],
+            "hipsPosLocsScale": [
+                "double",
+                15.600000000000001
+            ],
+            "hipsRotLocsScale": [
+                "double",
+                15.600000000000001
+            ]
+        }
+    },
+    "mirror_joints_GRP": {
+        "parent": "|adjustment_GRP",
+        "children": [
+            "|adjustment_GRP|mirror_joints_GRP|mirror_root"
+        ],
+        "full_path": "|adjustment_GRP|mirror_joints_GRP",
+        "wld_pos": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "wld_rot": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_shoulder_POS_LOC_AIM_GRP": {
+        "parent": "|adjustment_GRP",
+        "children": [
+            "|adjustment_GRP|left_shoulder_POS_LOC_AIM_GRP|left_shoulder_POS_LOC_AIM_OFFSET_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_AIM_GRP",
+        "wld_pos": [
+            39.923162057247566,
+            94.0650166240867,
+            -3.59670381691325
+        ],
+        "wld_rot": [
+            176.82141691549458,
+            -6.583662937754991,
+            -64.15632453252601
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_shoulder_POS_LOC_GRP": {
+        "parent": "|adjustment_GRP",
+        "children": [
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP",
+        "wld_pos": [
+            8.309707641601562,
+            140.11347198486328,
+            -3.522495269775393
+        ],
+        "wld_rot": [
+            -180.05926678592945,
+            0.7891306561729894,
+            -4.29520954239667
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {
+            "posLocsScale": [
+                "double",
+                15.600000000000001
+            ],
+            "rotLocsScale": [
+                "double",
+                15.600000000000001
+            ]
+        }
+    },
+    "left_thigh_POS_LOC_GRP": {
+        "parent": "|adjustment_GRP",
+        "children": [
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP",
+        "wld_pos": [
+            8.547119140625,
+            93.42219543457031,
+            3.7189712524414062
+        ],
+        "wld_rot": [
+            0.45016174958345795,
+            5.967406474994771,
+            -85.67809526585074
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {
+            "posLocsScale": [
+                "double",
+                15.600000000000001
+            ],
+            "rotLocsScale": [
+                "double",
+                15.600000000000001
+            ]
+        }
+    },
+    "spine_01_POS_LOC_GRP": {
+        "parent": "|adjustment_GRP",
+        "children": [
+            "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP"
+        ],
+        "full_path": "|adjustment_GRP|spine_01_POS_LOC_GRP",
+        "wld_pos": [
+            0.0,
+            93.50174713134766,
+            3.6574859619140625
+        ],
+        "wld_rot": [
+            -5.390388121333945,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {
+            "posLocsScale": [
+                "double",
+                15.600000000000001
+            ],
+            "rotLocsScale": [
+                "double",
+                15.600000000000001
+            ]
+        }
+    },
+    "neck_POS_LOC_GRP": {
+        "parent": "|adjustment_GRP",
+        "children": [
+            "|adjustment_GRP|neck_POS_LOC_GRP|neck_POS_LOC_OFFSET_GRP"
+        ],
+        "full_path": "|adjustment_GRP|neck_POS_LOC_GRP",
+        "wld_pos": [
+            0.0,
+            152.3902966796746,
+            -1.8991537114579635
+        ],
+        "wld_rot": [
+            7.349611878666059,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {
+            "posLocsScale": [
+                "double",
+                15.600000000000001
+            ],
+            "rotLocsScale": [
+                "double",
+                15.600000000000001
+            ]
+        }
+    },
+    "head_POS_LOC_GRP": {
+        "parent": "|adjustment_GRP",
+        "children": [
+            "|adjustment_GRP|head_POS_LOC_GRP|head_POS_LOC_OFFSET_GRP"
+        ],
+        "full_path": "|adjustment_GRP|head_POS_LOC_GRP",
+        "wld_pos": [
+            0.0,
+            167.79171114095732,
+            0.08736927904360914
+        ],
+        "wld_rot": [
+            7.349611878666061,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {
+            "posLocsScale": [
+                "double",
+                15.600000000000001
+            ],
+            "rotLocsScale": [
+                "double",
+                15.600000000000001
+            ]
+        }
+    },
+    "hips_POS_LOC_GRP": {
+        "parent": "|adjustment_GRP",
+        "children": [
+            "|adjustment_GRP|hips_POS_LOC_GRP|hips_POS_LOC_OFFSET_GRP"
+        ],
+        "full_path": "|adjustment_GRP|hips_POS_LOC_GRP",
+        "wld_pos": [
+            0.0,
+            93.50174713134766,
+            3.6574859619140625
+        ],
+        "wld_rot": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {
+            "posLocsScale": [
+                "double",
+                15.600000000000001
+            ],
+            "rotLocsScale": [
+                "double",
+                15.600000000000001
+            ]
+        }
+    },
+    "mirror_root": {
+        "parent": "|adjustment_GRP|mirror_joints_GRP",
+        "children": [
+            "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips"
+        ],
+        "full_path": "|adjustment_GRP|mirror_joints_GRP|mirror_root",
+        "wld_pos": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "wld_rot": [
+            0.0,
+            180.0,
+            0.0
+        ],
+        "jnt_orient": [
+            0.0,
+            -0.0,
+            0.0
+        ],
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_shoulder_POS_LOC_AIM_OFFSET_GRP": {
+        "parent": "|adjustment_GRP|left_shoulder_POS_LOC_AIM_GRP",
+        "children": [
+            "|adjustment_GRP|left_shoulder_POS_LOC_AIM_GRP|left_shoulder_POS_LOC_AIM_OFFSET_GRP|left_shoulder_POS_LOC_AIM_SDK_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_AIM_GRP|left_shoulder_POS_LOC_AIM_OFFSET_GRP",
+        "wld_pos": [
+            39.92316205724756,
+            94.06501662408671,
+            -3.5967038169132377
+        ],
+        "wld_rot": [
+            176.82141691549458,
+            -6.583662937754991,
+            -64.15632453252601
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_shoulder_POS_LOC_OFFSET_GRP": {
+        "parent": "|adjustment_GRP|left_shoulder_POS_LOC_GRP",
+        "children": [
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP",
+        "wld_pos": [
+            8.309707641601559,
+            140.11347198486328,
+            -3.522495269775394
+        ],
+        "wld_rot": [
+            179.94073321407055,
+            0.7891306561729894,
+            -4.29520954239667
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_thigh_POS_LOC_OFFSET_GRP": {
+        "parent": "|adjustment_GRP|left_thigh_POS_LOC_GRP",
+        "children": [
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP",
+        "wld_pos": [
+            8.547119140625009,
+            93.42219543457026,
+            3.718971252441397
+        ],
+        "wld_rot": [
+            0.45016174958345756,
+            5.967406474994773,
+            -85.67809526585076
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "spine_01_POS_LOC_OFFSET_GRP": {
+        "parent": "|adjustment_GRP|spine_01_POS_LOC_GRP",
+        "children": [
+            "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP"
+        ],
+        "full_path": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP",
+        "wld_pos": [
+            0.0,
+            93.50174713134766,
+            3.6574859619140625
+        ],
+        "wld_rot": [
+            -5.390388121333945,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "neck_POS_LOC_OFFSET_GRP": {
+        "parent": "|adjustment_GRP|neck_POS_LOC_GRP",
+        "children": [
+            "|adjustment_GRP|neck_POS_LOC_GRP|neck_POS_LOC_OFFSET_GRP|neck_POS_LOC_SDK_GRP"
+        ],
+        "full_path": "|adjustment_GRP|neck_POS_LOC_GRP|neck_POS_LOC_OFFSET_GRP",
+        "wld_pos": [
+            0.0,
+            152.3902966796746,
+            -1.8991537114579635
+        ],
+        "wld_rot": [
+            7.349611878666059,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "head_POS_LOC_OFFSET_GRP": {
+        "parent": "|adjustment_GRP|head_POS_LOC_GRP",
+        "children": [
+            "|adjustment_GRP|head_POS_LOC_GRP|head_POS_LOC_OFFSET_GRP|head_POS_LOC_SDK_GRP"
+        ],
+        "full_path": "|adjustment_GRP|head_POS_LOC_GRP|head_POS_LOC_OFFSET_GRP",
+        "wld_pos": [
+            0.0,
+            167.79171114095732,
+            0.08736927904359856
+        ],
+        "wld_rot": [
+            7.349611878666061,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "hips_POS_LOC_OFFSET_GRP": {
+        "parent": "|adjustment_GRP|hips_POS_LOC_GRP",
+        "children": [
+            "|adjustment_GRP|hips_POS_LOC_GRP|hips_POS_LOC_OFFSET_GRP|hips_POS_LOC_SDK_GRP"
+        ],
+        "full_path": "|adjustment_GRP|hips_POS_LOC_GRP|hips_POS_LOC_OFFSET_GRP",
+        "wld_pos": [
+            0.0,
+            93.50174713134766,
+            3.6574859619140625
+        ],
+        "wld_rot": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "mirror_hips": {
+        "parent": "|adjustment_GRP|mirror_joints_GRP|mirror_root",
+        "children": [
+            "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01",
+            "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_left_thigh",
+            "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_right_thigh"
+        ],
+        "full_path": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips",
+        "wld_pos": [
+            0.0,
+            93.50174713134766,
+            3.6574859619140625
+        ],
+        "wld_rot": [
+            0.0,
+            180.0,
+            0.0
+        ],
+        "jnt_orient": [
+            0.0,
+            -0.0,
+            0.0
+        ],
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_shoulder_POS_LOC_AIM_SDK_GRP": {
+        "parent": "|adjustment_GRP|left_shoulder_POS_LOC_AIM_GRP|left_shoulder_POS_LOC_AIM_OFFSET_GRP",
+        "children": [
+            "|adjustment_GRP|left_shoulder_POS_LOC_AIM_GRP|left_shoulder_POS_LOC_AIM_OFFSET_GRP|left_shoulder_POS_LOC_AIM_SDK_GRP|left_shoulder_POS_LOC_AIM"
+        ],
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_AIM_GRP|left_shoulder_POS_LOC_AIM_OFFSET_GRP|left_shoulder_POS_LOC_AIM_SDK_GRP",
+        "wld_pos": [
+            39.923162057247566,
+            94.0650166240867,
+            -3.596703816913236
+        ],
+        "wld_rot": [
+            176.82141691549458,
+            -6.583662937754991,
+            -64.15632453252601
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_shoulder_POS_LOC_SDK_GRP": {
+        "parent": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP",
+        "children": [
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC"
+        ],
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP",
+        "wld_pos": [
+            8.309707641601559,
+            140.11347198486328,
+            -3.522495269775394
+        ],
+        "wld_rot": [
+            179.94073321407055,
+            0.7891306561729894,
+            -4.29520954239667
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_thigh_POS_LOC_SDK_GRP": {
+        "parent": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP",
+        "children": [
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC"
+        ],
+        "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP",
+        "wld_pos": [
+            8.547119140625005,
+            93.42219543457026,
+            3.718971252441397
+        ],
+        "wld_rot": [
+            0.45016174958345756,
+            5.967406474994773,
+            -85.67809526585076
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "spine_01_POS_LOC_SDK_GRP": {
+        "parent": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP",
+        "children": [
+            "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC"
+        ],
+        "full_path": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP",
+        "wld_pos": [
+            0.0,
+            93.50174713134766,
+            3.6574859619140625
+        ],
+        "wld_rot": [
+            -5.390388121333945,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "neck_POS_LOC_SDK_GRP": {
+        "parent": "|adjustment_GRP|neck_POS_LOC_GRP|neck_POS_LOC_OFFSET_GRP",
+        "children": [
+            "|adjustment_GRP|neck_POS_LOC_GRP|neck_POS_LOC_OFFSET_GRP|neck_POS_LOC_SDK_GRP|neck_POS_LOC"
+        ],
+        "full_path": "|adjustment_GRP|neck_POS_LOC_GRP|neck_POS_LOC_OFFSET_GRP|neck_POS_LOC_SDK_GRP",
+        "wld_pos": [
+            0.0,
+            152.3902966796746,
+            -1.8991537114579635
+        ],
+        "wld_rot": [
+            7.349611878666059,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "head_POS_LOC_SDK_GRP": {
+        "parent": "|adjustment_GRP|head_POS_LOC_GRP|head_POS_LOC_OFFSET_GRP",
+        "children": [
+            "|adjustment_GRP|head_POS_LOC_GRP|head_POS_LOC_OFFSET_GRP|head_POS_LOC_SDK_GRP|head_POS_LOC"
+        ],
+        "full_path": "|adjustment_GRP|head_POS_LOC_GRP|head_POS_LOC_OFFSET_GRP|head_POS_LOC_SDK_GRP",
+        "wld_pos": [
+            0.0,
+            167.79171114095732,
+            0.08736927904359856
+        ],
+        "wld_rot": [
+            7.349611878666061,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "hips_POS_LOC_SDK_GRP": {
+        "parent": "|adjustment_GRP|hips_POS_LOC_GRP|hips_POS_LOC_OFFSET_GRP",
+        "children": [
+            "|adjustment_GRP|hips_POS_LOC_GRP|hips_POS_LOC_OFFSET_GRP|hips_POS_LOC_SDK_GRP|hips_POS_LOC"
+        ],
+        "full_path": "|adjustment_GRP|hips_POS_LOC_GRP|hips_POS_LOC_OFFSET_GRP|hips_POS_LOC_SDK_GRP",
+        "wld_pos": [
+            0.0,
+            93.50174713134766,
+            3.6574859619140625
+        ],
+        "wld_rot": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "mirror_spine_01": {
+        "parent": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips",
+        "children": [
+            "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02"
+        ],
+        "full_path": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01",
+        "wld_pos": [
+            0.0,
+            93.50174713134766,
+            3.6574859619140625
+        ],
+        "wld_rot": [
+            -5.390388121333966,
+            180.0,
+            0.0
+        ],
+        "jnt_orient": [
+            0.0,
+            -0.0,
+            0.0
+        ],
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "mirror_left_thigh": {
+        "parent": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips",
+        "children": [
+            "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_left_thigh|mirror_left_knee"
+        ],
+        "full_path": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_left_thigh",
+        "wld_pos": [
+            -8.547119140624996,
+            93.42219543457033,
+            3.718971252441405
+        ],
+        "wld_rot": [
+            -11.927448520981377,
+            184.41022552815815,
+            85.12435321137822
+        ],
+        "jnt_orient": [
+            0.0,
+            -0.0,
+            0.0
+        ],
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "mirror_right_thigh": {
+        "parent": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips",
+        "children": [
+            "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_right_thigh|mirror_right_knee"
+        ],
+        "full_path": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_right_thigh",
+        "wld_pos": [
+            8.54712,
+            93.4222,
+            3.71897
+        ],
+        "wld_rot": [
+            0.45016174958345795,
+            5.9674064749947755,
+            94.32190473414927
+        ],
+        "jnt_orient": [
+            -180.0,
+            -0.0,
+            0.0
+        ],
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_shoulder_POS_LOC_AIM": {
+        "parent": "|adjustment_GRP|left_shoulder_POS_LOC_AIM_GRP|left_shoulder_POS_LOC_AIM_OFFSET_GRP|left_shoulder_POS_LOC_AIM_SDK_GRP",
+        "children": [
+            "|adjustment_GRP|left_shoulder_POS_LOC_AIM_GRP|left_shoulder_POS_LOC_AIM_OFFSET_GRP|left_shoulder_POS_LOC_AIM_SDK_GRP|left_shoulder_POS_LOC_AIM|left_shoulder_POS_LOC_AIMShape"
+        ],
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_AIM_GRP|left_shoulder_POS_LOC_AIM_OFFSET_GRP|left_shoulder_POS_LOC_AIM_SDK_GRP|left_shoulder_POS_LOC_AIM",
+        "wld_pos": [
+            39.92316205724756,
+            94.06501662408671,
+            -3.5967038169132377
+        ],
+        "wld_rot": [
+            176.82141691549458,
+            -6.583662937754991,
+            -64.15632453252601
+        ],
+        "jnt_orient": null,
+        "shapes": [
+            "left_shoulder_POS_LOC_AIMShape"
+        ],
+        "userDefineAttrs": {}
+    },
+    "left_shoulder_POS_LOC": {
+        "parent": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP",
+        "children": [
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_shoulder_POS_LOCShape",
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_shoulder_ROT_LOC_GRP",
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC",
+        "wld_pos": [
+            5.192028999328606,
+            148.41201782226562,
+            7.1532368659973145
+        ],
+        "wld_rot": [
+            179.94073321407055,
+            0.7891306561729894,
+            -4.29520954239667
+        ],
+        "jnt_orient": null,
+        "shapes": [
+            "left_shoulder_POS_LOCShape"
+        ],
+        "userDefineAttrs": {}
+    },
+    "left_thigh_POS_LOC": {
+        "parent": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP",
+        "children": [
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_thigh_POS_LOCShape",
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_thigh_ROT_LOC_GRP",
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_knee_POS_LOC_GRP",
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ankle_POS_LOC_GRP",
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ball_POS_LOC_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC",
+        "wld_pos": [
+            8.547119140625009,
+            93.42219543457026,
+            3.718971252441397
+        ],
+        "wld_rot": [
+            0.45016174958345756,
+            5.967406474994773,
+            -85.67809526585076
+        ],
+        "jnt_orient": null,
+        "shapes": [
+            "left_thigh_POS_LOCShape"
+        ],
+        "userDefineAttrs": {}
+    },
+    "spine_01_POS_LOC": {
+        "parent": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP",
+        "children": [
+            "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_01_POS_LOCShape",
+            "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_01_ROT_LOC_GRP",
+            "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP"
+        ],
+        "full_path": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC",
+        "wld_pos": [
+            0.0,
+            93.50174713134766,
+            3.6574859619140625
+        ],
+        "wld_rot": [
+            -5.390388121333945,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": [
+            "spine_01_POS_LOCShape"
+        ],
+        "userDefineAttrs": {}
+    },
+    "neck_POS_LOC": {
+        "parent": "|adjustment_GRP|neck_POS_LOC_GRP|neck_POS_LOC_OFFSET_GRP|neck_POS_LOC_SDK_GRP",
+        "children": [
+            "|adjustment_GRP|neck_POS_LOC_GRP|neck_POS_LOC_OFFSET_GRP|neck_POS_LOC_SDK_GRP|neck_POS_LOC|neck_POS_LOCShape",
+            "|adjustment_GRP|neck_POS_LOC_GRP|neck_POS_LOC_OFFSET_GRP|neck_POS_LOC_SDK_GRP|neck_POS_LOC|neck_ROT_LOC_GRP"
+        ],
+        "full_path": "|adjustment_GRP|neck_POS_LOC_GRP|neck_POS_LOC_OFFSET_GRP|neck_POS_LOC_SDK_GRP|neck_POS_LOC",
+        "wld_pos": [
+            0.0,
+            152.3902966796746,
+            -1.8991537114579635
+        ],
+        "wld_rot": [
+            7.349611878666059,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": [
+            "neck_POS_LOCShape"
+        ],
+        "userDefineAttrs": {}
+    },
+    "head_POS_LOC": {
+        "parent": "|adjustment_GRP|head_POS_LOC_GRP|head_POS_LOC_OFFSET_GRP|head_POS_LOC_SDK_GRP",
+        "children": [
+            "|adjustment_GRP|head_POS_LOC_GRP|head_POS_LOC_OFFSET_GRP|head_POS_LOC_SDK_GRP|head_POS_LOC|head_POS_LOCShape",
+            "|adjustment_GRP|head_POS_LOC_GRP|head_POS_LOC_OFFSET_GRP|head_POS_LOC_SDK_GRP|head_POS_LOC|head_ROT_LOC_GRP"
+        ],
+        "full_path": "|adjustment_GRP|head_POS_LOC_GRP|head_POS_LOC_OFFSET_GRP|head_POS_LOC_SDK_GRP|head_POS_LOC",
+        "wld_pos": [
+            0.0,
+            167.79171114095732,
+            0.08736927904359856
+        ],
+        "wld_rot": [
+            7.349611878666061,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": [
+            "head_POS_LOCShape"
+        ],
+        "userDefineAttrs": {}
+    },
+    "hips_POS_LOC": {
+        "parent": "|adjustment_GRP|hips_POS_LOC_GRP|hips_POS_LOC_OFFSET_GRP|hips_POS_LOC_SDK_GRP",
+        "children": [
+            "|adjustment_GRP|hips_POS_LOC_GRP|hips_POS_LOC_OFFSET_GRP|hips_POS_LOC_SDK_GRP|hips_POS_LOC|hips_POS_LOCShape",
+            "|adjustment_GRP|hips_POS_LOC_GRP|hips_POS_LOC_OFFSET_GRP|hips_POS_LOC_SDK_GRP|hips_POS_LOC|hips_ROT_LOC_GRP"
+        ],
+        "full_path": "|adjustment_GRP|hips_POS_LOC_GRP|hips_POS_LOC_OFFSET_GRP|hips_POS_LOC_SDK_GRP|hips_POS_LOC",
+        "wld_pos": [
+            0.0,
+            93.50174713134766,
+            3.6574859619140625
+        ],
+        "wld_rot": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": [
+            "hips_POS_LOCShape"
+        ],
+        "userDefineAttrs": {}
+    },
+    "mirror_spine_02": {
+        "parent": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01",
+        "children": [
+            "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03"
+        ],
+        "full_path": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02",
+        "wld_pos": [
+            0.0,
+            113.1311187744141,
+            1.8052864074707022
+        ],
+        "wld_rot": [
+            5.39038812133394,
+            180.0,
+            0.0
+        ],
+        "jnt_orient": [
+            0.0,
+            -0.0,
+            0.0
+        ],
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "mirror_left_knee": {
+        "parent": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_left_thigh",
+        "children": [
+            "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_left_thigh|mirror_left_knee|mirror_left_ankle"
+        ],
+        "full_path": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_left_thigh|mirror_left_knee",
+        "wld_pos": [
+            -12.333770610878245,
+            49.031120331945594,
+            0.2828612031203077
+        ],
+        "wld_rot": [
+            -168.10808211501404,
+            0.40592598334083346,
+            -95.72075099589682
+        ],
+        "jnt_orient": [
+            0.0,
+            -7.951386703658792e-16,
+            -5.342337941520751e-16
+        ],
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "mirror_right_knee": {
+        "parent": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_right_thigh",
+        "children": [
+            "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_right_thigh|mirror_right_knee|mirror_right_ankle"
+        ],
+        "full_path": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_right_thigh|mirror_right_knee",
+        "wld_pos": [
+            11.894900000000007,
+            49.1245,
+            -0.924628999999999
+        ],
+        "wld_rot": [
+            -0.4501617495834583,
+            -5.967406474994783,
+            94.32190473414927
+        ],
+        "jnt_orient": [
+            0.0,
+            -7.951386703658792e-16,
+            -7.330184617435449e-16
+        ],
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_shoulder_ROT_LOC_GRP": {
+        "parent": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC",
+        "children": [
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_shoulder_ROT_LOC_GRP|left_shoulder_ROT_LOC_OFFSET_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_shoulder_ROT_LOC_GRP",
+        "wld_pos": [
+            5.192028999328605,
+            148.41201782226562,
+            7.1532368659973145
+        ],
+        "wld_rot": [
+            179.94073321407055,
+            0.7891306561729894,
+            -4.29520954239667
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_arm_POS_LOC_GRP": {
+        "parent": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC",
+        "children": [
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP",
+        "wld_pos": [
+            14.85291767120361,
+            147.6864242553711,
+            7.019794940948487
+        ],
+        "wld_rot": [
+            182.81708195771148,
+            5.830846011734968,
+            -64.15632453252599
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_thigh_ROT_LOC_GRP": {
+        "parent": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC",
+        "children": [
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_thigh_ROT_LOC_GRP|left_thigh_ROT_LOC_OFFSET_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_thigh_ROT_LOC_GRP",
+        "wld_pos": [
+            8.54711914062501,
+            93.42219543457024,
+            3.718971252441394
+        ],
+        "wld_rot": [
+            0.45016174958345756,
+            5.967406474994773,
+            -85.67809526585076
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_knee_POS_LOC_GRP": {
+        "parent": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC",
+        "children": [
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_knee_POS_LOC_GRP|left_knee_POS_LOC_OFFSET_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_knee_POS_LOC_GRP",
+        "wld_pos": [
+            11.894908905029276,
+            49.1245312690734,
+            -0.9246292114257986
+        ],
+        "wld_rot": [
+            0.45016174958345756,
+            5.967406474994773,
+            -85.67809526585076
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_ankle_POS_LOC_GRP": {
+        "parent": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC",
+        "children": [
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ankle_POS_LOC_GRP|left_ankle_POS_LOC_OFFSET_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ankle_POS_LOC_GRP",
+        "wld_pos": [
+            14.77400810241695,
+            11.028540086746105,
+            -4.918125610351584
+        ],
+        "wld_rot": [
+            -4.756416424709802,
+            -62.04488487407984,
+            -84.61874153504078
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_ball_POS_LOC_GRP": {
+        "parent": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC",
+        "children": [
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ball_POS_LOC_GRP|left_ball_POS_LOC_OFFSET_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ball_POS_LOC_GRP",
+        "wld_pos": [
+            15.772758483886665,
+            0.42584872245777206,
+            15.14881896972654
+        ],
+        "wld_rot": [
+            -4.756416424709817,
+            -62.044884874079855,
+            -84.61874153504078
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "spine_01_ROT_LOC_GRP": {
+        "parent": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC",
+        "children": [
+            "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_01_ROT_LOC_GRP|spine_01_ROT_LOC_OFFSET_GRP"
+        ],
+        "full_path": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_01_ROT_LOC_GRP",
+        "wld_pos": [
+            0.0,
+            93.50174713134766,
+            3.6574859619140625
+        ],
+        "wld_rot": [
+            -5.390388121333945,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "spine_02_POS_LOC_GRP": {
+        "parent": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC",
+        "children": [
+            "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP"
+        ],
+        "full_path": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP",
+        "wld_pos": [
+            0.0,
+            113.13111877441409,
+            1.8052864074707018
+        ],
+        "wld_rot": [
+            -5.390388121333945,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "neck_ROT_LOC_GRP": {
+        "parent": "|adjustment_GRP|neck_POS_LOC_GRP|neck_POS_LOC_OFFSET_GRP|neck_POS_LOC_SDK_GRP|neck_POS_LOC",
+        "children": [
+            "|adjustment_GRP|neck_POS_LOC_GRP|neck_POS_LOC_OFFSET_GRP|neck_POS_LOC_SDK_GRP|neck_POS_LOC|neck_ROT_LOC_GRP|neck_ROT_LOC_OFFSET_GRP"
+        ],
+        "full_path": "|adjustment_GRP|neck_POS_LOC_GRP|neck_POS_LOC_OFFSET_GRP|neck_POS_LOC_SDK_GRP|neck_POS_LOC|neck_ROT_LOC_GRP",
+        "wld_pos": [
+            0.0,
+            152.3902966796746,
+            -1.8991537114579635
+        ],
+        "wld_rot": [
+            7.349611878666059,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "head_ROT_LOC_GRP": {
+        "parent": "|adjustment_GRP|head_POS_LOC_GRP|head_POS_LOC_OFFSET_GRP|head_POS_LOC_SDK_GRP|head_POS_LOC",
+        "children": [
+            "|adjustment_GRP|head_POS_LOC_GRP|head_POS_LOC_OFFSET_GRP|head_POS_LOC_SDK_GRP|head_POS_LOC|head_ROT_LOC_GRP|head_ROT_LOC_OFFSET_GRP"
+        ],
+        "full_path": "|adjustment_GRP|head_POS_LOC_GRP|head_POS_LOC_OFFSET_GRP|head_POS_LOC_SDK_GRP|head_POS_LOC|head_ROT_LOC_GRP",
+        "wld_pos": [
+            0.0,
+            167.79171114095732,
+            0.08736927904359856
+        ],
+        "wld_rot": [
+            7.349611878666061,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "hips_ROT_LOC_GRP": {
+        "parent": "|adjustment_GRP|hips_POS_LOC_GRP|hips_POS_LOC_OFFSET_GRP|hips_POS_LOC_SDK_GRP|hips_POS_LOC",
+        "children": [
+            "|adjustment_GRP|hips_POS_LOC_GRP|hips_POS_LOC_OFFSET_GRP|hips_POS_LOC_SDK_GRP|hips_POS_LOC|hips_ROT_LOC_GRP|hips_ROT_LOC_OFFSET_GRP"
+        ],
+        "full_path": "|adjustment_GRP|hips_POS_LOC_GRP|hips_POS_LOC_OFFSET_GRP|hips_POS_LOC_SDK_GRP|hips_POS_LOC|hips_ROT_LOC_GRP",
+        "wld_pos": [
+            0.0,
+            93.50174713134766,
+            3.6574859619140625
+        ],
+        "wld_rot": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "mirror_spine_03": {
+        "parent": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02",
+        "children": [
+            "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03|mirror_left_shoulder",
+            "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03|mirror_neck",
+            "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03|mirror_right_shoulder"
+        ],
+        "full_path": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03",
+        "wld_pos": [
+            0.0,
+            132.7604904174805,
+            -0.046913146972654474
+        ],
+        "wld_rot": [
+            5.39038812133394,
+            180.0,
+            0.0
+        ],
+        "jnt_orient": [
+            0.0,
+            -0.0,
+            0.0
+        ],
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "mirror_left_ankle": {
+        "parent": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_left_thigh|mirror_left_knee",
+        "children": [
+            "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_left_thigh|mirror_left_knee|mirror_left_ankle|mirror_left_ball"
+        ],
+        "full_path": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_left_thigh|mirror_left_knee|mirror_left_ankle",
+        "wld_pos": [
+            -15.155696090470773,
+            8.890850783390995,
+            -5.668898201669819
+        ],
+        "wld_rot": [
+            63.654357111752105,
+            110.90547139674577,
+            147.0214146156482
+        ],
+        "jnt_orient": [
+            0.0,
+            -7.951386703658792e-16,
+            -5.342337941520751e-16
+        ],
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "mirror_right_ankle": {
+        "parent": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_right_thigh|mirror_right_knee",
+        "children": [
+            "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_right_thigh|mirror_right_knee|mirror_right_ankle|mirror_right_ball"
+        ],
+        "full_path": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_right_thigh|mirror_right_knee|mirror_right_ankle",
+        "wld_pos": [
+            14.774000000000001,
+            11.028500000000001,
+            -4.918129999999996
+        ],
+        "wld_rot": [
+            -8.78390313574278,
+            -73.92459303274299,
+            99.13543471518773
+        ],
+        "jnt_orient": [
+            0.0,
+            -7.951386703658792e-16,
+            -7.330184617435449e-16
+        ],
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_shoulder_ROT_LOC_OFFSET_GRP": {
+        "parent": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_shoulder_ROT_LOC_GRP",
+        "children": [
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_shoulder_ROT_LOC_GRP|left_shoulder_ROT_LOC_OFFSET_GRP|left_shoulder_ROT_LOC_SDK_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_shoulder_ROT_LOC_GRP|left_shoulder_ROT_LOC_OFFSET_GRP",
+        "wld_pos": [
+            5.192028999328607,
+            148.41201782226565,
+            7.153236865997318
+        ],
+        "wld_rot": [
+            164.04224082948392,
+            36.23657428047664,
+            -25.81483160626368
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_arm_POS_LOC_OFFSET_GRP": {
+        "parent": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP",
+        "children": [
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP",
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_OFFSET_GRP_aimConstraint1"
+        ],
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP",
+        "wld_pos": [
+            14.85291767120361,
+            147.6864242553711,
+            7.019794940948487
+        ],
+        "wld_rot": [
+            -200.6859166030297,
+            10.16817083626311,
+            -64.94195022092684
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_thigh_ROT_LOC_OFFSET_GRP": {
+        "parent": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_thigh_ROT_LOC_GRP",
+        "children": [
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_thigh_ROT_LOC_GRP|left_thigh_ROT_LOC_OFFSET_GRP|left_thigh_ROT_LOC_SDK_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_thigh_ROT_LOC_GRP|left_thigh_ROT_LOC_OFFSET_GRP",
+        "wld_pos": [
+            8.547119140625009,
+            93.42219543457026,
+            3.7189712524413934
+        ],
+        "wld_rot": [
+            -11.927448520981395,
+            4.410225528158154,
+            -85.12435321137826
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_knee_POS_LOC_OFFSET_GRP": {
+        "parent": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_knee_POS_LOC_GRP",
+        "children": [
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_knee_POS_LOC_GRP|left_knee_POS_LOC_OFFSET_GRP|left_knee_POS_LOC_SDK_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_knee_POS_LOC_GRP|left_knee_POS_LOC_OFFSET_GRP",
+        "wld_pos": [
+            11.894908905029274,
+            49.12453126907346,
+            -0.9246292114257891
+        ],
+        "wld_rot": [
+            0.45016174958345717,
+            5.96740647499477,
+            -85.67809526585076
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_ankle_POS_LOC_OFFSET_GRP": {
+        "parent": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ankle_POS_LOC_GRP",
+        "children": [
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ankle_POS_LOC_GRP|left_ankle_POS_LOC_OFFSET_GRP|left_ankle_POS_LOC_SDK_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ankle_POS_LOC_GRP|left_ankle_POS_LOC_OFFSET_GRP",
+        "wld_pos": [
+            14.774008102416936,
+            11.028540086746164,
+            -4.918125610351585
+        ],
+        "wld_rot": [
+            -4.756416424709824,
+            -62.044884874079855,
+            -84.61874153504077
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_ball_POS_LOC_OFFSET_GRP": {
+        "parent": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ball_POS_LOC_GRP",
+        "children": [
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ball_POS_LOC_GRP|left_ball_POS_LOC_OFFSET_GRP|left_ball_POS_LOC_SDK_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ball_POS_LOC_GRP|left_ball_POS_LOC_OFFSET_GRP",
+        "wld_pos": [
+            15.772758483886653,
+            0.425848722457828,
+            15.148818969726548
+        ],
+        "wld_rot": [
+            -4.756416424709824,
+            -62.044884874079855,
+            -84.61874153504077
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "spine_01_ROT_LOC_OFFSET_GRP": {
+        "parent": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_01_ROT_LOC_GRP",
+        "children": [
+            "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_01_ROT_LOC_GRP|spine_01_ROT_LOC_OFFSET_GRP|spine_01_ROT_LOC_SDK_GRP"
+        ],
+        "full_path": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_01_ROT_LOC_GRP|spine_01_ROT_LOC_OFFSET_GRP",
+        "wld_pos": [
+            0.0,
+            93.50174713134766,
+            3.6574859619140625
+        ],
+        "wld_rot": [
+            -5.390388121333945,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "spine_02_POS_LOC_OFFSET_GRP": {
+        "parent": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP",
+        "children": [
+            "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP"
+        ],
+        "full_path": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP",
+        "wld_pos": [
+            0.0,
+            113.13111877441409,
+            1.8052864074707018
+        ],
+        "wld_rot": [
+            -5.390388121333945,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "neck_ROT_LOC_OFFSET_GRP": {
+        "parent": "|adjustment_GRP|neck_POS_LOC_GRP|neck_POS_LOC_OFFSET_GRP|neck_POS_LOC_SDK_GRP|neck_POS_LOC|neck_ROT_LOC_GRP",
+        "children": [
+            "|adjustment_GRP|neck_POS_LOC_GRP|neck_POS_LOC_OFFSET_GRP|neck_POS_LOC_SDK_GRP|neck_POS_LOC|neck_ROT_LOC_GRP|neck_ROT_LOC_OFFSET_GRP|neck_ROT_LOC_SDK_GRP"
+        ],
+        "full_path": "|adjustment_GRP|neck_POS_LOC_GRP|neck_POS_LOC_OFFSET_GRP|neck_POS_LOC_SDK_GRP|neck_POS_LOC|neck_ROT_LOC_GRP|neck_ROT_LOC_OFFSET_GRP",
+        "wld_pos": [
+            0.0,
+            152.3902966796746,
+            -1.8991537114579635
+        ],
+        "wld_rot": [
+            7.349611878666059,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "head_ROT_LOC_OFFSET_GRP": {
+        "parent": "|adjustment_GRP|head_POS_LOC_GRP|head_POS_LOC_OFFSET_GRP|head_POS_LOC_SDK_GRP|head_POS_LOC|head_ROT_LOC_GRP",
+        "children": [
+            "|adjustment_GRP|head_POS_LOC_GRP|head_POS_LOC_OFFSET_GRP|head_POS_LOC_SDK_GRP|head_POS_LOC|head_ROT_LOC_GRP|head_ROT_LOC_OFFSET_GRP|head_ROT_LOC_SDK_GRP"
+        ],
+        "full_path": "|adjustment_GRP|head_POS_LOC_GRP|head_POS_LOC_OFFSET_GRP|head_POS_LOC_SDK_GRP|head_POS_LOC|head_ROT_LOC_GRP|head_ROT_LOC_OFFSET_GRP",
+        "wld_pos": [
+            0.0,
+            167.79171114095732,
+            0.08736927904359856
+        ],
+        "wld_rot": [
+            7.349611878666061,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "hips_ROT_LOC_OFFSET_GRP": {
+        "parent": "|adjustment_GRP|hips_POS_LOC_GRP|hips_POS_LOC_OFFSET_GRP|hips_POS_LOC_SDK_GRP|hips_POS_LOC|hips_ROT_LOC_GRP",
+        "children": [
+            "|adjustment_GRP|hips_POS_LOC_GRP|hips_POS_LOC_OFFSET_GRP|hips_POS_LOC_SDK_GRP|hips_POS_LOC|hips_ROT_LOC_GRP|hips_ROT_LOC_OFFSET_GRP|hips_ROT_LOC_SDK_GRP"
+        ],
+        "full_path": "|adjustment_GRP|hips_POS_LOC_GRP|hips_POS_LOC_OFFSET_GRP|hips_POS_LOC_SDK_GRP|hips_POS_LOC|hips_ROT_LOC_GRP|hips_ROT_LOC_OFFSET_GRP",
+        "wld_pos": [
+            0.0,
+            93.50174713134766,
+            3.6574859619140625
+        ],
+        "wld_rot": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "mirror_left_shoulder": {
+        "parent": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03",
+        "children": [
+            "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03|mirror_left_shoulder|mirror_left_arm"
+        ],
+        "full_path": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03|mirror_left_shoulder",
+        "wld_pos": [
+            -5.192028999328623,
+            148.41201782226568,
+            7.1532368659973
+        ],
+        "wld_rot": [
+            176.7915350406676,
+            220.269755611218,
+            17.89625185044726
+        ],
+        "jnt_orient": [
+            0.0,
+            -0.0,
+            0.0
+        ],
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "mirror_neck": {
+        "parent": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03",
+        "children": [
+            "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03|mirror_neck|mirror_head"
+        ],
+        "full_path": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03|mirror_neck",
+        "wld_pos": [
+            0.0,
+            152.39029667967458,
+            -1.8991537114579622
+        ],
+        "wld_rot": [
+            18.130388121333937,
+            180.0,
+            0.0
+        ],
+        "jnt_orient": [
+            0.0,
+            -0.0,
+            0.0
+        ],
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "mirror_right_shoulder": {
+        "parent": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03",
+        "children": [
+            "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03|mirror_right_shoulder|mirror_right_arm"
+        ],
+        "full_path": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03|mirror_right_shoulder",
+        "wld_pos": [
+            8.30971,
+            140.11300000000003,
+            -3.522500000000001
+        ],
+        "wld_rot": [
+            -169.30500350888772,
+            1.577975451016978,
+            175.9275838323239
+        ],
+        "jnt_orient": [
+            -180.0,
+            -0.0,
+            0.0
+        ],
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "mirror_left_ball": {
+        "parent": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_left_thigh|mirror_left_knee|mirror_left_ankle",
+        "children": null,
+        "full_path": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_left_thigh|mirror_left_knee|mirror_left_ankle|mirror_left_ball",
+        "wld_pos": [
+            -17.04830689441259,
+            1.5189983573592114,
+            9.419931665791191
+        ],
+        "wld_rot": [
+            -0.3453608974411888,
+            217.85400052477206,
+            89.65463910255866
+        ],
+        "jnt_orient": [
+            0.0,
+            3.1805546814635176e-15,
+            0.0
+        ],
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "mirror_right_ball": {
+        "parent": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_right_thigh|mirror_right_knee|mirror_right_ankle",
+        "children": null,
+        "full_path": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_right_thigh|mirror_right_knee|mirror_right_ankle|mirror_right_ball",
+        "wld_pos": [
+            15.772800000000005,
+            0.42584900000000836,
+            15.148799999999989
+        ],
+        "wld_rot": [
+            4.756416424709667,
+            62.04488487407993,
+            95.3812584649592
+        ],
+        "jnt_orient": [
+            1.987846675914698e-16,
+            3.1805546814635168e-15,
+            0.0
+        ],
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_shoulder_ROT_LOC_SDK_GRP": {
+        "parent": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_shoulder_ROT_LOC_GRP|left_shoulder_ROT_LOC_OFFSET_GRP",
+        "children": [
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_shoulder_ROT_LOC_GRP|left_shoulder_ROT_LOC_OFFSET_GRP|left_shoulder_ROT_LOC_SDK_GRP|left_shoulder_ROT_LOC"
+        ],
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_shoulder_ROT_LOC_GRP|left_shoulder_ROT_LOC_OFFSET_GRP|left_shoulder_ROT_LOC_SDK_GRP",
+        "wld_pos": [
+            5.192028999328623,
+            148.41201782226568,
+            7.1532368659973
+        ],
+        "wld_rot": [
+            164.04224082948392,
+            36.23657428047664,
+            -25.814831606263688
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_arm_POS_LOC_SDK_GRP": {
+        "parent": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP",
+        "children": [
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC"
+        ],
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP",
+        "wld_pos": [
+            14.852917671203594,
+            147.6864242553711,
+            7.019794940948498
+        ],
+        "wld_rot": [
+            159.31408339697026,
+            10.168170836263112,
+            -64.94195022092686
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_arm_POS_LOC_OFFSET_GRP_aimConstraint1": {
+        "parent": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP",
+        "children": null,
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_OFFSET_GRP_aimConstraint1",
+        "wld_pos": [
+            14.852917671203594,
+            147.6864242553711,
+            7.019794940948498
+        ],
+        "wld_rot": [
+            159.31408339697026,
+            10.168170836263112,
+            -64.94195022092686
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {
+            "left_shoulder_POS_LOC_AIMW0": [
+                "double",
+                1.0
+            ]
+        }
+    },
+    "left_thigh_ROT_LOC_SDK_GRP": {
+        "parent": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_thigh_ROT_LOC_GRP|left_thigh_ROT_LOC_OFFSET_GRP",
+        "children": [
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_thigh_ROT_LOC_GRP|left_thigh_ROT_LOC_OFFSET_GRP|left_thigh_ROT_LOC_SDK_GRP|left_thigh_ROT_LOC"
+        ],
+        "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_thigh_ROT_LOC_GRP|left_thigh_ROT_LOC_OFFSET_GRP|left_thigh_ROT_LOC_SDK_GRP",
+        "wld_pos": [
+            8.547119140624996,
+            93.42219543457033,
+            3.718971252441405
+        ],
+        "wld_rot": [
+            -11.927448520981391,
+            4.410225528158154,
+            -85.12435321137824
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_knee_POS_LOC_SDK_GRP": {
+        "parent": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_knee_POS_LOC_GRP|left_knee_POS_LOC_OFFSET_GRP",
+        "children": [
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_knee_POS_LOC_GRP|left_knee_POS_LOC_OFFSET_GRP|left_knee_POS_LOC_SDK_GRP|left_knee_POS_LOC"
+        ],
+        "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_knee_POS_LOC_GRP|left_knee_POS_LOC_OFFSET_GRP|left_knee_POS_LOC_SDK_GRP",
+        "wld_pos": [
+            11.894908905029274,
+            49.12453126907346,
+            -0.9246292114257882
+        ],
+        "wld_rot": [
+            0.45016174958345717,
+            5.96740647499477,
+            -85.67809526585076
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_ankle_POS_LOC_SDK_GRP": {
+        "parent": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ankle_POS_LOC_GRP|left_ankle_POS_LOC_OFFSET_GRP",
+        "children": [
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ankle_POS_LOC_GRP|left_ankle_POS_LOC_OFFSET_GRP|left_ankle_POS_LOC_SDK_GRP|left_ankle_POS_LOC"
+        ],
+        "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ankle_POS_LOC_GRP|left_ankle_POS_LOC_OFFSET_GRP|left_ankle_POS_LOC_SDK_GRP",
+        "wld_pos": [
+            14.774008102416936,
+            11.028540086746164,
+            -4.918125610351585
+        ],
+        "wld_rot": [
+            -4.756416424709824,
+            -62.044884874079855,
+            -84.61874153504077
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_ball_POS_LOC_SDK_GRP": {
+        "parent": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ball_POS_LOC_GRP|left_ball_POS_LOC_OFFSET_GRP",
+        "children": [
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ball_POS_LOC_GRP|left_ball_POS_LOC_OFFSET_GRP|left_ball_POS_LOC_SDK_GRP|left_ball_POS_LOC"
+        ],
+        "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ball_POS_LOC_GRP|left_ball_POS_LOC_OFFSET_GRP|left_ball_POS_LOC_SDK_GRP",
+        "wld_pos": [
+            15.772758483886651,
+            0.425848722457828,
+            15.148818969726547
+        ],
+        "wld_rot": [
+            -4.756416424709824,
+            -62.044884874079855,
+            -84.61874153504077
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "spine_01_ROT_LOC_SDK_GRP": {
+        "parent": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_01_ROT_LOC_GRP|spine_01_ROT_LOC_OFFSET_GRP",
+        "children": [
+            "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_01_ROT_LOC_GRP|spine_01_ROT_LOC_OFFSET_GRP|spine_01_ROT_LOC_SDK_GRP|spine_01_ROT_LOC"
+        ],
+        "full_path": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_01_ROT_LOC_GRP|spine_01_ROT_LOC_OFFSET_GRP|spine_01_ROT_LOC_SDK_GRP",
+        "wld_pos": [
+            0.0,
+            93.50174713134766,
+            3.6574859619140625
+        ],
+        "wld_rot": [
+            -5.390388121333945,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "spine_02_POS_LOC_SDK_GRP": {
+        "parent": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP",
+        "children": [
+            "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC"
+        ],
+        "full_path": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP",
+        "wld_pos": [
+            0.0,
+            113.13111877441409,
+            1.8052864074707018
+        ],
+        "wld_rot": [
+            -5.390388121333945,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "neck_ROT_LOC_SDK_GRP": {
+        "parent": "|adjustment_GRP|neck_POS_LOC_GRP|neck_POS_LOC_OFFSET_GRP|neck_POS_LOC_SDK_GRP|neck_POS_LOC|neck_ROT_LOC_GRP|neck_ROT_LOC_OFFSET_GRP",
+        "children": [
+            "|adjustment_GRP|neck_POS_LOC_GRP|neck_POS_LOC_OFFSET_GRP|neck_POS_LOC_SDK_GRP|neck_POS_LOC|neck_ROT_LOC_GRP|neck_ROT_LOC_OFFSET_GRP|neck_ROT_LOC_SDK_GRP|neck_ROT_LOC"
+        ],
+        "full_path": "|adjustment_GRP|neck_POS_LOC_GRP|neck_POS_LOC_OFFSET_GRP|neck_POS_LOC_SDK_GRP|neck_POS_LOC|neck_ROT_LOC_GRP|neck_ROT_LOC_OFFSET_GRP|neck_ROT_LOC_SDK_GRP",
+        "wld_pos": [
+            0.0,
+            152.3902966796746,
+            -1.8991537114579635
+        ],
+        "wld_rot": [
+            7.349611878666059,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "head_ROT_LOC_SDK_GRP": {
+        "parent": "|adjustment_GRP|head_POS_LOC_GRP|head_POS_LOC_OFFSET_GRP|head_POS_LOC_SDK_GRP|head_POS_LOC|head_ROT_LOC_GRP|head_ROT_LOC_OFFSET_GRP",
+        "children": [
+            "|adjustment_GRP|head_POS_LOC_GRP|head_POS_LOC_OFFSET_GRP|head_POS_LOC_SDK_GRP|head_POS_LOC|head_ROT_LOC_GRP|head_ROT_LOC_OFFSET_GRP|head_ROT_LOC_SDK_GRP|head_ROT_LOC"
+        ],
+        "full_path": "|adjustment_GRP|head_POS_LOC_GRP|head_POS_LOC_OFFSET_GRP|head_POS_LOC_SDK_GRP|head_POS_LOC|head_ROT_LOC_GRP|head_ROT_LOC_OFFSET_GRP|head_ROT_LOC_SDK_GRP",
+        "wld_pos": [
+            0.0,
+            167.79171114095732,
+            0.08736927904359856
+        ],
+        "wld_rot": [
+            7.349611878666061,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "hips_ROT_LOC_SDK_GRP": {
+        "parent": "|adjustment_GRP|hips_POS_LOC_GRP|hips_POS_LOC_OFFSET_GRP|hips_POS_LOC_SDK_GRP|hips_POS_LOC|hips_ROT_LOC_GRP|hips_ROT_LOC_OFFSET_GRP",
+        "children": [
+            "|adjustment_GRP|hips_POS_LOC_GRP|hips_POS_LOC_OFFSET_GRP|hips_POS_LOC_SDK_GRP|hips_POS_LOC|hips_ROT_LOC_GRP|hips_ROT_LOC_OFFSET_GRP|hips_ROT_LOC_SDK_GRP|hips_ROT_LOC"
+        ],
+        "full_path": "|adjustment_GRP|hips_POS_LOC_GRP|hips_POS_LOC_OFFSET_GRP|hips_POS_LOC_SDK_GRP|hips_POS_LOC|hips_ROT_LOC_GRP|hips_ROT_LOC_OFFSET_GRP|hips_ROT_LOC_SDK_GRP",
+        "wld_pos": [
+            0.0,
+            93.50174713134766,
+            3.6574859619140625
+        ],
+        "wld_rot": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "mirror_left_arm": {
+        "parent": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03|mirror_left_shoulder",
+        "children": [
+            "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03|mirror_left_shoulder|mirror_left_arm|mirror_left_elbow"
+        ],
+        "full_path": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03|mirror_left_shoulder|mirror_left_arm",
+        "wld_pos": [
+            -16.08063982749594,
+            143.14477992179408,
+            -1.711330341911033
+        ],
+        "wld_rot": [
+            91.49754962246267,
+            29.506999993126488,
+            -99.20989919194942
+        ],
+        "jnt_orient": [
+            1.2424041724466862e-17,
+            9.939233379573487e-17,
+            -5.072503285317486e-16
+        ],
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "mirror_head": {
+        "parent": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03|mirror_neck",
+        "children": null,
+        "full_path": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03|mirror_neck|mirror_head",
+        "wld_pos": [
+            0.0,
+            167.79171114095732,
+            0.08736927904359826
+        ],
+        "wld_rot": [
+            165.30077624266795,
+            1.765562519220063e-31,
+            180.0
+        ],
+        "jnt_orient": [
+            0.0,
+            -0.0,
+            0.0
+        ],
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "mirror_right_arm": {
+        "parent": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03|mirror_right_shoulder",
+        "children": [
+            "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03|mirror_right_shoulder|mirror_right_arm|mirror_right_elbow"
+        ],
+        "full_path": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03|mirror_right_shoulder|mirror_right_arm",
+        "wld_pos": [
+            17.970600000000015,
+            139.38799999999992,
+            -3.6559400000000006
+        ],
+        "wld_rot": [
+            -175.75278786137204,
+            5.139182235194793,
+            115.98038455673557
+        ],
+        "jnt_orient": [
+            -1.2424041724466862e-17,
+            9.93923337957349e-17,
+            -4.093139371255997e-16
+        ],
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_shoulder_ROT_LOC": {
+        "parent": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_shoulder_ROT_LOC_GRP|left_shoulder_ROT_LOC_OFFSET_GRP|left_shoulder_ROT_LOC_SDK_GRP",
+        "children": [
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_shoulder_ROT_LOC_GRP|left_shoulder_ROT_LOC_OFFSET_GRP|left_shoulder_ROT_LOC_SDK_GRP|left_shoulder_ROT_LOC|left_shoulder_ROT_LOCShape",
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_shoulder_ROT_LOC_GRP|left_shoulder_ROT_LOC_OFFSET_GRP|left_shoulder_ROT_LOC_SDK_GRP|left_shoulder_ROT_LOC|manipYShape",
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_shoulder_ROT_LOC_GRP|left_shoulder_ROT_LOC_OFFSET_GRP|left_shoulder_ROT_LOC_SDK_GRP|left_shoulder_ROT_LOC|manipXShape"
+        ],
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_shoulder_ROT_LOC_GRP|left_shoulder_ROT_LOC_OFFSET_GRP|left_shoulder_ROT_LOC_SDK_GRP|left_shoulder_ROT_LOC",
+        "wld_pos": [
+            5.192028999328623,
+            148.41201782226568,
+            7.1532368659973
+        ],
+        "wld_rot": [
+            164.04224082948392,
+            36.23657428047664,
+            -25.814831606263688
+        ],
+        "jnt_orient": null,
+        "shapes": [
+            "left_shoulder_ROT_LOCShape",
+            "manipYShape",
+            "manipXShape"
+        ],
+        "userDefineAttrs": {}
+    },
+    "left_arm_POS_LOC": {
+        "parent": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP",
+        "children": [
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_arm_POS_LOCShape",
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_arm_ROT_LOC_GRP",
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP",
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC",
+        "wld_pos": [
+            16.080639827495904,
+            143.14477992179403,
+            -1.7113303419110268
+        ],
+        "wld_rot": [
+            159.31408339697026,
+            10.168170836263112,
+            -64.94195022092686
+        ],
+        "jnt_orient": null,
+        "shapes": [
+            "left_arm_POS_LOCShape"
+        ],
+        "userDefineAttrs": {}
+    },
+    "left_thigh_ROT_LOC": {
+        "parent": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_thigh_ROT_LOC_GRP|left_thigh_ROT_LOC_OFFSET_GRP|left_thigh_ROT_LOC_SDK_GRP",
+        "children": [
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_thigh_ROT_LOC_GRP|left_thigh_ROT_LOC_OFFSET_GRP|left_thigh_ROT_LOC_SDK_GRP|left_thigh_ROT_LOC|left_thigh_ROT_LOCShape",
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_thigh_ROT_LOC_GRP|left_thigh_ROT_LOC_OFFSET_GRP|left_thigh_ROT_LOC_SDK_GRP|left_thigh_ROT_LOC|manipYShape",
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_thigh_ROT_LOC_GRP|left_thigh_ROT_LOC_OFFSET_GRP|left_thigh_ROT_LOC_SDK_GRP|left_thigh_ROT_LOC|manipXShape"
+        ],
+        "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_thigh_ROT_LOC_GRP|left_thigh_ROT_LOC_OFFSET_GRP|left_thigh_ROT_LOC_SDK_GRP|left_thigh_ROT_LOC",
+        "wld_pos": [
+            8.547119140624996,
+            93.42219543457033,
+            3.718971252441405
+        ],
+        "wld_rot": [
+            -11.927448520981391,
+            4.410225528158154,
+            -85.12435321137824
+        ],
+        "jnt_orient": null,
+        "shapes": [
+            "left_thigh_ROT_LOCShape",
+            "manipYShape",
+            "manipXShape"
+        ],
+        "userDefineAttrs": {}
+    },
+    "left_knee_POS_LOC": {
+        "parent": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_knee_POS_LOC_GRP|left_knee_POS_LOC_OFFSET_GRP|left_knee_POS_LOC_SDK_GRP",
+        "children": [
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_knee_POS_LOC_GRP|left_knee_POS_LOC_OFFSET_GRP|left_knee_POS_LOC_SDK_GRP|left_knee_POS_LOC|left_knee_POS_LOCShape",
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_knee_POS_LOC_GRP|left_knee_POS_LOC_OFFSET_GRP|left_knee_POS_LOC_SDK_GRP|left_knee_POS_LOC|left_knee_ROT_LOC_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_knee_POS_LOC_GRP|left_knee_POS_LOC_OFFSET_GRP|left_knee_POS_LOC_SDK_GRP|left_knee_POS_LOC",
+        "wld_pos": [
+            12.333770610878261,
+            49.03112033194563,
+            0.2828612031203076
+        ],
+        "wld_rot": [
+            0.45016174958345717,
+            5.96740647499477,
+            -85.67809526585076
+        ],
+        "jnt_orient": null,
+        "shapes": [
+            "left_knee_POS_LOCShape"
+        ],
+        "userDefineAttrs": {}
+    },
+    "left_ankle_POS_LOC": {
+        "parent": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ankle_POS_LOC_GRP|left_ankle_POS_LOC_OFFSET_GRP|left_ankle_POS_LOC_SDK_GRP",
+        "children": [
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ankle_POS_LOC_GRP|left_ankle_POS_LOC_OFFSET_GRP|left_ankle_POS_LOC_SDK_GRP|left_ankle_POS_LOC|left_ankle_POS_LOCShape",
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ankle_POS_LOC_GRP|left_ankle_POS_LOC_OFFSET_GRP|left_ankle_POS_LOC_SDK_GRP|left_ankle_POS_LOC|left_ankle_ROT_LOC_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ankle_POS_LOC_GRP|left_ankle_POS_LOC_OFFSET_GRP|left_ankle_POS_LOC_SDK_GRP|left_ankle_POS_LOC",
+        "wld_pos": [
+            15.155696090470764,
+            8.890850783390992,
+            -5.668898201669829
+        ],
+        "wld_rot": [
+            -4.756416424709824,
+            -62.044884874079855,
+            -84.61874153504077
+        ],
+        "jnt_orient": null,
+        "shapes": [
+            "left_ankle_POS_LOCShape"
+        ],
+        "userDefineAttrs": {}
+    },
+    "left_ball_POS_LOC": {
+        "parent": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ball_POS_LOC_GRP|left_ball_POS_LOC_OFFSET_GRP|left_ball_POS_LOC_SDK_GRP",
+        "children": [
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ball_POS_LOC_GRP|left_ball_POS_LOC_OFFSET_GRP|left_ball_POS_LOC_SDK_GRP|left_ball_POS_LOC|left_ball_POS_LOCShape",
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ball_POS_LOC_GRP|left_ball_POS_LOC_OFFSET_GRP|left_ball_POS_LOC_SDK_GRP|left_ball_POS_LOC|left_ball_ROT_LOC_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ball_POS_LOC_GRP|left_ball_POS_LOC_OFFSET_GRP|left_ball_POS_LOC_SDK_GRP|left_ball_POS_LOC",
+        "wld_pos": [
+            17.048306894412583,
+            1.518998357359212,
+            9.419931665791186
+        ],
+        "wld_rot": [
+            -4.756416424709824,
+            -62.044884874079855,
+            -84.61874153504077
+        ],
+        "jnt_orient": null,
+        "shapes": [
+            "left_ball_POS_LOCShape"
+        ],
+        "userDefineAttrs": {}
+    },
+    "spine_01_ROT_LOC": {
+        "parent": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_01_ROT_LOC_GRP|spine_01_ROT_LOC_OFFSET_GRP|spine_01_ROT_LOC_SDK_GRP",
+        "children": [
+            "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_01_ROT_LOC_GRP|spine_01_ROT_LOC_OFFSET_GRP|spine_01_ROT_LOC_SDK_GRP|spine_01_ROT_LOC|spine_01_ROT_LOCShape",
+            "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_01_ROT_LOC_GRP|spine_01_ROT_LOC_OFFSET_GRP|spine_01_ROT_LOC_SDK_GRP|spine_01_ROT_LOC|manipYShape",
+            "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_01_ROT_LOC_GRP|spine_01_ROT_LOC_OFFSET_GRP|spine_01_ROT_LOC_SDK_GRP|spine_01_ROT_LOC|manipXShape"
+        ],
+        "full_path": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_01_ROT_LOC_GRP|spine_01_ROT_LOC_OFFSET_GRP|spine_01_ROT_LOC_SDK_GRP|spine_01_ROT_LOC",
+        "wld_pos": [
+            0.0,
+            93.50174713134766,
+            3.6574859619140625
+        ],
+        "wld_rot": [
+            -5.390388121333945,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": [
+            "spine_01_ROT_LOCShape",
+            "manipYShape",
+            "manipXShape"
+        ],
+        "userDefineAttrs": {}
+    },
+    "spine_02_POS_LOC": {
+        "parent": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP",
+        "children": [
+            "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_02_POS_LOCShape",
+            "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_02_ROT_LOC_GRP",
+            "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_03_POS_LOC_GRP"
+        ],
+        "full_path": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC",
+        "wld_pos": [
+            0.0,
+            113.13111877441409,
+            1.8052864074707018
+        ],
+        "wld_rot": [
+            -5.390388121333945,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": [
+            "spine_02_POS_LOCShape"
+        ],
+        "userDefineAttrs": {}
+    },
+    "neck_ROT_LOC": {
+        "parent": "|adjustment_GRP|neck_POS_LOC_GRP|neck_POS_LOC_OFFSET_GRP|neck_POS_LOC_SDK_GRP|neck_POS_LOC|neck_ROT_LOC_GRP|neck_ROT_LOC_OFFSET_GRP|neck_ROT_LOC_SDK_GRP",
+        "children": [
+            "|adjustment_GRP|neck_POS_LOC_GRP|neck_POS_LOC_OFFSET_GRP|neck_POS_LOC_SDK_GRP|neck_POS_LOC|neck_ROT_LOC_GRP|neck_ROT_LOC_OFFSET_GRP|neck_ROT_LOC_SDK_GRP|neck_ROT_LOC|neck_ROT_LOCShape",
+            "|adjustment_GRP|neck_POS_LOC_GRP|neck_POS_LOC_OFFSET_GRP|neck_POS_LOC_SDK_GRP|neck_POS_LOC|neck_ROT_LOC_GRP|neck_ROT_LOC_OFFSET_GRP|neck_ROT_LOC_SDK_GRP|neck_ROT_LOC|manipYShape",
+            "|adjustment_GRP|neck_POS_LOC_GRP|neck_POS_LOC_OFFSET_GRP|neck_POS_LOC_SDK_GRP|neck_POS_LOC|neck_ROT_LOC_GRP|neck_ROT_LOC_OFFSET_GRP|neck_ROT_LOC_SDK_GRP|neck_ROT_LOC|manipXShape"
+        ],
+        "full_path": "|adjustment_GRP|neck_POS_LOC_GRP|neck_POS_LOC_OFFSET_GRP|neck_POS_LOC_SDK_GRP|neck_POS_LOC|neck_ROT_LOC_GRP|neck_ROT_LOC_OFFSET_GRP|neck_ROT_LOC_SDK_GRP|neck_ROT_LOC",
+        "wld_pos": [
+            0.0,
+            152.3902966796746,
+            -1.8991537114579635
+        ],
+        "wld_rot": [
+            7.349611878666059,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": [
+            "neck_ROT_LOCShape",
+            "manipYShape",
+            "manipXShape"
+        ],
+        "userDefineAttrs": {}
+    },
+    "head_ROT_LOC": {
+        "parent": "|adjustment_GRP|head_POS_LOC_GRP|head_POS_LOC_OFFSET_GRP|head_POS_LOC_SDK_GRP|head_POS_LOC|head_ROT_LOC_GRP|head_ROT_LOC_OFFSET_GRP|head_ROT_LOC_SDK_GRP",
+        "children": [
+            "|adjustment_GRP|head_POS_LOC_GRP|head_POS_LOC_OFFSET_GRP|head_POS_LOC_SDK_GRP|head_POS_LOC|head_ROT_LOC_GRP|head_ROT_LOC_OFFSET_GRP|head_ROT_LOC_SDK_GRP|head_ROT_LOC|head_ROT_LOCShape",
+            "|adjustment_GRP|head_POS_LOC_GRP|head_POS_LOC_OFFSET_GRP|head_POS_LOC_SDK_GRP|head_POS_LOC|head_ROT_LOC_GRP|head_ROT_LOC_OFFSET_GRP|head_ROT_LOC_SDK_GRP|head_ROT_LOC|manipYShape",
+            "|adjustment_GRP|head_POS_LOC_GRP|head_POS_LOC_OFFSET_GRP|head_POS_LOC_SDK_GRP|head_POS_LOC|head_ROT_LOC_GRP|head_ROT_LOC_OFFSET_GRP|head_ROT_LOC_SDK_GRP|head_ROT_LOC|manipXShape"
+        ],
+        "full_path": "|adjustment_GRP|head_POS_LOC_GRP|head_POS_LOC_OFFSET_GRP|head_POS_LOC_SDK_GRP|head_POS_LOC|head_ROT_LOC_GRP|head_ROT_LOC_OFFSET_GRP|head_ROT_LOC_SDK_GRP|head_ROT_LOC",
+        "wld_pos": [
+            0.0,
+            167.79171114095732,
+            0.08736927904359856
+        ],
+        "wld_rot": [
+            7.792358969585616e-14,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": [
+            "head_ROT_LOCShape",
+            "manipYShape",
+            "manipXShape"
+        ],
+        "userDefineAttrs": {}
+    },
+    "hips_ROT_LOC": {
+        "parent": "|adjustment_GRP|hips_POS_LOC_GRP|hips_POS_LOC_OFFSET_GRP|hips_POS_LOC_SDK_GRP|hips_POS_LOC|hips_ROT_LOC_GRP|hips_ROT_LOC_OFFSET_GRP|hips_ROT_LOC_SDK_GRP",
+        "children": [
+            "|adjustment_GRP|hips_POS_LOC_GRP|hips_POS_LOC_OFFSET_GRP|hips_POS_LOC_SDK_GRP|hips_POS_LOC|hips_ROT_LOC_GRP|hips_ROT_LOC_OFFSET_GRP|hips_ROT_LOC_SDK_GRP|hips_ROT_LOC|hips_ROT_LOCShape",
+            "|adjustment_GRP|hips_POS_LOC_GRP|hips_POS_LOC_OFFSET_GRP|hips_POS_LOC_SDK_GRP|hips_POS_LOC|hips_ROT_LOC_GRP|hips_ROT_LOC_OFFSET_GRP|hips_ROT_LOC_SDK_GRP|hips_ROT_LOC|manipYShape",
+            "|adjustment_GRP|hips_POS_LOC_GRP|hips_POS_LOC_OFFSET_GRP|hips_POS_LOC_SDK_GRP|hips_POS_LOC|hips_ROT_LOC_GRP|hips_ROT_LOC_OFFSET_GRP|hips_ROT_LOC_SDK_GRP|hips_ROT_LOC|manipXShape"
+        ],
+        "full_path": "|adjustment_GRP|hips_POS_LOC_GRP|hips_POS_LOC_OFFSET_GRP|hips_POS_LOC_SDK_GRP|hips_POS_LOC|hips_ROT_LOC_GRP|hips_ROT_LOC_OFFSET_GRP|hips_ROT_LOC_SDK_GRP|hips_ROT_LOC",
+        "wld_pos": [
+            0.0,
+            93.50174713134766,
+            3.6574859619140625
+        ],
+        "wld_rot": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": [
+            "hips_ROT_LOCShape",
+            "manipYShape",
+            "manipXShape"
+        ],
+        "userDefineAttrs": {}
+    },
+    "mirror_left_elbow": {
+        "parent": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03|mirror_left_shoulder|mirror_left_arm",
+        "children": [
+            "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03|mirror_left_shoulder|mirror_left_arm|mirror_left_elbow|mirror_left_hand"
+        ],
+        "full_path": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03|mirror_left_shoulder|mirror_left_arm|mirror_left_elbow",
+        "wld_pos": [
+            -31.79713412997345,
+            116.69912440065175,
+            -2.8352670848102584
+        ],
+        "wld_rot": [
+            -17.024271901055048,
+            17.732775931870997,
+            -125.44287545923775
+        ],
+        "jnt_orient": [
+            3.975693351829396e-16,
+            -7.95138670365879e-16,
+            1.4411888400381557e-15
+        ],
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "mirror_right_elbow": {
+        "parent": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03|mirror_right_shoulder|mirror_right_arm",
+        "children": [
+            "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03|mirror_right_shoulder|mirror_right_arm|mirror_right_elbow|mirror_right_hand"
+        ],
+        "full_path": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03|mirror_right_shoulder|mirror_right_arm|mirror_right_elbow",
+        "wld_pos": [
+            29.498999999999988,
+            115.58699999999999,
+            -6.356640000000004
+        ],
+        "wld_rot": [
+            170.92088208832388,
+            -18.183034377000943,
+            117.11663726961974
+        ],
+        "jnt_orient": [
+            3.975693351829396e-16,
+            -0.0,
+            -1.1430118386509513e-15
+        ],
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_arm_ROT_LOC_GRP": {
+        "parent": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC",
+        "children": [
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_arm_ROT_LOC_GRP|left_arm_ROT_LOC_OFFSET_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_arm_ROT_LOC_GRP",
+        "wld_pos": [
+            16.080639827495922,
+            143.14477992179403,
+            -1.711330341911031
+        ],
+        "wld_rot": [
+            159.31408339697026,
+            10.168170836263112,
+            -64.94195022092686
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_elbow_POS_LOC_GRP": {
+        "parent": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC",
+        "children": [
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP|left_elbow_POS_LOC_OFFSET_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP",
+        "wld_pos": [
+            27.163028151761225,
+            119.44125104058287,
+            -6.404390372239259
+        ],
+        "wld_rot": [
+            153.7034561205512,
+            -1.2400315365829218,
+            -60.02253558328692
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_hand_POS_LOC_GRP": {
+        "parent": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC",
+        "children": [
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP|left_hand_POS_LOC_OFFSET_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP",
+        "wld_pos": [
+            39.187962703425086,
+            98.59452194619584,
+            -5.8834516644746016
+        ],
+        "wld_rot": [
+            153.70345612055118,
+            -1.2400315365829235,
+            -60.0225355832869
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_knee_ROT_LOC_GRP": {
+        "parent": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_knee_POS_LOC_GRP|left_knee_POS_LOC_OFFSET_GRP|left_knee_POS_LOC_SDK_GRP|left_knee_POS_LOC",
+        "children": [
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_knee_POS_LOC_GRP|left_knee_POS_LOC_OFFSET_GRP|left_knee_POS_LOC_SDK_GRP|left_knee_POS_LOC|left_knee_ROT_LOC_GRP|left_knee_ROT_LOC_OFFSET_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_knee_POS_LOC_GRP|left_knee_POS_LOC_OFFSET_GRP|left_knee_POS_LOC_SDK_GRP|left_knee_POS_LOC|left_knee_ROT_LOC_GRP",
+        "wld_pos": [
+            12.333770610878261,
+            49.03112033194562,
+            0.282861203120306
+        ],
+        "wld_rot": [
+            0.45016174958345717,
+            5.96740647499477,
+            -85.67809526585076
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_ankle_ROT_LOC_GRP": {
+        "parent": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ankle_POS_LOC_GRP|left_ankle_POS_LOC_OFFSET_GRP|left_ankle_POS_LOC_SDK_GRP|left_ankle_POS_LOC",
+        "children": [
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ankle_POS_LOC_GRP|left_ankle_POS_LOC_OFFSET_GRP|left_ankle_POS_LOC_SDK_GRP|left_ankle_POS_LOC|left_ankle_ROT_LOC_GRP|left_ankle_ROT_LOC_OFFSET_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ankle_POS_LOC_GRP|left_ankle_POS_LOC_OFFSET_GRP|left_ankle_POS_LOC_SDK_GRP|left_ankle_POS_LOC|left_ankle_ROT_LOC_GRP",
+        "wld_pos": [
+            15.155696090470766,
+            8.890850783390992,
+            -5.668898201669831
+        ],
+        "wld_rot": [
+            -4.756416424709824,
+            -62.044884874079855,
+            -84.61874153504077
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_ball_ROT_LOC_GRP": {
+        "parent": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ball_POS_LOC_GRP|left_ball_POS_LOC_OFFSET_GRP|left_ball_POS_LOC_SDK_GRP|left_ball_POS_LOC",
+        "children": [
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ball_POS_LOC_GRP|left_ball_POS_LOC_OFFSET_GRP|left_ball_POS_LOC_SDK_GRP|left_ball_POS_LOC|left_ball_ROT_LOC_GRP|left_ball_ROT_LOC_OFFSET_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ball_POS_LOC_GRP|left_ball_POS_LOC_OFFSET_GRP|left_ball_POS_LOC_SDK_GRP|left_ball_POS_LOC|left_ball_ROT_LOC_GRP",
+        "wld_pos": [
+            17.048306894412583,
+            1.5189983573592105,
+            9.41993166579119
+        ],
+        "wld_rot": [
+            -4.756416424709824,
+            -62.044884874079855,
+            -84.61874153504077
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "spine_02_ROT_LOC_GRP": {
+        "parent": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC",
+        "children": [
+            "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_02_ROT_LOC_GRP|spine_02_ROT_LOC_OFFSET_GRP"
+        ],
+        "full_path": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_02_ROT_LOC_GRP",
+        "wld_pos": [
+            0.0,
+            113.13111877441409,
+            1.8052864074707018
+        ],
+        "wld_rot": [
+            -5.390388121333945,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "spine_03_POS_LOC_GRP": {
+        "parent": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC",
+        "children": [
+            "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_03_POS_LOC_GRP|spine_03_POS_LOC_OFFSET_GRP"
+        ],
+        "full_path": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_03_POS_LOC_GRP",
+        "wld_pos": [
+            0.0,
+            132.7604904174805,
+            -0.046913146972654474
+        ],
+        "wld_rot": [
+            -5.390388121333945,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "mirror_left_hand": {
+        "parent": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03|mirror_left_shoulder|mirror_left_arm|mirror_left_elbow",
+        "children": null,
+        "full_path": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03|mirror_left_shoulder|mirror_left_arm|mirror_left_elbow|mirror_left_hand",
+        "wld_pos": [
+            -42.76439190434886,
+            94.31035509378462,
+            3.1785620259637755
+        ],
+        "wld_rot": [
+            -48.31998528664392,
+            -15.350149011338013,
+            -109.49887573351313
+        ],
+        "jnt_orient": [
+            -3.975693351829396e-16,
+            -0.0,
+            1.0436195048552163e-15
+        ],
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "mirror_right_hand": {
+        "parent": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03|mirror_right_shoulder|mirror_right_arm|mirror_right_elbow",
+        "children": null,
+        "full_path": "|adjustment_GRP|mirror_joints_GRP|mirror_root|mirror_hips|mirror_spine_01|mirror_spine_02|mirror_spine_03|mirror_right_shoulder|mirror_right_arm|mirror_right_elbow|mirror_right_hand",
+        "wld_pos": [
+            39.92319999999998,
+            94.065,
+            -3.5966999999999962
+        ],
+        "wld_rot": [
+            -176.82141691549455,
+            6.583662937754994,
+            115.84367546747396
+        ],
+        "jnt_orient": [
+            0.0,
+            -7.951386703658792e-16,
+            4.472655020808071e-16
+        ],
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_arm_ROT_LOC_OFFSET_GRP": {
+        "parent": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_arm_ROT_LOC_GRP",
+        "children": [
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_arm_ROT_LOC_GRP|left_arm_ROT_LOC_OFFSET_GRP|left_arm_ROT_LOC_SDK_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_arm_ROT_LOC_GRP|left_arm_ROT_LOC_OFFSET_GRP",
+        "wld_pos": [
+            16.080639827495947,
+            143.144779921794,
+            -1.7113303419110362
+        ],
+        "wld_rot": [
+            196.20364884174822,
+            2.0923695902189947,
+            -59.27723837738355
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_elbow_POS_LOC_OFFSET_GRP": {
+        "parent": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP",
+        "children": [
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP|left_elbow_POS_LOC_OFFSET_GRP|left_elbow_POS_LOC_SDK_GRP",
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP|left_elbow_POS_LOC_OFFSET_GRP|left_elbow_POS_LOC_OFFSET_GRP_pointConstraint1"
+        ],
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP|left_elbow_POS_LOC_OFFSET_GRP",
+        "wld_pos": [
+            28.951242752223116,
+            117.29916761437724,
+            -1.8733835270200583
+        ],
+        "wld_rot": [
+            153.70345612055118,
+            -1.2400315365829233,
+            -60.0225355832869
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_hand_POS_LOC_OFFSET_GRP": {
+        "parent": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP",
+        "children": [
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP|left_hand_POS_LOC_OFFSET_GRP|left_hand_POS_LOC_SDK_GRP",
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP|left_hand_POS_LOC_OFFSET_GRP|left_hand_POS_LOC_OFFSET_GRP_pointConstraint1"
+        ],
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP|left_hand_POS_LOC_OFFSET_GRP",
+        "wld_pos": [
+            42.03640272296627,
+            94.41788056081663,
+            1.1215408368205209
+        ],
+        "wld_rot": [
+            153.70345612055118,
+            -1.2400315365829249,
+            -60.0225355832869
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_knee_ROT_LOC_OFFSET_GRP": {
+        "parent": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_knee_POS_LOC_GRP|left_knee_POS_LOC_OFFSET_GRP|left_knee_POS_LOC_SDK_GRP|left_knee_POS_LOC|left_knee_ROT_LOC_GRP",
+        "children": [
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_knee_POS_LOC_GRP|left_knee_POS_LOC_OFFSET_GRP|left_knee_POS_LOC_SDK_GRP|left_knee_POS_LOC|left_knee_ROT_LOC_GRP|left_knee_ROT_LOC_OFFSET_GRP|left_knee_ROT_LOC_SDK_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_knee_POS_LOC_GRP|left_knee_POS_LOC_OFFSET_GRP|left_knee_POS_LOC_SDK_GRP|left_knee_POS_LOC|left_knee_ROT_LOC_GRP|left_knee_ROT_LOC_OFFSET_GRP",
+        "wld_pos": [
+            12.33377061087825,
+            49.031120331945665,
+            0.28286120312030416
+        ],
+        "wld_rot": [
+            -12.022910137276483,
+            8.413559021245128,
+            -85.97863084060042
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_ankle_ROT_LOC_OFFSET_GRP": {
+        "parent": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ankle_POS_LOC_GRP|left_ankle_POS_LOC_OFFSET_GRP|left_ankle_POS_LOC_SDK_GRP|left_ankle_POS_LOC|left_ankle_ROT_LOC_GRP",
+        "children": [
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ankle_POS_LOC_GRP|left_ankle_POS_LOC_OFFSET_GRP|left_ankle_POS_LOC_SDK_GRP|left_ankle_POS_LOC|left_ankle_ROT_LOC_GRP|left_ankle_ROT_LOC_OFFSET_GRP|left_ankle_ROT_LOC_SDK_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ankle_POS_LOC_GRP|left_ankle_POS_LOC_OFFSET_GRP|left_ankle_POS_LOC_SDK_GRP|left_ankle_POS_LOC|left_ankle_ROT_LOC_GRP|left_ankle_ROT_LOC_OFFSET_GRP",
+        "wld_pos": [
+            15.155696090470771,
+            8.890850783390995,
+            -5.668898201669827
+        ],
+        "wld_rot": [
+            -12.598403821417874,
+            -63.23326107765163,
+            -75.60116077794795
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_ball_ROT_LOC_OFFSET_GRP": {
+        "parent": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ball_POS_LOC_GRP|left_ball_POS_LOC_OFFSET_GRP|left_ball_POS_LOC_SDK_GRP|left_ball_POS_LOC|left_ball_ROT_LOC_GRP",
+        "children": [
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ball_POS_LOC_GRP|left_ball_POS_LOC_OFFSET_GRP|left_ball_POS_LOC_SDK_GRP|left_ball_POS_LOC|left_ball_ROT_LOC_GRP|left_ball_ROT_LOC_OFFSET_GRP|left_ball_ROT_LOC_SDK_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ball_POS_LOC_GRP|left_ball_POS_LOC_OFFSET_GRP|left_ball_POS_LOC_SDK_GRP|left_ball_POS_LOC|left_ball_ROT_LOC_GRP|left_ball_ROT_LOC_OFFSET_GRP",
+        "wld_pos": [
+            17.04830689441259,
+            1.518998357359208,
+            9.419931665791202
+        ],
+        "wld_rot": [
+            -12.70758789962622,
+            -63.23326107765167,
+            -75.60116077794797
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "spine_02_ROT_LOC_OFFSET_GRP": {
+        "parent": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_02_ROT_LOC_GRP",
+        "children": [
+            "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_02_ROT_LOC_GRP|spine_02_ROT_LOC_OFFSET_GRP|spine_02_ROT_LOC_SDK_GRP"
+        ],
+        "full_path": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_02_ROT_LOC_GRP|spine_02_ROT_LOC_OFFSET_GRP",
+        "wld_pos": [
+            0.0,
+            113.13111877441409,
+            1.8052864074707018
+        ],
+        "wld_rot": [
+            -5.390388121333945,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "spine_03_POS_LOC_OFFSET_GRP": {
+        "parent": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_03_POS_LOC_GRP",
+        "children": [
+            "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_03_POS_LOC_GRP|spine_03_POS_LOC_OFFSET_GRP|spine_03_POS_LOC_SDK_GRP"
+        ],
+        "full_path": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_03_POS_LOC_GRP|spine_03_POS_LOC_OFFSET_GRP",
+        "wld_pos": [
+            0.0,
+            132.7604904174805,
+            -0.046913146972654474
+        ],
+        "wld_rot": [
+            -5.390388121333945,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_arm_ROT_LOC_SDK_GRP": {
+        "parent": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_arm_ROT_LOC_GRP|left_arm_ROT_LOC_OFFSET_GRP",
+        "children": [
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_arm_ROT_LOC_GRP|left_arm_ROT_LOC_OFFSET_GRP|left_arm_ROT_LOC_SDK_GRP|left_arm_ROT_LOC"
+        ],
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_arm_ROT_LOC_GRP|left_arm_ROT_LOC_OFFSET_GRP|left_arm_ROT_LOC_SDK_GRP",
+        "wld_pos": [
+            16.08063982749595,
+            143.14477992179408,
+            -1.7113303419110353
+        ],
+        "wld_rot": [
+            -163.79635115825178,
+            2.0923695902189974,
+            -59.27723837738353
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_elbow_POS_LOC_SDK_GRP": {
+        "parent": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP|left_elbow_POS_LOC_OFFSET_GRP",
+        "children": [
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP|left_elbow_POS_LOC_OFFSET_GRP|left_elbow_POS_LOC_SDK_GRP|left_elbow_POS_LOC"
+        ],
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP|left_elbow_POS_LOC_OFFSET_GRP|left_elbow_POS_LOC_SDK_GRP",
+        "wld_pos": [
+            30.40722111498845,
+            117.08411668031307,
+            2.2406588512664776
+        ],
+        "wld_rot": [
+            153.70345612055118,
+            -1.2400315365829233,
+            -60.0225355832869
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_elbow_POS_LOC_OFFSET_GRP_pointConstraint1": {
+        "parent": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP|left_elbow_POS_LOC_OFFSET_GRP",
+        "children": null,
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP|left_elbow_POS_LOC_OFFSET_GRP|left_elbow_POS_LOC_OFFSET_GRP_pointConstraint1",
+        "wld_pos": [
+            30.40722111498845,
+            117.08411668031307,
+            2.2406588512664776
+        ],
+        "wld_rot": [
+            153.70345612055118,
+            -1.2400315365829233,
+            -60.0225355832869
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {
+            "left_arm_POS_LOCW0": [
+                "double",
+                1.0
+            ],
+            "left_hand_POS_LOCW1": [
+                "double",
+                1.0
+            ]
+        }
+    },
+    "left_hand_POS_LOC_SDK_GRP": {
+        "parent": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP|left_hand_POS_LOC_OFFSET_GRP",
+        "children": [
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP|left_hand_POS_LOC_OFFSET_GRP|left_hand_POS_LOC_SDK_GRP|left_hand_POS_LOC"
+        ],
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP|left_hand_POS_LOC_OFFSET_GRP|left_hand_POS_LOC_SDK_GRP",
+        "wld_pos": [
+            42.03640272296632,
+            94.41788056081661,
+            1.1215408368205284
+        ],
+        "wld_rot": [
+            153.70345612055118,
+            -1.2400315365829249,
+            -60.0225355832869
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_hand_POS_LOC_OFFSET_GRP_pointConstraint1": {
+        "parent": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP|left_hand_POS_LOC_OFFSET_GRP",
+        "children": null,
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP|left_hand_POS_LOC_OFFSET_GRP|left_hand_POS_LOC_OFFSET_GRP_pointConstraint1",
+        "wld_pos": [
+            42.03640272296632,
+            94.41788056081661,
+            1.1215408368205284
+        ],
+        "wld_rot": [
+            153.70345612055118,
+            -1.2400315365829249,
+            -60.0225355832869
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {
+            "left_shoulder_POS_LOC_AIMW0": [
+                "double",
+                1.0
+            ]
+        }
+    },
+    "left_knee_ROT_LOC_SDK_GRP": {
+        "parent": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_knee_POS_LOC_GRP|left_knee_POS_LOC_OFFSET_GRP|left_knee_POS_LOC_SDK_GRP|left_knee_POS_LOC|left_knee_ROT_LOC_GRP|left_knee_ROT_LOC_OFFSET_GRP",
+        "children": [
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_knee_POS_LOC_GRP|left_knee_POS_LOC_OFFSET_GRP|left_knee_POS_LOC_SDK_GRP|left_knee_POS_LOC|left_knee_ROT_LOC_GRP|left_knee_ROT_LOC_OFFSET_GRP|left_knee_ROT_LOC_SDK_GRP|left_knee_ROT_LOC"
+        ],
+        "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_knee_POS_LOC_GRP|left_knee_POS_LOC_OFFSET_GRP|left_knee_POS_LOC_SDK_GRP|left_knee_POS_LOC|left_knee_ROT_LOC_GRP|left_knee_ROT_LOC_OFFSET_GRP|left_knee_ROT_LOC_SDK_GRP",
+        "wld_pos": [
+            12.333770610878242,
+            49.03112033194563,
+            0.2828612031203105
+        ],
+        "wld_rot": [
+            -12.022910137276483,
+            8.413559021245128,
+            -85.97863084060042
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_ankle_ROT_LOC_SDK_GRP": {
+        "parent": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ankle_POS_LOC_GRP|left_ankle_POS_LOC_OFFSET_GRP|left_ankle_POS_LOC_SDK_GRP|left_ankle_POS_LOC|left_ankle_ROT_LOC_GRP|left_ankle_ROT_LOC_OFFSET_GRP",
+        "children": [
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ankle_POS_LOC_GRP|left_ankle_POS_LOC_OFFSET_GRP|left_ankle_POS_LOC_SDK_GRP|left_ankle_POS_LOC|left_ankle_ROT_LOC_GRP|left_ankle_ROT_LOC_OFFSET_GRP|left_ankle_ROT_LOC_SDK_GRP|left_ankle_ROT_LOC"
+        ],
+        "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ankle_POS_LOC_GRP|left_ankle_POS_LOC_OFFSET_GRP|left_ankle_POS_LOC_SDK_GRP|left_ankle_POS_LOC|left_ankle_ROT_LOC_GRP|left_ankle_ROT_LOC_OFFSET_GRP|left_ankle_ROT_LOC_SDK_GRP",
+        "wld_pos": [
+            15.155696090470773,
+            8.890850783390992,
+            -5.668898201669819
+        ],
+        "wld_rot": [
+            -12.598403821417898,
+            -63.23326107765163,
+            -75.60116077794798
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_ball_ROT_LOC_SDK_GRP": {
+        "parent": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ball_POS_LOC_GRP|left_ball_POS_LOC_OFFSET_GRP|left_ball_POS_LOC_SDK_GRP|left_ball_POS_LOC|left_ball_ROT_LOC_GRP|left_ball_ROT_LOC_OFFSET_GRP",
+        "children": [
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ball_POS_LOC_GRP|left_ball_POS_LOC_OFFSET_GRP|left_ball_POS_LOC_SDK_GRP|left_ball_POS_LOC|left_ball_ROT_LOC_GRP|left_ball_ROT_LOC_OFFSET_GRP|left_ball_ROT_LOC_SDK_GRP|left_ball_ROT_LOC"
+        ],
+        "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ball_POS_LOC_GRP|left_ball_POS_LOC_OFFSET_GRP|left_ball_POS_LOC_SDK_GRP|left_ball_POS_LOC|left_ball_ROT_LOC_GRP|left_ball_ROT_LOC_OFFSET_GRP|left_ball_ROT_LOC_SDK_GRP",
+        "wld_pos": [
+            17.048306894412587,
+            1.5189983573592094,
+            9.419931665791191
+        ],
+        "wld_rot": [
+            -12.70758789962622,
+            -63.23326107765167,
+            -75.60116077794798
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "spine_02_ROT_LOC_SDK_GRP": {
+        "parent": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_02_ROT_LOC_GRP|spine_02_ROT_LOC_OFFSET_GRP",
+        "children": [
+            "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_02_ROT_LOC_GRP|spine_02_ROT_LOC_OFFSET_GRP|spine_02_ROT_LOC_SDK_GRP|spine_02_ROT_LOC"
+        ],
+        "full_path": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_02_ROT_LOC_GRP|spine_02_ROT_LOC_OFFSET_GRP|spine_02_ROT_LOC_SDK_GRP",
+        "wld_pos": [
+            0.0,
+            113.13111877441409,
+            1.8052864074707018
+        ],
+        "wld_rot": [
+            -5.390388121333945,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "spine_03_POS_LOC_SDK_GRP": {
+        "parent": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_03_POS_LOC_GRP|spine_03_POS_LOC_OFFSET_GRP",
+        "children": [
+            "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_03_POS_LOC_GRP|spine_03_POS_LOC_OFFSET_GRP|spine_03_POS_LOC_SDK_GRP|spine_03_POS_LOC"
+        ],
+        "full_path": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_03_POS_LOC_GRP|spine_03_POS_LOC_OFFSET_GRP|spine_03_POS_LOC_SDK_GRP",
+        "wld_pos": [
+            0.0,
+            132.7604904174805,
+            -0.046913146972654474
+        ],
+        "wld_rot": [
+            -5.390388121333945,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_arm_ROT_LOC": {
+        "parent": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_arm_ROT_LOC_GRP|left_arm_ROT_LOC_OFFSET_GRP|left_arm_ROT_LOC_SDK_GRP",
+        "children": [
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_arm_ROT_LOC_GRP|left_arm_ROT_LOC_OFFSET_GRP|left_arm_ROT_LOC_SDK_GRP|left_arm_ROT_LOC|left_arm_ROT_LOCShape",
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_arm_ROT_LOC_GRP|left_arm_ROT_LOC_OFFSET_GRP|left_arm_ROT_LOC_SDK_GRP|left_arm_ROT_LOC|manipYShape",
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_arm_ROT_LOC_GRP|left_arm_ROT_LOC_OFFSET_GRP|left_arm_ROT_LOC_SDK_GRP|left_arm_ROT_LOC|manipXShape"
+        ],
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_arm_ROT_LOC_GRP|left_arm_ROT_LOC_OFFSET_GRP|left_arm_ROT_LOC_SDK_GRP|left_arm_ROT_LOC",
+        "wld_pos": [
+            16.08063982749595,
+            143.14477992179408,
+            -1.7113303419110353
+        ],
+        "wld_rot": [
+            -163.79635115825178,
+            2.0923695902189974,
+            -59.27723837738353
+        ],
+        "jnt_orient": null,
+        "shapes": [
+            "left_arm_ROT_LOCShape",
+            "manipYShape",
+            "manipXShape"
+        ],
+        "userDefineAttrs": {}
+    },
+    "left_elbow_POS_LOC": {
+        "parent": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP|left_elbow_POS_LOC_OFFSET_GRP|left_elbow_POS_LOC_SDK_GRP",
+        "children": [
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP|left_elbow_POS_LOC_OFFSET_GRP|left_elbow_POS_LOC_SDK_GRP|left_elbow_POS_LOC|left_elbow_POS_LOCShape",
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP|left_elbow_POS_LOC_OFFSET_GRP|left_elbow_POS_LOC_SDK_GRP|left_elbow_POS_LOC|left_elbow_ROT_LOC_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP|left_elbow_POS_LOC_OFFSET_GRP|left_elbow_POS_LOC_SDK_GRP|left_elbow_POS_LOC",
+        "wld_pos": [
+            31.79713412997341,
+            116.69912440065168,
+            -2.8352670848102832
+        ],
+        "wld_rot": [
+            153.70345612055118,
+            -1.2400315365829233,
+            -60.0225355832869
+        ],
+        "jnt_orient": null,
+        "shapes": [
+            "left_elbow_POS_LOCShape"
+        ],
+        "userDefineAttrs": {}
+    },
+    "left_hand_POS_LOC": {
+        "parent": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP|left_hand_POS_LOC_OFFSET_GRP|left_hand_POS_LOC_SDK_GRP",
+        "children": [
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP|left_hand_POS_LOC_OFFSET_GRP|left_hand_POS_LOC_SDK_GRP|left_hand_POS_LOC|left_hand_POS_LOCShape",
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP|left_hand_POS_LOC_OFFSET_GRP|left_hand_POS_LOC_SDK_GRP|left_hand_POS_LOC|left_hand_ROT_LOC_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP|left_hand_POS_LOC_OFFSET_GRP|left_hand_POS_LOC_SDK_GRP|left_hand_POS_LOC",
+        "wld_pos": [
+            42.76439190434894,
+            94.31035509378458,
+            3.1785620259637724
+        ],
+        "wld_rot": [
+            153.70345612055118,
+            -1.2400315365829249,
+            -60.0225355832869
+        ],
+        "jnt_orient": null,
+        "shapes": [
+            "left_hand_POS_LOCShape"
+        ],
+        "userDefineAttrs": {}
+    },
+    "left_knee_ROT_LOC": {
+        "parent": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_knee_POS_LOC_GRP|left_knee_POS_LOC_OFFSET_GRP|left_knee_POS_LOC_SDK_GRP|left_knee_POS_LOC|left_knee_ROT_LOC_GRP|left_knee_ROT_LOC_OFFSET_GRP|left_knee_ROT_LOC_SDK_GRP",
+        "children": [
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_knee_POS_LOC_GRP|left_knee_POS_LOC_OFFSET_GRP|left_knee_POS_LOC_SDK_GRP|left_knee_POS_LOC|left_knee_ROT_LOC_GRP|left_knee_ROT_LOC_OFFSET_GRP|left_knee_ROT_LOC_SDK_GRP|left_knee_ROT_LOC|left_knee_ROT_LOCShape",
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_knee_POS_LOC_GRP|left_knee_POS_LOC_OFFSET_GRP|left_knee_POS_LOC_SDK_GRP|left_knee_POS_LOC|left_knee_ROT_LOC_GRP|left_knee_ROT_LOC_OFFSET_GRP|left_knee_ROT_LOC_SDK_GRP|left_knee_ROT_LOC|manipYShape",
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_knee_POS_LOC_GRP|left_knee_POS_LOC_OFFSET_GRP|left_knee_POS_LOC_SDK_GRP|left_knee_POS_LOC|left_knee_ROT_LOC_GRP|left_knee_ROT_LOC_OFFSET_GRP|left_knee_ROT_LOC_SDK_GRP|left_knee_ROT_LOC|manipXShape"
+        ],
+        "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_knee_POS_LOC_GRP|left_knee_POS_LOC_OFFSET_GRP|left_knee_POS_LOC_SDK_GRP|left_knee_POS_LOC|left_knee_ROT_LOC_GRP|left_knee_ROT_LOC_OFFSET_GRP|left_knee_ROT_LOC_SDK_GRP|left_knee_ROT_LOC",
+        "wld_pos": [
+            12.333770610878242,
+            49.03112033194563,
+            0.2828612031203105
+        ],
+        "wld_rot": [
+            -12.022910137276483,
+            8.413559021245128,
+            -85.97863084060042
+        ],
+        "jnt_orient": null,
+        "shapes": [
+            "left_knee_ROT_LOCShape",
+            "manipYShape",
+            "manipXShape"
+        ],
+        "userDefineAttrs": {}
+    },
+    "left_ankle_ROT_LOC": {
+        "parent": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ankle_POS_LOC_GRP|left_ankle_POS_LOC_OFFSET_GRP|left_ankle_POS_LOC_SDK_GRP|left_ankle_POS_LOC|left_ankle_ROT_LOC_GRP|left_ankle_ROT_LOC_OFFSET_GRP|left_ankle_ROT_LOC_SDK_GRP",
+        "children": [
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ankle_POS_LOC_GRP|left_ankle_POS_LOC_OFFSET_GRP|left_ankle_POS_LOC_SDK_GRP|left_ankle_POS_LOC|left_ankle_ROT_LOC_GRP|left_ankle_ROT_LOC_OFFSET_GRP|left_ankle_ROT_LOC_SDK_GRP|left_ankle_ROT_LOC|left_ankle_ROT_LOCShape",
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ankle_POS_LOC_GRP|left_ankle_POS_LOC_OFFSET_GRP|left_ankle_POS_LOC_SDK_GRP|left_ankle_POS_LOC|left_ankle_ROT_LOC_GRP|left_ankle_ROT_LOC_OFFSET_GRP|left_ankle_ROT_LOC_SDK_GRP|left_ankle_ROT_LOC|manipYShape",
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ankle_POS_LOC_GRP|left_ankle_POS_LOC_OFFSET_GRP|left_ankle_POS_LOC_SDK_GRP|left_ankle_POS_LOC|left_ankle_ROT_LOC_GRP|left_ankle_ROT_LOC_OFFSET_GRP|left_ankle_ROT_LOC_SDK_GRP|left_ankle_ROT_LOC|manipXShape"
+        ],
+        "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ankle_POS_LOC_GRP|left_ankle_POS_LOC_OFFSET_GRP|left_ankle_POS_LOC_SDK_GRP|left_ankle_POS_LOC|left_ankle_ROT_LOC_GRP|left_ankle_ROT_LOC_OFFSET_GRP|left_ankle_ROT_LOC_SDK_GRP|left_ankle_ROT_LOC",
+        "wld_pos": [
+            15.155696090470773,
+            8.890850783390992,
+            -5.668898201669819
+        ],
+        "wld_rot": [
+            -12.598403821417898,
+            -63.23326107765163,
+            -75.60116077794798
+        ],
+        "jnt_orient": null,
+        "shapes": [
+            "left_ankle_ROT_LOCShape",
+            "manipYShape",
+            "manipXShape"
+        ],
+        "userDefineAttrs": {}
+    },
+    "left_ball_ROT_LOC": {
+        "parent": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ball_POS_LOC_GRP|left_ball_POS_LOC_OFFSET_GRP|left_ball_POS_LOC_SDK_GRP|left_ball_POS_LOC|left_ball_ROT_LOC_GRP|left_ball_ROT_LOC_OFFSET_GRP|left_ball_ROT_LOC_SDK_GRP",
+        "children": [
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ball_POS_LOC_GRP|left_ball_POS_LOC_OFFSET_GRP|left_ball_POS_LOC_SDK_GRP|left_ball_POS_LOC|left_ball_ROT_LOC_GRP|left_ball_ROT_LOC_OFFSET_GRP|left_ball_ROT_LOC_SDK_GRP|left_ball_ROT_LOC|left_ball_ROT_LOCShape",
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ball_POS_LOC_GRP|left_ball_POS_LOC_OFFSET_GRP|left_ball_POS_LOC_SDK_GRP|left_ball_POS_LOC|left_ball_ROT_LOC_GRP|left_ball_ROT_LOC_OFFSET_GRP|left_ball_ROT_LOC_SDK_GRP|left_ball_ROT_LOC|manipYShape",
+            "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ball_POS_LOC_GRP|left_ball_POS_LOC_OFFSET_GRP|left_ball_POS_LOC_SDK_GRP|left_ball_POS_LOC|left_ball_ROT_LOC_GRP|left_ball_ROT_LOC_OFFSET_GRP|left_ball_ROT_LOC_SDK_GRP|left_ball_ROT_LOC|manipXShape"
+        ],
+        "full_path": "|adjustment_GRP|left_thigh_POS_LOC_GRP|left_thigh_POS_LOC_OFFSET_GRP|left_thigh_POS_LOC_SDK_GRP|left_thigh_POS_LOC|left_ball_POS_LOC_GRP|left_ball_POS_LOC_OFFSET_GRP|left_ball_POS_LOC_SDK_GRP|left_ball_POS_LOC|left_ball_ROT_LOC_GRP|left_ball_ROT_LOC_OFFSET_GRP|left_ball_ROT_LOC_SDK_GRP|left_ball_ROT_LOC",
+        "wld_pos": [
+            17.048306894412587,
+            1.5189983573592094,
+            9.419931665791191
+        ],
+        "wld_rot": [
+            -89.99999999999982,
+            -90.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": [
+            "left_ball_ROT_LOCShape",
+            "manipYShape",
+            "manipXShape"
+        ],
+        "userDefineAttrs": {}
+    },
+    "spine_02_ROT_LOC": {
+        "parent": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_02_ROT_LOC_GRP|spine_02_ROT_LOC_OFFSET_GRP|spine_02_ROT_LOC_SDK_GRP",
+        "children": [
+            "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_02_ROT_LOC_GRP|spine_02_ROT_LOC_OFFSET_GRP|spine_02_ROT_LOC_SDK_GRP|spine_02_ROT_LOC|spine_02_ROT_LOCShape",
+            "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_02_ROT_LOC_GRP|spine_02_ROT_LOC_OFFSET_GRP|spine_02_ROT_LOC_SDK_GRP|spine_02_ROT_LOC|manipYShape",
+            "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_02_ROT_LOC_GRP|spine_02_ROT_LOC_OFFSET_GRP|spine_02_ROT_LOC_SDK_GRP|spine_02_ROT_LOC|manipXShape"
+        ],
+        "full_path": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_02_ROT_LOC_GRP|spine_02_ROT_LOC_OFFSET_GRP|spine_02_ROT_LOC_SDK_GRP|spine_02_ROT_LOC",
+        "wld_pos": [
+            0.0,
+            113.13111877441409,
+            1.8052864074707018
+        ],
+        "wld_rot": [
+            -5.390388121333945,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": [
+            "spine_02_ROT_LOCShape",
+            "manipYShape",
+            "manipXShape"
+        ],
+        "userDefineAttrs": {}
+    },
+    "spine_03_POS_LOC": {
+        "parent": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_03_POS_LOC_GRP|spine_03_POS_LOC_OFFSET_GRP|spine_03_POS_LOC_SDK_GRP",
+        "children": [
+            "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_03_POS_LOC_GRP|spine_03_POS_LOC_OFFSET_GRP|spine_03_POS_LOC_SDK_GRP|spine_03_POS_LOC|spine_03_POS_LOCShape",
+            "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_03_POS_LOC_GRP|spine_03_POS_LOC_OFFSET_GRP|spine_03_POS_LOC_SDK_GRP|spine_03_POS_LOC|spine_03_ROT_LOC_GRP"
+        ],
+        "full_path": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_03_POS_LOC_GRP|spine_03_POS_LOC_OFFSET_GRP|spine_03_POS_LOC_SDK_GRP|spine_03_POS_LOC",
+        "wld_pos": [
+            0.0,
+            132.7604904174805,
+            -0.046913146972654474
+        ],
+        "wld_rot": [
+            -5.390388121333945,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": [
+            "spine_03_POS_LOCShape"
+        ],
+        "userDefineAttrs": {}
+    },
+    "left_elbow_ROT_LOC_GRP": {
+        "parent": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP|left_elbow_POS_LOC_OFFSET_GRP|left_elbow_POS_LOC_SDK_GRP|left_elbow_POS_LOC",
+        "children": [
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP|left_elbow_POS_LOC_OFFSET_GRP|left_elbow_POS_LOC_SDK_GRP|left_elbow_POS_LOC|left_elbow_ROT_LOC_GRP|left_elbow_ROT_LOC_OFFSET_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP|left_elbow_POS_LOC_OFFSET_GRP|left_elbow_POS_LOC_SDK_GRP|left_elbow_POS_LOC|left_elbow_ROT_LOC_GRP",
+        "wld_pos": [
+            31.79713412997342,
+            116.69912440065167,
+            -2.8352670848102797
+        ],
+        "wld_rot": [
+            153.70345612055118,
+            -1.2400315365829233,
+            -60.0225355832869
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_hand_ROT_LOC_GRP": {
+        "parent": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP|left_hand_POS_LOC_OFFSET_GRP|left_hand_POS_LOC_SDK_GRP|left_hand_POS_LOC",
+        "children": [
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP|left_hand_POS_LOC_OFFSET_GRP|left_hand_POS_LOC_SDK_GRP|left_hand_POS_LOC|left_hand_ROT_LOC_GRP|left_hand_ROT_LOC_OFFSET_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP|left_hand_POS_LOC_OFFSET_GRP|left_hand_POS_LOC_SDK_GRP|left_hand_POS_LOC|left_hand_ROT_LOC_GRP",
+        "wld_pos": [
+            42.76439190434893,
+            94.31035509378458,
+            3.1785620259637803
+        ],
+        "wld_rot": [
+            153.70345612055118,
+            -1.2400315365829249,
+            -60.0225355832869
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "spine_03_ROT_LOC_GRP": {
+        "parent": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_03_POS_LOC_GRP|spine_03_POS_LOC_OFFSET_GRP|spine_03_POS_LOC_SDK_GRP|spine_03_POS_LOC",
+        "children": [
+            "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_03_POS_LOC_GRP|spine_03_POS_LOC_OFFSET_GRP|spine_03_POS_LOC_SDK_GRP|spine_03_POS_LOC|spine_03_ROT_LOC_GRP|spine_03_ROT_LOC_OFFSET_GRP"
+        ],
+        "full_path": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_03_POS_LOC_GRP|spine_03_POS_LOC_OFFSET_GRP|spine_03_POS_LOC_SDK_GRP|spine_03_POS_LOC|spine_03_ROT_LOC_GRP",
+        "wld_pos": [
+            0.0,
+            132.7604904174805,
+            -0.046913146972654474
+        ],
+        "wld_rot": [
+            -5.390388121333945,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_elbow_ROT_LOC_OFFSET_GRP": {
+        "parent": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP|left_elbow_POS_LOC_OFFSET_GRP|left_elbow_POS_LOC_SDK_GRP|left_elbow_POS_LOC|left_elbow_ROT_LOC_GRP",
+        "children": [
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP|left_elbow_POS_LOC_OFFSET_GRP|left_elbow_POS_LOC_SDK_GRP|left_elbow_POS_LOC|left_elbow_ROT_LOC_GRP|left_elbow_ROT_LOC_OFFSET_GRP|left_elbow_ROT_LOC_SDK_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP|left_elbow_POS_LOC_OFFSET_GRP|left_elbow_POS_LOC_SDK_GRP|left_elbow_POS_LOC|left_elbow_ROT_LOC_GRP|left_elbow_ROT_LOC_OFFSET_GRP",
+        "wld_pos": [
+            31.79713412997342,
+            116.69912440065167,
+            -2.8352670848102797
+        ],
+        "wld_rot": [
+            196.6703520628772,
+            -13.561929694331067,
+            -63.90183091398682
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_hand_ROT_LOC_OFFSET_GRP": {
+        "parent": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP|left_hand_POS_LOC_OFFSET_GRP|left_hand_POS_LOC_SDK_GRP|left_hand_POS_LOC|left_hand_ROT_LOC_GRP",
+        "children": [
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP|left_hand_POS_LOC_OFFSET_GRP|left_hand_POS_LOC_SDK_GRP|left_hand_POS_LOC|left_hand_ROT_LOC_GRP|left_hand_ROT_LOC_OFFSET_GRP|left_hand_ROT_LOC_SDK_GRP"
+        ],
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP|left_hand_POS_LOC_OFFSET_GRP|left_hand_POS_LOC_SDK_GRP|left_hand_POS_LOC|left_hand_ROT_LOC_GRP|left_hand_ROT_LOC_OFFSET_GRP",
+        "wld_pos": [
+            42.76439190434889,
+            94.3103550937846,
+            3.1785620259637604
+        ],
+        "wld_rot": [
+            153.70345612055118,
+            -1.2400315365829249,
+            -60.0225355832869
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "spine_03_ROT_LOC_OFFSET_GRP": {
+        "parent": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_03_POS_LOC_GRP|spine_03_POS_LOC_OFFSET_GRP|spine_03_POS_LOC_SDK_GRP|spine_03_POS_LOC|spine_03_ROT_LOC_GRP",
+        "children": [
+            "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_03_POS_LOC_GRP|spine_03_POS_LOC_OFFSET_GRP|spine_03_POS_LOC_SDK_GRP|spine_03_POS_LOC|spine_03_ROT_LOC_GRP|spine_03_ROT_LOC_OFFSET_GRP|spine_03_ROT_LOC_SDK_GRP"
+        ],
+        "full_path": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_03_POS_LOC_GRP|spine_03_POS_LOC_OFFSET_GRP|spine_03_POS_LOC_SDK_GRP|spine_03_POS_LOC|spine_03_ROT_LOC_GRP|spine_03_ROT_LOC_OFFSET_GRP",
+        "wld_pos": [
+            0.0,
+            132.7604904174805,
+            -0.046913146972654474
+        ],
+        "wld_rot": [
+            -5.390388121333945,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_elbow_ROT_LOC_SDK_GRP": {
+        "parent": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP|left_elbow_POS_LOC_OFFSET_GRP|left_elbow_POS_LOC_SDK_GRP|left_elbow_POS_LOC|left_elbow_ROT_LOC_GRP|left_elbow_ROT_LOC_OFFSET_GRP",
+        "children": [
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP|left_elbow_POS_LOC_OFFSET_GRP|left_elbow_POS_LOC_SDK_GRP|left_elbow_POS_LOC|left_elbow_ROT_LOC_GRP|left_elbow_ROT_LOC_OFFSET_GRP|left_elbow_ROT_LOC_SDK_GRP|left_elbow_ROT_LOC"
+        ],
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP|left_elbow_POS_LOC_OFFSET_GRP|left_elbow_POS_LOC_SDK_GRP|left_elbow_POS_LOC|left_elbow_ROT_LOC_GRP|left_elbow_ROT_LOC_OFFSET_GRP|left_elbow_ROT_LOC_SDK_GRP",
+        "wld_pos": [
+            31.797134129973458,
+            116.69912440065174,
+            -2.835267084810265
+        ],
+        "wld_rot": [
+            -163.3296479371228,
+            -13.561929694331067,
+            -63.90183091398681
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_hand_ROT_LOC_SDK_GRP": {
+        "parent": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP|left_hand_POS_LOC_OFFSET_GRP|left_hand_POS_LOC_SDK_GRP|left_hand_POS_LOC|left_hand_ROT_LOC_GRP|left_hand_ROT_LOC_OFFSET_GRP",
+        "children": [
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP|left_hand_POS_LOC_OFFSET_GRP|left_hand_POS_LOC_SDK_GRP|left_hand_POS_LOC|left_hand_ROT_LOC_GRP|left_hand_ROT_LOC_OFFSET_GRP|left_hand_ROT_LOC_SDK_GRP|left_hand_ROT_LOC"
+        ],
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP|left_hand_POS_LOC_OFFSET_GRP|left_hand_POS_LOC_SDK_GRP|left_hand_POS_LOC|left_hand_ROT_LOC_GRP|left_hand_ROT_LOC_OFFSET_GRP|left_hand_ROT_LOC_SDK_GRP",
+        "wld_pos": [
+            42.76439190434886,
+            94.31035509378462,
+            3.1785620259637724
+        ],
+        "wld_rot": [
+            153.70345612055118,
+            -1.2400315365829249,
+            -60.0225355832869
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "spine_03_ROT_LOC_SDK_GRP": {
+        "parent": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_03_POS_LOC_GRP|spine_03_POS_LOC_OFFSET_GRP|spine_03_POS_LOC_SDK_GRP|spine_03_POS_LOC|spine_03_ROT_LOC_GRP|spine_03_ROT_LOC_OFFSET_GRP",
+        "children": [
+            "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_03_POS_LOC_GRP|spine_03_POS_LOC_OFFSET_GRP|spine_03_POS_LOC_SDK_GRP|spine_03_POS_LOC|spine_03_ROT_LOC_GRP|spine_03_ROT_LOC_OFFSET_GRP|spine_03_ROT_LOC_SDK_GRP|spine_03_ROT_LOC"
+        ],
+        "full_path": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_03_POS_LOC_GRP|spine_03_POS_LOC_OFFSET_GRP|spine_03_POS_LOC_SDK_GRP|spine_03_POS_LOC|spine_03_ROT_LOC_GRP|spine_03_ROT_LOC_OFFSET_GRP|spine_03_ROT_LOC_SDK_GRP",
+        "wld_pos": [
+            0.0,
+            132.7604904174805,
+            -0.046913146972654474
+        ],
+        "wld_rot": [
+            -5.390388121333945,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": null,
+        "userDefineAttrs": {}
+    },
+    "left_elbow_ROT_LOC": {
+        "parent": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP|left_elbow_POS_LOC_OFFSET_GRP|left_elbow_POS_LOC_SDK_GRP|left_elbow_POS_LOC|left_elbow_ROT_LOC_GRP|left_elbow_ROT_LOC_OFFSET_GRP|left_elbow_ROT_LOC_SDK_GRP",
+        "children": [
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP|left_elbow_POS_LOC_OFFSET_GRP|left_elbow_POS_LOC_SDK_GRP|left_elbow_POS_LOC|left_elbow_ROT_LOC_GRP|left_elbow_ROT_LOC_OFFSET_GRP|left_elbow_ROT_LOC_SDK_GRP|left_elbow_ROT_LOC|left_elbow_ROT_LOCShape",
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP|left_elbow_POS_LOC_OFFSET_GRP|left_elbow_POS_LOC_SDK_GRP|left_elbow_POS_LOC|left_elbow_ROT_LOC_GRP|left_elbow_ROT_LOC_OFFSET_GRP|left_elbow_ROT_LOC_SDK_GRP|left_elbow_ROT_LOC|manipYShape",
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP|left_elbow_POS_LOC_OFFSET_GRP|left_elbow_POS_LOC_SDK_GRP|left_elbow_POS_LOC|left_elbow_ROT_LOC_GRP|left_elbow_ROT_LOC_OFFSET_GRP|left_elbow_ROT_LOC_SDK_GRP|left_elbow_ROT_LOC|manipXShape"
+        ],
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_elbow_POS_LOC_GRP|left_elbow_POS_LOC_OFFSET_GRP|left_elbow_POS_LOC_SDK_GRP|left_elbow_POS_LOC|left_elbow_ROT_LOC_GRP|left_elbow_ROT_LOC_OFFSET_GRP|left_elbow_ROT_LOC_SDK_GRP|left_elbow_ROT_LOC",
+        "wld_pos": [
+            31.797134129973458,
+            116.69912440065174,
+            -2.835267084810265
+        ],
+        "wld_rot": [
+            -163.3296479371228,
+            -13.561929694331067,
+            -63.90183091398681
+        ],
+        "jnt_orient": null,
+        "shapes": [
+            "left_elbow_ROT_LOCShape",
+            "manipYShape",
+            "manipXShape"
+        ],
+        "userDefineAttrs": {}
+    },
+    "left_hand_ROT_LOC": {
+        "parent": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP|left_hand_POS_LOC_OFFSET_GRP|left_hand_POS_LOC_SDK_GRP|left_hand_POS_LOC|left_hand_ROT_LOC_GRP|left_hand_ROT_LOC_OFFSET_GRP|left_hand_ROT_LOC_SDK_GRP",
+        "children": [
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP|left_hand_POS_LOC_OFFSET_GRP|left_hand_POS_LOC_SDK_GRP|left_hand_POS_LOC|left_hand_ROT_LOC_GRP|left_hand_ROT_LOC_OFFSET_GRP|left_hand_ROT_LOC_SDK_GRP|left_hand_ROT_LOC|left_hand_ROT_LOCShape",
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP|left_hand_POS_LOC_OFFSET_GRP|left_hand_POS_LOC_SDK_GRP|left_hand_POS_LOC|left_hand_ROT_LOC_GRP|left_hand_ROT_LOC_OFFSET_GRP|left_hand_ROT_LOC_SDK_GRP|left_hand_ROT_LOC|manipYShape",
+            "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP|left_hand_POS_LOC_OFFSET_GRP|left_hand_POS_LOC_SDK_GRP|left_hand_POS_LOC|left_hand_ROT_LOC_GRP|left_hand_ROT_LOC_OFFSET_GRP|left_hand_ROT_LOC_SDK_GRP|left_hand_ROT_LOC|manipXShape"
+        ],
+        "full_path": "|adjustment_GRP|left_shoulder_POS_LOC_GRP|left_shoulder_POS_LOC_OFFSET_GRP|left_shoulder_POS_LOC_SDK_GRP|left_shoulder_POS_LOC|left_arm_POS_LOC_GRP|left_arm_POS_LOC_OFFSET_GRP|left_arm_POS_LOC_SDK_GRP|left_arm_POS_LOC|left_hand_POS_LOC_GRP|left_hand_POS_LOC_OFFSET_GRP|left_hand_POS_LOC_SDK_GRP|left_hand_POS_LOC|left_hand_ROT_LOC_GRP|left_hand_ROT_LOC_OFFSET_GRP|left_hand_ROT_LOC_SDK_GRP|left_hand_ROT_LOC",
+        "wld_pos": [
+            42.76439190434886,
+            94.31035509378462,
+            3.1785620259637724
+        ],
+        "wld_rot": [
+            167.49758976452225,
+            -8.46199224446579,
+            -68.22787145542796
+        ],
+        "jnt_orient": null,
+        "shapes": [
+            "left_hand_ROT_LOCShape",
+            "manipYShape",
+            "manipXShape"
+        ],
+        "userDefineAttrs": {}
+    },
+    "spine_03_ROT_LOC": {
+        "parent": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_03_POS_LOC_GRP|spine_03_POS_LOC_OFFSET_GRP|spine_03_POS_LOC_SDK_GRP|spine_03_POS_LOC|spine_03_ROT_LOC_GRP|spine_03_ROT_LOC_OFFSET_GRP|spine_03_ROT_LOC_SDK_GRP",
+        "children": [
+            "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_03_POS_LOC_GRP|spine_03_POS_LOC_OFFSET_GRP|spine_03_POS_LOC_SDK_GRP|spine_03_POS_LOC|spine_03_ROT_LOC_GRP|spine_03_ROT_LOC_OFFSET_GRP|spine_03_ROT_LOC_SDK_GRP|spine_03_ROT_LOC|spine_03_ROT_LOCShape",
+            "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_03_POS_LOC_GRP|spine_03_POS_LOC_OFFSET_GRP|spine_03_POS_LOC_SDK_GRP|spine_03_POS_LOC|spine_03_ROT_LOC_GRP|spine_03_ROT_LOC_OFFSET_GRP|spine_03_ROT_LOC_SDK_GRP|spine_03_ROT_LOC|manipYShape",
+            "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_03_POS_LOC_GRP|spine_03_POS_LOC_OFFSET_GRP|spine_03_POS_LOC_SDK_GRP|spine_03_POS_LOC|spine_03_ROT_LOC_GRP|spine_03_ROT_LOC_OFFSET_GRP|spine_03_ROT_LOC_SDK_GRP|spine_03_ROT_LOC|manipXShape"
+        ],
+        "full_path": "|adjustment_GRP|spine_01_POS_LOC_GRP|spine_01_POS_LOC_OFFSET_GRP|spine_01_POS_LOC_SDK_GRP|spine_01_POS_LOC|spine_02_POS_LOC_GRP|spine_02_POS_LOC_OFFSET_GRP|spine_02_POS_LOC_SDK_GRP|spine_02_POS_LOC|spine_03_POS_LOC_GRP|spine_03_POS_LOC_OFFSET_GRP|spine_03_POS_LOC_SDK_GRP|spine_03_POS_LOC|spine_03_ROT_LOC_GRP|spine_03_ROT_LOC_OFFSET_GRP|spine_03_ROT_LOC_SDK_GRP|spine_03_ROT_LOC",
+        "wld_pos": [
+            0.0,
+            132.7604904174805,
+            -0.046913146972654474
+        ],
+        "wld_rot": [
+            -5.390388121333945,
+            0.0,
+            0.0
+        ],
+        "jnt_orient": null,
+        "shapes": [
+            "spine_03_ROT_LOCShape",
+            "manipYShape",
+            "manipXShape"
+        ],
+        "userDefineAttrs": {}
+    }
+}

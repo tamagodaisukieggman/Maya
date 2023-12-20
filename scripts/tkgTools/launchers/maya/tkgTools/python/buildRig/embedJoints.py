@@ -104,7 +104,8 @@ class EmbedJoints:
                  neck_count=1,
                  knee_count=1,
                  type=None,
-                 create=None):
+                 create=None,
+                 guide_name=None):
 
         self.mesh = mesh
         self.root_count = root_count
@@ -113,6 +114,11 @@ class EmbedJoints:
         self.knee_count = knee_count
         self.type = type
         self.create = create
+        self.guide_name = guide_name
+
+        if self.guide_name:
+            self.guide_name_adj_json = GUIDE_PATH + '/{}_adjustment.json'.format(self.guide_name)
+            self.guide_name_footroll_json = GUIDE_PATH + '/{}_footroll.json'.format(self.guide_name)
 
         self.guide_cur_adj_json = GUIDE_PATH + '/current_adjustment.json'
         self.guide_cur_footroll_json = GUIDE_PATH + '/current_footroll.json'
@@ -122,7 +128,7 @@ class EmbedJoints:
                 self.create_biped_joints()
                 self.set_adjustment_nodes_values(type='adjustment')
                 self.set_adjustment_nodes_values(type='footroll')
-
+                self.match_all_pos_to_rot_locs()
 
     def create_biped_joints(self):
         # First select the shape, not the transform.
@@ -652,6 +658,16 @@ class EmbedJoints:
     def set_world_aim(self, obj=None, wld_front_axis='z', wld_left_axis='x'):
         brAim.force_world_aim(obj, wld_front_axis, wld_left_axis)
 
+    def match_all_pos_to_rot_locs(self):
+        pos_locs = cmds.ls('*_POS_LOC', type='transform')
+        for pos_loc in pos_locs:
+            try:
+                rot_loc = pos_loc.replace('_POS_', '_ROT_')
+                cmds.matchTransform(pos_loc, rot_loc, pos=True, rot=False, scl=False)
+                cmds.xform(rot_loc+'_OFFSET_GRP', t=[0,0,0], a=True)
+            except:
+                print(traceback.format_exc())
+
     def lock_guide_locators(self):
         pos_locs = cmds.ls('*_POS_LOC', tr=True)
         pos_ltrs = brLock.LockTransforms(pos_locs)
@@ -694,6 +710,7 @@ class EmbedJoints:
         cmds.setAttr('root.adjustmentDict', l=True)
 
         brCommon.json_transfer(self.guide_cur_adj_json, 'export', nodes.nodes_values)
+        brCommon.json_transfer(self.guide_name_adj_json, 'export', nodes.nodes_values)
 
         # footroll
         footroll_nodes = cmds.ls('foot_roll_piv_GRP', dag=True, type='transform')
@@ -705,12 +722,19 @@ class EmbedJoints:
         cmds.setAttr('root.footrollDict', l=True)
 
         brCommon.json_transfer(self.guide_cur_footroll_json, 'export', nodes.nodes_values)
+        brCommon.json_transfer(self.guide_name_footroll_json, 'export', nodes.nodes_values)
 
     def set_adjustment_nodes_values(self, type='adjustment'):
         if type == 'adjustment':
-            json_file = self.guide_cur_adj_json
+            if self.guide_name:
+                json_file = self.guide_name_adj_json
+            else:
+                json_file = self.guide_cur_adj_json
         elif type == 'footroll':
-            json_file = self.guide_cur_footroll_json
+            if self.guide_name:
+                json_file = self.guide_name_footroll_json
+            else:
+                json_file = self.guide_cur_footroll_json
         # nodes_values = eval(cmds.getAttr('root.adjustmentDict'))
         if not os.path.isfile(json_file):
             return
