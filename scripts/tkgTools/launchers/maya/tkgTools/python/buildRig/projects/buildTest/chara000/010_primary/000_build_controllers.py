@@ -21,20 +21,7 @@ reload(brFile)
 namespace = 'chr'
 files = brFile.Files(chara_path, namespace, 'reference')
 file_objects = files.file_execute()
-top_nodes = files.get_top_nodes()
-
-"""
-##############
-# chr reference
-namespace = 'chr'
-rig_chara_ref_dict = {
-    # 'bahamut':'F:/myTechData/Maya/sandbox/cygames/wizard2/chr/bahamut/maya/Bahamut.ma'
-    'bahamut':'//cydrive01/104_projects/148_wizard2/30_design/02_3DCG/05_rig/env/bahamut/20231215/Bahamut.ma'
-}
-if rig_setup_id in rig_chara_ref_dict.keys():
-    ref_path = rig_chara_ref_dict[rig_setup_id]
-
-cmds.file(ref_path, ignoreVersion=True, namespace=namespace, r=True, gl=True, mergeNamespacesOnClash=True, options="v=0;")
+ref_top_nodes = files.get_top_nodes()
 
 ##############
 # root setup
@@ -463,6 +450,4 @@ brCommon.create_spaces(
 
 ##############
 # chr parent MODEL
-ref_top_nodes = cmds.ls(rn=True, assemblies=True)
 [cmds.parent(rfn, tail_fk.model_grp) for rfn in ref_top_nodes]
-"""

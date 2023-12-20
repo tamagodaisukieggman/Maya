@@ -329,7 +329,7 @@ class Build(object):
         tree = ET.parse(self.build_file)
         root = tree.getroot()
         for char_path_value in root.iter('characters'):
-            rigSetupIDs = []
+            rig_setup_ids = []
             chara_paths=[]
             savefile_pathes=[]
 
@@ -339,14 +339,14 @@ class Build(object):
             setup_character_dict[dataPath] = {}
 
             for value in char_path_value.iter('character'):
-                rigSetupID=value.attrib['rigSetupID']
-                rigSetupID_slash = rigSetupID.replace('\\', '/')
-                rigSetupIDs.append(rigSetupID_slash)
+                rig_setup_id=value.attrib['rigSetupID']
+                rig_setup_id_slash = rig_setup_id.replace('\\', '/')
+                rig_setup_ids.append(rig_setup_id_slash)
 
-                # joints_path=char_path+value.attrib['charaPath']
-                joints_path=value.attrib['charaPath']
-                joints_path_slash = joints_path.replace('\\', '/')
-                chara_paths.append(joints_path_slash)
+                # chara_path=char_path+value.attrib['charaPath']
+                chara_path=value.attrib['charaPath']
+                chara_path_slash = chara_path.replace('\\', '/')
+                chara_paths.append(chara_path_slash)
 
                 savefile_path=value.attrib['savefilepath']
                 savefile_path = savefile_path.replace('\\', '/')
@@ -354,7 +354,7 @@ class Build(object):
                     savefile_path = None
                 savefile_pathes.append(savefile_path)
 
-            setup_character_dict[dataPath]['rigSetupID'] = rigSetupIDs
+            setup_character_dict[dataPath]['rigSetupID'] = rig_setup_ids
             setup_character_dict[dataPath]['charaPath'] = chara_paths
             setup_character_dict[dataPath]['savefilepath'] = savefile_pathes
 
