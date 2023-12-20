@@ -9,12 +9,21 @@ import maya.mel as mel
 import buildRig.common as brCommon
 import buildRig.root as brRoot
 import buildRig.fk as brFk
+import buildRig.file as brFile
 reload(brRoot)
 reload(brFk)
 reload(brCommon)
+reload(brFile)
 
 # rig_setup_id = 'bahamut'
+# chara_path
 
+namespace = 'chr'
+files = brFile.Files(chara_path, namespace, 'reference')
+file_objects = files.file_execute()
+top_nodes = files.get_top_nodes()
+
+"""
 ##############
 # chr reference
 namespace = 'chr'
@@ -456,3 +465,4 @@ brCommon.create_spaces(
 # chr parent MODEL
 ref_top_nodes = cmds.ls(rn=True, assemblies=True)
 [cmds.parent(rfn, tail_fk.model_grp) for rfn in ref_top_nodes]
+"""

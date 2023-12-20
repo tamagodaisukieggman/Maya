@@ -178,19 +178,19 @@ class Build(object):
                         logging.info('\n{} Skip Setup Directory {}\n{}\n'.format('^'*10, '^'*10, setup_dir))
                         continue
 
-                    rig_setup_ids = setup_characters['charaID']
-                    character_joints = setup_characters['basejoint']
+                    rig_setup_ids = setup_characters['rigSetupID']
+                    chara_paths = setup_characters['charaPath']
                     save_file_paths = setup_characters['savefilepath']
 
                     logging.info('#'*10)
                     logging.info('Setup Characters:{}'.format(rig_setup_ids))
-                    logging.info('Import Joints:{}'.format(character_joints))
+                    logging.info('Import Joints:{}'.format(chara_paths))
                     logging.info('Save File Paths:{}'.format(save_file_paths))
                     logging.info('#'*10)
 
-                    for i, (rig_setup_id, char_joint, save_file_path) in enumerate(zip(rig_setup_ids, character_joints, save_file_paths)):
+                    for i, (rig_setup_id, chara_path, save_file_path) in enumerate(zip(rig_setup_ids, chara_paths, save_file_paths)):
                         try:
-                            self.setup_rig(rig_setup_id=rig_setup_id, import_joints_path=char_joint, save_file_path=save_file_path)
+                            self.setup_rig(rig_setup_id=rig_setup_id, chara_path=chara_path, save_file_path=save_file_path)
                             builded_characters.append((rig_setup_id))
                         except Exception as e:
                             logging.info(traceback.format_exc())
@@ -214,7 +214,7 @@ class Build(object):
         logging.info('Build Rigs: {}'.format(builded_characters))
         logging.info('Build Error: {}'.format(self.error_results))
 
-    def setup_rig(self, rig_setup_id=None, import_joints_path=None, save_file_path=None):
+    def setup_rig(self, rig_setup_id=None, chara_path=None, save_file_path=None):
         # --
         # setup info
         # --
@@ -222,17 +222,17 @@ class Build(object):
         setup_path='/'.join(self.build_file.split('/')[:-1])
 
         # new file
-        if import_joints_path:
-            if os.path.isfile(import_joints_path):
-                cmds.file(new=1, f=1)
-                cmds.file(import_joints_path, i=1, f=1)
-                logging.info('Import File:{}'.format(import_joints_path))
-            else:
-                if not os.path.isdir(import_joints_path):
-                    logging.info('Error Read File:{}'.format(import_joints_path))
-                # raise ValueError('{0} is not exists!'.format(import_joints_path))
+        if chara_path:
+            # if os.path.isfile(chara_path):
+            #     cmds.file(new=1, f=1)
+            #     cmds.file(chara_path, i=1, f=1)
+            #     logging.info('Import File:{}'.format(chara_path))
+            # else:
+            #     if not os.path.isdir(chara_path):
+            #         logging.info('Error Read File:{}'.format(chara_path))
+            #     # raise ValueError('{0} is not exists!'.format(chara_path))
 
-            fbxspl = import_joints_path.split('/')
+            fbxspl = chara_path.split('/')
             fname = fbxspl[-1].split('.')[0]
 
         if rig_setup_id:
@@ -256,7 +256,7 @@ class Build(object):
             setup_folder_spl = setup_file_path.split('/')[-1]
             if self.check_files_in_folder(setup_file_path):
                 logging.info('\n'+'#'*10+' {}:{} Start'.format(format_rig_setup_id, setup_folder_spl)+'#'*10+'\n')
-                self.run_files(setup_file_path=setup_file_path, format_rig_setup_id=format_rig_setup_id)
+                self.run_files(setup_file_path=setup_file_path, rig_setup_id=format_rig_setup_id, chara_path=chara_path)
                 logging.info('\n'+'#'*10+' {}:{} End '.format(format_rig_setup_id, setup_folder_spl)+'#'*10+'\n')
 
         day = u'{0}'.format(datetime.now().strftime("%Y%m%d"))
@@ -282,7 +282,7 @@ class Build(object):
 
         cmds.file(new=True, f=True)
 
-    def run_files(self, setup_file_path=None, format_rig_setup_id=None):
+    def run_files(self, setup_file_path=None, rig_setup_id=None, chara_path=None):
         for root, dirs, files in os.walk(setup_file_path):
             if root.endswith('old'):
                 continue
@@ -290,11 +290,14 @@ class Build(object):
             for fname in files:
                 file_path = os.path.join(root, fname)
                 build_file = file_path.replace('\\', '/')
-                logging.info('{}Build:{}:{}'.format('-'*10, format_rig_setup_id, build_file))
+                logging.info('{}Build:{}:{}'.format('-'*10, rig_setup_id, build_file))
                 try:
                     if build_file.endswith('.py'):
                         if 2022 <= float(maya_version):
-                            exec("rig_setup_id = '{}';build_file = '{}';".format(format_rig_setup_id, str(build_file)) + open(str(build_file), encoding="utf-8").read(), globals())
+                            build_format = "rig_setup_id = '{}';chara_path = '{}';build_file = '{}';".format(rig_setup_id,
+                                                                                                             chara_path,
+                                                                                                             str(build_file))
+                            exec(build_format + open(str(build_file), encoding="utf-8").read(), globals())
                         else:
                             # exec(codecs.open(str(build_file), encoding="utf-8").read())
                             execfile(build_file)
@@ -311,23 +314,23 @@ class Build(object):
                     tbs = traceback.format_tb(exc_tb)[1]
                     logging.info('\n{} {}:ERROR Start {} \n File:{} \n Line:{} \n Message:{} \n \n'.format(
                         '!'*10,
-                        format_rig_setup_id,
+                        rig_setup_id,
                         '!'*10,
                         build_file,
                         tbs,
                         e))
-                    self.error_results.append((format_rig_setup_id, build_file, tbs, e))
-                    logging.info('{} {}:ERROR End {}\n'.format('!'*10, format_rig_setup_id, '!'*10))
+                    self.error_results.append((rig_setup_id, build_file, tbs, e))
+                    logging.info('{} {}:ERROR End {}\n'.format('!'*10, rig_setup_id, '!'*10))
 
-                    logging.info('{} {}:RESUME Process {}\n\n'.format('>'*10, format_rig_setup_id, '>'*10))
+                    logging.info('{} {}:RESUME Process {}\n\n'.format('>'*10, rig_setup_id, '>'*10))
 
     def parseFile(self, dataPath=None):
         setup_character_dict = {}
         tree = ET.parse(self.build_file)
         root = tree.getroot()
         for char_path_value in root.iter('characters'):
-            charaIDs = []
-            character_joints=[]
+            rigSetupIDs = []
+            chara_paths=[]
             savefile_pathes=[]
 
             # char_path=char_path_value.attrib['dir']
@@ -336,14 +339,14 @@ class Build(object):
             setup_character_dict[dataPath] = {}
 
             for value in char_path_value.iter('character'):
-                charaID=value.attrib['charaID']
-                charaID_slash = charaID.replace('\\', '/')
-                charaIDs.append(charaID_slash)
+                rigSetupID=value.attrib['rigSetupID']
+                rigSetupID_slash = rigSetupID.replace('\\', '/')
+                rigSetupIDs.append(rigSetupID_slash)
 
-                # joints_path=char_path+value.attrib['basejoint']
-                joints_path=value.attrib['basejoint']
+                # joints_path=char_path+value.attrib['charaPath']
+                joints_path=value.attrib['charaPath']
                 joints_path_slash = joints_path.replace('\\', '/')
-                character_joints.append(joints_path_slash)
+                chara_paths.append(joints_path_slash)
 
                 savefile_path=value.attrib['savefilepath']
                 savefile_path = savefile_path.replace('\\', '/')
@@ -351,8 +354,8 @@ class Build(object):
                     savefile_path = None
                 savefile_pathes.append(savefile_path)
 
-            setup_character_dict[dataPath]['charaID'] = charaIDs
-            setup_character_dict[dataPath]['basejoint'] = character_joints
+            setup_character_dict[dataPath]['rigSetupID'] = rigSetupIDs
+            setup_character_dict[dataPath]['charaPath'] = chara_paths
             setup_character_dict[dataPath]['savefilepath'] = savefile_pathes
 
         return setup_character_dict

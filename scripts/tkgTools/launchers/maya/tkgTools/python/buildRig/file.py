@@ -88,3 +88,55 @@ settings.export_settings()
         for type, name_settings in self.setting_dict.items():
             for n, nv in names.items():
                 name_settings[n] = nv
+
+class Files:
+    """
+    files = Files(ref_path, 'chr', 'reference')
+    file_objects = files.file_execute()
+    top_nodes = files.get_top_nodes()
+    """
+    def __init__(self, path=None, namespace=None, mode='reference'):
+        self.namespace = namespace
+        self.path = path
+        self.mode = mode
+
+        self.reference_sts = None
+        self.import_sts = None
+
+        self.options = {}
+
+        self.file_objects = None
+        self.top_nodes = []
+
+        self.set_options()
+
+    def set_options(self):
+        if self.mode == 'reference':
+            self.reference_sts = True
+            self.import_sts = False
+        elif self.mode == 'import':
+            self.reference_sts = False
+            self.import_sts = True
+
+        self.options = {
+            'ignoreVersion':True,
+            'namespace':self.namespace,
+            'reference':self.reference_sts,
+            'import':self.import_sts,
+            'gl':True,
+            'mergeNamespacesOnClash':True,
+            'returnNewNodes':True,
+            'options':'v=0;'
+        }
+
+    def file_execute(self):
+        self.file_objects = cmds.file(self.path, **self.options)
+        return self.file_objects
+
+    def get_top_nodes(self):
+        self.top_nodes = []
+        for f_obj in self.file_objects:
+            if '|' in f_obj:
+                self.top_nodes.append(f_obj.split('|')[1])
+        self.top_nodes = list(set(self.top_nodes))
+        return self.top_nodes
