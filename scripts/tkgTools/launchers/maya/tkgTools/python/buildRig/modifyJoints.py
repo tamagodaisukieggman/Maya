@@ -120,6 +120,95 @@ def mirror_correct_joints(sel=None, mirror=['_L', '_R'], force_values=[180, 0, 0
     if before_sel:
         cmds.select(before_sel, r=True)
 
+def get_sublists(lst, n):
+    """ 
+    リストからn個ずつの要素を持つサブリストを生成する関数。
+    ここではn=3としています。
+    """
+    return [lst[i:i + n] for i in range(len(lst) - n + 1)]
+
+def set_mid_axis(start=None, mid=None, end=None, aim_axis='x', up_axis='y', maintain_start_rot=None):
+    start_pos = cmds.xform(start, q=True, t=True, ws=True)
+    start_rot = cmds.xform(start, q=True, ro=True, ws=True)
+    mid_pos = cmds.xform(mid, q=True, t=True, ws=True)
+    end_pos = cmds.xform(end, q=True, t=True, ws=True)
+    end_rot = cmds.xform(end, q=True, ro=True, ws=True)
+
+    tri_pos = brCommon.get_perpendicular_point(start_pos, end_pos, mid_pos)
+    loc1 = cmds.spaceLocator()[0]
+    cmds.xform(loc1, t=tri_pos)
+
+    loc2 = cmds.spaceLocator()[0]
+
+    brCommon.set_mid_point(objA=loc1, objB=mid, objC=loc2, percentage=1.5)
+
+    # brAim.set_pole_vec(start=start, mid=mid, end=end, move=10, obj=loc2)
+
+    brAim.aim_nodes(base=mid,
+                    target=start,
+                    aim_axis=aim_axis,
+                    up_axis=up_axis,
+                    worldUpType='object',
+                    worldUpObject=loc2,
+                    worldSpace=False,
+                    world_axis='y')
+
+    cmds.xform(start, t=start_pos, ws=True, a=True, p=True)
+    if maintain_start_rot:
+        cmds.xform(start, ro=start_rot, ws=True, a=True, p=True)
+    cmds.xform(mid, t=mid_pos, ws=True, a=True, p=True)
+    cmds.xform(end, t=end_pos, ws=True, a=True, p=True)
+    cmds.xform(end, ro=end_rot, ws=True, a=True, p=True)
+
+    brAim.aim_nodes(base=end,
+                    target=mid,
+                    aim_axis=aim_axis,
+                    up_axis=up_axis,
+                    worldUpType='object',
+                    worldUpObject=loc2,
+                    worldSpace=False,
+                    world_axis='y')
+
+    cmds.xform(start, t=start_pos, ws=True, a=True, p=True)
+    if maintain_start_rot:
+        cmds.xform(start, ro=start_rot, ws=True, a=True, p=True)
+    cmds.xform(mid, t=mid_pos, ws=True, a=True, p=True)
+    cmds.xform(end, t=end_pos, ws=True, a=True, p=True)
+    cmds.xform(end, ro=end_rot, ws=True, a=True, p=True)
+
+    cmds.delete(loc1)
+    cmds.delete(loc2)
+
+def set_joints_axis(chain=None, aim_axis='x', up_axis='y', set_tip=None):
+    chain_sublists = brCommon.get_sublists(chain, 3)
+    
+    for i, jnts in enumerate(chain_sublists):
+        # n = i % 2
+        # if n == 0:
+        start=jnts[0]
+        mid=jnts[1]
+        end=jnts[2]
+
+        if i == 0:
+            maintain_start_rot_sts = False
+        else:
+            maintain_start_rot_sts = True
+
+        set_mid_axis(start=start,
+                     mid=mid,
+                     end=end,
+                     aim_axis=aim_axis,
+                     up_axis=up_axis,
+                     maintain_start_rot=maintain_start_rot_sts)
+
+    set_tip=None
+    if set_tip:
+        cmds.xform(chain[-1],
+                   ro=cmds.xform(chain[-2], q=True, ro=True, ws=True),
+                   ws=True,
+                   a=True)
+
+
 def aim_correct_joints(sel=None,
                        aim_axis='x',
                        up_axis='y',
@@ -314,7 +403,6 @@ def create_finger_joints(finger_root=None, finger_tip=None,
     cmds.xform(pinky_joints[0], t=[middle_pos[0], pinky_pos[1], pinky_pos[2]])
 
     return [thumb_joints, index_joints, middle_joints, ring_joints, pinky_joints]
-
 
 def embed_biped_joints(mesh=None, root_count=1, spine_count=3, neck_count=1, knee_count=1,
                        thumb_count=3, index_count=3, middle_count=3, ring_count=3, pinky_count=3):

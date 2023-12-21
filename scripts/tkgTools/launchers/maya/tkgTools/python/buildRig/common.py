@@ -395,6 +395,13 @@ def merge_curves(sel=None):
 
     cmds.select(sel[1], r=True)
 
+def get_sublists(lst, n):
+    """ 
+    リストからn個ずつの要素を持つサブリストを生成する関数。
+    ここではn=3としています。
+    """
+    return [lst[i:i + n] for i in range(len(lst) - n + 1)]
+
 def filter_items(source_items=None, search_txt_list=None, remover=None):
     """
     source_items = cmds.ls(os=True, type='joint', dag=True)
