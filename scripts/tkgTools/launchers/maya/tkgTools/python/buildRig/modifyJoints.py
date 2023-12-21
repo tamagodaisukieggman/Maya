@@ -218,8 +218,96 @@ class Segments:
             self.bottom = self.base_name
             self.seg_joints.append(self.base_name)
 
+def create_finger_joints(finger_root=None, finger_tip=None,
+                        thumb_num=3, index_num=3, middle_num=3, ring_num=3, pinky_num=3):
 
-def embed_biped_joints(mesh=None, root_count=1, spine_count=3, neck_count=1, knee_count=1):
+    def insert_finger_joints(base=None, insert_range=None, num=None):
+        joints = []
+        parent = base
+        step = 1.0 / (num-1)
+
+        joints.append(parent)
+        for i in range(num-1):
+            dup = cmds.duplicate(parent)[0]
+            virtual_trs = brCommon.get_virtual_transform(obj=dup, relative_move=[insert_range*step,0,0])
+            cmds.xform(dup, t=virtual_trs[0], ro=virtual_trs[1], ws=True, a=True)
+            cmds.parent(dup, parent)
+            joints.append(dup)
+            
+            parent = dup
+            step = step*(i+1)
+
+        return joints
+
+    finger_tip_loc = cmds.spaceLocator()[0]
+    finger_tip_wt = cmds.xform(finger_tip, q=True, t=True, ws=True)
+    cmds.xform(finger_tip_loc, t=finger_tip_wt, ws=True, a=True)
+
+    # middle
+    left_middle_01 = cmds.createNode('joint', n='left_middle_01', ss=True)
+
+    brCommon.set_mid_point(finger_root, finger_tip, left_middle_01, 0.5)
+
+    brAim.aim_nodes(base=finger_tip_loc,
+                    target=left_middle_01,
+                    aim_axis='x',
+                    up_axis='z',
+                    worldUpType='object',
+                    worldUpObject=None,
+                    worldSpace=True,
+                    world_axis='y')
+
+    middle_tip_dis = brCommon.distance_between(left_middle_01, finger_tip)
+    finger_range = middle_tip_dis * 0.3
+
+    middle_joints = insert_finger_joints(base=left_middle_01, insert_range=middle_tip_dis, num=middle_num)
+
+    # index
+    left_index_01 = cmds.createNode('joint', n='left_index_01', ss=True)
+    index_virtual_trs = brCommon.get_virtual_transform(obj=left_middle_01, relative_move=[0,-finger_range/2,finger_range])
+    cmds.xform(left_index_01, t=index_virtual_trs[0], ro=index_virtual_trs[1], ws=True, a=True)
+
+    index_joints = insert_finger_joints(base=left_index_01, insert_range=middle_tip_dis, num=index_num)
+
+    # ring
+    left_ring_01 = cmds.createNode('joint', n='left_ring_01', ss=True)
+    ring_virtual_trs = brCommon.get_virtual_transform(obj=left_middle_01, relative_move=[0,-finger_range/2,-finger_range])
+    cmds.xform(left_ring_01, t=ring_virtual_trs[0], ro=ring_virtual_trs[1], ws=True, a=True)
+
+    ring_joints = insert_finger_joints(base=left_ring_01, insert_range=middle_tip_dis, num=ring_num)
+
+    # pinky
+    left_pinky_01 = cmds.createNode('joint', n='left_pinky_01', ss=True)
+    pinky_virtual_trs = brCommon.get_virtual_transform(obj=left_ring_01, relative_move=[0,-finger_range/2.5,-finger_range])
+    cmds.xform(left_pinky_01, t=pinky_virtual_trs[0], ro=pinky_virtual_trs[1], ws=True, a=True)
+
+    pinky_joints = insert_finger_joints(base=left_pinky_01, insert_range=middle_tip_dis, num=pinky_num)
+
+    # thumb
+    left_thumb_01 = cmds.createNode('joint', n='left_thumb_01', ss=True)
+    brCommon.set_mid_point(finger_root, finger_tip, left_thumb_01, 0.1)
+    brAim.aim_nodes(base=finger_tip_loc,
+                    target=left_thumb_01,
+                    aim_axis='x',
+                    up_axis='z',
+                    worldUpType='object',
+                    worldUpObject=None,
+                    worldSpace=True,
+                    world_axis='y')
+
+    thumb_virtual_trs = brCommon.get_virtual_transform(obj=left_thumb_01, relative_move=[0,-finger_range/2,finger_range/2])
+    cmds.xform(left_thumb_01, t=thumb_virtual_trs[0], ro=thumb_virtual_trs[1], ws=True, a=True)
+    cmds.xform(left_thumb_01, ro=[0, -45, -30], os=True, r=True)
+
+    thumb_joints = insert_finger_joints(base=left_thumb_01, insert_range=middle_tip_dis, num=thumb_num)
+
+    cmds.delete(finger_tip_loc)
+
+    return [thumb_joints, index_joints, middle_joints, ring_joints, pinky_joints]
+
+
+def embed_biped_joints(mesh=None, root_count=1, spine_count=3, neck_count=1, knee_count=1,
+                       thumb_count=3, index_count=3, middle_count=3, ring_count=3, pinky_count=3):
     shape = brCommon.get_shapes(mesh)[0]
 
     result = cmds.skeletonEmbed(shape)
@@ -454,10 +542,16 @@ def embed_biped_joints(mesh=None, root_count=1, spine_count=3, neck_count=1, kne
     # 実際に作成するのはembeddingに格納した値を確認してから
     embedded_joints = create_joints_from_embedding( embedding )
 
+    # Create Finger Joints
+    finger_root='left_hand'
+    finger_tip = brCommon.get_finger_tip(mesh=mesh)
+    fingers = create_finger_joints(finger_root, finger_tip, thumb_count, index_count, middle_count, ring_count, pinky_count)
+    for fing in fingers:
+        cmds.parent(fing[0], finger_root)
+
     for child, parent in parent_hierarchy.items():
         if child and parent:
             cmds.parent(child, parent)
-
 
     # Aiming Spine
     spine_01 = 'spine_01'
@@ -489,7 +583,7 @@ def embed_biped_joints(mesh=None, root_count=1, spine_count=3, neck_count=1, kne
                            worldSpace=True,
                            world_axis='x')
 
-    # Aiming arm
+    # Aiming leg
     left_thigh = 'left_thigh'
     aim_correct_joints(sel=[left_thigh],
                            aim_axis='x',
@@ -498,6 +592,7 @@ def embed_biped_joints(mesh=None, root_count=1, spine_count=3, neck_count=1, kne
                            ssc_sts=False,
                            worldSpace=True,
                            world_axis='x')
+
 
     # Mirror Joints
     cmds.delete('right_shoulder')

@@ -163,15 +163,6 @@ class EmbedJoints:
         self.left_knee_segments = segments[3]
         self.right_knee_segments = segments[4]
 
-        # finger joints
-        self.create_finger_guides()
-        finger_root='left_hand'
-
-        fingers = self.create_finger_joints(finger_root=finger_root, finger_tip=self.finger_tip,
-                                thumb_num=3, index_num=3, middle_num=3, ring_num=3, pinky_num=3)
-        for fing in fingers:
-            cmds.parent(fing[0], finger_root)
-
         # Mirror Joints
         self.mirror = ['left_', 'right_']
 
@@ -206,6 +197,7 @@ class EmbedJoints:
         [side_pos_connect.append(n) for n in self.spine_segments.seg_joints]
         [side_pos_connect.append(n) for n in self.neck_segments.seg_joints]
 
+        # Body Mirror Connect
         for part in side_pos_connect:
             if ('spine' in part
                 or 'neck' in part
@@ -230,7 +222,39 @@ class EmbedJoints:
         self.left_arms = cmds.ls('left_shoulder', dag=True, type='joint')
         self.left_legs = cmds.ls('left_thigh', dag=True, type='joint')
 
+        ## Fingers
+        self.left_thumb = cmds.ls('left_thumb_01', dag=True, type='joint')
+        self.left_index = cmds.ls('left_index_01', dag=True, type='joint')
+        self.left_middle = cmds.ls('left_middle_01', dag=True, type='joint')
+        self.left_ring = cmds.ls('left_ring_01', dag=True, type='joint')
+        self.left_pinky = cmds.ls('left_pinky_01', dag=True, type='joint')
+        self.fingers = []
+        [self.fingers.append(n) for n in self.left_thumb]
+        [self.fingers.append(n) for n in self.left_index]
+        [self.fingers.append(n) for n in self.left_middle]
+        [self.fingers.append(n) for n in self.left_ring]
+        [self.fingers.append(n) for n in self.left_pinky]
+        [self.left_arms.remove(n) for n in self.fingers]
+
+        # Fingers Mirror Connect
+        for fing in self.fingers:
+            cmds.connectAttr(fing+'.t', 'mirror_'+fing+'.t', f=True)
+            cmds.connectAttr(fing+'.r', 'mirror_'+fing+'.r', f=True)
+
+            cmds.pointConstraint('mirror_'+fing, fing.replace(self.mirror[0], self.mirror[1]), w=True)
+            cmds.orientConstraint('mirror_'+fing, fing.replace(self.mirror[0], self.mirror[1]), w=True, mo=True)
+
+        # arm
         self.left_arm_pos_grp, self.left_arm_rot_grp, self.left_arm_pos_locs, self.left_arm_rot_locs = self.create_pos_rot_locs(self.left_arms)
+
+        # fingers
+        self.left_thumb_pos_grp, self.left_thumb_rot_grp, self.left_thumb_pos_locs, self.left_thumb_rot_locs = self.create_pos_rot_locs(self.left_thumb)
+        self.left_index_pos_grp, self.left_index_rot_grp, self.left_index_pos_locs, self.left_index_rot_locs = self.create_pos_rot_locs(self.left_index)
+        self.left_middle_pos_grp, self.left_middle_rot_grp, self.left_middle_pos_locs, self.left_middle_rot_locs = self.create_pos_rot_locs(self.left_middle)
+        self.left_ring_pos_grp, self.left_ring_rot_grp, self.left_ring_pos_locs, self.left_ring_rot_locs = self.create_pos_rot_locs(self.left_ring)
+        self.left_pinky_pos_grp, self.left_pinky_rot_grp, self.left_pinky_pos_locs, self.left_pinky_rot_locs = self.create_pos_rot_locs(self.left_pinky)
+
+        # leg
         self.left_leg_pos_grp, self.left_leg_rot_grp, self.left_leg_pos_locs, self.left_leg_rot_locs = self.create_pos_rot_locs(self.left_legs)
 
         self.spine_pos_grp, self.spine_rot_grp, self.spine_pos_locs, self.spine_rot_locs = self.create_pos_rot_locs(self.spine_segments.seg_joints)
@@ -238,6 +262,7 @@ class EmbedJoints:
         self.head_pos_grp, self.head_rot_grp, self.head_pos_locs, self.head_rot_locs = self.create_pos_rot_locs(['head'])
         self.hips_pos_grp, self.hips_rot_grp, self.hips_pos_locs, self.hips_rot_locs = self.create_pos_rot_locs(['hips'])
 
+        # Parent Body
         cmds.parent('left_hand_POS_LOC_GRP', 'left_arm_POS_LOC')
         # cmds.parent('left_knee_POS_LOC_GRP', 'left_thigh_POS_LOC')
         cmds.parent('left_ankle_POS_LOC_GRP', 'left_thigh_POS_LOC')
@@ -270,6 +295,33 @@ class EmbedJoints:
         self.add_scale_tweak_attr(grp=self.left_arm_pos_grp,
                              pos_ctrls=self.left_arm_pos_locs,
                              rot_ctrls=self.left_arm_rot_locs)
+
+        # fingers
+        # thumb
+        self.add_scale_tweak_attr(grp=self.left_thumb_pos_grp,
+                             pos_ctrls=self.left_thumb_pos_locs,
+                             rot_ctrls=self.left_thumb_rot_locs)
+
+        # index
+        self.add_scale_tweak_attr(grp=self.left_index_pos_grp,
+                             pos_ctrls=self.left_index_pos_locs,
+                             rot_ctrls=self.left_index_rot_locs)
+
+        # middle
+        self.add_scale_tweak_attr(grp=self.left_middle_pos_grp,
+                             pos_ctrls=self.left_middle_pos_locs,
+                             rot_ctrls=self.left_middle_rot_locs)
+
+        # ring
+        self.add_scale_tweak_attr(grp=self.left_ring_pos_grp,
+                             pos_ctrls=self.left_ring_pos_locs,
+                             rot_ctrls=self.left_ring_rot_locs)
+
+        # pinky
+        self.add_scale_tweak_attr(grp=self.left_pinky_pos_grp,
+                             pos_ctrls=self.left_pinky_pos_locs,
+                             rot_ctrls=self.left_pinky_rot_locs)
+
 
         # leg
         self.add_scale_tweak_attr(grp=self.left_leg_pos_grp,
@@ -333,6 +385,7 @@ class EmbedJoints:
         # cmds.parent(self.foot_roll_piv_grp, self.adjustment_grp)
         self.simple_set_overrideColorRGB(obj=self.adjustment_grp, color=[1, 1, 0])
 
+        # Body
         self.add_all_scale_tweak_attr(self.adjustment_grp, self.left_arm_pos_grp)
         self.add_all_scale_tweak_attr(self.adjustment_grp, self.left_leg_pos_grp)
         self.add_all_scale_tweak_attr(self.adjustment_grp, self.spine_pos_grp)
@@ -340,13 +393,25 @@ class EmbedJoints:
         self.add_all_scale_tweak_attr(self.adjustment_grp, self.head_pos_grp)
         self.add_all_scale_tweak_attr(self.adjustment_grp, self.hips_pos_grp)
 
+        # Fingers
+        self.add_all_scale_tweak_attr(self.adjustment_grp, self.left_thumb_pos_grp)
+        self.add_all_scale_tweak_attr(self.adjustment_grp, self.left_index_pos_grp)
+        self.add_all_scale_tweak_attr(self.adjustment_grp, self.left_middle_pos_grp)
+        self.add_all_scale_tweak_attr(self.adjustment_grp, self.left_ring_pos_grp)
+        self.add_all_scale_tweak_attr(self.adjustment_grp, self.left_pinky_pos_grp)
+
+        # Parent Fingers
+        cmds.parent('left_thumb_01_POS_LOC_GRP', 'left_hand_POS_LOC')
+        cmds.parent('left_index_01_POS_LOC_GRP', 'left_hand_POS_LOC')
+        cmds.parent('left_middle_01_POS_LOC_GRP', 'left_hand_POS_LOC')
+        cmds.parent('left_ring_01_POS_LOC_GRP', 'left_hand_POS_LOC')
+        cmds.parent('left_pinky_01_POS_LOC_GRP', 'left_hand_POS_LOC')
+
         cmds.select(self.mesh, r=True)
         mel.eval('fitPanel -selectedNoChildren;')
 
         self.lock_guide_locators()
 
-    def create_finger_guides(self):
-        self.finger_tip = brCommon.get_finger_tip(mesh=self.mesh)
 
     def add_all_scale_tweak_attr(self, all_grp=None, grp=None):
         if ('spine' in grp
@@ -362,7 +427,14 @@ class EmbedJoints:
             'spine':'spine',
             'neck':'neck',
             'head':'head',
-            'hips':'hips'
+            'hips':'hips',
+
+            'thumb':'thumb',
+            'index':'index',
+            'middle':'middle',
+            'ring':'ring',
+            'pinky':'pinky'
+
         }
         pos_scale_at = '{}PosLocsScale'.format(part_dict[part])
         rot_scale_at = '{}RotLocsScale'.format(part_dict[part])
@@ -627,9 +699,51 @@ class EmbedJoints:
         cmds.delete(left_ball_loc)
 
     def set_spine_axis_pv_up(self, spine_aim_axis='y', spine_up_axis='z', offset_aim_rotate=0):
+        self.set_rot_ctrls(rot_ctrls=self.spine_rot_locs,
+                           aim_axis=spine_aim_axis,
+                           up_axis=spine_up_axis,
+                           offset_aim_rotate=offset_aim_rotate)
+
+    # thumb
+    def set_thumb_axis_pv_up(self, thumb_aim_axis='y', thumb_up_axis='z', offset_aim_rotate=0):
+        self.set_rot_ctrls(rot_ctrls=self.left_thumb_rot_locs,
+                           aim_axis=thumb_aim_axis,
+                           up_axis=thumb_up_axis,
+                           offset_aim_rotate=offset_aim_rotate)
+
+    # index
+    def set_index_axis_pv_up(self, index_aim_axis='y', index_up_axis='z', offset_aim_rotate=0):
+        self.set_rot_ctrls(rot_ctrls=self.left_index_rot_locs,
+                           aim_axis=index_aim_axis,
+                           up_axis=index_up_axis,
+                           offset_aim_rotate=offset_aim_rotate)
+
+    # middle
+    def set_middle_axis_pv_up(self, middle_aim_axis='y', middle_up_axis='z', offset_aim_rotate=0):
+        self.set_rot_ctrls(rot_ctrls=self.left_middle_rot_locs,
+                           aim_axis=middle_aim_axis,
+                           up_axis=middle_up_axis,
+                           offset_aim_rotate=offset_aim_rotate)
+
+    # ring
+    def set_ring_axis_pv_up(self, ring_aim_axis='y', ring_up_axis='z', offset_aim_rotate=0):
+        self.set_rot_ctrls(rot_ctrls=self.left_ring_rot_locs,
+                           aim_axis=ring_aim_axis,
+                           up_axis=ring_up_axis,
+                           offset_aim_rotate=offset_aim_rotate)
+
+    # pinky
+    def set_pinky_axis_pv_up(self, pinky_aim_axis='y', pinky_up_axis='z', offset_aim_rotate=0):
+        self.set_rot_ctrls(rot_ctrls=self.left_pinky_rot_locs,
+                           aim_axis=pinky_aim_axis,
+                           up_axis=pinky_up_axis,
+                           offset_aim_rotate=offset_aim_rotate)
+
+
+    def set_rot_ctrls(self, rot_ctrls=None, aim_axis='y', up_axis='z', offset_aim_rotate=0):
         aim_joints = []
         pa = None
-        for srloc in self.spine_rot_locs:
+        for srloc in rot_ctrls:
             aim_jnt = cmds.createNode('joint', ss=True)
             cmds.matchTransform(aim_jnt, srloc, pos=True, rot=True, scl=False)
             if pa:
@@ -641,12 +755,12 @@ class EmbedJoints:
 
         up_obj = cmds.spaceLocator()[0]
         cmds.matchTransform(up_obj, aim_joints[0])
-        axis_vec = [v*1000 for v in AXIS_DICT[spine_up_axis]]
+        axis_vec = [v*1000 for v in AXIS_DICT[up_axis]]
         cmds.xform(up_obj, t=axis_vec, ws=True, a=True)
 
         brMJ.aim_joints(sel=aim_joints,
-                         aim_axis=spine_aim_axis,
-                         up_axis=spine_up_axis,
+                         aim_axis=aim_axis,
+                         up_axis=up_axis,
                          worldUpType='object',
                          worldUpObject=up_obj,
                          worldSpace=False,
@@ -654,13 +768,13 @@ class EmbedJoints:
 
         cmds.delete(up_obj)
 
-        for aim_jnt, srloc in zip(aim_joints, self.spine_rot_locs):
+        for aim_jnt, srloc in zip(aim_joints, rot_ctrls):
             cmds.matchTransform(srloc, aim_jnt, pos=False, rot=True, scl=False)
 
         cmds.delete(aim_joints)
 
-        offset_rotate = [v*offset_aim_rotate for v in AXIS_DICT[spine_aim_axis]]
-        for obj in self.spine_rot_locs:
+        offset_rotate = [v*offset_aim_rotate for v in AXIS_DICT[aim_axis]]
+        for obj in rot_ctrls:
             cmds.rotate(*offset_rotate, obj, r=True, os=True, fo=True)
 
     def set_world_aim(self, obj=None, wld_front_axis='z', wld_left_axis='x'):
@@ -675,94 +789,6 @@ class EmbedJoints:
                 cmds.xform(rot_loc+'_OFFSET_GRP', t=[0,0,0], a=True)
             except:
                 print(traceback.format_exc())
-
-    def create_finger_joints(self, finger_root=None, finger_tip=None,
-                            thumb_num=3, index_num=3, middle_num=3, ring_num=3, pinky_num=3):
-
-        def insert_finger_joints(base=None, insert_range=None, num=None):
-            joints = []
-            parent = base
-            step = 1.0 / (num-1)
-
-            joints.append(parent)
-            for i in range(num-1):
-                dup = cmds.duplicate(parent)[0]
-                virtual_trs = brCommon.get_virtual_transform(obj=dup, relative_move=[insert_range*step,0,0])
-                cmds.xform(dup, t=virtual_trs[0], ro=virtual_trs[1], ws=True, a=True)
-                cmds.parent(dup, parent)
-                joints.append(dup)
-                
-                parent = dup
-                step = step*(i+1)
-
-            return joints
-
-        finger_tip_loc = cmds.spaceLocator()[0]
-        finger_tip_wt = cmds.xform(finger_tip, q=True, t=True, ws=True)
-        cmds.xform(finger_tip_loc, t=finger_tip_wt, ws=True, a=True)
-
-        # middle
-        left_middle_01 = cmds.createNode('joint', n='left_middle_01', ss=True)
-
-        brCommon.set_mid_point(finger_root, finger_tip, left_middle_01, 0.5)
-
-        brAim.aim_nodes(base=finger_tip_loc,
-                        target=left_middle_01,
-                        aim_axis='x',
-                        up_axis='z',
-                        worldUpType='object',
-                        worldUpObject=None,
-                        worldSpace=True,
-                        world_axis='y')
-
-        middle_tip_dis = brCommon.distance_between(left_middle_01, finger_tip)
-        finger_range = middle_tip_dis * 0.3
-
-        middle_joints = insert_finger_joints(base=left_middle_01, insert_range=middle_tip_dis, num=middle_num)
-
-        # index
-        left_index_01 = cmds.createNode('joint', n='left_index_01', ss=True)
-        index_virtual_trs = brCommon.get_virtual_transform(obj=left_middle_01, relative_move=[0,-finger_range/2,finger_range])
-        cmds.xform(left_index_01, t=index_virtual_trs[0], ro=index_virtual_trs[1], ws=True, a=True)
-
-        index_joints = insert_finger_joints(base=left_index_01, insert_range=middle_tip_dis, num=index_num)
-
-        # ring
-        left_ring_01 = cmds.createNode('joint', n='left_ring_01', ss=True)
-        ring_virtual_trs = brCommon.get_virtual_transform(obj=left_middle_01, relative_move=[0,-finger_range/2,-finger_range])
-        cmds.xform(left_ring_01, t=ring_virtual_trs[0], ro=ring_virtual_trs[1], ws=True, a=True)
-
-        ring_joints = insert_finger_joints(base=left_ring_01, insert_range=middle_tip_dis, num=ring_num)
-
-        # pinky
-        left_pinky_01 = cmds.createNode('joint', n='left_pinky_01', ss=True)
-        pinky_virtual_trs = brCommon.get_virtual_transform(obj=left_ring_01, relative_move=[0,-finger_range/2.5,-finger_range])
-        cmds.xform(left_pinky_01, t=pinky_virtual_trs[0], ro=pinky_virtual_trs[1], ws=True, a=True)
-
-        pinky_joints = insert_finger_joints(base=left_pinky_01, insert_range=middle_tip_dis, num=pinky_num)
-
-        # thumb
-        left_thumb_01 = cmds.createNode('joint', n='left_thumb_01', ss=True)
-        brCommon.set_mid_point(finger_root, finger_tip, left_thumb_01, 0.1)
-        brAim.aim_nodes(base=finger_tip_loc,
-                        target=left_thumb_01,
-                        aim_axis='x',
-                        up_axis='z',
-                        worldUpType='object',
-                        worldUpObject=None,
-                        worldSpace=True,
-                        world_axis='y')
-
-        thumb_virtual_trs = brCommon.get_virtual_transform(obj=left_thumb_01, relative_move=[0,-finger_range/2,finger_range/2])
-        cmds.xform(left_thumb_01, t=thumb_virtual_trs[0], ro=thumb_virtual_trs[1], ws=True, a=True)
-        cmds.xform(left_thumb_01, ro=[0, -45, -30], os=True, r=True)
-
-        thumb_joints = insert_finger_joints(base=left_thumb_01, insert_range=middle_tip_dis, num=thumb_num)
-
-        cmds.delete(finger_tip_loc)
-
-        return [thumb_joints, index_joints, middle_joints, ring_joints, pinky_joints]
-
 
     def lock_guide_locators(self):
         pos_locs = cmds.ls('*_POS_LOC', tr=True)
