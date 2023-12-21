@@ -219,7 +219,7 @@ class Segments:
             self.seg_joints.append(self.base_name)
 
 def create_finger_joints(finger_root=None, finger_tip=None,
-                        thumb_num=3, index_num=3, middle_num=3, ring_num=3, pinky_num=3):
+                        thumb_count=3, index_count=3, middle_count=3, ring_count=3, pinky_count=3):
 
     def insert_finger_joints(base=None, insert_range=None, num=None):
         joints = []
@@ -260,28 +260,28 @@ def create_finger_joints(finger_root=None, finger_tip=None,
     middle_tip_dis = brCommon.distance_between(left_middle_01, finger_tip)
     finger_range = middle_tip_dis * 0.3
 
-    middle_joints = insert_finger_joints(base=left_middle_01, insert_range=middle_tip_dis, num=middle_num)
+    middle_joints = insert_finger_joints(base=left_middle_01, insert_range=middle_tip_dis, num=middle_count)
 
     # index
     left_index_01 = cmds.createNode('joint', n='left_index_01', ss=True)
     index_virtual_trs = brCommon.get_virtual_transform(obj=left_middle_01, relative_move=[0,-finger_range/2,finger_range])
     cmds.xform(left_index_01, t=index_virtual_trs[0], ro=index_virtual_trs[1], ws=True, a=True)
 
-    index_joints = insert_finger_joints(base=left_index_01, insert_range=middle_tip_dis, num=index_num)
+    index_joints = insert_finger_joints(base=left_index_01, insert_range=middle_tip_dis, num=index_count)
 
     # ring
     left_ring_01 = cmds.createNode('joint', n='left_ring_01', ss=True)
     ring_virtual_trs = brCommon.get_virtual_transform(obj=left_middle_01, relative_move=[0,-finger_range/2,-finger_range])
     cmds.xform(left_ring_01, t=ring_virtual_trs[0], ro=ring_virtual_trs[1], ws=True, a=True)
 
-    ring_joints = insert_finger_joints(base=left_ring_01, insert_range=middle_tip_dis, num=ring_num)
+    ring_joints = insert_finger_joints(base=left_ring_01, insert_range=middle_tip_dis, num=ring_count)
 
     # pinky
     left_pinky_01 = cmds.createNode('joint', n='left_pinky_01', ss=True)
     pinky_virtual_trs = brCommon.get_virtual_transform(obj=left_ring_01, relative_move=[0,-finger_range/2.5,-finger_range])
     cmds.xform(left_pinky_01, t=pinky_virtual_trs[0], ro=pinky_virtual_trs[1], ws=True, a=True)
 
-    pinky_joints = insert_finger_joints(base=left_pinky_01, insert_range=middle_tip_dis, num=pinky_num)
+    pinky_joints = insert_finger_joints(base=left_pinky_01, insert_range=middle_tip_dis, num=pinky_count)
 
     # thumb
     left_thumb_01 = cmds.createNode('joint', n='left_thumb_01', ss=True)
@@ -299,9 +299,19 @@ def create_finger_joints(finger_root=None, finger_tip=None,
     cmds.xform(left_thumb_01, t=thumb_virtual_trs[0], ro=thumb_virtual_trs[1], ws=True, a=True)
     cmds.xform(left_thumb_01, ro=[0, -45, -30], os=True, r=True)
 
-    thumb_joints = insert_finger_joints(base=left_thumb_01, insert_range=middle_tip_dis, num=thumb_num)
+    thumb_joints = insert_finger_joints(base=left_thumb_01, insert_range=middle_tip_dis, num=thumb_count)
 
     cmds.delete(finger_tip_loc)
+
+    # straighten
+    middle_pos = cmds.xform(middle_joints[0], q=True, t=True, ws=True)
+    index_pos = cmds.xform(index_joints[0], q=True, t=True, ws=True)
+    ring_pos = cmds.xform(ring_joints[0], q=True, t=True, ws=True)
+    pinky_pos = cmds.xform(pinky_joints[0], q=True, t=True, ws=True)
+
+    cmds.xform(index_joints[0], t=[middle_pos[0], index_pos[1], index_pos[2]])
+    cmds.xform(ring_joints[0], t=[middle_pos[0], ring_pos[1], ring_pos[2]])
+    cmds.xform(pinky_joints[0], t=[middle_pos[0], pinky_pos[1], pinky_pos[2]])
 
     return [thumb_joints, index_joints, middle_joints, ring_joints, pinky_joints]
 
