@@ -43,7 +43,8 @@ embed = brEJ.EmbedJoints(mesh=sel[0],
                  neck_count=1,
                  knee_count=1,
                  type='biped',
-                 create=True)
+                 create=True,
+                 guide_name='HumanBody')
 
 embed.set_arm_axis_pv_up(shoulder_aim_axis='x',
                          shoulder_up_axis='-y',
@@ -75,7 +76,15 @@ embed.set_spine_axis_pv_up(spine_aim_axis='y',
                            spine_up_axis='z',
                            offset_aim_rotate=0)
 
+embed.set_thumb_axis_pv_up('x', 'y')
+embed.set_index_axis_pv_up('x', 'x')
+embed.set_middle_axis_pv_up('x', 'x')
+embed.set_ring_axis_pv_up('x', 'x')
+embed.set_pinky_axis_pv_up('x', 'x')
+
 embed.publish_adjust_joints()
+
+embed.set_world_aim(obj=None, wld_front_axis='z', wld_left_axis='x')
 
 # select 2 verts and locator
 import buildRig.common as brCommon
@@ -105,7 +114,8 @@ class EmbedJoints:
                  knee_count=1,
                  type=None,
                  create=None,
-                 guide_name=None):
+                 guide_name=None,
+                 set_from_current=None):
 
         self.mesh = mesh
         self.root_count = root_count
@@ -115,6 +125,7 @@ class EmbedJoints:
         self.type = type
         self.create = create
         self.guide_name = guide_name
+        self.set_from_current = set_from_current
 
         self.set_json_file()
 
@@ -132,6 +143,12 @@ class EmbedJoints:
         if self.guide_name:
             self.guide_name_adj_json = GUIDE_PATH + '/{}_adjustment.json'.format(self.guide_name)
             self.guide_name_footroll_json = GUIDE_PATH + '/{}_footroll.json'.format(self.guide_name)
+        else:
+            self.set_json_file_from_mesh()
+
+    def set_json_file_from_mesh(self):
+        self.guide_name_adj_json = GUIDE_PATH + '/{}_adjustment.json'.format(self.mesh)
+        self.guide_name_footroll_json = GUIDE_PATH + '/{}_footroll.json'.format(self.mesh)
 
     def create_biped_joints(self):
         # First select the shape, not the transform.
@@ -851,12 +868,18 @@ class EmbedJoints:
             if self.guide_name:
                 json_file = self.guide_name_adj_json
             else:
-                json_file = self.guide_cur_adj_json
+                if self.set_from_current:
+                    json_file = self.guide_cur_adj_json
+                else:
+                    return
         elif type == 'footroll':
             if self.guide_name:
                 json_file = self.guide_name_footroll_json
             else:
-                json_file = self.guide_cur_footroll_json
+                if self.set_from_current:
+                    json_file = self.guide_cur_footroll_json
+                else:
+                    return
         # nodes_values = eval(cmds.getAttr('root.adjustmentDict'))
         if not os.path.isfile(json_file):
             return
