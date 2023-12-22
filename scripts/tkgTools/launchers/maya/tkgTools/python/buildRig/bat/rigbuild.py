@@ -193,10 +193,16 @@ class Build(object):
                             self.setup_rig(rig_setup_id=rig_setup_id, chara_path=chara_path, save_file_path=save_file_path)
                             builded_characters.append((rig_setup_id))
                         except Exception as e:
+                            sys.stdout.write('{}\n'.format(traceback.format_exc()))
+                            sys.stdout.flush()
+
                             logging.info(traceback.format_exc())
                             builded_error_characters.append(rig_setup_id)
 
             except Exception as e:
+                sys.stdout.write('{}\n'.format(traceback.format_exc()))
+                sys.stdout.flush()
+
                 # logging.info(traceback.format_exc())
                 # logger.error(e, exc_info=e)
                 exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -311,6 +317,9 @@ class Build(object):
                         mel.eval('source "{0}"'.format(str(build_file)))
 
                 except Exception as e:
+                    sys.stdout.write('{}\n'.format(traceback.format_exc()))
+                    sys.stdout.flush()
+
                     # logging.info(traceback.format_exc())
                     # logger.error(e, exc_info=e)
                     exc_type, exc_obj, exc_tb = sys.exc_info()
