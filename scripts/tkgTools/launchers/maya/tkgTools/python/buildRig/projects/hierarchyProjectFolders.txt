@@ -9,4 +9,3 @@ projectName/charaType/060_user/_old
 projectName/charaType/log
 projectName/charaType/_old
 projectName/environment
-projectName/environment/setting.json

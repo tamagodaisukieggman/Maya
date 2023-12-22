@@ -1,0 +1,189 @@
+{
+    "FK": {
+        "offsets": [
+            "GRP",
+            "OFFSET",
+            "SPACE",
+            "MOCAP",
+            "DRV"
+        ],
+        "ctrl": [
+            "",
+            "",
+            [
+                "_CURVE",
+                "_CTRL"
+            ]
+        ],
+        "colors": {
+            "center": {
+                "value": [
+                    1.0,
+                    1.0,
+                    0
+                ],
+                "filter": [
+                    "center*",
+                    "C_*",
+                    "*_C"
+                ]
+            },
+            "left": {
+                "value": [
+                    1.0,
+                    0.214,
+                    0.214
+                ],
+                "filter": [
+                    "left*",
+                    "L_*",
+                    "*_L"
+                ]
+            },
+            "right": {
+                "value": [
+                    0.421,
+                    0.421,
+                    0.796
+                ],
+                "filter": [
+                    "right*",
+                    "R_*",
+                    "*_R"
+                ]
+            },
+            "other": {
+                "value": [
+                    0.7,
+                    0.7,
+                    0.1
+                ],
+                "filter": [
+                    ""
+                ]
+            }
+        }
+    },
+    "IK": {
+        "offsets": [
+            "GRP",
+            "OFFSET",
+            "SPACE",
+            "MOCAP",
+            "DRV"
+        ],
+        "ctrl": [
+            "",
+            "",
+            [
+                "_CURVE",
+                "_CTRL"
+            ]
+        ],
+        "colors": {
+            "center": {
+                "value": [
+                    1.0,
+                    1.0,
+                    0
+                ],
+                "filter": [
+                    "center*",
+                    "C_*",
+                    "*_C"
+                ]
+            },
+            "left": {
+                "value": [
+                    1.0,
+                    0.214,
+                    0.214
+                ],
+                "filter": [
+                    "left*",
+                    "L_*",
+                    "*_L"
+                ]
+            },
+            "right": {
+                "value": [
+                    0.421,
+                    0.421,
+                    0.796
+                ],
+                "filter": [
+                    "right*",
+                    "R_*",
+                    "*_R"
+                ]
+            },
+            "other": {
+                "value": [
+                    0.7,
+                    0.7,
+                    0.1
+                ],
+                "filter": [
+                    ""
+                ]
+            }
+        }
+    },
+    "ROOT": {
+        "offsets": [
+            "GRP",
+            "OFFSET",
+            "SPACE",
+            "MOCAP",
+            "DRV"
+        ],
+        "ctrl": [
+            "",
+            "",
+            [
+                "_CURVE",
+                "_CTRL"
+            ]
+        ],
+        "colors": {
+            "global": {
+                "value": [
+                    0.199,
+                    0.108,
+                    0.315
+                ],
+                "filter": [
+                    "*Global*"
+                ]
+            },
+            "local": {
+                "value": [
+                    0.069,
+                    0.377,
+                    0.694
+                ],
+                "filter": [
+                    "*Local*"
+                ]
+            },
+            "root": {
+                "value": [
+                    1.0,
+                    1.0,
+                    0.24
+                ],
+                "filter": [
+                    "*Root*"
+                ]
+            }
+        }
+    },
+    "RIGGRPS": {
+        "grps": [
+            "CHAR",
+            "MODEL",
+            "RIG",
+            "SKEL"
+        ]
+    }
+}

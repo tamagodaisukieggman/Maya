@@ -45,7 +45,7 @@ settings.export_settings()
         else:
             self.setting_json = DATA_PATH + '/setting.json'
 
-        self.default_settings()
+        # self.default_settings()
 
         if not os.path.isdir(DATA_PATH):
             os.makedirs(DATA_PATH)

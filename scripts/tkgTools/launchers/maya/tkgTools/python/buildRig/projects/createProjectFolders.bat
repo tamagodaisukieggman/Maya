@@ -49,6 +49,7 @@ copy %basePath%hierarchyCharaType.txt %currentDir%\projectName\
 copy %basePath%buildCharaType.bat %currentDir%\projectName\charaType\
 copy %basePath%buildCharaTypePlusImage.bat %currentDir%\projectName\charaType\
 copy %basePath%buildbase.xml %currentDir%\projectName\charaType\
+copy %basePath%setting.json %currentDir%\projectName\environment\
 
 set "sourcePath=%libsPath%buildPackage\projectName\charaType"
 set "destPath=%currentDir%\projectName\charaType"
