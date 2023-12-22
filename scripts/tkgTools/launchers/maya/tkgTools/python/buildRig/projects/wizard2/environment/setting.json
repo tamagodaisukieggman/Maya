@@ -253,5 +253,13 @@
                 ]
             }
         }
+    },
+    "RIGGRPS": {
+        "grps": [
+            "CHAR",
+            "MODEL",
+            "RIG",
+            "SKEL"
+        ]
     }
 }
