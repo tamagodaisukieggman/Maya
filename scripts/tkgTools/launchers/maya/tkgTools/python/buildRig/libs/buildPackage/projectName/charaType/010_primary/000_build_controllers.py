@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from imp import reload
 import os
+import sys
 import traceback
 
 import maya.cmds as cmds
@@ -14,6 +15,9 @@ reload(brRoot)
 reload(brFk)
 reload(brCommon)
 reload(brFile)
+
+sys.stdout.write('setup_env_path, {}\n'.format(setup_env_path))
+sys.stdout.flush()
 
 # rig_setup_id = 'bahamut'
 # chara_path

@@ -220,6 +220,7 @@ class Build(object):
         # --
 
         setup_path='/'.join(self.build_file.split('/')[:-1])
+        setup_env_path='/'.join(self.build_file.split('/')[:-2]) + '/environment'
 
         # new file
         if chara_path:
@@ -256,7 +257,10 @@ class Build(object):
             setup_folder_spl = setup_file_path.split('/')[-1]
             if self.check_files_in_folder(setup_file_path):
                 logging.info('\n'+'#'*10+' {}:{} Start'.format(format_rig_setup_id, setup_folder_spl)+'#'*10+'\n')
-                self.run_files(setup_file_path=setup_file_path, rig_setup_id=format_rig_setup_id, chara_path=chara_path)
+                self.run_files(setup_file_path=setup_file_path,
+                               rig_setup_id=format_rig_setup_id,
+                               chara_path=chara_path,
+                               setup_env_path=setup_env_path)
                 logging.info('\n'+'#'*10+' {}:{} End '.format(format_rig_setup_id, setup_folder_spl)+'#'*10+'\n')
 
         day = u'{0}'.format(datetime.now().strftime("%Y%m%d"))
@@ -282,7 +286,7 @@ class Build(object):
 
         cmds.file(new=True, f=True)
 
-    def run_files(self, setup_file_path=None, rig_setup_id=None, chara_path=None):
+    def run_files(self, setup_file_path=None, rig_setup_id=None, chara_path=None, setup_env_path=None):
         for root, dirs, files in os.walk(setup_file_path):
             if root.endswith('old'):
                 continue
@@ -294,9 +298,10 @@ class Build(object):
                 try:
                     if build_file.endswith('.py'):
                         if 2022 <= float(maya_version):
-                            build_format = "rig_setup_id = '{}';chara_path = '{}';build_file = '{}';".format(rig_setup_id,
-                                                                                                             chara_path,
-                                                                                                             str(build_file))
+                            build_format = "rig_setup_id='{}';chara_path='{}';build_file='{}';setup_env_path='{}'".format(rig_setup_id,
+                                                                                                       chara_path,
+                                                                                                       str(build_file),
+                                                                                                       setup_env_path)
                             exec(build_format + open(str(build_file), encoding="utf-8").read(), globals())
                         else:
                             # exec(codecs.open(str(build_file), encoding="utf-8").read())
