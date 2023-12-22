@@ -34,11 +34,16 @@ settings = brFile.Settings()
 settings.default_settings()
 settings.export_settings()
     """
-    def __init__(self):
+    def __init__(self, setup_env_path=None):
         self.setting_dict = OrderedDict()
 
+        self.setup_env_path = setup_env_path
+
         DATA_PATH = DIR_PATH + '/data'
-        self.setting_json = DATA_PATH + '/setting.json'
+        if self.setup_env_path:
+            self.setting_json = self.setup_env_path + '/setting.json'
+        else:
+            self.setting_json = DATA_PATH + '/setting.json'
 
         self.default_settings()
 
