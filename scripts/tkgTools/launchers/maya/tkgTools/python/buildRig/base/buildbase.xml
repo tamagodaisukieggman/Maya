@@ -1,10 +1,7 @@
 <?xml version="1.0" ?>
 <buildbasetype>
   <characters>
-    <character charaID="chr0005" basejoint="" savefilepath="" />
-    <character charaID="chr0006" basejoint="" savefilepath="" />
-    <character charaID="p2" basejoint="" savefilepath="" />
-    <character charaID="p1" basejoint="" savefilepath="" />
-    <character charaID="armgimmick" basejoint="" savefilepath="" />
+    <character rigSetupID="bahamut" charaPath="F:/myTechData/Maya/sandbox/cygames/wizard2/chr/bahamut/maya/Bahamut.ma" savefilepath="" />
+    <character rigSetupID="bahamut" charaPath="//cydrive01/104_projects/148_wizard2/30_design/02_3DCG/05_rig/env/bahamut/20231215/Bahamut.ma" savefilepath="" />
   </characters>
 </buildbasetype>
