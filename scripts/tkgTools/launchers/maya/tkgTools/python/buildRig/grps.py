@@ -7,13 +7,29 @@ import maya.cmds as cmds
 import maya.mel as mel
 
 import buildRig.transform as brTrs
+import buildRig.file as brFile
 reload(brTrs)
+reload(brFile)
 
-class RigBase:
-    def __init__(self):
-        self.rig_grps = ['CHAR', 'MODEL', 'RIG', 'SKEL']
-        self.rig_grps = ['rig', 'geo_grp', 'module_grp', 'skel_grp']
-        self.create()
+class RigModule:
+    def __init__(self,
+                 module=None,
+                 side=None,
+                 setup_env_path=None):
+        self.module = module
+        self.side = side
+        self.setup_env_path = setup_env_path
+
+        self.settings = brFile.Settings(setup_env_path=self.setup_env_path)
+        self.rig_grps_settings = self.settings.setting_dict['RIGGRPS']
+
+        # Create Rig Grps
+        self.rig_grps = self.rig_grps_settings['grps']
+
+        trs = brTrs.Transforms(self.rig_grps)
+        trs.create()
+        trs.do_parent_root()
+
         self.char_grp = self.rig_grps[0]
         self.model_grp = self.rig_grps[1]
         self.rig_grp = self.rig_grps[2]
@@ -45,20 +61,7 @@ class RigBase:
             cmds.addAttr(self.char_grp, ln="rigVisibility", dv=1, at='double', min=0, max=1, k=1)
             cmds.connectAttr(self.char_grp+'.rigVisibility', '{}.v'.format(self.rig_grp), f=1)
 
-    def create(self):
-        trs = brTrs.Transforms(self.rig_grps)
-        trs.create()
-        trs.do_parent_root()
-
-
-class RigModule(RigBase):
-    def __init__(self,
-                 module=None,
-                 side=None):
-        super().__init__()
-        self.module = module
-        self.side = side
-
+        # Create Module
         if not self.module:
             self.module = 'default'
         if not self.side:

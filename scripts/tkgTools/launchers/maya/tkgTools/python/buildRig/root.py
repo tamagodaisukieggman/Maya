@@ -27,6 +27,7 @@ class Root(brGrp.RigModule):
     def __init__(self,
                  module=None,
                  side=None,
+                 setup_env_path=None,
                  rig_joints_parent=None,
                  rig_ctrls_parent=None,
                  namespace=None,
@@ -75,9 +76,10 @@ except:
 fk.base_connection()
         """
         super(Root, self).__init__(module=module,
-                                 side=side)
+                                 side=side,
+                                 setup_env_path=setup_env_path)
 
-        self.settings = brFile.Settings()
+        self.settings = brFile.Settings(setup_env_path=self.setup_env_path)
         self.root_settings = self.settings.setting_dict['ROOT']
 
         self.rig_joints_parent = rig_joints_parent

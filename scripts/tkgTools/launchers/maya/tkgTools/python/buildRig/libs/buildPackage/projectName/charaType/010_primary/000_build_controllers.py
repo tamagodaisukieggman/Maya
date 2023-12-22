@@ -43,7 +43,8 @@ try:
                  axis=[0,0,0],
                  scale=3000,
                  scale_step=-500,
-                 prefix=None)
+                 prefix=None,
+                 setup_env_path=setup_env_path)
 except:
     print(traceback.format_exc())
 
@@ -64,7 +65,8 @@ hip_fk = brFk.Fk(module='hip',
              axis=[0,0,0],
              scale=2000,
              scale_step=-90,
-             prefix='FK_')
+             prefix='FK_',
+             setup_env_path=setup_env_path)
 
 hip_fk.base_connection()
 
@@ -85,7 +87,8 @@ spine_fk = brFk.Fk(module='spine',
              axis=[90,0,0],
              scale=1000,
              scale_step=-90,
-             prefix='FK_')
+             prefix='FK_',
+             setup_env_path=setup_env_path)
 
 spine_fk.connect_children()
 spine_fk.base_connection()
@@ -105,7 +108,8 @@ neck_fk = brFk.Fk(module='neck',
              axis=[180,0,0],
              scale=700,
              scale_step=-90,
-             prefix='FK_')
+             prefix='FK_',
+             setup_env_path=setup_env_path)
 
 neck_fk.base_connection()
 
@@ -139,7 +143,8 @@ head_fk = brFk.Fk(module='head',
              axis=[0,0,0],
              scale=800,
              scale_step=-90,
-             prefix='FK_')
+             prefix='FK_',
+             setup_env_path=setup_env_path)
 
 head_fk.base_connection()
 
@@ -158,7 +163,8 @@ jaw_fk = brFk.Fk(module='jaw',
              axis=[0,0,0],
              scale=600,
              scale_step=-90,
-             prefix='FK_')
+             prefix='FK_',
+             setup_env_path=setup_env_path)
 
 jaw_fk.base_connection()
 
@@ -178,7 +184,8 @@ tongue_fk = brFk.Fk(module='tongue',
              axis=[0,0,0],
              scale=400,
              scale_step=-90,
-             prefix='FK_')
+             prefix='FK_',
+             setup_env_path=setup_env_path)
 
 tongue_fk.base_connection()
 
@@ -265,7 +272,8 @@ for side in sides:
                  axis=[0,0,0],
                  scale=700,
                  scale_step=-100,
-                 prefix='FK_')
+                 prefix='FK_',
+                 setup_env_path=setup_env_path)
 
     arm_fk.connect_children()
     arm_fk.base_connection()
@@ -298,7 +306,8 @@ for side in sides:
                  axis=[0,0,0],
                  scale=700,
                  scale_step=-100,
-                 prefix='FK_')
+                 prefix='FK_',
+                 setup_env_path=setup_env_path)
 
     leg_fk.connect_children()
     leg_fk.base_connection()
@@ -316,7 +325,8 @@ for side in sides:
                  axis=[0,0,0],
                  scale=500,
                  scale_step=-10,
-                 prefix='FK_')
+                 prefix='FK_',
+                 setup_env_path=setup_env_path)
 
     wing_fk.connect_children()
     wing_fk.base_connection()
@@ -350,7 +360,8 @@ for side in sides:
                  axis=[0,0,0],
                  scale=200,
                  scale_step=-30,
-                 prefix='FK_')
+                 prefix='FK_',
+                 setup_env_path=setup_env_path)
 
     thumb_fk.connect_children()
     thumb_fk.base_connection()
@@ -368,7 +379,8 @@ for side in sides:
                  axis=[0,0,0],
                  scale=200,
                  scale_step=-30,
-                 prefix='FK_')
+                 prefix='FK_',
+                 setup_env_path=setup_env_path)
 
     index_fk.connect_children()
     index_fk.base_connection()
@@ -386,7 +398,8 @@ for side in sides:
                  axis=[0,0,0],
                  scale=200,
                  scale_step=-30,
-                 prefix='FK_')
+                 prefix='FK_',
+                 setup_env_path=setup_env_path)
 
     middle_fk.connect_children()
     middle_fk.base_connection()
@@ -404,7 +417,8 @@ for side in sides:
                  axis=[0,0,0],
                  scale=200,
                  scale_step=-30,
-                 prefix='FK_')
+                 prefix='FK_',
+                 setup_env_path=setup_env_path)
 
     ring_fk.connect_children()
     ring_fk.base_connection()
@@ -432,7 +446,8 @@ tail_fk = brFk.Fk(module='tail',
              axis=[0,90,180],
              scale=1000,
              scale_step=-90,
-             prefix='FK_')
+             prefix='FK_',
+             setup_env_path=setup_env_path)
 
 tail_fk.connect_children()
 tail_fk.base_connection()

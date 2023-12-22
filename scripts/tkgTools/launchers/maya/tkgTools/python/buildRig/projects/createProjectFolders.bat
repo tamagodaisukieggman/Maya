@@ -56,4 +56,3 @@ xcopy "%sourcePath%" "%destPath%" /E /H /R /Y
 
 :: 完了メッセージを表示
 echo フォルダおよびファイルの作成が完了しました。
-pause

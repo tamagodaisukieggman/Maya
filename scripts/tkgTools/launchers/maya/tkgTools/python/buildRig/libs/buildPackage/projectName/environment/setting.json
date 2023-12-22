@@ -12,7 +12,7 @@
             "",
             [
                 "_CURVE",
-                "_ctrl"
+                "_CTRL"
             ]
         ],
         "colors": {
@@ -23,7 +23,7 @@
                     0
                 ],
                 "filter": [
-                    "center",
+                    "center*",
                     "C_*",
                     "*_C"
                 ]
@@ -35,7 +35,7 @@
                     0.214
                 ],
                 "filter": [
-                    "left",
+                    "left*",
                     "L_*",
                     "*_L"
                 ]
@@ -47,79 +47,19 @@
                     0.796
                 ],
                 "filter": [
-                    "right",
+                    "right*",
                     "R_*",
                     "*_R"
                 ]
             },
-            "hips": {
+            "other": {
                 "value": [
-                    0.291,
-                    1.0,
-                    0.291
+                    0.7,
+                    0.7,
+                    0.1
                 ],
                 "filter": [
-                    "*Hip*"
-                ]
-            },
-            "spine": {
-                "value": [
-                    1.0,
-                    1.0,
-                    0.314
-                ],
-                "filter": [
-                    "*Spine*"
-                ]
-            },
-            "tails": {
-                "value": [
-                    0.2,
-                    0.2,
-                    0.7
-                ],
-                "filter": [
-                    "*Tail*"
-                ]
-            },
-            "neck": {
-                "value": [
-                    0.76,
-                    0.4,
-                    0.135
-                ],
-                "filter": [
-                    "*Neck*"
-                ]
-            },
-            "head": {
-                "value": [
-                    0.3,
-                    0.2,
-                    0.6
-                ],
-                "filter": [
-                    "*Head*"
-                ]
-            },
-            "jaw": {
-                "value": [
-                    0.3,
-                    0.9,
-                    0.6
-                ],
-                "filter": [
-                    "*Jaw*"
-                ]
-            },
-            "tongue": {
-                "value": [
-                    0.5,
-                    0.5,
-                    0.2
-                ],
-                "filter": [
-                    "*Tongue*"
+                    ""
                 ]
             }
         }
@@ -148,7 +88,7 @@
                     0
                 ],
                 "filter": [
-                    "center",
+                    "center*",
                     "C_*",
                     "*_C"
                 ]
@@ -156,23 +96,23 @@
             "left": {
                 "value": [
                     1.0,
-                    0,
-                    0
+                    0.214,
+                    0.214
                 ],
                 "filter": [
-                    "left",
+                    "left*",
                     "L_*",
                     "*_L"
                 ]
             },
             "right": {
                 "value": [
-                    0,
-                    0,
-                    1.0
+                    0.421,
+                    0.421,
+                    0.796
                 ],
                 "filter": [
-                    "right",
+                    "right*",
                     "R_*",
                     "*_R"
                 ]
@@ -184,7 +124,7 @@
                     0.1
                 ],
                 "filter": [
-                    "*"
+                    ""
                 ]
             }
         }
@@ -202,56 +142,48 @@
             "",
             [
                 "_CURVE",
-                "_ctrl"
+                "_CTRL"
             ]
         ],
         "colors": {
-            "center": {
+            "global": {
                 "value": [
                     0.199,
                     0.108,
                     0.315
                 ],
                 "filter": [
-                    "*Global*",
-                    "C_*",
-                    "*_C"
+                    "*Global*"
                 ]
             },
-            "left": {
+            "local": {
                 "value": [
                     0.069,
                     0.377,
                     0.694
                 ],
                 "filter": [
-                    "*Local*",
-                    "L_*",
-                    "*_L"
+                    "*Local*"
                 ]
             },
-            "right": {
+            "root": {
                 "value": [
-                    1,
-                    1,
+                    1.0,
+                    1.0,
                     0.24
                 ],
                 "filter": [
-                    "*Root*",
-                    "R_*",
-                    "*_R"
-                ]
-            },
-            "other": {
-                "value": [
-                    0.7,
-                    0.7,
-                    0.1
-                ],
-                "filter": [
-                    ""
+                    "*Root*"
                 ]
             }
         }
+    },
+    "RIGGRPS": {
+        "grps": [
+            "CHAR",
+            "MODEL",
+            "RIG",
+            "SKEL"
+        ]
     }
 }
