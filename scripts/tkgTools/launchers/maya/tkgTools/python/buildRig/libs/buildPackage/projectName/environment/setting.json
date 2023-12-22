@@ -1,0 +1,257 @@
+{
+    "FK": {
+        "offsets": [
+            "GRP",
+            "OFFSET",
+            "SPACE",
+            "MOCAP",
+            "DRV"
+        ],
+        "ctrl": [
+            "",
+            "",
+            [
+                "_CURVE",
+                "_ctrl"
+            ]
+        ],
+        "colors": {
+            "center": {
+                "value": [
+                    1.0,
+                    1.0,
+                    0
+                ],
+                "filter": [
+                    "center",
+                    "C_*",
+                    "*_C"
+                ]
+            },
+            "left": {
+                "value": [
+                    1.0,
+                    0.214,
+                    0.214
+                ],
+                "filter": [
+                    "left",
+                    "L_*",
+                    "*_L"
+                ]
+            },
+            "right": {
+                "value": [
+                    0.421,
+                    0.421,
+                    0.796
+                ],
+                "filter": [
+                    "right",
+                    "R_*",
+                    "*_R"
+                ]
+            },
+            "hips": {
+                "value": [
+                    0.291,
+                    1.0,
+                    0.291
+                ],
+                "filter": [
+                    "*Hip*"
+                ]
+            },
+            "spine": {
+                "value": [
+                    1.0,
+                    1.0,
+                    0.314
+                ],
+                "filter": [
+                    "*Spine*"
+                ]
+            },
+            "tails": {
+                "value": [
+                    0.2,
+                    0.2,
+                    0.7
+                ],
+                "filter": [
+                    "*Tail*"
+                ]
+            },
+            "neck": {
+                "value": [
+                    0.76,
+                    0.4,
+                    0.135
+                ],
+                "filter": [
+                    "*Neck*"
+                ]
+            },
+            "head": {
+                "value": [
+                    0.3,
+                    0.2,
+                    0.6
+                ],
+                "filter": [
+                    "*Head*"
+                ]
+            },
+            "jaw": {
+                "value": [
+                    0.3,
+                    0.9,
+                    0.6
+                ],
+                "filter": [
+                    "*Jaw*"
+                ]
+            },
+            "tongue": {
+                "value": [
+                    0.5,
+                    0.5,
+                    0.2
+                ],
+                "filter": [
+                    "*Tongue*"
+                ]
+            }
+        }
+    },
+    "IK": {
+        "offsets": [
+            "GRP",
+            "OFFSET",
+            "SPACE",
+            "MOCAP",
+            "DRV"
+        ],
+        "ctrl": [
+            "",
+            "",
+            [
+                "_CURVE",
+                "_CTRL"
+            ]
+        ],
+        "colors": {
+            "center": {
+                "value": [
+                    1.0,
+                    1.0,
+                    0
+                ],
+                "filter": [
+                    "center",
+                    "C_*",
+                    "*_C"
+                ]
+            },
+            "left": {
+                "value": [
+                    1.0,
+                    0,
+                    0
+                ],
+                "filter": [
+                    "left",
+                    "L_*",
+                    "*_L"
+                ]
+            },
+            "right": {
+                "value": [
+                    0,
+                    0,
+                    1.0
+                ],
+                "filter": [
+                    "right",
+                    "R_*",
+                    "*_R"
+                ]
+            },
+            "other": {
+                "value": [
+                    0.7,
+                    0.7,
+                    0.1
+                ],
+                "filter": [
+                    "*"
+                ]
+            }
+        }
+    },
+    "ROOT": {
+        "offsets": [
+            "GRP",
+            "OFFSET",
+            "SPACE",
+            "MOCAP",
+            "DRV"
+        ],
+        "ctrl": [
+            "",
+            "",
+            [
+                "_CURVE",
+                "_ctrl"
+            ]
+        ],
+        "colors": {
+            "center": {
+                "value": [
+                    0.199,
+                    0.108,
+                    0.315
+                ],
+                "filter": [
+                    "*Global*",
+                    "C_*",
+                    "*_C"
+                ]
+            },
+            "left": {
+                "value": [
+                    0.069,
+                    0.377,
+                    0.694
+                ],
+                "filter": [
+                    "*Local*",
+                    "L_*",
+                    "*_L"
+                ]
+            },
+            "right": {
+                "value": [
+                    1,
+                    1,
+                    0.24
+                ],
+                "filter": [
+                    "*Root*",
+                    "R_*",
+                    "*_R"
+                ]
+            },
+            "other": {
+                "value": [
+                    0.7,
+                    0.7,
+                    0.1
+                ],
+                "filter": [
+                    ""
+                ]
+            }
+        }
+    }
+}

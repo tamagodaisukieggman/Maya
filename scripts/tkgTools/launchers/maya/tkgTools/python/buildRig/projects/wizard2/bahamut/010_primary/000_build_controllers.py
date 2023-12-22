@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from imp import reload
 import os
+import sys
 import traceback
 
 import maya.cmds as cmds
@@ -14,6 +15,11 @@ reload(brRoot)
 reload(brFk)
 reload(brCommon)
 reload(brFile)
+
+try:
+    DIR_PATH = '/'.join(__file__.replace('\\', '/').split('/')[0:-1])
+except:
+    DIR_PATH = ''
 
 # rig_setup_id = 'bahamut'
 # chara_path

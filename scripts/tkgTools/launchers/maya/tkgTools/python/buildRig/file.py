@@ -58,36 +58,68 @@ settings.export_settings()
         self.setting_dict = brCommon.json_transfer(self.setting_json, 'import')
 
     def default_settings(self):
+        self.setting_dict['RIGGRPS'] = OrderedDict()
         self.setting_dict['FK'] = OrderedDict()
         self.setting_dict['IK'] = OrderedDict()
         self.setting_dict['ROOT'] = OrderedDict()
 
-        names = {
+        rig_grps_names = {
+            'grps':['CHAR', 'MODEL', 'RIG', 'SKEL'],
+        }
+
+        ik_fk_names = {
             'offsets':['GRP', 'OFFSET', 'SPACE', 'MOCAP', 'DRV'],
             'ctrl':['', '', ['_CURVE', '_CTRL']],
             'colors':{
                 'center':{
                     'value':[1.0, 1.0, 0],
-                    'filter':['center', 'C_*', '*_C']
+                    'filter':['center*', 'C_*', '*_C']
                 },
                 'left':{
-                    'value':[1.0, 0, 0],
-                    'filter':['left', 'L_*', '*_L']
+                    'value':[1.0, 0.214, 0.214],
+                    'filter':['left*', 'L_*', '*_L']
                 },
                 'right':{
-                    'value':[0, 0, 1.0],
-                    'filter':['right', 'R_*', '*_R']
+                    'value':[0.421, 0.421, 0.796],
+                    'filter':['right*', 'R_*', '*_R']
                 },
                 'other':{
                     'value':[0.7, 0.7, 0.1],
-                    'filter':['*']
+                    'filter':['']
+                }
+            }
+        }
+
+        root_names = {
+            'offsets':['GRP', 'OFFSET', 'SPACE', 'MOCAP', 'DRV'],
+            'ctrl':['', '', ['_CURVE', '_CTRL']],
+            'colors':{
+                'global':{
+                    'value':[0.199, 0.108, 0.315],
+                    'filter':['*Global*']
+                },
+                'local':{
+                    'value':[0.069, 0.377, 0.694],
+                    'filter':['*Local*']
+                },
+                'root':{
+                    'value':[1.0, 1.0, 0.24],
+                    'filter':['*Root*']
                 }
             }
         }
 
         for type, name_settings in self.setting_dict.items():
-            for n, nv in names.items():
-                name_settings[n] = nv
+            if type in ['RIGGRPS']:
+                for n, nv in rig_grps_names.items():
+                    name_settings[n] = nv
+            elif type in ['FK', 'IK']:
+                for n, nv in ik_fk_names.items():
+                    name_settings[n] = nv
+            elif type in ['ROOT']:
+                for n, nv in root_names.items():
+                    name_settings[n] = nv
+
 
 class Files:
     """
