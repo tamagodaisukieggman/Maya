@@ -17,6 +17,16 @@ reload(brNode)
 reload(brTrs)
 
 '''
+# text Ink free
+# merge
+# freeze
+# absolute [0,0,0]
+sel = cmds.ls(os=True)
+for cc, ll in zip(sel, string.ascii_uppercase):
+    cmds.select(cc, r=True)
+    draw_util.write_curve(control=None, name=ll, force=True)
+
+
 import buildRig.libs.control.draw as brDraw
 reload(brDraw)
 
