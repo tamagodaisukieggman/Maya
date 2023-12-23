@@ -217,3 +217,33 @@ def create_manip_ctrl(name='manip_CTRL'):
     cmds.rename(manipZ, name)
 
     return name
+
+def create_curve_text(text='text'):
+    text_grp, _ = cmds.textCurves(t=text)
+    shapes = cmds.ls(text_grp, dag=True, type='shape')
+    curves = []
+    for s in shapes:
+        pa = cmds.listRelatives(s, p=True) or None
+        if pa:
+            curves.append(pa[0])
+    curves.sort()
+
+    [cmds.parent(c, w=True) for c in curves]
+
+    [cmds.makeIdentity(c, apply=True) for c in curves]
+
+    curve = curves[0]
+
+    cmds.select(curves, r=True)
+    for s in shapes:
+        pa = cmds.listRelatives(s, p=True) or None
+        if pa:
+            if not curve in pa:
+                cmds.parent(s, curve, s=True, r=True)
+
+
+    [cmds.delete(c) for c in curves[1::]]
+
+    cmds.delete(text_grp)
+
+    return cmds.rename(curve, 'textCurve')
