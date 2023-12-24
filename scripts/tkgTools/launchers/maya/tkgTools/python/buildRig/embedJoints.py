@@ -138,6 +138,7 @@ class EmbedJoints:
                 self.set_adjustment_nodes_values(type='adjustment')
                 self.set_adjustment_nodes_values(type='footroll')
                 self.match_all_pos_to_rot_locs()
+                self.create_all_ctrl()
 
     def set_json_file(self):
         if self.guide_name:
@@ -806,6 +807,19 @@ class EmbedJoints:
                 cmds.xform(rot_loc+'_OFFSET_GRP', t=[0,0,0], a=True)
             except:
                 print(traceback.format_exc())
+
+    def create_all_ctrl(self):
+        self.all_ctrl = brDraw.create_curve_text(name='all_adjust_ctrl', text='All Controller', color=[1, 0.5, 1])
+        cmds.xform(self.all_ctrl, ro=[-90, 0, 0], s=[30, 30, 30], r=True)
+
+        cmds.parent(self.all_ctrl, 'adjustment_GRP')
+
+        list_attrs = cmds.listAttr('adjustment_GRP', ud=True)
+        for lat in list_attrs:
+            if not cmds.objExists(self.all_ctrl+'.'+lat):
+                cmds.addAttr(self.all_ctrl, ln=lat, at='double', k=True)
+
+            cmds.connectAttr(self.all_ctrl+'.'+lat, 'adjustment_GRP.'+lat, f=True)
 
     def lock_guide_locators(self):
         pos_locs = cmds.ls('*_POS_LOC', tr=True)
