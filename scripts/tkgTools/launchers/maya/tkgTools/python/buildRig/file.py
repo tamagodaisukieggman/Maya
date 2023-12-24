@@ -5,6 +5,7 @@ from imp import reload
 import json
 import os
 import re
+import sys
 
 import maya.cmds as cmds
 import maya.mel as mel
@@ -177,3 +178,23 @@ class Files:
                 self.top_nodes.append(f_obj.split('|')[1])
         self.top_nodes = list(set(self.top_nodes))
         return self.top_nodes
+
+class Plugins:
+    def __init__(self, plugins=None):
+        self.plugins = plugins
+        self.plugin_results = {}
+
+    def load(self):
+        for plugin in self.plugins:
+            plugin_result = cmds.loadPlugin(plugin) if not cmds.pluginInfo(plugin, q=True, l=True) else False
+            self.plugin_results[plugin] = plugin_result
+
+        function_name = sys._getframe().f_code.co_name
+        sys.stdout.write('{}: {}: {}\n'.format(self.__class__.__name__, function_name, self.plugin_results))
+        sys.stdout.flush()
+
+plugins = Plugins(plugins=[
+    'Type',
+    'fbxmaya'
+    ])
+plugins.load()
