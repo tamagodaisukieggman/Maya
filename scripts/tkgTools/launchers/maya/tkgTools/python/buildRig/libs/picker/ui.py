@@ -58,7 +58,7 @@ ui.show(dockable=True)
 maya_version = cmds.about(v=True)
 
 TOOL_VERSION = '1.0.0'
-PROJ = 'wizard2'
+PROJ = ''
 WINDOW_TITLE = 'Picker Anim Tools'
 WINDOW_OPTIONVAR = WINDOW_TITLE.replace(' ', '_')
 try:
