@@ -335,6 +335,9 @@ class PickerAnimTools(MayaQWidgetDockableMixin, QMainWindow):
         self.layout()
         self.create_menu_bar()
 
+    def add_picker_items(self):
+        pass
+
     ############################
     # context menu
     ############################
