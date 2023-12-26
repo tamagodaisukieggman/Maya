@@ -167,6 +167,14 @@ def bake_with_func(func):
 
     return wrapper
 
+def reload_ref(ref_name=None, path=None):
+    # リファレンスのネームスペース削除用にリロード
+    cmds.file(
+        path,
+        loadReference=ref_name+'RN',
+        type=FBX_TYPE
+    )
+
 @the_world
 def create_ref(ref_name=None, path=None, type='avatar'):
     # 着せ替えの作成
@@ -196,6 +204,8 @@ def create_ref(ref_name=None, path=None, type='avatar'):
             create_sim_temp_ctrls(sim_namespace=ref_name, path=path)
         elif type == 'prop':
             create_prop_temp_ctrls(prop_namespace=ref_name, path=path)
+
+        reload_ref(ref_name=ref_name, path=path)
 
 @the_world
 def replace_ref(ref_name=None, path=None, type='avatar'):

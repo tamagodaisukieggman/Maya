@@ -1125,6 +1125,10 @@ class PropDialog(MayaQWidgetDockableMixin, QMainWindow):
             prop_layout.addWidget(prop_ref_func_editor_btn)
             prop_ref_func_editor_btn.clicked.connect(cmds.ReferenceEditor)
 
+            prop_ref_func_reload_btn = QPushButton('ReloadReference')
+            # prop_ref_func_layout.addWidget(prop_ref_func_editor_btn)
+            prop_layout.addWidget(prop_ref_func_reload_btn)
+
             # propの選択用のレイアウト
             prop_ref_sel_layout = QVBoxLayout(self)
             prop_ref_sel_layout.setAlignment(Qt.AlignTop)
@@ -1147,6 +1151,9 @@ class PropDialog(MayaQWidgetDockableMixin, QMainWindow):
             prop_ref_sel_qle = FlexLineEdit(self)
             prop_ref_sel_root_layout.addWidget(prop_ref_sel_qle)
             prop_ref_sel_root_btn.clicked.connect(partial(self.select_object, prop_ref_sel_qle))
+
+            # reload reference用のシグナル
+            prop_ref_func_reload_btn.clicked.connect(partial(self.reload_ref, prop_ref_part_cmbox, prop_ref_id_cmbox, prop_ref_sel_qle))
 
             # propのRootをsetするボタン
             prop_ref_sel_btn = QPushButton('<< Set')
@@ -1467,6 +1474,22 @@ class PropDialog(MayaQWidgetDockableMixin, QMainWindow):
         ctrl = prop_ctrl_qle.text()
         space = prop_ctrl_space_cmbox.currentText()
         avatarReferenceTool.switch_prop_space(ctrl, space)
+
+    def reload_ref(self, prop_ref_part_cmbox=None, prop_ref_id_cmbox=None, prop_ref_sel_qle=None):
+        # カレント値の取得
+        part = prop_ref_part_cmbox.currentText()
+        id = prop_ref_id_cmbox.currentText()
+        jnt = prop_ref_sel_qle.text()
+        ref_name = '{}'.format(':'.join(jnt.split(':')[0:-1]))
+
+        # カレント値からfbxのパスを取得
+        path = self.prop_collection[part][id]
+
+        # reload
+        avatarReferenceTool.reload_ref(ref_name=ref_name, path=path)
+
+        sys.stdout.write('Reload: {}: Path:{}\n'.format(ref_name, path))
+        sys.stdout.flush()
 
     # リファレンスさせる際にthe worldしているが、
     # UIの処理もthe worldしないといけない
