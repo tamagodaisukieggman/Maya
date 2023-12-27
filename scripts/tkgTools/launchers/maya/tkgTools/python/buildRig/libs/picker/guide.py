@@ -154,10 +154,12 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
 
         # ガイド用のscroll areaの設定
         self.scroll_biped_qvbl = QVBoxLayout()
+        self.scroll_biped_qvbl.setAlignment(Qt.AlignTop)
         self.biped_widget.setLayout(self.scroll_biped_qvbl)
 
         # 展開
         self.biped_collapsible_qvbl = QVBoxLayout()
+        self.biped_collapsible_qvbl.setAlignment(Qt.AlignTop)
         self.scroll_biped_qvbl.addLayout(self.biped_collapsible_qvbl)
 
         self.biped_collapsible_chbx = QCheckBox('Guide Settings')
@@ -258,6 +260,10 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
         self.create_biped_guide_btn = QPushButton('Create Biped Guide')
         self.biped_qvbl.addWidget(self.create_biped_guide_btn)
 
+        # メッシュのペアレント、アンペアレント
+        self.biped_pa_unparent_mesh_btn = QPushButton('Parent Unparent Mesh')
+        self.biped_qvbl.addWidget(self.biped_pa_unparent_mesh_btn)
+
         ###########################
         # コントローラ調整用のscroll areaの設定
         # 展開
@@ -280,15 +286,29 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
         self.biped_ctrl_qvbl.setAlignment(Qt.AlignTop)
         self.scroll_ctrl_biped_widget.setLayout(self.biped_ctrl_qvbl)
 
-        # set mesh
+        # adjust ctrls
         self.biped_ctrl_qhbl = QHBoxLayout()
         self.biped_ctrl_qvbl.addLayout(self.biped_ctrl_qhbl)
 
-        self.mesh_ctrl_le = QLineEdit()
-        self.mesh_ctrl_btn = QPushButton('<< Set Mesh')
+        self.get_cur_adj_ctrl_btn = QPushButton('Get Current Adjust Ctrls')
 
-        self.biped_ctrl_qhbl.addWidget(self.mesh_ctrl_le)
-        self.biped_ctrl_qhbl.addWidget(self.mesh_ctrl_btn)
+        self.biped_ctrl_qvbl.addWidget(self.get_cur_adj_ctrl_btn)
+
+        # spine axis
+        self.spine_axis_layout = SetAxisLayout(parent_layout=self.biped_ctrl_qvbl, part='Spine', aim_axis_offset=True)
+
+        # set spine axis button
+        self.set_spine_axis_btn = QPushButton('Set Spine Axis')
+        self.biped_ctrl_qvbl.addWidget(self.set_spine_axis_btn)
+
+        # shoulder arm axis
+        self.shoulder_axis_layout = SetAxisLayout(parent_layout=self.biped_ctrl_qvbl, part='Shoulder', aim_axis_offset=None)
+        self.arm_axis_layout = SetAxisLayout(parent_layout=self.biped_ctrl_qvbl, part='Arm', aim_axis_offset=None)
+
+        # set shoulder arm axis button
+        self.set_shoulder_arm_axis_btn = QPushButton('Set Shoulder Arm Axis')
+        self.biped_ctrl_qvbl.addWidget(self.set_shoulder_arm_axis_btn)
+
 
     def biped_signal_slots(self):
         # 展開
@@ -309,6 +329,12 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
 
         # ガイド作成ボタン
         self.create_biped_guide_btn.clicked.connect(partial(self.create_biped_guide))
+
+        # メッシュのペアレント、アンペアレント
+        self.biped_pa_unparent_mesh_btn.clicked.connect(partial(self.pa_unparent_mesh))
+
+        # カレントのadjustコントローラの取得
+        self.get_cur_adj_ctrl_btn.clicked.connect(partial(self.get_cur_adj_ctrls))
 
 
     def biped_source_mesh(self):
@@ -348,7 +374,7 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
 
         self.biped_source_mesh()
         self.biped_parts_count()
-        embed = brEJ.EmbedJoints(mesh=self.current_biped_mesh,
+        self.embed = brEJ.EmbedJoints(mesh=self.current_biped_mesh,
                                 root_count=self.current_parts_count[0],
                                 spine_count=self.current_parts_count[1],
                                 neck_count=self.current_parts_count[2],
@@ -364,12 +390,28 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
 
         cmds.undoInfo(closeChunk=True)
 
+    def pa_unparent_mesh(self):
+        if self.embed:
+            self.embed.pa_unparent_mesh()
+
+    def get_cur_adj_ctrls(self):
+        self.embed = brEJ.EmbedJoints(create=None)
+        self.embed.get_current_adjust_axis_values()
+
+
 class PartsCountSpinBox(QDoubleSpinBox):
     def __init__(self, value=None):
         super().__init__()
         self.setDecimals(0)
         self.setRange(1, 10)
         self.setValue(value)
+
+class AimOffsetAxisSpinBox(QDoubleSpinBox):
+    def __init__(self):
+        super().__init__()
+        self.setDecimals(1)
+        self.setRange(-360, 360)
+        self.setValue(0)
 
 class PartsLayout(QHBoxLayout):
     def __init__(self, parent_layout=None, part_label=None, value=None):
@@ -379,3 +421,70 @@ class PartsLayout(QHBoxLayout):
         self.count_box = PartsCountSpinBox(value=value)
         self.addWidget(self.count_box)
 
+class SetAxisLayout(QVBoxLayout):
+    def __init__(self, parent_layout=None, part=None, aim_axis_offset=None):
+        super().__init__()
+        self.axis_label = QLabel('{} Axis'.format(part))
+
+        self.addWidget(self.axis_label)
+        parent_layout.addLayout(self)
+
+        # aim axis
+        self.aim_axis_qhbl = QHBoxLayout()
+        self.addLayout(self.aim_axis_qhbl)
+
+        self.aim_axis_radioGroup = QButtonGroup()
+
+        aim_axis_radio_x = QRadioButton("X")
+        aim_axis_radio_y = QRadioButton("Y")
+        aim_axis_radio_z = QRadioButton("Z")
+
+        self.aim_axis_radioGroup.addButton(aim_axis_radio_x, 1)
+        self.aim_axis_radioGroup.addButton(aim_axis_radio_y, 2)
+        self.aim_axis_radioGroup.addButton(aim_axis_radio_z, 3)
+
+        self.aim_axis_qhbl.addWidget(QLabel('Aim Axis'))
+        self.aim_axis_qhbl.addWidget(aim_axis_radio_x)
+        self.aim_axis_qhbl.addWidget(aim_axis_radio_y)
+        self.aim_axis_qhbl.addWidget(aim_axis_radio_z)
+
+        aim_axis_radio_x.setChecked(True)
+
+        self.aim_negative_chbx = QCheckBox('Negative')
+        self.aim_axis_qhbl.addWidget(self.aim_negative_chbx)
+
+        # up axis
+        self.up_axis_qhbl = QHBoxLayout()
+        self.addLayout(self.up_axis_qhbl)
+
+        self.up_axis_radioGroup = QButtonGroup()
+
+        up_axis_radio_x = QRadioButton("X")
+        up_axis_radio_y = QRadioButton("Y")
+        up_axis_radio_z = QRadioButton("Z")
+
+        self.up_axis_radioGroup.addButton(up_axis_radio_x, 1)
+        self.up_axis_radioGroup.addButton(up_axis_radio_y, 2)
+        self.up_axis_radioGroup.addButton(up_axis_radio_z, 3)
+
+        up_axis_radio_y.setChecked(True)
+
+        self.up_axis_qhbl.addWidget(QLabel('Up Axis'))
+        self.up_axis_qhbl.addWidget(up_axis_radio_x)
+        self.up_axis_qhbl.addWidget(up_axis_radio_y)
+        self.up_axis_qhbl.addWidget(up_axis_radio_z)
+
+        self.up_negative_chbx = QCheckBox('Negative')
+        self.up_axis_qhbl.addWidget(self.up_negative_chbx)
+
+        # aim offset
+        if aim_axis_offset: self.add_aim_axis_offset()
+
+    def add_aim_axis_offset(self):
+        self.aim_axis_offset_qhbl = QHBoxLayout()
+        self.addLayout(self.aim_axis_offset_qhbl)
+
+        self.aim_axis_offset_qhbl.addWidget(QLabel('Aim Axis Offset Rotate'))
+
+        self.aim_axis_offset_dsbox = AimOffsetAxisSpinBox()
+        self.aim_axis_offset_qhbl.addWidget(self.aim_axis_offset_dsbox)

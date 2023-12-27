@@ -2,6 +2,7 @@
 import maya.cmds as cmds
 import maya.mel as mel
 
+from collections import OrderedDict
 import datetime
 from imp import reload
 import os
@@ -251,9 +252,17 @@ class EmbedJoints:
                 cmds.pointConstraint('mirror_'+self.mirror[0]+part, self.mirror[1]+part, w=True)
                 cmds.orientConstraint('mirror_'+self.mirror[0]+part, self.mirror[1]+part, w=True, mo=True)
 
+        self.base_joints_dict = OrderedDict({})
         # Controllers Const
         self.left_arms = cmds.ls('left_shoulder', dag=True, type='joint')
         self.left_legs = cmds.ls('left_thigh', dag=True, type='joint')
+        self.base_joints_dict['arm'] = self.left_arms
+        self.base_joints_dict['leg'] = self.left_legs
+
+        self.left_knee_joints = self.left_knee_segments.seg_joints
+        self.base_joints_dict['knee'] = self.left_knee_joints
+        self.left_knee_segments_top = self.left_knee_segments.top
+        self.base_joints_dict['kneeTop'] = self.left_knee_segments_top
 
         ## Fingers
         self.left_thumb = cmds.ls('left_thumb_01', dag=True, type='joint')
@@ -277,8 +286,11 @@ class EmbedJoints:
             cmds.pointConstraint('mirror_'+fing, fing.replace(self.mirror[0], self.mirror[1]), w=True)
             cmds.orientConstraint('mirror_'+fing, fing.replace(self.mirror[0], self.mirror[1]), w=True, mo=True)
 
+
+        self.pos_rot_ctrls_dict = OrderedDict({})
         # arm
         self.left_arm_pos_grp, self.left_arm_rot_grp, self.left_arm_pos_locs, self.left_arm_rot_locs = self.create_pos_rot_locs(self.left_arms)
+        self.pos_rot_ctrls_dict['arm'] = self.left_arm_pos_grp, self.left_arm_rot_grp, self.left_arm_pos_locs, self.left_arm_rot_locs
 
         # fingers
         self.left_thumb_pos_grp, self.left_thumb_rot_grp, self.left_thumb_pos_locs, self.left_thumb_rot_locs = self.create_pos_rot_locs(self.left_thumb)
@@ -286,14 +298,25 @@ class EmbedJoints:
         self.left_middle_pos_grp, self.left_middle_rot_grp, self.left_middle_pos_locs, self.left_middle_rot_locs = self.create_pos_rot_locs(self.left_middle)
         self.left_ring_pos_grp, self.left_ring_rot_grp, self.left_ring_pos_locs, self.left_ring_rot_locs = self.create_pos_rot_locs(self.left_ring)
         self.left_pinky_pos_grp, self.left_pinky_rot_grp, self.left_pinky_pos_locs, self.left_pinky_rot_locs = self.create_pos_rot_locs(self.left_pinky)
+        self.pos_rot_ctrls_dict['thumb'] = self.left_thumb_pos_grp, self.left_thumb_rot_grp, self.left_thumb_pos_locs, self.left_thumb_rot_locs
+        self.pos_rot_ctrls_dict['index'] = self.left_index_pos_grp, self.left_index_rot_grp, self.left_index_pos_locs, self.left_index_rot_locs
+        self.pos_rot_ctrls_dict['middle'] = self.left_middle_pos_grp, self.left_middle_rot_grp, self.left_middle_pos_locs, self.left_middle_rot_locs
+        self.pos_rot_ctrls_dict['ring'] = self.left_ring_pos_grp, self.left_ring_rot_grp, self.left_ring_pos_locs, self.left_ring_rot_locs
+        self.pos_rot_ctrls_dict['pinky'] = self.left_pinky_pos_grp, self.left_pinky_rot_grp, self.left_pinky_pos_locs, self.left_pinky_rot_locs
 
         # leg
         self.left_leg_pos_grp, self.left_leg_rot_grp, self.left_leg_pos_locs, self.left_leg_rot_locs = self.create_pos_rot_locs(self.left_legs)
+        self.pos_rot_ctrls_dict['leg'] = self.left_leg_pos_grp, self.left_leg_rot_grp, self.left_leg_pos_locs, self.left_leg_rot_locs
 
+        # spines
         self.spine_pos_grp, self.spine_rot_grp, self.spine_pos_locs, self.spine_rot_locs = self.create_pos_rot_locs(self.spine_segments.seg_joints)
         self.neck_pos_grp, self.neck_rot_grp, self.neck_pos_locs, self.neck_rot_locs = self.create_pos_rot_locs(self.neck_segments.seg_joints)
         self.head_pos_grp, self.head_rot_grp, self.head_pos_locs, self.head_rot_locs = self.create_pos_rot_locs(['head'])
         self.hips_pos_grp, self.hips_rot_grp, self.hips_pos_locs, self.hips_rot_locs = self.create_pos_rot_locs(['hips'])
+        self.pos_rot_ctrls_dict['spine'] = self.spine_pos_grp, self.spine_rot_grp, self.spine_pos_locs, self.spine_rot_locs
+        self.pos_rot_ctrls_dict['neck'] = self.neck_pos_grp, self.neck_rot_grp, self.neck_pos_locs, self.neck_rot_locs
+        self.pos_rot_ctrls_dict['head'] = self.head_pos_grp, self.head_rot_grp, self.head_pos_locs, self.head_rot_locs
+        self.pos_rot_ctrls_dict['hips'] = self.hips_pos_grp, self.hips_rot_grp, self.hips_pos_locs, self.hips_rot_locs
 
         # Parent Body
         cmds.parent('left_hand_POS_LOC_GRP', 'left_arm_POS_LOC')
@@ -445,7 +468,6 @@ class EmbedJoints:
 
         self.lock_guide_locators()
 
-
     def add_all_scale_tweak_attr(self, all_grp=None, grp=None):
         if ('spine' in grp
             or 'neck' in grp
@@ -513,6 +535,33 @@ class EmbedJoints:
                     cmds.parent(new_name, parent_name)
 
         return dup_joints
+
+    def pa_unparent_mesh(self):
+        self.mesh_pa = cmds.listRelatives(self.mesh, p=True) or None
+        if self.mesh_pa:
+            cmds.parent(self.mesh, w=True)
+        else:
+            cmds.parent(self.mesh, self.geo_grp)
+
+    def get_current_adjust_axis_values(self):
+        self.pos_rot_ctrls_dict = eval(cmds.getAttr('all_adjust_ctrl.posRotCtrls'))
+        self.left_arm_pos_grp, self.left_arm_rot_grp, self.left_arm_pos_locs, self.left_arm_rot_locs = self.pos_rot_ctrls_dict['arm']
+        self.left_thumb_pos_grp, self.left_thumb_rot_grp, self.left_thumb_pos_locs, self.left_thumb_rot_locs = self.pos_rot_ctrls_dict['thumb']
+        self.left_index_pos_grp, self.left_index_rot_grp, self.left_index_pos_locs, self.left_index_rot_locs = self.pos_rot_ctrls_dict['index']
+        self.left_middle_pos_grp, self.left_middle_rot_grp, self.left_middle_pos_locs, self.left_middle_rot_locs = self.pos_rot_ctrls_dict['middle']
+        self.left_ring_pos_grp, self.left_ring_rot_grp, self.left_ring_pos_locs, self.left_ring_rot_locs = self.pos_rot_ctrls_dict['ring']
+        self.left_pinky_pos_grp, self.left_pinky_rot_grp, self.left_pinky_pos_locs, self.left_pinky_rot_locs = self.pos_rot_ctrls_dict['pinky']
+        self.left_leg_pos_grp, self.left_leg_rot_grp, self.left_leg_pos_locs, self.left_leg_rot_locs = self.pos_rot_ctrls_dict['leg']
+        self.spine_pos_grp, self.spine_rot_grp, self.spine_pos_locs, self.spine_rot_locs = self.pos_rot_ctrls_dict['spine']
+        self.neck_pos_grp, self.neck_rot_grp, self.neck_pos_locs, self.neck_rot_locs = self.pos_rot_ctrls_dict['neck']
+        self.head_pos_grp, self.head_rot_grp, self.head_pos_locs, self.head_rot_locs = self.pos_rot_ctrls_dict['head']
+        self.hips_pos_grp, self.hips_rot_grp, self.hips_pos_locs, self.hips_rot_locs = self.pos_rot_ctrls_dict['hips']
+
+        self.base_joints_dict = eval(cmds.getAttr('all_adjust_ctrl.baseJoints'))
+        self.left_arms = self.base_joints_dict['arm']
+        self.left_legs = self.base_joints_dict['leg']
+        self.left_knee_joints = self.base_joints_dict['knee']
+        self.left_knee_segments_top = self.base_joints_dict['kneeTop']
 
     #--------------------------
     # Adjusting Axis
@@ -584,7 +633,7 @@ class EmbedJoints:
         buf_left_knee_rot_locs = [n for n in self.left_leg_rot_locs
                                     if 'knee' in '_'.join(n.split('_')[:2:])]
 
-        [buf_self_left_legs.remove(n) for n in self.left_knee_segments.seg_joints]
+        [buf_self_left_legs.remove(n) for n in self.left_knee_joints]
         [buf_self_left_leg_rot_locs.remove(n)
             for n in self.left_leg_rot_locs if not '_'.join(n.split('_')[:2:]) in self.left_legs]
 
@@ -623,11 +672,11 @@ class EmbedJoints:
                 left_knee_pvlocs.append(left_knee_pvloc)
 
             # Knee
-            for i, (left_knee, left_knee_rot_ctrl) in enumerate(zip(self.left_knee_segments.seg_joints, buf_left_knee_rot_locs)):
+            for i, (left_knee, left_knee_rot_ctrl) in enumerate(zip(self.left_knee_joints, buf_left_knee_rot_locs)):
                 left_knee_loc = cmds.spaceLocator(n=left_knee+'_LOC')[0]
                 cmds.matchTransform(left_knee_loc, left_knee)
 
-                if i == len(self.left_knee_segments.seg_joints)-1:
+                if i == len(self.left_knee_joints)-1:
                     base_loc = buf_self_left_leg_rot_locs[1]
                 else:
                     base_loc = buf_left_knee_rot_locs[i+1]
@@ -697,9 +746,9 @@ class EmbedJoints:
             cmds.delete(left_knee_pvloc)
 
         # Thigh
-        left_knee_pvloc = cmds.spaceLocator(n=self.left_knee_segments.top+'_PV_LOC')[0]
+        left_knee_pvloc = cmds.spaceLocator(n=self.left_knee_segments_top+'_PV_LOC')[0]
         brAim.set_pole_vec(start=left_thigh_loc,
-                            mid=self.left_knee_segments.top,
+                            mid=self.left_knee_segments_top,
                             end=left_ankle,
                             move=10,
                             obj=left_knee_pvloc)
@@ -836,6 +885,8 @@ class EmbedJoints:
 
             cmds.connectAttr(self.all_ctrl+'.'+lat, 'adjustment_GRP.'+lat, f=True)
 
+        self.save_pos_rot_ctrls()
+
     def lock_guide_locators(self):
         pos_locs = cmds.ls('*_POS_LOC', tr=True)
         pos_ltrs = brLock.LockTransforms(pos_locs)
@@ -867,15 +918,24 @@ class EmbedJoints:
         [cmds.delete(cn) for cn in cnsts]
         cmds.delete('mirror_foot_roll_piv_GRP')
 
-    def save_adjustment_nodes_values(self):
+    def save_pos_rot_ctrls(self):
+        cmds.addAttr('all_adjust_ctrl', ln='posRotCtrls', dt='string')
+        cmds.setAttr('all_adjust_ctrl.posRotCtrls', '{}'.format(self.pos_rot_ctrls_dict), type='string')
+        cmds.setAttr('all_adjust_ctrl.posRotCtrls', l=True)
+
+        cmds.addAttr('all_adjust_ctrl', ln='baseJoints', dt='string')
+        cmds.setAttr('all_adjust_ctrl.baseJoints', '{}'.format(self.base_joints_dict), type='string')
+        cmds.setAttr('all_adjust_ctrl.baseJoints', l=True)
+
+    def save_adjustment_nodes_values(self, node='root'):
         # adjustment
         adjustment_nodes = cmds.ls('adjustment_GRP', dag=True, type='transform')
         nodes = brNode.Nodes(adjustment_nodes)
         nodes.store_nodes_values()
 
-        cmds.addAttr('root', ln='adjustmentDict', dt='string')
-        cmds.setAttr('root.adjustmentDict', '{}'.format(nodes.nodes_values), type='string')
-        cmds.setAttr('root.adjustmentDict', l=True)
+        cmds.addAttr(node, ln='adjustmentDict', dt='string')
+        cmds.setAttr(node+'.adjustmentDict', '{}'.format(nodes.nodes_values), type='string')
+        cmds.setAttr(node+'.adjustmentDict', l=True)
 
         brCommon.json_transfer(self.guide_cur_adj_json, 'export', nodes.nodes_values)
         brCommon.json_transfer(self.guide_name_adj_json, 'export', nodes.nodes_values)
@@ -885,9 +945,9 @@ class EmbedJoints:
         nodes = brNode.Nodes(footroll_nodes)
         nodes.store_nodes_values()
 
-        cmds.addAttr('root', ln='footrollDict', dt='string')
-        cmds.setAttr('root.footrollDict', '{}'.format(nodes.nodes_values), type='string')
-        cmds.setAttr('root.footrollDict', l=True)
+        cmds.addAttr(node, ln='footrollDict', dt='string')
+        cmds.setAttr(node+'.footrollDict', '{}'.format(nodes.nodes_values), type='string')
+        cmds.setAttr(node+'.footrollDict', l=True)
 
         brCommon.json_transfer(self.guide_cur_footroll_json, 'export', nodes.nodes_values)
         brCommon.json_transfer(self.guide_name_footroll_json, 'export', nodes.nodes_values)
@@ -938,7 +998,7 @@ class EmbedJoints:
 
 
     def publish_adjust_joints(self):
-        self.save_adjustment_nodes_values()
+        self.save_adjustment_nodes_values('root')
         self.delete_adjust_rig()
 
         cmds.viewFit()
