@@ -291,24 +291,140 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
         self.biped_ctrl_qvbl.addLayout(self.biped_ctrl_qhbl)
 
         self.get_cur_adj_ctrl_btn = QPushButton('Get Current Adjust Ctrls')
-
         self.biped_ctrl_qvbl.addWidget(self.get_cur_adj_ctrl_btn)
 
+        # all check axis
+        self.all_axis_chbx = QCheckBox('All Check')
+        self.all_axis_chbx.setChecked(True)
+        self.biped_ctrl_qvbl.addWidget(self.all_axis_chbx)
+
         # spine axis
-        self.spine_axis_layout = SetAxisLayout(parent_layout=self.biped_ctrl_qvbl, part='Spine', aim_axis_offset=True)
+        self.spine_axis_layout = SetAxisLayout(parent_layout=self.biped_ctrl_qvbl,
+                                               part='Spine',
+                                               aim_axis_offset=True,
+                                               init_aim_axis='y',
+                                               init_up_axis='z')
 
         # set spine axis button
         self.set_spine_axis_btn = QPushButton('Set Spine Axis')
-        self.biped_ctrl_qvbl.addWidget(self.set_spine_axis_btn)
+        self.spine_axis_layout.addWidget(self.set_spine_axis_btn)
 
         # shoulder arm axis
-        self.shoulder_axis_layout = SetAxisLayout(parent_layout=self.biped_ctrl_qvbl, part='Shoulder', aim_axis_offset=None)
-        self.arm_axis_layout = SetAxisLayout(parent_layout=self.biped_ctrl_qvbl, part='Arm', aim_axis_offset=None)
+        self.shoulder_axis_layout = SetAxisLayout(parent_layout=self.biped_ctrl_qvbl,
+                                                  part='Shoulder',
+                                                  aim_axis_offset=None,
+                                                  init_aim_axis='x',
+                                                  init_up_axis='y')
+        self.arm_axis_layout = SetAxisLayout(parent_layout=self.biped_ctrl_qvbl,
+                                             part='Arm',
+                                             aim_axis_offset=None,
+                                             init_aim_axis='x',
+                                             init_up_axis='y')
 
         # set shoulder arm axis button
         self.set_shoulder_arm_axis_btn = QPushButton('Set Shoulder Arm Axis')
-        self.biped_ctrl_qvbl.addWidget(self.set_shoulder_arm_axis_btn)
+        self.arm_axis_layout.addWidget(self.set_shoulder_arm_axis_btn)
 
+        # thigh leg ankle ball axis
+        self.thigh_axis_layout = SetAxisLayout(parent_layout=self.biped_ctrl_qvbl,
+                                                  part='Thigh',
+                                                  aim_axis_offset=None,
+                                                  init_aim_axis='x',
+                                                  init_up_axis='y')
+
+        self.leg_axis_layout = SetAxisLayout(parent_layout=self.biped_ctrl_qvbl,
+                                                  part='Leg',
+                                                  aim_axis_offset=None,
+                                                  init_aim_axis='x',
+                                                  init_up_axis='y')
+
+        self.ankle_axis_layout = SetAxisLayout(parent_layout=self.biped_ctrl_qvbl,
+                                                  part='Ankle',
+                                                  aim_axis_offset=None,
+                                                  init_aim_axis='x',
+                                                  init_up_axis='y')
+
+        self.ball_axis_layout = SetAxisLayout(parent_layout=self.biped_ctrl_qvbl,
+                                                  part='Ball',
+                                                  aim_axis_offset=None,
+                                                  init_aim_axis='x',
+                                                  init_up_axis='y')
+
+        # set legs axis button
+        self.set_legs_axis_btn = QPushButton('Set Legs Axis')
+        self.ball_axis_layout.addWidget(self.set_legs_axis_btn)
+
+        # fingers axis
+        # thumb axis
+        self.thumb_axis_layout = SetAxisLayout(parent_layout=self.biped_ctrl_qvbl,
+                                                  part='Thumb',
+                                                  aim_axis_offset=None,
+                                                  init_aim_axis='x',
+                                                  init_up_axis='y')
+
+        # set thumb axis button
+        self.set_thumb_axis_btn = QPushButton('Set Thumb Axis')
+        self.thumb_axis_layout.addWidget(self.set_thumb_axis_btn)
+
+        # index axis
+        self.index_axis_layout = SetAxisLayout(parent_layout=self.biped_ctrl_qvbl,
+                                                  part='Index',
+                                                  aim_axis_offset=None,
+                                                  init_aim_axis='x',
+                                                  init_up_axis='y')
+
+        # set index axis button
+        self.set_index_axis_btn = QPushButton('Set Index Axis')
+        self.index_axis_layout.addWidget(self.set_index_axis_btn)
+
+        # middle axis
+        self.middle_axis_layout = SetAxisLayout(parent_layout=self.biped_ctrl_qvbl,
+                                                  part='Middle',
+                                                  aim_axis_offset=None,
+                                                  init_aim_axis='x',
+                                                  init_up_axis='y')
+
+        # set middle axis button
+        self.set_middle_axis_btn = QPushButton('Set Middle Axis')
+        self.middle_axis_layout.addWidget(self.set_middle_axis_btn)
+
+        # ring axis
+        self.ring_axis_layout = SetAxisLayout(parent_layout=self.biped_ctrl_qvbl,
+                                                  part='Ring',
+                                                  aim_axis_offset=None,
+                                                  init_aim_axis='x',
+                                                  init_up_axis='y')
+
+        # set ring axis button
+        self.set_ring_axis_btn = QPushButton('Set Ring Axis')
+        self.ring_axis_layout.addWidget(self.set_ring_axis_btn)
+
+        # pinky axis
+        self.pinky_axis_layout = SetAxisLayout(parent_layout=self.biped_ctrl_qvbl,
+                                                  part='Pinky',
+                                                  aim_axis_offset=None,
+                                                  init_aim_axis='x',
+                                                  init_up_axis='y')
+
+        # set pinky axis button
+        self.set_pinky_axis_btn = QPushButton('Set Pinky Axis')
+        self.pinky_axis_layout.addWidget(self.set_pinky_axis_btn)
+
+        # checkbox for all check
+        self.axis_chbxes = [
+            self.spine_axis_layout.axis_chbx,
+            self.shoulder_axis_layout.axis_chbx,
+            self.arm_axis_layout.axis_chbx,
+            self.thigh_axis_layout.axis_chbx,
+            self.leg_axis_layout.axis_chbx,
+            self.ankle_axis_layout.axis_chbx,
+            self.ball_axis_layout.axis_chbx,
+            self.thumb_axis_layout.axis_chbx,
+            self.index_axis_layout.axis_chbx,
+            self.middle_axis_layout.axis_chbx,
+            self.ring_axis_layout.axis_chbx,
+            self.pinky_axis_layout.axis_chbx
+        ]
 
     def biped_signal_slots(self):
         # 展開
@@ -316,13 +432,13 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
         #                                                    self.biped_collapsible_chbx,
         #                                                    self.scroll_biped_area))
 
-        self.biped_collapsible_chbx.stateChanged.connect(lambda: self.collapsible_toggle(self.biped_collapsible_chbx, self.scroll_biped_area))
+        self.biped_collapsible_chbx.stateChanged.connect(lambda: collapsible_toggle(self.biped_collapsible_chbx, self.scroll_biped_area))
 
         # self.biped_ctrl_collapsible_chbx.toggled.connect(partial(self.collapsible_toggle,
         #                                                    self.biped_ctrl_collapsible_chbx,
         #                                                    self.scroll_ctrl_biped_area))
 
-        self.biped_ctrl_collapsible_chbx.stateChanged.connect(lambda: self.collapsible_toggle(self.biped_ctrl_collapsible_chbx, self.scroll_ctrl_biped_area))
+        self.biped_ctrl_collapsible_chbx.stateChanged.connect(lambda: collapsible_toggle(self.biped_ctrl_collapsible_chbx, self.scroll_ctrl_biped_area))
 
         # Set Mesh
         self.mesh_btn.clicked.connect(partial(self.set_setText_selection, self.mesh_le))
@@ -335,6 +451,9 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
 
         # カレントのadjustコントローラの取得
         self.get_cur_adj_ctrl_btn.clicked.connect(partial(self.get_cur_adj_ctrls))
+
+        # all axis check
+        self.all_axis_chbx.stateChanged.connect(lambda: check_to_checks(self.all_axis_chbx, self.axis_chbxes))
 
 
     def biped_source_mesh(self):
@@ -349,25 +468,6 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
             return
         if text_type_object.metaObject().className() in ['QLineEdit']:
             text_type_object.setText(sel[0])
-
-    def collapsible_toggle(self, chbx=None, widget=None):
-        if chbx.isChecked():
-            widget.show()
-            # self.biped_collapse_toggle = False
-
-            # set_palette.setColor(QPalette.Button, DEFAULT_BUTTON_COLOR)
-            # chbx.setAutoFillBackground(True)
-            # chbx.setPalette(set_palette)
-
-        else:
-            widget.hide()
-            # self.biped_collapse_toggle = True
-
-            # new_color = QColor()
-            # new_color.setRgbF(0.5, 0.5, 0.25)
-            # set_palette.setColor(QPalette.Button, new_color)
-            # chbx.setAutoFillBackground(True)
-            # chbx.setPalette(set_palette)
 
     def create_biped_guide(self):
         cmds.undoInfo(openChunk=True)
@@ -421,13 +521,45 @@ class PartsLayout(QHBoxLayout):
         self.count_box = PartsCountSpinBox(value=value)
         self.addWidget(self.count_box)
 
-class SetAxisLayout(QVBoxLayout):
-    def __init__(self, parent_layout=None, part=None, aim_axis_offset=None):
+class CustomSplitter(QSplitter):
+    def __init__(self, parent_layout=None, type='Horizontal'):
         super().__init__()
-        self.axis_label = QLabel('{} Axis'.format(part))
 
-        self.addWidget(self.axis_label)
-        parent_layout.addLayout(self)
+        if type == 'Horizontal':
+            splitter = QSplitter(Qt.Horizontal)
+        elif type == 'Vertical':
+            splitter = QSplitter(Qt.Vertical)
+        bottom = QFrame()
+        bottom.setFrameShape(QFrame.HLine)
+        splitter.addWidget(bottom)
+        parent_layout.addWidget(splitter)
+
+
+class SetAxisLayout(QVBoxLayout):
+    def __init__(self,
+                 parent_layout=None,
+                 part=None,
+                 aim_axis_offset=None,
+                 init_aim_axis='x',
+                 init_aim_negative=None,
+                 init_up_axis='y',
+                 init_up_negative=None):
+        super().__init__()
+
+        CustomSplitter(parent_layout, 'Horizontal')
+
+        self.axis_chbx = QCheckBox('{} Axis'.format(part))
+        self.axis_chbx.setChecked(True)
+        parent_layout.addWidget(self.axis_chbx)
+
+        self.axis_widget = QWidget()
+        parent_layout.addWidget(self.axis_widget)
+
+        self.axis_widget.setLayout(self)
+
+        self.axis_chbx.stateChanged.connect(lambda: collapsible_toggle(self.axis_chbx,
+                                                                        self.axis_widget))
+
 
         # aim axis
         self.aim_axis_qhbl = QHBoxLayout()
@@ -448,9 +580,16 @@ class SetAxisLayout(QVBoxLayout):
         self.aim_axis_qhbl.addWidget(aim_axis_radio_y)
         self.aim_axis_qhbl.addWidget(aim_axis_radio_z)
 
-        aim_axis_radio_x.setChecked(True)
+        if init_aim_axis == 'x':
+            aim_axis_radio_x.setChecked(True)
+        elif init_aim_axis == 'y':
+            aim_axis_radio_y.setChecked(True)
+        elif init_aim_axis == 'z':
+            aim_axis_radio_z.setChecked(True)
 
         self.aim_negative_chbx = QCheckBox('Negative')
+        if init_aim_negative:
+            self.aim_negative_chbx.setChecked(True)
         self.aim_axis_qhbl.addWidget(self.aim_negative_chbx)
 
         # up axis
@@ -467,7 +606,12 @@ class SetAxisLayout(QVBoxLayout):
         self.up_axis_radioGroup.addButton(up_axis_radio_y, 2)
         self.up_axis_radioGroup.addButton(up_axis_radio_z, 3)
 
-        up_axis_radio_y.setChecked(True)
+        if init_up_axis == 'x':
+            up_axis_radio_x.setChecked(True)
+        elif init_up_axis == 'y':
+            up_axis_radio_y.setChecked(True)
+        elif init_up_axis == 'z':
+            up_axis_radio_z.setChecked(True)
 
         self.up_axis_qhbl.addWidget(QLabel('Up Axis'))
         self.up_axis_qhbl.addWidget(up_axis_radio_x)
@@ -475,6 +619,8 @@ class SetAxisLayout(QVBoxLayout):
         self.up_axis_qhbl.addWidget(up_axis_radio_z)
 
         self.up_negative_chbx = QCheckBox('Negative')
+        if init_up_negative:
+            self.up_negative_chbx.setChecked(True)
         self.up_axis_qhbl.addWidget(self.up_negative_chbx)
 
         # aim offset
@@ -488,3 +634,28 @@ class SetAxisLayout(QVBoxLayout):
 
         self.aim_axis_offset_dsbox = AimOffsetAxisSpinBox()
         self.aim_axis_offset_qhbl.addWidget(self.aim_axis_offset_dsbox)
+
+def collapsible_toggle(chbx=None, widget=None):
+    if chbx.isChecked():
+        widget.show()
+        # self.biped_collapse_toggle = False
+
+        # set_palette.setColor(QPalette.Button, DEFAULT_BUTTON_COLOR)
+        # chbx.setAutoFillBackground(True)
+        # chbx.setPalette(set_palette)
+
+    else:
+        widget.hide()
+        # self.biped_collapse_toggle = True
+
+        # new_color = QColor()
+        # new_color.setRgbF(0.5, 0.5, 0.25)
+        # set_palette.setColor(QPalette.Button, new_color)
+        # chbx.setAutoFillBackground(True)
+        # chbx.setPalette(set_palette)
+
+def check_to_checks(chbx=None, chbxes=None):
+    if chbx.isChecked():
+        [c.setChecked(True) for c in chbxes]
+    else:
+        [c.setChecked(False) for c in chbxes]
