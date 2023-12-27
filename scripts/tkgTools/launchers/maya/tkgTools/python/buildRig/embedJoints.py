@@ -112,6 +112,11 @@ class EmbedJoints:
                  spine_count=3,
                  neck_count=1,
                  knee_count=1,
+                 thumb_count=3,
+                 index_count=3,
+                 middle_count=3,
+                 ring_count=3,
+                 pinky_count=3,
                  type=None,
                  create=None,
                  guide_name=None,
@@ -122,6 +127,11 @@ class EmbedJoints:
         self.spine_count = spine_count
         self.neck_count = neck_count
         self.knee_count = knee_count
+        self.thumb_count = thumb_count
+        self.index_count = index_count
+        self.middle_count = middle_count
+        self.ring_count = ring_count
+        self.pinky_count = pinky_count
         self.type = type
         self.create = create
         self.guide_name = guide_name
@@ -174,7 +184,12 @@ class EmbedJoints:
                                             self.root_count,
                                             self.spine_count,
                                             self.neck_count,
-                                            self.knee_count)
+                                            self.knee_count,
+                                            self.thumb_count,
+                                            self.index_count,
+                                            self.middle_count,
+                                            self.ring_count,
+                                            self.pinky_count)
         self.root_segments = segments[0]
         self.spine_segments = segments[1]
         self.neck_segments = segments[2]

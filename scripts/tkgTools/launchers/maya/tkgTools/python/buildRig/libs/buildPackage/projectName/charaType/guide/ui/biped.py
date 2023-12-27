@@ -1,17 +1,12 @@
 # -*- coding: utf-8 -*-
-def onMayaDroppedPythonFile(*args):
+
+def onMayaDroppedPythonFile():
     from imp import reload
     import os
+    import sys
 
-    import buildRig.libs.picker.ui as guide_ui
-    reload(guide_ui)
+    import buildRig.libs.picker.guide as guide
+    reload(guide)
 
-    class GuideUI:
-        def __init__(self):
-            self.picker = guide_ui.PickerAnimTools()
-            self.picker.buildUI()
-            self.picker.show(dockable=True)
-
-
-    guideUI = GuideUI()
+    pickerui = guide.PickerUI()
 
