@@ -128,12 +128,23 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
 
     def biped_layout(self):
         # biped widget
+        self.biped_widget = QWidget()
+        self.main_tab_widget.addTab(self.biped_widget, 'Biped')
+
+        # scroll areaの設定
+        self.scroll_biped_qvbl = QVBoxLayout()
+        self.biped_widget.setLayout(self.scroll_biped_qvbl)
+        self.scroll_biped_area = QScrollArea()
+        self.scroll_biped_area.setWidgetResizable(True)
+        self.scroll_biped_area.setMinimumHeight(1)
+        self.scroll_biped_qvbl.addWidget(self.scroll_biped_area)
+
+        self.scroll_biped_widget = QWidget()
+        self.scroll_biped_area.setWidget(self.scroll_biped_widget)
+
         self.biped_qvbl = QVBoxLayout()
         self.biped_qvbl.setAlignment(Qt.AlignTop)
-
-        self.biped_widget = QWidget()
-        self.biped_widget.setLayout(self.biped_qvbl)
-        self.main_tab_widget.addTab(self.biped_widget, 'Biped')
+        self.scroll_biped_widget.setLayout(self.biped_qvbl)
 
         # set mesh
         self.mesh_hb_layout = QHBoxLayout()
@@ -234,6 +245,8 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
             text_type_object.setText(sel[0])
 
     def create_biped_guide(self):
+        cmds.undoInfo(openChunk=True)
+
         self.biped_source_mesh()
         self.biped_parts_count()
         embed = brEJ.EmbedJoints(mesh=self.current_biped_mesh,
@@ -249,6 +262,8 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
                                 type='biped',
                                 create=True,
                                 guide_name=None)
+
+        cmds.undoInfo(closeChunk=True)
 
 class PartsCountSpinBox(QDoubleSpinBox):
     def __init__(self, value=None):
