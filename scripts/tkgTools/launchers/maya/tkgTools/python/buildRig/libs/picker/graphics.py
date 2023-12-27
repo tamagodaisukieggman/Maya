@@ -107,11 +107,15 @@ class GraphicsRectItem(QGraphicsRectItem):
         super(GraphicsRectItem, self).__init__(*args, **kwargs)
 
         self.setAcceptHoverEvents(True)
+        self.setFlags(QGraphicsItem.ItemIsSelectable | QGraphicsItem.ItemIsMovable)
 
         self.block_size = -1
         self.init_rect = None
         self.rect_edit_mode = None
         self.rect_move = None
+        self.selected_items = None
+
+        self._last_mouse_position = QPoint()
 
     def mouseMoveEvent(self, event):
         if self.rect_move:
@@ -131,14 +135,63 @@ class GraphicsRectItem(QGraphicsRectItem):
 
             self.update()
 
+            # delta = self.mapToScene(event.pos() - self._last_mouse_position)
+            # for item in self.selected_items:
+            #     if isinstance(item, GraphicsRectItem):
+            #         item.setPos(self.startPositions[item] + delta)
+
+            #         item._last_mouse_position = self.mapToScene(event.pos())
+
         super(GraphicsRectItem, self).mouseMoveEvent(event)
 
     def mousePressEvent(self, event):
         self.init_rect = event.pos()
+        if event.button() == Qt.LeftButton:
+            self.selected_items = self.scene().selectedItems()
+            # self.scene().clearSelection()
+            # self.setSelected(True)
+            # self.startPositions = {item: item.mapToScene(item.pos()) for item in self.selected_items}
 
-        view = self.scene().views()[0]
+            # self._last_mouse_position = event.pos()
 
-        super(GraphicsRectItem, self).mousePressEvent(event)
+        elif event.button() == Qt.RightButton:
+            self.selected_items = self.scene().selectedItems()
+
+        # スーパークラスのcontextMenuEventを呼び出さなければ選択は外れない
+        # super(GraphicsRectItem, self).mousePressEvent(event)
+
+    def mouseReleaseEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            self.selected_items = self.scene().selectedItems()
+
+        super(GraphicsRectItem, self).mouseReleaseEvent(event)
+
+    def contextMenuEvent(self, event):
+        context_menu = QMenu()
+        size_action = context_menu.addAction('Set Size')
+        move_unlock_action = context_menu.addAction('Move Unlock')
+        move_lock_action = context_menu.addAction('Move Lock')
+
+        selected_action = context_menu.exec_(event.screenPos())
+
+        if selected_action == move_unlock_action:
+            for item in self.selected_items:
+                if isinstance(item, GraphicsRectItem):
+                    item.rect_move = True
+        elif selected_action == move_lock_action:
+            for item in self.selected_items:
+                if isinstance(item, GraphicsRectItem):
+                    item.rect_move = False
+        elif selected_action == size_action:
+            self.change_size()
+
+    def change_size(self):
+        new_size, ok = QInputDialog.getInt(None, "Set Size", "Size:", int(self.rect().width()), 10, 1000)
+        if ok:
+            for item in self.selected_items:
+                if isinstance(item, GraphicsRectItem):
+                    item.setRect(item.rect().x(), item.rect().y(), new_size, new_size)
+                    item.update()
 
 #############################
 # GraphicsView class
@@ -265,8 +318,8 @@ class GraphicsView(QGraphicsView):
                 name=obj,
                 item_name=obj,
                 rect=[
-                    -self.scene_size.width()/2+event.pos().x()-25,
-                    -self.scene_size.height()/2+event.pos().y()-25,
+                    self.mapToScene(event.pos()).x()+25,
+                    self.mapToScene(event.pos()).y()-25,
                     50,
                     50],
                 color=[128, 220, 190],
