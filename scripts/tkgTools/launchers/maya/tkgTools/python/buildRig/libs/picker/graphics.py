@@ -151,19 +151,20 @@ class GraphicsView(QGraphicsView):
             # Hand Left
             'thumb_L_000':{
                     'item_name':'Thumb_01_L_ctrl',
-                    'rect':[225, 220, 15, 15],
+                    'rect':[-100, -100, 15, 15],
                     'color':[255, 128, 255],
                     'edge_color':[0, 0, 0],
                     'width':1
             },
             'thumb_L_001':{
                     'item_name':'Thumb_02_L_ctrl',
-                    'rect':[255, 220, 15, 15],
+                    'rect':[-120, -100, 15, 15],
                     'color':[255, 128, 255],
                     'edge_color':[0, 0, 0],
                     'width':1
             },
         }
+
 
         self.center = None
         self.zoom = 0
@@ -184,13 +185,18 @@ class GraphicsView(QGraphicsView):
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
         self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
-        self.setDragMode(QGraphicsView.RubberBandDrag) # 範囲選択
+        # self.setDragMode(QGraphicsView.RubberBandDrag) # 範囲選択
 
         # scene settings
         self.scene_size = None
         self.scene = GraphicsScene()
+        # self.scene.setSceneRect(-500, -500, 1000, 1000)
         self.setScene(self.scene)
         self.scene.selectionChanged.connect(self.selection_changed)
+
+        # mouse event
+        self._is_panning = False
+        self._last_mouse_position = QPoint()
 
         [self.add_pick_item(name=name, **item_values) for name, item_values in self.picker_items.items()]
 
@@ -301,35 +307,58 @@ class GraphicsView(QGraphicsView):
         center = self.geometry().center()
         self.center = self.mapToScene(center)
 
+    def updateCoordinatesDisplay(self, position):
+        # 座標を表示するテキストアイテムを作成または更新します
+        # position は QPointF または QPoint オブジェクトです
+        text = f"X: {position.x()}, Y: {position.y()}"
+        if not hasattr(self, '_coordinates_item'):
+            self._coordinates_item = QGraphicsTextItem(text)
+            self._coordinates_item.setDefaultTextColor(Qt.gray)
+            self.scene().addItem(self._coordinates_item)
+        else:
+            self._coordinates_item.setPlainText(text)
+        self._coordinates_item.setPos(position)
+
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
             self.viewport().setCursor(Qt.ArrowCursor)
+            self.setDragMode(QGraphicsView.RubberBandDrag)
 
         elif event.button() == Qt.MidButton:
-            self.setDragMode(QGraphicsView.ScrollHandDrag)
+            self._is_panning = True
+            self._last_mouse_position = self.mapToScene(event.pos())
 
             self.viewport().setCursor(Qt.ClosedHandCursor)
-            handmade_event = QMouseEvent(QEvent.MouseButtonPress,QPointF(event.pos()),Qt.LeftButton,event.buttons(),Qt.KeyboardModifiers())
-            self.mousePressEvent(handmade_event)
+
+            # self.setDragMode(QGraphicsView.ScrollHandDrag)
+            # self.viewport().setCursor(Qt.ClosedHandCursor)
+            # handmade_event = QMouseEvent(QEvent.MouseButtonPress,QPointF(event.pos()),Qt.LeftButton,event.buttons(),Qt.KeyboardModifiers())
+            # self.mousePressEvent(handmade_event)
 
         super(GraphicsView, self).mousePressEvent(event)
 
     def mouseReleaseEvent(self, event):
         if event.button() == Qt.LeftButton:
             self.viewport().setCursor(Qt.ArrowCursor)
-            self.setDragMode(QGraphicsView.RubberBandDrag)
-
 
         elif event.button() == Qt.MidButton:
-            self.setDragMode(QGraphicsView.NoDrag)
+            self._is_panning = False
 
-            self.viewport().setCursor(Qt.OpenHandCursor)
-            handmade_event = QMouseEvent(QEvent.MouseButtonRelease,QPointF(event.pos()),Qt.LeftButton,event.buttons(),Qt.KeyboardModifiers())
-            self.mouseReleaseEvent(handmade_event)
+            # self.setDragMode(QGraphicsView.NoDrag)
+            # self.viewport().setCursor(Qt.OpenHandCursor)
+            # handmade_event = QMouseEvent(QEvent.MouseButtonRelease,QPointF(event.pos()),Qt.LeftButton,event.buttons(),Qt.KeyboardModifiers())
+            # self.mouseReleaseEvent(handmade_event)
+
+        self.viewport().setCursor(Qt.ArrowCursor)
+        self.setDragMode(QGraphicsView.NoDrag)
 
         super(GraphicsView, self).mouseReleaseEvent(event)
 
     def mouseMoveEvent(self, event):
+        if self._is_panning:
+            delta = self.mapToScene(event.pos()) - self._last_mouse_position
+            self._last_mouse_position = self.mapToScene(event.pos())
+            self.translate(delta.x(), delta.y())
         super(GraphicsView, self).mouseMoveEvent(event)
 
     def wheelEvent(self, event):
