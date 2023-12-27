@@ -26,6 +26,26 @@ import buildRig.embedJoints as brEJ
 reload(picker)
 reload(brEJ)
 
+# default color
+DEFAULT_BUTTON_COLOR = QColor()
+DEFAULT_BUTTON_COLOR.setRgbF(0.364706, 0.364706, 0.364706)
+"""
+# self.biped_collapse_toggle = False
+
+# set_palette.setColor(QPalette.Button, DEFAULT_BUTTON_COLOR)
+# chbx.setAutoFillBackground(True)
+# chbx.setPalette(set_palette)
+
+widget.hide()
+# self.biped_collapse_toggle = True
+
+# new_color = QColor()
+# new_color.setRgbF(0.5, 0.5, 0.25)
+# set_palette.setColor(QPalette.Button, new_color)
+# chbx.setAutoFillBackground(True)
+# chbx.setPalette(set_palette)
+"""
+
 class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
     def __init__(self):
         super().__init__()
@@ -73,6 +93,7 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
         self.menubars()
         self.layout()
         self.biped_layout()
+        self.biped_signal_slots()
 
     def menubars(self):
         for menu_name, menu_action in self.menu_actions.items():
@@ -131,9 +152,18 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
         self.biped_widget = QWidget()
         self.main_tab_widget.addTab(self.biped_widget, 'Biped')
 
-        # scroll areaの設定
+        # ガイド用のscroll areaの設定
         self.scroll_biped_qvbl = QVBoxLayout()
         self.biped_widget.setLayout(self.scroll_biped_qvbl)
+
+        # 展開
+        self.biped_collapsible_qvbl = QVBoxLayout()
+        self.scroll_biped_qvbl.addLayout(self.biped_collapsible_qvbl)
+
+        self.biped_collapsible_chbx = QCheckBox('Guide Settings')
+        self.biped_collapsible_chbx.setChecked(True)
+        self.biped_collapsible_qvbl.addWidget(self.biped_collapsible_chbx)
+
         self.scroll_biped_area = QScrollArea()
         self.scroll_biped_area.setWidgetResizable(True)
         self.scroll_biped_area.setMinimumHeight(1)
@@ -147,15 +177,14 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
         self.scroll_biped_widget.setLayout(self.biped_qvbl)
 
         # set mesh
-        self.mesh_hb_layout = QHBoxLayout()
-        self.biped_qvbl.addLayout(self.mesh_hb_layout)
+        self.biped_qhbl = QHBoxLayout()
+        self.biped_qvbl.addLayout(self.biped_qhbl)
 
         self.mesh_le = QLineEdit()
         self.mesh_btn = QPushButton('<< Set Mesh')
-        self.mesh_btn.clicked.connect(partial(self.set_setText_selection, self.mesh_le))
 
-        self.mesh_hb_layout.addWidget(self.mesh_le)
-        self.mesh_hb_layout.addWidget(self.mesh_btn)
+        self.biped_qhbl.addWidget(self.mesh_le)
+        self.biped_qhbl.addWidget(self.mesh_btn)
 
         # counter
         # root
@@ -228,6 +257,57 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
         # ガイド作成ボタン
         self.create_biped_guide_btn = QPushButton('Create Biped Guide')
         self.biped_qvbl.addWidget(self.create_biped_guide_btn)
+
+        ###########################
+        # コントローラ調整用のscroll areaの設定
+        # 展開
+        self.biped_ctrl_collapsible_qvbl = QVBoxLayout()
+        self.scroll_biped_qvbl.addLayout(self.biped_ctrl_collapsible_qvbl)
+
+        self.biped_ctrl_collapsible_chbx = QCheckBox('Guide Controller Settings')
+        self.biped_ctrl_collapsible_chbx.setChecked(True)
+        self.biped_ctrl_collapsible_qvbl.addWidget(self.biped_ctrl_collapsible_chbx)
+
+        self.scroll_ctrl_biped_area = QScrollArea()
+        self.scroll_ctrl_biped_area.setWidgetResizable(True)
+        self.scroll_ctrl_biped_area.setMinimumHeight(1)
+        self.scroll_biped_qvbl.addWidget(self.scroll_ctrl_biped_area)
+
+        self.scroll_ctrl_biped_widget = QWidget()
+        self.scroll_ctrl_biped_area.setWidget(self.scroll_ctrl_biped_widget)
+
+        self.biped_ctrl_qvbl = QVBoxLayout()
+        self.biped_ctrl_qvbl.setAlignment(Qt.AlignTop)
+        self.scroll_ctrl_biped_widget.setLayout(self.biped_ctrl_qvbl)
+
+        # set mesh
+        self.biped_ctrl_qhbl = QHBoxLayout()
+        self.biped_ctrl_qvbl.addLayout(self.biped_ctrl_qhbl)
+
+        self.mesh_ctrl_le = QLineEdit()
+        self.mesh_ctrl_btn = QPushButton('<< Set Mesh')
+
+        self.biped_ctrl_qhbl.addWidget(self.mesh_ctrl_le)
+        self.biped_ctrl_qhbl.addWidget(self.mesh_ctrl_btn)
+
+    def biped_signal_slots(self):
+        # 展開
+        # self.biped_collapsible_chbx.toggled.connect(partial(self.collapsible_toggle,
+        #                                                    self.biped_collapsible_chbx,
+        #                                                    self.scroll_biped_area))
+
+        self.biped_collapsible_chbx.stateChanged.connect(lambda: self.collapsible_toggle(self.biped_collapsible_chbx, self.scroll_biped_area))
+
+        # self.biped_ctrl_collapsible_chbx.toggled.connect(partial(self.collapsible_toggle,
+        #                                                    self.biped_ctrl_collapsible_chbx,
+        #                                                    self.scroll_ctrl_biped_area))
+
+        self.biped_ctrl_collapsible_chbx.stateChanged.connect(lambda: self.collapsible_toggle(self.biped_ctrl_collapsible_chbx, self.scroll_ctrl_biped_area))
+
+        # Set Mesh
+        self.mesh_btn.clicked.connect(partial(self.set_setText_selection, self.mesh_le))
+
+        # ガイド作成ボタン
         self.create_biped_guide_btn.clicked.connect(partial(self.create_biped_guide))
 
 
@@ -243,6 +323,25 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
             return
         if text_type_object.metaObject().className() in ['QLineEdit']:
             text_type_object.setText(sel[0])
+
+    def collapsible_toggle(self, chbx=None, widget=None):
+        if chbx.isChecked():
+            widget.show()
+            # self.biped_collapse_toggle = False
+
+            # set_palette.setColor(QPalette.Button, DEFAULT_BUTTON_COLOR)
+            # chbx.setAutoFillBackground(True)
+            # chbx.setPalette(set_palette)
+
+        else:
+            widget.hide()
+            # self.biped_collapse_toggle = True
+
+            # new_color = QColor()
+            # new_color.setRgbF(0.5, 0.5, 0.25)
+            # set_palette.setColor(QPalette.Button, new_color)
+            # chbx.setAutoFillBackground(True)
+            # chbx.setPalette(set_palette)
 
     def create_biped_guide(self):
         cmds.undoInfo(openChunk=True)
