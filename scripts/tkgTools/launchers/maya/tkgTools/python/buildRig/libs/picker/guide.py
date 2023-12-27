@@ -21,9 +21,9 @@ from maya.app.general.mayaMixin import MayaQWidgetBaseMixin, MayaQWidgetDockable
 import maya.cmds as cmds
 import maya.mel as mel
 
-import buildRig.libs.picker.ui as picker
+import buildRig.libs.picker.graphics as graphics
 import buildRig.embedJoints as brEJ
-reload(picker)
+reload(graphics)
 reload(brEJ)
 
 # default color
@@ -425,6 +425,10 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
             self.ring_axis_layout.axis_chbx,
             self.pinky_axis_layout.axis_chbx
         ]
+
+        # test graphics view
+        self.graphics_view = graphics.GraphicsView()
+        self.pinky_axis_layout.addWidget(self.graphics_view)
 
     def biped_signal_slots(self):
         # 展開
