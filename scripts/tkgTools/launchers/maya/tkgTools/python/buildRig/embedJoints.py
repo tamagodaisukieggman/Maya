@@ -781,10 +781,18 @@ class EmbedJoints:
         cmds.delete(left_ankle_loc)
         cmds.delete(left_ball_loc)
 
+    # spine
     def set_spine_axis_pv_up(self, spine_aim_axis='y', spine_up_axis='z', offset_aim_rotate=0):
         self.set_rot_ctrls(rot_ctrls=self.spine_rot_locs,
                            aim_axis=spine_aim_axis,
                            up_axis=spine_up_axis,
+                           offset_aim_rotate=offset_aim_rotate)
+
+    # neck
+    def set_neck_axis_pv_up(self, neck_aim_axis='y', neck_up_axis='z', offset_aim_rotate=0):
+        self.set_rot_ctrls(rot_ctrls=self.neck_rot_locs,
+                           aim_axis=neck_aim_axis,
+                           up_axis=neck_up_axis,
                            offset_aim_rotate=offset_aim_rotate)
 
     # thumb

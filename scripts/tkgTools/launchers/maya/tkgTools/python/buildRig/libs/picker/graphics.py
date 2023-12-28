@@ -285,6 +285,7 @@ class GraphicsView(QGraphicsView):
         #     # Hand Left
         #     'thumb_L_000':{
         #             'item_name':'Thumb_01_L_ctrl',
+        #             'shape':1,
         #             'rect':[-100, -100, 15, 15],
         #             'color':[255, 128, 255],
         #             'edge_color':[0, 0, 0],
@@ -294,6 +295,7 @@ class GraphicsView(QGraphicsView):
         #     },
         #     'thumb_L_001':{
         #             'item_name':'Thumb_02_L_ctrl',
+        #             'shape':1,
         #             'rect':[-120, -100, 15, 15],
         #             'color':[255, 128, 255],
         #             'edge_color':[0, 0, 0],

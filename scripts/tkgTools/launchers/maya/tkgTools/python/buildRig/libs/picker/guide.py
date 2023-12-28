@@ -318,12 +318,20 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
                                                init_aim_axis='y',
                                                init_up_axis='z')
 
+        # set neck axis button
+        self.set_neck_axis_btn = QPushButton('Set Neck Axis')
+        self.neck_axis_layout.addWidget(self.set_neck_axis_btn)
+
         # head axis
         self.head_axis_layout = SetAxisLayout(parent_layout=self.biped_ctrl_qvbl,
                                                part='Head',
                                                aim_axis_offset=True,
                                                init_aim_axis='y',
                                                init_up_axis='z')
+
+        # set head axis button
+        self.set_head_axis_btn = QPushButton('Set Head Axis')
+        self.head_axis_layout.addWidget(self.set_head_axis_btn)
 
         # shoulder arm axis
         self.shoulder_axis_layout = SetAxisLayout(parent_layout=self.biped_ctrl_qvbl,
@@ -481,6 +489,12 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
 
         # set axis btn
         self.set_spine_axis_btn.clicked.connect(lambda: self.set_spine_axis(axis_layout=self.spine_axis_layout))
+        self.set_neck_axis_btn.clicked.connect(lambda: self.set_neck_axis(axis_layout=self.neck_axis_layout))
+        self.set_thumb_axis_btn.clicked.connect(lambda: self.set_thumb_axis(axis_layout=self.thumb_axis_layout))
+        self.set_index_axis_btn.clicked.connect(lambda: self.set_index_axis(axis_layout=self.index_axis_layout))
+        self.set_middle_axis_btn.clicked.connect(lambda: self.set_middle_axis(axis_layout=self.middle_axis_layout))
+        self.set_ring_axis_btn.clicked.connect(lambda: self.set_ring_axis(axis_layout=self.ring_axis_layout))
+        self.set_pinky_axis_btn.clicked.connect(lambda: self.set_pinky_axis(axis_layout=self.pinky_axis_layout))
 
     def biped_source_mesh(self):
         self.current_biped_mesh = self.mesh_le.text()
@@ -522,6 +536,42 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
         axis_layout.get_current_values()
         self.embed.set_spine_axis_pv_up(spine_aim_axis=axis_layout.aim_axis,
                                 spine_up_axis=axis_layout.up_axis,
+                                offset_aim_rotate=axis_layout.offset_rotate)
+
+    def set_neck_axis(self, axis_layout=None):
+        axis_layout.get_current_values()
+        self.embed.set_neck_axis_pv_up(spine_aim_axis=axis_layout.aim_axis,
+                                spine_up_axis=axis_layout.up_axis,
+                                offset_aim_rotate=axis_layout.offset_rotate)
+
+    def set_thumb_axis(self, axis_layout=None):
+        axis_layout.get_current_values()
+        self.embed.set_thumb_axis_pv_up(thumb_aim_axis=axis_layout.aim_axis,
+                                thumb_up_axis=axis_layout.up_axis,
+                                offset_aim_rotate=axis_layout.offset_rotate)
+
+    def set_index_axis(self, axis_layout=None):
+        axis_layout.get_current_values()
+        self.embed.set_index_axis_pv_up(index_aim_axis=axis_layout.aim_axis,
+                                index_up_axis=axis_layout.up_axis,
+                                offset_aim_rotate=axis_layout.offset_rotate)
+
+    def set_middle_axis(self, axis_layout=None):
+        axis_layout.get_current_values()
+        self.embed.set_middle_axis_pv_up(middle_aim_axis=axis_layout.aim_axis,
+                                middle_up_axis=axis_layout.up_axis,
+                                offset_aim_rotate=axis_layout.offset_rotate)
+
+    def set_ring_axis(self, axis_layout=None):
+        axis_layout.get_current_values()
+        self.embed.set_ring_axis_pv_up(ring_aim_axis=axis_layout.aim_axis,
+                                ring_up_axis=axis_layout.up_axis,
+                                offset_aim_rotate=axis_layout.offset_rotate)
+
+    def set_pinky_axis(self, axis_layout=None):
+        axis_layout.get_current_values()
+        self.embed.set_pinky_axis_pv_up(pinky_aim_axis=axis_layout.aim_axis,
+                                pinky_up_axis=axis_layout.up_axis,
                                 offset_aim_rotate=axis_layout.offset_rotate)
 
 
@@ -647,7 +697,7 @@ class SetAxisLayout(QVBoxLayout):
         self.aim_axis = None
         self.up_axis = None
         self.aim_axis_offset = aim_axis_offset
-        self.offset_rotate = None
+        self.offset_rotate = 0
 
         CustomSplitter(parent_layout, 'Horizontal')
 
@@ -762,7 +812,7 @@ class SetAxisLayout(QVBoxLayout):
         # offset rotate
         if self.aim_axis_offset:
             self.offset_rotate = self.aim_axis_offset_dsbox.value()
-
+        
 class CreateGuidePicker:
     def __init__(self,
                  parent_layout=None,
