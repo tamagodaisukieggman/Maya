@@ -311,6 +311,20 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
         self.set_spine_axis_btn = QPushButton('Set Spine Axis')
         self.spine_axis_layout.addWidget(self.set_spine_axis_btn)
 
+        # neck axis
+        self.neck_axis_layout = SetAxisLayout(parent_layout=self.biped_ctrl_qvbl,
+                                               part='Neck',
+                                               aim_axis_offset=True,
+                                               init_aim_axis='y',
+                                               init_up_axis='z')
+
+        # head axis
+        self.head_axis_layout = SetAxisLayout(parent_layout=self.biped_ctrl_qvbl,
+                                               part='Head',
+                                               aim_axis_offset=True,
+                                               init_aim_axis='y',
+                                               init_up_axis='z')
+
         # shoulder arm axis
         self.shoulder_axis_layout = SetAxisLayout(parent_layout=self.biped_ctrl_qvbl,
                                                   part='Shoulder',
@@ -415,6 +429,8 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
         # layouts for all scales
         self.part_layouts = [
             self.spine_axis_layout,
+            self.neck_axis_layout,
+            self.head_axis_layout,
             self.shoulder_axis_layout,
             self.arm_axis_layout,
             self.thigh_axis_layout,
@@ -463,6 +479,8 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
         # all axis check
         self.all_axis_chbx.stateChanged.connect(lambda: check_to_checks(self.all_axis_chbx, self.axis_chbxes))
 
+        # set axis btn
+        self.set_spine_axis_btn.clicked.connect(lambda: self.set_spine_axis(axis_layout=self.spine_axis_layout))
 
     def biped_source_mesh(self):
         self.current_biped_mesh = self.mesh_le.text()
@@ -500,6 +518,13 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
 
         cmds.undoInfo(closeChunk=True)
 
+    def set_spine_axis(self, axis_layout=None):
+        axis_layout.get_current_values()
+        self.embed.set_spine_axis_pv_up(spine_aim_axis=axis_layout.aim_axis,
+                                spine_up_axis=axis_layout.up_axis,
+                                offset_aim_rotate=axis_layout.offset_rotate)
+
+
     def pa_unparent_mesh(self):
         if self.embed:
             self.embed.pa_unparent_mesh()
@@ -514,17 +539,19 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
         try:
             self.part_layout_index = {
                 0:'spine',
-                1:'arm',
-                2:'arm',
-                3:'leg',
-                4:'leg',
+                1:'neck',
+                2:'head',
+                3:'arm',
+                4:'arm',
                 5:'leg',
                 6:'leg',
-                7:'thumb',
-                8:'index',
-                9:'middle',
-                10:'ring',
-                11:'pinky'
+                7:'leg',
+                8:'leg',
+                9:'thumb',
+                10:'index',
+                11:'middle',
+                12:'ring',
+                13:'pinky'
             }
             for i, part_lay in enumerate(self.part_layouts):
                 part = self.part_layout_index[i]
@@ -617,6 +644,11 @@ class SetAxisLayout(QVBoxLayout):
                  init_up_negative=None):
         super().__init__()
 
+        self.aim_axis = None
+        self.up_axis = None
+        self.aim_axis_offset = aim_axis_offset
+        self.offset_rotate = None
+
         CustomSplitter(parent_layout, 'Horizontal')
 
         self.axis_chbx = QCheckBox('{} Position & Axis'.format(part))
@@ -637,6 +669,7 @@ class SetAxisLayout(QVBoxLayout):
         self.addLayout(self.aim_axis_qhbl)
 
         self.aim_axis_radioGroup = QButtonGroup()
+        self.aim_axis_radioGroup.buttonClicked.connect(lambda: self.get_current_values())
 
         aim_axis_radio_x = QRadioButton("X")
         aim_axis_radio_y = QRadioButton("Y")
@@ -662,12 +695,14 @@ class SetAxisLayout(QVBoxLayout):
         if init_aim_negative:
             self.aim_negative_chbx.setChecked(True)
         self.aim_axis_qhbl.addWidget(self.aim_negative_chbx)
+        self.aim_negative_chbx.stateChanged.connect(lambda: self.get_current_values())
 
         # up axis
         self.up_axis_qhbl = QHBoxLayout()
         self.addLayout(self.up_axis_qhbl)
 
         self.up_axis_radioGroup = QButtonGroup()
+        self.up_axis_radioGroup.buttonClicked.connect(lambda: self.get_current_values())
 
         up_axis_radio_x = QRadioButton("X")
         up_axis_radio_y = QRadioButton("Y")
@@ -693,9 +728,10 @@ class SetAxisLayout(QVBoxLayout):
         if init_up_negative:
             self.up_negative_chbx.setChecked(True)
         self.up_axis_qhbl.addWidget(self.up_negative_chbx)
+        self.up_negative_chbx.stateChanged.connect(lambda: self.get_current_values())
 
         # aim offset
-        if aim_axis_offset: self.add_aim_axis_offset()
+        if self.aim_axis_offset: self.add_aim_axis_offset()
 
     def add_aim_axis_offset(self):
         self.aim_axis_offset_qhbl = QHBoxLayout()
@@ -705,6 +741,27 @@ class SetAxisLayout(QVBoxLayout):
 
         self.aim_axis_offset_dsbox = AimOffsetAxisSpinBox()
         self.aim_axis_offset_qhbl.addWidget(self.aim_axis_offset_dsbox)
+
+    def get_current_values(self):
+        # aim
+        aim_negative = ''
+        if self.aim_negative_chbx.isChecked():
+            aim_negative = '-'
+
+        aim_axis_btn = self.aim_axis_radioGroup.checkedButton()
+        self.aim_axis = aim_negative + aim_axis_btn.text().lower()
+
+        # up
+        up_negative = ''
+        if self.up_negative_chbx.isChecked():
+            up_negative = '-'
+
+        up_axis_btn = self.up_axis_radioGroup.checkedButton()
+        self.up_axis = up_negative + up_axis_btn.text().lower()
+
+        # offset rotate
+        if self.aim_axis_offset:
+            self.offset_rotate = self.aim_axis_offset_dsbox.value()
 
 class CreateGuidePicker:
     def __init__(self,
