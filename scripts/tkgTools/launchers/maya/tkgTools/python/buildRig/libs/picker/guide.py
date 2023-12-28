@@ -23,8 +23,10 @@ import maya.mel as mel
 
 import buildRig.libs.picker.graphics as graphics
 import buildRig.embedJoints as brEJ
+import buildRig.modifyJoints as brMJ
 reload(graphics)
 reload(brEJ)
+reload(brMJ)
 
 # default color
 DEFAULT_BUTTON_COLOR = QColor()
@@ -382,7 +384,7 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
         # thumb axis
         self.thumb_axis_layout = SetAxisLayout(parent_layout=self.biped_ctrl_qvbl,
                                                   part='Thumb',
-                                                  aim_axis_offset=None,
+                                                  aim_axis_offset=True,
                                                   init_aim_axis='x',
                                                   init_up_axis='y')
 
@@ -393,7 +395,7 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
         # index axis
         self.index_axis_layout = SetAxisLayout(parent_layout=self.biped_ctrl_qvbl,
                                                   part='Index',
-                                                  aim_axis_offset=None,
+                                                  aim_axis_offset=True,
                                                   init_aim_axis='x',
                                                   init_up_axis='y')
 
@@ -404,7 +406,7 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
         # middle axis
         self.middle_axis_layout = SetAxisLayout(parent_layout=self.biped_ctrl_qvbl,
                                                   part='Middle',
-                                                  aim_axis_offset=None,
+                                                  aim_axis_offset=True,
                                                   init_aim_axis='x',
                                                   init_up_axis='y')
 
@@ -415,7 +417,7 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
         # ring axis
         self.ring_axis_layout = SetAxisLayout(parent_layout=self.biped_ctrl_qvbl,
                                                   part='Ring',
-                                                  aim_axis_offset=None,
+                                                  aim_axis_offset=True,
                                                   init_aim_axis='x',
                                                   init_up_axis='y')
 
@@ -426,7 +428,7 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
         # pinky axis
         self.pinky_axis_layout = SetAxisLayout(parent_layout=self.biped_ctrl_qvbl,
                                                   part='Pinky',
-                                                  aim_axis_offset=None,
+                                                  aim_axis_offset=True,
                                                   init_aim_axis='x',
                                                   init_up_axis='y')
 
@@ -534,45 +536,104 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
 
     def set_spine_axis(self, axis_layout=None):
         axis_layout.get_current_values()
-        self.embed.set_spine_axis_pv_up(spine_aim_axis=axis_layout.aim_axis,
-                                spine_up_axis=axis_layout.up_axis,
-                                offset_aim_rotate=axis_layout.offset_rotate)
+        # self.embed.set_spine_axis_pv_up(spine_aim_axis=axis_layout.aim_axis,
+        #                         spine_up_axis=axis_layout.up_axis,
+        #                         offset_aim_rotate=axis_layout.offset_rotate)
+
+        brMJ.set_chain_axis(chain=self.embed.left_spine_rot_locs,
+                   aim_axis=axis_layout.aim_axis,
+                   up_axis=axis_layout.up_axis,
+                   worldSpace=False,
+                   world_axis='y',
+                   offset_aim_rotate=axis_layout.offset_rotate,
+                   set_tip=True)
 
     def set_neck_axis(self, axis_layout=None):
         axis_layout.get_current_values()
-        self.embed.set_neck_axis_pv_up(spine_aim_axis=axis_layout.aim_axis,
-                                spine_up_axis=axis_layout.up_axis,
-                                offset_aim_rotate=axis_layout.offset_rotate)
+        # self.embed.set_neck_axis_pv_up(spine_aim_axis=axis_layout.aim_axis,
+        #                         spine_up_axis=axis_layout.up_axis,
+        #                         offset_aim_rotate=axis_layout.offset_rotate)
+
+        brMJ.set_chain_axis(chain=self.embed.left_neck_rot_locs,
+                   aim_axis=axis_layout.aim_axis,
+                   up_axis=axis_layout.up_axis,
+                   worldSpace=False,
+                   world_axis='y',
+                   offset_aim_rotate=axis_layout.offset_rotate,
+                   set_tip=True)
+
 
     def set_thumb_axis(self, axis_layout=None):
         axis_layout.get_current_values()
-        self.embed.set_thumb_axis_pv_up(thumb_aim_axis=axis_layout.aim_axis,
-                                thumb_up_axis=axis_layout.up_axis,
-                                offset_aim_rotate=axis_layout.offset_rotate)
+        # self.embed.set_thumb_axis_pv_up(thumb_aim_axis=axis_layout.aim_axis,
+        #                         thumb_up_axis=axis_layout.up_axis,
+        #                         offset_aim_rotate=axis_layout.offset_rotate)
+
+        brMJ.set_chain_axis(chain=self.embed.left_thumb_rot_locs,
+                   aim_axis=axis_layout.aim_axis,
+                   up_axis=axis_layout.up_axis,
+                   worldSpace=False,
+                   world_axis='y',
+                   offset_aim_rotate=axis_layout.offset_rotate,
+                   set_tip=True)
 
     def set_index_axis(self, axis_layout=None):
         axis_layout.get_current_values()
-        self.embed.set_index_axis_pv_up(index_aim_axis=axis_layout.aim_axis,
-                                index_up_axis=axis_layout.up_axis,
-                                offset_aim_rotate=axis_layout.offset_rotate)
+        # self.embed.set_index_axis_pv_up(index_aim_axis=axis_layout.aim_axis,
+        #                         index_up_axis=axis_layout.up_axis,
+        #                         offset_aim_rotate=axis_layout.offset_rotate)
+
+        brMJ.set_chain_axis(chain=self.embed.left_index_rot_locs,
+                   aim_axis=axis_layout.aim_axis,
+                   up_axis=axis_layout.up_axis,
+                   worldSpace=False,
+                   world_axis='y',
+                   offset_aim_rotate=axis_layout.offset_rotate,
+                   set_tip=True)
+
 
     def set_middle_axis(self, axis_layout=None):
         axis_layout.get_current_values()
-        self.embed.set_middle_axis_pv_up(middle_aim_axis=axis_layout.aim_axis,
-                                middle_up_axis=axis_layout.up_axis,
-                                offset_aim_rotate=axis_layout.offset_rotate)
+        # self.embed.set_middle_axis_pv_up(middle_aim_axis=axis_layout.aim_axis,
+        #                         middle_up_axis=axis_layout.up_axis,
+        #                         offset_aim_rotate=axis_layout.offset_rotate)
+
+        brMJ.set_chain_axis(chain=self.embed.left_middle_rot_locs,
+                   aim_axis=axis_layout.aim_axis,
+                   up_axis=axis_layout.up_axis,
+                   worldSpace=False,
+                   world_axis='y',
+                   offset_aim_rotate=axis_layout.offset_rotate,
+                   set_tip=True)
+
 
     def set_ring_axis(self, axis_layout=None):
         axis_layout.get_current_values()
-        self.embed.set_ring_axis_pv_up(ring_aim_axis=axis_layout.aim_axis,
-                                ring_up_axis=axis_layout.up_axis,
-                                offset_aim_rotate=axis_layout.offset_rotate)
+        # self.embed.set_ring_axis_pv_up(ring_aim_axis=axis_layout.aim_axis,
+        #                         ring_up_axis=axis_layout.up_axis,
+        #                         offset_aim_rotate=axis_layout.offset_rotate)
+
+        brMJ.set_chain_axis(chain=self.embed.left_ring_rot_locs,
+                   aim_axis=axis_layout.aim_axis,
+                   up_axis=axis_layout.up_axis,
+                   worldSpace=False,
+                   world_axis='y',
+                   offset_aim_rotate=axis_layout.offset_rotate,
+                   set_tip=True)
 
     def set_pinky_axis(self, axis_layout=None):
         axis_layout.get_current_values()
-        self.embed.set_pinky_axis_pv_up(pinky_aim_axis=axis_layout.aim_axis,
-                                pinky_up_axis=axis_layout.up_axis,
-                                offset_aim_rotate=axis_layout.offset_rotate)
+        # self.embed.set_pinky_axis_pv_up(pinky_aim_axis=axis_layout.aim_axis,
+        #                         pinky_up_axis=axis_layout.up_axis,
+        #                         offset_aim_rotate=axis_layout.offset_rotate)
+
+        brMJ.set_chain_axis(chain=self.embed.left_pinky_rot_locs,
+                   aim_axis=axis_layout.aim_axis,
+                   up_axis=axis_layout.up_axis,
+                   worldSpace=False,
+                   world_axis='y',
+                   offset_aim_rotate=axis_layout.offset_rotate,
+                   set_tip=True)
 
 
     def pa_unparent_mesh(self):
@@ -824,7 +885,7 @@ class CreateGuidePicker:
         for ctrl in embed_pos_ctrls:
             self.pos_rot_picker_items[ctrl] = {}
             self.pos_rot_picker_items[ctrl]['item_name'] = ctrl
-            self.pos_rot_picker_items[ctrl]['shape'] = 5
+            self.pos_rot_picker_items[ctrl]['shape'] = 3
             self.pos_rot_picker_items[ctrl]['rect'] = [init_x, init_y, 15, 15]
             self.pos_rot_picker_items[ctrl]['color'] = [255, 255, 100]
             self.pos_rot_picker_items[ctrl]['edge_color'] = [0,0,0]

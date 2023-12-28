@@ -127,7 +127,14 @@ def get_sublists(lst, n):
     """
     return [lst[i:i + n] for i in range(len(lst) - n + 1)]
 
-def set_mid_axis(start=None, mid=None, end=None, aim_axis='x', up_axis='y', maintain_start_rot=None):
+def set_mid_axis(start=None,
+                 mid=None,
+                 end=None,
+                 aim_axis='x',
+                 up_axis='y',
+                 worldSpace=False,
+                 world_axis='y',
+                 maintain_start_rot=None):
     start_pos = cmds.xform(start, q=True, t=True, ws=True)
     start_rot = cmds.xform(start, q=True, ro=True, ws=True)
     mid_pos = cmds.xform(mid, q=True, t=True, ws=True)
@@ -150,8 +157,8 @@ def set_mid_axis(start=None, mid=None, end=None, aim_axis='x', up_axis='y', main
                     up_axis=up_axis,
                     worldUpType='object',
                     worldUpObject=loc2,
-                    worldSpace=False,
-                    world_axis='y')
+                    worldSpace=worldSpace,
+                    world_axis=world_axis)
 
     cmds.xform(start, t=start_pos, ws=True, a=True, p=True)
     if maintain_start_rot:
@@ -179,7 +186,22 @@ def set_mid_axis(start=None, mid=None, end=None, aim_axis='x', up_axis='y', main
     cmds.delete(loc1)
     cmds.delete(loc2)
 
-def set_joints_axis(chain=None, aim_axis='x', up_axis='y', set_tip=None):
+AXIS_DICT = {
+    'x':[1,0,0],
+    'y':[0,1,0],
+    'z':[0,0,1],
+    '-x':[-1,0,0],
+    '-y':[0,-1,0],
+    '-z':[0,0,-1]
+}
+
+def set_chain_axis(chain=None,
+                   aim_axis='x',
+                   up_axis='y',
+                   worldSpace=False,
+                   world_axis='y',
+                   offset_aim_rotate=0,
+                   set_tip=None):
     chain_sublists = brCommon.get_sublists(chain, 3)
     
     for i, jnts in enumerate(chain_sublists):
@@ -199,14 +221,20 @@ def set_joints_axis(chain=None, aim_axis='x', up_axis='y', set_tip=None):
                      end=end,
                      aim_axis=aim_axis,
                      up_axis=up_axis,
+                     worldSpace=worldSpace,
+                     world_axis=world_axis,
                      maintain_start_rot=maintain_start_rot_sts)
 
-    set_tip=None
+    offset_rotate = [v*offset_aim_rotate for v in AXIS_DICT[aim_axis]]
+    for obj in chain:
+        cmds.rotate(*offset_rotate, obj, r=True, os=True, fo=True)
+
     if set_tip:
         cmds.xform(chain[-1],
                    ro=cmds.xform(chain[-2], q=True, ro=True, ws=True),
                    ws=True,
                    a=True)
+
 
 
 def aim_correct_joints(sel=None,
