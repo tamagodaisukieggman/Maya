@@ -89,6 +89,8 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
             }),
         })
 
+        self.embed = None
+
     def buildUI(self):
         self.menubars()
         self.layout()
@@ -426,9 +428,8 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
             self.pinky_axis_layout.axis_chbx
         ]
 
-        # test graphics view
-        self.graphics_view = graphics.GraphicsView()
-        self.pinky_axis_layout.addWidget(self.graphics_view)
+        if not self.embed:
+            self.get_cur_adj_ctrls()
 
     def biped_signal_slots(self):
         # 展開
@@ -492,6 +493,8 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
                                 create=True,
                                 guide_name=None)
 
+        self.create_guide_pickers()
+
         cmds.undoInfo(closeChunk=True)
 
     def pa_unparent_mesh(self):
@@ -501,6 +504,17 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
     def get_cur_adj_ctrls(self):
         self.embed = brEJ.EmbedJoints(create=None)
         self.embed.get_current_adjust_axis_values()
+
+        self.create_guide_pickers()
+
+    def create_guide_pickers(self):
+        try:
+            # pinky picker
+            pinky_guide_picker = CreateGuidePicker(parent_layout=self.pinky_axis_layout,
+                                                embed_pos_ctrls=self.embed.left_pinky_pos_locs,
+                                                embed_rot_ctrls=self.embed.left_pinky_rot_locs)
+        except:
+            pass
 
 
 class PartsCountSpinBox(QDoubleSpinBox):
@@ -638,6 +652,41 @@ class SetAxisLayout(QVBoxLayout):
 
         self.aim_axis_offset_dsbox = AimOffsetAxisSpinBox()
         self.aim_axis_offset_qhbl.addWidget(self.aim_axis_offset_dsbox)
+
+class CreateGuidePicker:
+    def __init__(self, parent_layout=None, embed_pos_ctrls=None, embed_rot_ctrls=None):
+        self.pos_rot_picker_items = {}
+        init_x = -100
+        init_y = -100
+        for ctrl in embed_pos_ctrls:
+            self.pos_rot_picker_items[ctrl] = {}
+            self.pos_rot_picker_items[ctrl]['item_name'] = ctrl
+            self.pos_rot_picker_items[ctrl]['rect'] = [init_x, init_y, 15, 15]
+            self.pos_rot_picker_items[ctrl]['color'] = [255, 255, 100]
+            self.pos_rot_picker_items[ctrl]['edge_color'] = [0,0,0]
+            self.pos_rot_picker_items[ctrl]['width'] = 1
+            self.pos_rot_picker_items[ctrl]['text_size'] = 2
+            self.pos_rot_picker_items[ctrl]['text_offset_pos'] = [-5, -10]
+
+            init_x += 20
+
+        init_x = -100
+        init_y += 20
+        for ctrl in embed_rot_ctrls:
+            self.pos_rot_picker_items[ctrl] = {}
+            self.pos_rot_picker_items[ctrl]['item_name'] = ctrl
+            self.pos_rot_picker_items[ctrl]['rect'] = [init_x, init_y, 15, 15]
+            self.pos_rot_picker_items[ctrl]['color'] = [100, 128, 255]
+            self.pos_rot_picker_items[ctrl]['edge_color'] = [0,0,0]
+            self.pos_rot_picker_items[ctrl]['width'] = 1
+            self.pos_rot_picker_items[ctrl]['text_size'] = 2
+            self.pos_rot_picker_items[ctrl]['text_offset_pos'] = [-5, -10]
+
+            init_x += 20
+
+        self.graphics_view = graphics.GraphicsView(self.pos_rot_picker_items)
+        parent_layout.addWidget(self.graphics_view)
+
 
 def collapsible_toggle(chbx=None, widget=None):
     if chbx.isChecked():

@@ -114,6 +114,13 @@ class GraphicsRectItem(QGraphicsRectItem):
         self.rect_edit_mode = None
         self.rect_move = None
         self.selected_items = None
+        self.show_hide_key = None
+
+        # self.text_item = QGraphicsTextItem(self.name)
+        # self.text_item.setDefaultTextColor(QColor(0, 0, 0))
+        # self.text_item.setParentItem(self)
+        # self.text_pos = self.pos()
+        # self.text_item.setPos(self.text_pos.x(), self.text_pos.y())
 
         self._last_mouse_position = QPoint()
 
@@ -171,6 +178,8 @@ class GraphicsRectItem(QGraphicsRectItem):
         size_action = context_menu.addAction('Set Size')
         move_unlock_action = context_menu.addAction('Move Unlock')
         move_lock_action = context_menu.addAction('Move Lock')
+        show_hide_text_action = context_menu.addAction('Text Visibility')
+        set_text_size_action = context_menu.addAction('Set Text Size')
 
         selected_action = context_menu.exec_(event.screenPos())
 
@@ -184,6 +193,10 @@ class GraphicsRectItem(QGraphicsRectItem):
                     item.rect_move = False
         elif selected_action == size_action:
             self.change_size()
+        elif selected_action == show_hide_text_action:
+            self.show_hide_text()
+        elif selected_action == set_text_size_action:
+            self.change_text_size()
 
     def change_size(self):
         new_size, ok = QInputDialog.getInt(None, "Set Size", "Size:", int(self.rect().width()), 10, 1000)
@@ -193,30 +206,61 @@ class GraphicsRectItem(QGraphicsRectItem):
                     item.setRect(item.rect().x(), item.rect().y(), new_size, new_size)
                     item.update()
 
+    def change_text_size(self):
+        new_size, ok = QInputDialog.getInt(None, "Set Text Size", "Size:", int(self.rect().width()), 0, 20)
+        if ok:
+            for item in self.selected_items:
+                if isinstance(item.text_item, QGraphicsTextItem):
+                    font = QFont('Arial', new_size)
+                    item.text_item.setFont(font)
+
+    def show_hide_text(self):
+        for item in self.selected_items:
+            if isinstance(item.text_item, QGraphicsTextItem):
+                if item.text_item.isVisible():
+                    item.text_item.setVisible(False)
+                else:
+                    item.text_item.setVisible(True)
+
+    def add_text(self, name=None, size=None, offset_pos=[0,0]):
+        self.text_item = QGraphicsTextItem(name, self)
+        self.text_pos = QPoint(self.rect().x()+offset_pos[0],
+                               self.rect().y()+offset_pos[1])
+        self.text_item.setPos(self.text_pos)
+        font = QFont('Arial', size)
+        self.text_item.setFont(font)
+        self.text_item.setVisible(False)
+
 #############################
 # GraphicsView class
 #############################
 class GraphicsView(QGraphicsView):
-    def __init__(self, parent=None):
-        super(GraphicsView, self).__init__(parent)
+    def __init__(self, picker_items=None):
+        super().__init__()
 
-        self.picker_items = {
-            # Hand Left
-            'thumb_L_000':{
-                    'item_name':'Thumb_01_L_ctrl',
-                    'rect':[-100, -100, 15, 15],
-                    'color':[255, 128, 255],
-                    'edge_color':[0, 0, 0],
-                    'width':1
-            },
-            'thumb_L_001':{
-                    'item_name':'Thumb_02_L_ctrl',
-                    'rect':[-120, -100, 15, 15],
-                    'color':[255, 128, 255],
-                    'edge_color':[0, 0, 0],
-                    'width':1
-            },
-        }
+        self.picker_items = picker_items
+
+        # self.picker_items = {
+        #     # Hand Left
+        #     'thumb_L_000':{
+        #             'item_name':'Thumb_01_L_ctrl',
+        #             'rect':[-100, -100, 15, 15],
+        #             'color':[255, 128, 255],
+        #             'edge_color':[0, 0, 0],
+        #             'width':1,
+        #             'text_size':2,
+        #             'text_offset_pos':[-5, -10]
+        #     },
+        #     'thumb_L_001':{
+        #             'item_name':'Thumb_02_L_ctrl',
+        #             'rect':[-120, -100, 15, 15],
+        #             'color':[255, 128, 255],
+        #             'edge_color':[0, 0, 0],
+        #             'width':1,
+        #             'text_size':2,
+        #             'text_offset_pos':[-5, -10]
+        #     },
+        # }
 
 
         self.center = None
@@ -256,9 +300,24 @@ class GraphicsView(QGraphicsView):
     ######################
     # add picker items
     ######################
-    def add_pick_item(self, name='rectTest', item_name=None, rect=[-100, -100, 80, 100], color=[128, 220, 190], edge_color=[196, 255, 220], width=4):
-        rect_item = GraphicsRectItem(*rect)
+    def add_pick_item(self,
+                      name='rectTest',
+                      item_name=None,
+                      rect=[-100, -100, 80, 100],
+                      color=[128, 220, 190],
+                      edge_color=[196, 255, 220],
+                      width=4,
+                      text_size=10,
+                      text_offset_pos=[-10, 30]):
+        self.rect_pos = QRect(*rect)
+        rect_item = GraphicsRectItem(self.rect_pos)
+        rect_item.add_text(name, text_size, text_offset_pos)
         self.scene.addItem(rect_item)
+
+        # self.text_pos = QPoint(self.rect_pos.x(), self.rect_pos.y())
+        # _text = self.scene.addText(name)
+        # _text.setPos(self.text_pos)
+        # _text.setParentItem(rect_item)
 
         gradient = QLinearGradient(20, 180, 120, 260)
         gradient.setColorAt(0.0, QColor(*color))
