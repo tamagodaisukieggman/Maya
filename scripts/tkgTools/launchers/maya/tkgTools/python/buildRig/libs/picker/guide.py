@@ -335,7 +335,7 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
         self.set_head_axis_btn = QPushButton('Set Head Axis')
         self.head_axis_layout.addWidget(self.set_head_axis_btn)
 
-        # shoulder arm axis
+        # arm axis
         self.shoulder_axis_layout = SetAxisLayout(parent_layout=self.biped_ctrl_qvbl,
                                                   part='Shoulder',
                                                   aim_axis_offset=None,
@@ -348,8 +348,8 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
                                              init_up_axis='y')
 
         # set shoulder arm axis button
-        self.set_shoulder_arm_axis_btn = QPushButton('Set Shoulder Arm Axis')
-        self.arm_axis_layout.addWidget(self.set_shoulder_arm_axis_btn)
+        self.set_arm_axis_btn = QPushButton('Set Shoulder Arm Axis')
+        self.arm_axis_layout.addWidget(self.set_arm_axis_btn)
 
         # thigh leg ankle ball axis
         self.thigh_axis_layout = SetAxisLayout(parent_layout=self.biped_ctrl_qvbl,
@@ -498,6 +498,16 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
         self.set_ring_axis_btn.clicked.connect(lambda: self.set_ring_axis(axis_layout=self.ring_axis_layout))
         self.set_pinky_axis_btn.clicked.connect(lambda: self.set_pinky_axis(axis_layout=self.pinky_axis_layout))
 
+        self.set_arm_axis_btn.clicked.connect(lambda: self.set_arm_axis(shoulder_axis_layout=self.shoulder_axis_layout,
+                                                                        arm_axis_layout=self.arm_axis_layout))
+
+        self.set_legs_axis_btn.clicked.connect(lambda: self.set_legs_axis([self.thigh_axis_layout,
+                                                                           self.leg_axis_layout,
+                                                                           self.ankle_axis_layout,
+                                                                           self.ball_axis_layout]))
+
+
+
     def biped_source_mesh(self):
         self.current_biped_mesh = self.mesh_le.text()
 
@@ -540,7 +550,7 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
         #                         spine_up_axis=axis_layout.up_axis,
         #                         offset_aim_rotate=axis_layout.offset_rotate)
 
-        brMJ.set_chain_axis(chain=self.embed.left_spine_rot_locs,
+        brMJ.set_chain_axis(chain=self.embed.spine_rot_locs,
                    aim_axis=axis_layout.aim_axis,
                    up_axis=axis_layout.up_axis,
                    worldSpace=False,
@@ -550,17 +560,17 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
 
     def set_neck_axis(self, axis_layout=None):
         axis_layout.get_current_values()
-        # self.embed.set_neck_axis_pv_up(spine_aim_axis=axis_layout.aim_axis,
-        #                         spine_up_axis=axis_layout.up_axis,
-        #                         offset_aim_rotate=axis_layout.offset_rotate)
+        self.embed.set_neck_axis_pv_up(spine_aim_axis=axis_layout.aim_axis,
+                                spine_up_axis=axis_layout.up_axis,
+                                offset_aim_rotate=axis_layout.offset_rotate)
 
-        brMJ.set_chain_axis(chain=self.embed.left_neck_rot_locs,
-                   aim_axis=axis_layout.aim_axis,
-                   up_axis=axis_layout.up_axis,
-                   worldSpace=False,
-                   world_axis='y',
-                   offset_aim_rotate=axis_layout.offset_rotate,
-                   set_tip=True)
+        # brMJ.set_chain_axis(chain=self.embed.neck_rot_locs,
+        #            aim_axis=axis_layout.aim_axis,
+        #            up_axis=axis_layout.up_axis,
+        #            worldSpace=False,
+        #            world_axis='y',
+        #            offset_aim_rotate=axis_layout.offset_rotate,
+        #            set_tip=True)
 
 
     def set_thumb_axis(self, axis_layout=None):
@@ -634,6 +644,47 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
                    world_axis='y',
                    offset_aim_rotate=axis_layout.offset_rotate,
                    set_tip=True)
+
+    def set_arm_axis(self, shoulder_axis_layout=None, arm_axis_layout=None):
+        shoulder_axis_layout.get_current_values()
+        arm_axis_layout.get_current_values()
+
+        self.embed.set_arm_axis_pv_up(shoulder_aim_axis=shoulder_axis_layout.aim_axis,
+                                      shoulder_up_axis=shoulder_axis_layout.up_axis,
+                                      shoulder_worldSpace=False,
+                                      shoulder_world_axis='y',
+                                      arm_aim_axis=arm_axis_layout.aim_axis,
+                                      arm_up_axis=arm_axis_layout.up_axis,
+                                      arm_worldSpace=False,
+                                      arm_world_axis='y')
+
+        # brMJ.set_chain_axis(chain=self.embed.left_arm_rot_locs,
+        #            aim_axis=axis_layout.aim_axis,
+        #            up_axis=axis_layout.up_axis,
+        #            worldSpace=False,
+        #            world_axis='y',
+        #            offset_aim_rotate=axis_layout.offset_rotate,
+        #            set_tip=True)
+
+    def set_legs_axis(self, axis_layouts=None):
+        [lay.get_current_values() for lay in axis_layouts]
+
+        self.embed.set_leg_axis_pv_up(thigh_aim_axis=axis_layouts[0].aim_axis,
+                                      thigh_up_axis=axis_layouts[0].up_axis,
+                                      thigh_worldSpace=False,
+                                      thigh_world_axis='y',
+                                      leg_aim_axis=axis_layouts[1].aim_axis,
+                                      leg_up_axis=axis_layouts[1].up_axis,
+                                      leg_worldSpace=False,
+                                      leg_world_axis='y',
+                                      ankle_aim_axis=axis_layouts[2].aim_axis,
+                                      ankle_up_axis=axis_layouts[2].up_axis,
+                                      ankle_worldSpace=False,
+                                      ankle_world_axis='y',
+                                      ball_aim_axis=axis_layouts[3].aim_axis,
+                                      ball_up_axis=axis_layouts[3].up_axis,
+                                      ball_worldSpace=False,
+                                      ball_world_axis='y')
 
 
     def pa_unparent_mesh(self):
