@@ -560,8 +560,8 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
 
     def set_neck_axis(self, axis_layout=None):
         axis_layout.get_current_values()
-        self.embed.set_neck_axis_pv_up(spine_aim_axis=axis_layout.aim_axis,
-                                spine_up_axis=axis_layout.up_axis,
+        self.embed.set_neck_axis_pv_up(neck_aim_axis=axis_layout.aim_axis,
+                                neck_up_axis=axis_layout.up_axis,
                                 offset_aim_rotate=axis_layout.offset_rotate)
 
         # brMJ.set_chain_axis(chain=self.embed.neck_rot_locs,
@@ -722,15 +722,87 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
                                 pos_scale_attr='{}PosLocsScale'.format(part),
                                 rot_scale_attr='{}RotLocsScale'.format(part))
         except:
-            pass
+            print(traceback.format_exc())
+
+        # self.part_layouts = [
+        #     self.spine_axis_layout,
+        #     self.neck_axis_layout,
+        #     self.head_axis_layout,
+        #     self.shoulder_axis_layout,
+        #     self.arm_axis_layout,
+        #     self.thigh_axis_layout,
+        #     self.leg_axis_layout,
+        #     self.ankle_axis_layout,
+        #     self.ball_axis_layout,
 
         try:
+            # spine picker
+            spine_guide_picker = CreateGuidePicker(parent_layout=self.spine_axis_layout,
+                                                   embed_pos_ctrls=self.embed.spine_pos_locs,
+                                                   embed_rot_ctrls=self.embed.spine_rot_locs)
+
+            # neck picker
+            neck_guide_picker = CreateGuidePicker(parent_layout=self.neck_axis_layout,
+                                                   embed_pos_ctrls=self.embed.neck_pos_locs,
+                                                   embed_rot_ctrls=self.embed.neck_rot_locs)
+
+            # head picker
+            head_guide_picker = CreateGuidePicker(parent_layout=self.head_axis_layout,
+                                                   embed_pos_ctrls=self.embed.head_pos_locs,
+                                                   embed_rot_ctrls=self.embed.head_rot_locs)
+
+            # # shoulder picker
+            # shoulder_guide_picker = CreateGuidePicker(parent_layout=self.shoulder_axis_layout,
+            #                                        embed_pos_ctrls=self.embed.left_shoulder_pos_locs,
+            #                                        embed_rot_ctrls=self.embed.left_shoulder_rot_locs)
+
+            # arm picker
+            arm_guide_picker = CreateGuidePicker(parent_layout=self.arm_axis_layout,
+                                                   embed_pos_ctrls=self.embed.left_arm_pos_locs,
+                                                   embed_rot_ctrls=self.embed.left_arm_rot_locs)
+
+            # # thigh picker
+            # thigh_guide_picker = CreateGuidePicker(parent_layout=self.thigh_axis_layout,
+            #                                        embed_pos_ctrls=self.embed.left_thigh_pos_locs,
+            #                                        embed_rot_ctrls=self.embed.left_thigh_rot_locs)
+
+            # # leg picker
+            # leg_guide_picker = CreateGuidePicker(parent_layout=self.leg_axis_layout,
+            #                                        embed_pos_ctrls=self.embed.left_leg_pos_locs,
+            #                                        embed_rot_ctrls=self.embed.left_leg_rot_locs)
+
+            # # ankle picker
+            # ankle_guide_picker = CreateGuidePicker(parent_layout=self.ankle_axis_layout,
+            #                                        embed_pos_ctrls=self.embed.left_ankle_pos_locs,
+            #                                        embed_rot_ctrls=self.embed.left_ankle_rot_locs)
+
+            # ball picker
+            ball_guide_picker = CreateGuidePicker(parent_layout=self.ball_axis_layout,
+                                                   embed_pos_ctrls=self.embed.left_leg_pos_locs,
+                                                   embed_rot_ctrls=self.embed.left_leg_rot_locs)
+
+            # thumb picker
+            thumb_guide_picker = CreateGuidePicker(parent_layout=self.thumb_axis_layout,
+                                                   embed_pos_ctrls=self.embed.left_thumb_pos_locs,
+                                                   embed_rot_ctrls=self.embed.left_thumb_rot_locs)
+            # index picker
+            index_guide_picker = CreateGuidePicker(parent_layout=self.index_axis_layout,
+                                                   embed_pos_ctrls=self.embed.left_index_pos_locs,
+                                                   embed_rot_ctrls=self.embed.left_index_rot_locs)
+            # middle picker
+            middle_guide_picker = CreateGuidePicker(parent_layout=self.middle_axis_layout,
+                                                   embed_pos_ctrls=self.embed.left_middle_pos_locs,
+                                                   embed_rot_ctrls=self.embed.left_middle_rot_locs)
+            # ring picker
+            ring_guide_picker = CreateGuidePicker(parent_layout=self.ring_axis_layout,
+                                                   embed_pos_ctrls=self.embed.left_ring_pos_locs,
+                                                   embed_rot_ctrls=self.embed.left_ring_rot_locs)
             # pinky picker
             pinky_guide_picker = CreateGuidePicker(parent_layout=self.pinky_axis_layout,
                                                    embed_pos_ctrls=self.embed.left_pinky_pos_locs,
                                                    embed_rot_ctrls=self.embed.left_pinky_rot_locs)
         except:
-            pass
+            print(traceback.format_exc())
 
 
 class PartsCountSpinBox(QDoubleSpinBox):
