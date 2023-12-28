@@ -26,6 +26,7 @@ from maya.app.general.mayaMixin import MayaQWidgetBaseMixin, MayaQWidgetDockable
 
 import base64
 import codecs
+import enum
 import fnmatch
 import glob
 import json
@@ -102,9 +103,18 @@ class GraphicsScene(QGraphicsScene):
 #############################
 # GraphicsRectItem class
 #############################
+class ShapeType(enum.Enum):
+    Rectangle = 1
+    Circle = 2
+    Triangle = 3
+    Diamond = 4
+    Cross = 5
+
 class GraphicsRectItem(QGraphicsRectItem):
     def __init__(self, *args, **kwargs):
         super(GraphicsRectItem, self).__init__(*args, **kwargs)
+
+        self.shapeType = ShapeType.Rectangle
 
         self.setAcceptHoverEvents(True)
         self.setFlags(QGraphicsItem.ItemIsSelectable | QGraphicsItem.ItemIsMovable)
@@ -123,6 +133,37 @@ class GraphicsRectItem(QGraphicsRectItem):
         # self.text_item.setPos(self.text_pos.x(), self.text_pos.y())
 
         self._last_mouse_position = QPoint()
+
+    def setShape(self, shapeType):
+        self.shapeType = shapeType
+        self.update()  # 更新して再描画
+
+    def paint(self, painter, option, widget):
+        painter.setBrush(self.brush())
+        painter.setPen(self.pen())
+        
+        if self.shapeType == ShapeType.Rectangle:
+            painter.drawRect(self.rect())
+        elif self.shapeType == ShapeType.Circle:
+            painter.drawEllipse(self.rect())
+        elif self.shapeType == ShapeType.Triangle:
+            polygon = QPolygonF([QPointF(self.rect().x() + self.rect().width() / 2, self.rect().y()),
+                                 QPointF(self.rect().x() + self.rect().width(), self.rect().y() + self.rect().height()),
+                                 QPointF(self.rect().x(), self.rect().y() + self.rect().height())])
+            painter.drawPolygon(polygon)
+        elif self.shapeType == ShapeType.Diamond:
+            polygon = QPolygonF([QPointF(self.rect().x() + self.rect().width() / 2, self.rect().y()),
+                                 QPointF(self.rect().x() + self.rect().width(), self.rect().y() + self.rect().height() / 2),
+                                 QPointF(self.rect().x() + self.rect().width() / 2, self.rect().y() + self.rect().height()),
+                                 QPointF(self.rect().x(), self.rect().y() + self.rect().height() / 2)])
+            painter.drawPolygon(polygon)
+        elif self.shapeType == ShapeType.Cross:
+            path = QPainterPath()
+            path.moveTo(self.rect().x() + self.rect().width() / 2, self.rect().y())
+            path.lineTo(self.rect().x() + self.rect().width() / 2, self.rect().y() + self.rect().height())
+            path.moveTo(self.rect().x(), self.rect().y() + self.rect().height() / 2)
+            path.lineTo(self.rect().x() + self.rect().width(), self.rect().y() + self.rect().height() / 2)
+            painter.drawPath(path)
 
     def mouseMoveEvent(self, event):
         if self.rect_move:
@@ -291,6 +332,8 @@ class GraphicsView(QGraphicsView):
         self.setScene(self.scene)
         self.scene.selectionChanged.connect(self.selection_changed)
 
+        self.enable_wheelEvent = True
+
         # mouse event
         self._is_panning = False
         self._last_mouse_position = QPoint()
@@ -303,6 +346,7 @@ class GraphicsView(QGraphicsView):
     def add_pick_item(self,
                       name='rectTest',
                       item_name=None,
+                      shape=1,
                       rect=[-100, -100, 80, 100],
                       color=[128, 220, 190],
                       edge_color=[196, 255, 220],
@@ -311,6 +355,16 @@ class GraphicsView(QGraphicsView):
                       text_offset_pos=[-10, 30]):
         self.rect_pos = QRect(*rect)
         rect_item = GraphicsRectItem(self.rect_pos)
+
+        shape_dict = {
+            1:ShapeType.Rectangle,
+            2:ShapeType.Circle,
+            3:ShapeType.Triangle,
+            4:ShapeType.Diamond,
+            5:ShapeType.Cross,
+        }
+
+        rect_item.setShape(shape_dict[shape])
         rect_item.add_text(name, text_size, text_offset_pos)
         self.scene.addItem(rect_item)
 
@@ -474,24 +528,25 @@ class GraphicsView(QGraphicsView):
         super(GraphicsView, self).mouseMoveEvent(event)
 
     def wheelEvent(self, event):
-        if event.angleDelta().y() > 0:
-            factor = 1.25
-            self.zoom += 1
-        else:
-            factor = 0.8
-            self.zoom -= 1
+        if self.enable_wheelEvent:
+            if event.angleDelta().y() > 0:
+                factor = 1.25
+                self.zoom += 1
+            else:
+                factor = 0.8
+                self.zoom -= 1
 
-        if self.zoom < 5:
-            self.zoom = 5
-        elif self.zoom > -5:
-            self.zoom = -5
+            if self.zoom < 5:
+                self.zoom = 5
+            elif self.zoom > -5:
+                self.zoom = -5
 
-        if self.zoom > 0 or self.zoom < 0:
-            self.scale(factor, factor)
-        elif self.zoom == 0:
-            self._fitInView()
+            if self.zoom > 0 or self.zoom < 0:
+                self.scale(factor, factor)
+            elif self.zoom == 0:
+                self._fitInView()
 
-        super(GraphicsView, self).wheelEvent(event)
+            super(GraphicsView, self).wheelEvent(event)
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasText():

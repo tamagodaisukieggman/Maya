@@ -412,21 +412,24 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
         self.set_pinky_axis_btn = QPushButton('Set Pinky Axis')
         self.pinky_axis_layout.addWidget(self.set_pinky_axis_btn)
 
-        # checkbox for all check
-        self.axis_chbxes = [
-            self.spine_axis_layout.axis_chbx,
-            self.shoulder_axis_layout.axis_chbx,
-            self.arm_axis_layout.axis_chbx,
-            self.thigh_axis_layout.axis_chbx,
-            self.leg_axis_layout.axis_chbx,
-            self.ankle_axis_layout.axis_chbx,
-            self.ball_axis_layout.axis_chbx,
-            self.thumb_axis_layout.axis_chbx,
-            self.index_axis_layout.axis_chbx,
-            self.middle_axis_layout.axis_chbx,
-            self.ring_axis_layout.axis_chbx,
-            self.pinky_axis_layout.axis_chbx
+        # layouts for all scales
+        self.part_layouts = [
+            self.spine_axis_layout,
+            self.shoulder_axis_layout,
+            self.arm_axis_layout,
+            self.thigh_axis_layout,
+            self.leg_axis_layout,
+            self.ankle_axis_layout,
+            self.ball_axis_layout,
+            self.thumb_axis_layout,
+            self.index_axis_layout,
+            self.middle_axis_layout,
+            self.ring_axis_layout,
+            self.pinky_axis_layout
         ]
+
+        # checkbox for all check
+        self.axis_chbxes = [lay.axis_chbx for lay in self.part_layouts]
 
         if not self.embed:
             self.get_cur_adj_ctrls()
@@ -509,10 +512,34 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
 
     def create_guide_pickers(self):
         try:
+            self.part_layout_index = {
+                0:'spine',
+                1:'arm',
+                2:'arm',
+                3:'leg',
+                4:'leg',
+                5:'leg',
+                6:'leg',
+                7:'thumb',
+                8:'index',
+                9:'middle',
+                10:'ring',
+                11:'pinky'
+            }
+            for i, part_lay in enumerate(self.part_layouts):
+                part = self.part_layout_index[i]
+                CtrlScaleSpinBoxes(parent_layout=part_lay,
+                                part=part.capitalize(),
+                                pos_scale_attr='{}PosLocsScale'.format(part),
+                                rot_scale_attr='{}RotLocsScale'.format(part))
+        except:
+            pass
+
+        try:
             # pinky picker
             pinky_guide_picker = CreateGuidePicker(parent_layout=self.pinky_axis_layout,
-                                                embed_pos_ctrls=self.embed.left_pinky_pos_locs,
-                                                embed_rot_ctrls=self.embed.left_pinky_rot_locs)
+                                                   embed_pos_ctrls=self.embed.left_pinky_pos_locs,
+                                                   embed_rot_ctrls=self.embed.left_pinky_rot_locs)
         except:
             pass
 
@@ -530,6 +557,32 @@ class AimOffsetAxisSpinBox(QDoubleSpinBox):
         self.setDecimals(1)
         self.setRange(-360, 360)
         self.setValue(0)
+
+class CtrlScaleSpinBox(QDoubleSpinBox):
+    def __init__(self, parent_layout=None, part=None, scale_attr=None):
+        super().__init__()
+        self.setDecimals(1)
+        self.setRange(1, 100)
+        self.setSingleStep(1)
+
+        qhbl = QHBoxLayout()
+        parent_layout.addLayout(qhbl)
+
+        qhbl.addWidget(QLabel(part))
+        qhbl.addWidget(self)
+        self.valueChanged.connect(lambda: self.ctrl_scale_change(self))
+        self.scale_attr = scale_attr
+
+        self.init_attr = cmds.getAttr('all_adjust_ctrl.{}'.format(self.scale_attr))
+        self.setValue(self.init_attr)
+
+    def ctrl_scale_change(self, spbx=None):
+        cmds.setAttr('all_adjust_ctrl.{}'.format(self.scale_attr), spbx.value())
+
+class CtrlScaleSpinBoxes:
+    def __init__(self, parent_layout=None, part=None, pos_scale_attr=None, rot_scale_attr=None):
+        self.pos_ctrl_scale_spbx = CtrlScaleSpinBox(parent_layout=parent_layout, part='{} Pos Ctrl Scale'.format(part), scale_attr=pos_scale_attr)
+        self.rot_ctrl_scale_spbx = CtrlScaleSpinBox(parent_layout=parent_layout, part='{} Rot Ctrl Scale'.format(part), scale_attr=rot_scale_attr)
 
 class PartsLayout(QHBoxLayout):
     def __init__(self, parent_layout=None, part_label=None, value=None):
@@ -566,7 +619,7 @@ class SetAxisLayout(QVBoxLayout):
 
         CustomSplitter(parent_layout, 'Horizontal')
 
-        self.axis_chbx = QCheckBox('{} Axis'.format(part))
+        self.axis_chbx = QCheckBox('{} Position & Axis'.format(part))
         self.axis_chbx.setChecked(True)
         parent_layout.addWidget(self.axis_chbx)
 
@@ -654,13 +707,17 @@ class SetAxisLayout(QVBoxLayout):
         self.aim_axis_offset_qhbl.addWidget(self.aim_axis_offset_dsbox)
 
 class CreateGuidePicker:
-    def __init__(self, parent_layout=None, embed_pos_ctrls=None, embed_rot_ctrls=None):
+    def __init__(self,
+                 parent_layout=None,
+                 embed_pos_ctrls=None,
+                 embed_rot_ctrls=None):
         self.pos_rot_picker_items = {}
         init_x = -100
         init_y = -100
         for ctrl in embed_pos_ctrls:
             self.pos_rot_picker_items[ctrl] = {}
             self.pos_rot_picker_items[ctrl]['item_name'] = ctrl
+            self.pos_rot_picker_items[ctrl]['shape'] = 5
             self.pos_rot_picker_items[ctrl]['rect'] = [init_x, init_y, 15, 15]
             self.pos_rot_picker_items[ctrl]['color'] = [255, 255, 100]
             self.pos_rot_picker_items[ctrl]['edge_color'] = [0,0,0]
@@ -675,6 +732,7 @@ class CreateGuidePicker:
         for ctrl in embed_rot_ctrls:
             self.pos_rot_picker_items[ctrl] = {}
             self.pos_rot_picker_items[ctrl]['item_name'] = ctrl
+            self.pos_rot_picker_items[ctrl]['shape'] = 2
             self.pos_rot_picker_items[ctrl]['rect'] = [init_x, init_y, 15, 15]
             self.pos_rot_picker_items[ctrl]['color'] = [100, 128, 255]
             self.pos_rot_picker_items[ctrl]['edge_color'] = [0,0,0]
@@ -685,6 +743,7 @@ class CreateGuidePicker:
             init_x += 20
 
         self.graphics_view = graphics.GraphicsView(self.pos_rot_picker_items)
+        self.graphics_view.enable_wheelEvent = False
         parent_layout.addWidget(self.graphics_view)
 
 

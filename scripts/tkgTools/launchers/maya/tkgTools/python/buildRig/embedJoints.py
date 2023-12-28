@@ -886,6 +886,8 @@ class EmbedJoints:
 
             cmds.connectAttr(self.all_ctrl+'.'+lat, 'adjustment_GRP.'+lat, f=True)
 
+            cmds.setAttr(self.all_ctrl+'.'+lat, 1)
+
         self.save_adjust_ctrls()
 
     def lock_guide_locators(self):
