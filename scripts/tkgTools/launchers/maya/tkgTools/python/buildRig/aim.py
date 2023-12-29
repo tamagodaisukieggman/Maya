@@ -29,7 +29,7 @@ def aim_nodes(base=None, target=None, aim_axis='z', up_axis='y', worldUpType='ob
         '-x':[-1,0,0],
         '-y':[0,-1,0],
         '-z':[0,0,-1]
-    }
+    }        
 
     aimVector = axis_dict[aim_axis]
     upVector = axis_dict[up_axis]

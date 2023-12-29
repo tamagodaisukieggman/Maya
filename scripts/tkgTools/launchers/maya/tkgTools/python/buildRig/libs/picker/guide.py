@@ -335,6 +335,9 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
         self.set_head_axis_btn = QPushButton('Set Head Axis')
         self.head_axis_layout.addWidget(self.set_head_axis_btn)
 
+        self.set_head_world_axis_btn = QPushButton('Set Head World Axis\nAim -> Front, Up -> Left')
+        self.head_axis_layout.addWidget(self.set_head_world_axis_btn)
+
         # arm axis
         self.shoulder_axis_layout = SetAxisLayout(parent_layout=self.biped_ctrl_qvbl,
                                                   part='Shoulder',
@@ -379,6 +382,9 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
         # set legs axis button
         self.set_legs_axis_btn = QPushButton('Set Legs Axis')
         self.ball_axis_layout.addWidget(self.set_legs_axis_btn)
+
+        self.set_ball_world_axis_btn = QPushButton('Set Ball World Axis\nAim -> Front, Up -> Left')
+        self.ball_axis_layout.addWidget(self.set_ball_world_axis_btn)
 
         # fingers axis
         # thumb axis
@@ -492,6 +498,8 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
         # set axis btn
         self.set_spine_axis_btn.clicked.connect(lambda: self.set_spine_axis(axis_layout=self.spine_axis_layout))
         self.set_neck_axis_btn.clicked.connect(lambda: self.set_neck_axis(axis_layout=self.neck_axis_layout))
+        self.set_head_axis_btn.clicked.connect(lambda: self.set_head_axis(axis_layout=self.head_axis_layout))
+        self.set_head_world_axis_btn.clicked.connect(lambda: self.set_head_world_axis(axis_layout=self.head_axis_layout))
         self.set_thumb_axis_btn.clicked.connect(lambda: self.set_thumb_axis(axis_layout=self.thumb_axis_layout))
         self.set_index_axis_btn.clicked.connect(lambda: self.set_index_axis(axis_layout=self.index_axis_layout))
         self.set_middle_axis_btn.clicked.connect(lambda: self.set_middle_axis(axis_layout=self.middle_axis_layout))
@@ -506,6 +514,7 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
                                                                            self.ankle_axis_layout,
                                                                            self.ball_axis_layout]))
 
+        self.set_ball_world_axis_btn.clicked.connect(lambda: self.set_ball_world_axis(axis_layout=self.ball_axis_layout))
 
 
     def biped_source_mesh(self):
@@ -572,6 +581,17 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
         #            offset_aim_rotate=axis_layout.offset_rotate,
         #            set_tip=True)
 
+    def set_head_axis(self, axis_layout=None):
+        axis_layout.get_current_values()
+        self.embed.set_head_axis_pv_up(head_aim_axis=axis_layout.aim_axis,
+                                head_up_axis=axis_layout.up_axis,
+                                offset_aim_rotate=axis_layout.offset_rotate)
+
+    def set_head_world_axis(self, axis_layout=None):
+        axis_layout.get_current_values()
+        self.embed.set_world_aim(obj=self.embed.head_rot_locs[0],
+                                 wld_front_axis=axis_layout.aim_axis,
+                                 wld_left_axis=axis_layout.up_axis)
 
     def set_thumb_axis(self, axis_layout=None):
         axis_layout.get_current_values()
@@ -686,6 +706,11 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
                                       ball_worldSpace=False,
                                       ball_world_axis='y')
 
+    def set_ball_world_axis(self, axis_layout=None):
+        axis_layout.get_current_values()
+        self.embed.set_world_aim(obj=self.embed.left_leg_rot_locs[-1],
+                                 wld_front_axis=axis_layout.aim_axis,
+                                 wld_left_axis=axis_layout.up_axis)
 
     def pa_unparent_mesh(self):
         if self.embed:

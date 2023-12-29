@@ -790,10 +790,44 @@ class EmbedJoints:
 
     # neck
     def set_neck_axis_pv_up(self, neck_aim_axis='y', neck_up_axis='z', offset_aim_rotate=0):
-        self.set_rot_ctrls(rot_ctrls=self.neck_rot_locs,
-                           aim_axis=neck_aim_axis,
-                           up_axis=neck_up_axis,
-                           offset_aim_rotate=offset_aim_rotate)
+        if len(self.neck_rot_locs) <= 1:
+            aim_obj = self.head_pos_locs[0]
+            brAim.aim_nodes(base=aim_obj,
+                            target=self.neck_rot_locs[0],
+                            aim_axis=neck_aim_axis,
+                            up_axis=neck_up_axis,
+                            worldUpType='object',
+                            worldUpObject=None,
+                            worldSpace=False,
+                            world_axis='y')
+            self.set_offset_rotate(self.neck_rot_locs, neck_aim_axis, offset_aim_rotate)
+        else:
+            self.set_rot_ctrls(rot_ctrls=self.neck_rot_locs,
+                            aim_axis=neck_aim_axis,
+                            up_axis=neck_up_axis,
+                            offset_aim_rotate=offset_aim_rotate)
+
+    # head
+    def set_head_axis_pv_up(self, head_aim_axis='y', head_up_axis='z', offset_aim_rotate=0):
+        if '-' in head_aim_axis:
+            head_aim_axis = head_aim_axis.lstrip('-')
+        elif not '-' in head_aim_axis:
+            head_aim_axis = '-' + head_aim_axis
+
+        if '-' in head_up_axis:
+            head_up_axis = head_up_axis.lstrip('-')
+        elif not '-' in head_up_axis:
+            head_up_axis = '-' + head_up_axis
+
+        brAim.aim_nodes(base=self.neck_rot_locs[-1],
+                        target=self.head_rot_locs[0],
+                        aim_axis=head_aim_axis,
+                        up_axis=head_up_axis,
+                        worldUpType='object',
+                        worldUpObject=None,
+                        worldSpace=False,
+                        world_axis=head_up_axis)
+        self.set_offset_rotate(self.head_rot_locs, head_aim_axis, offset_aim_rotate)
 
     # thumb
     def set_thumb_axis_pv_up(self, thumb_aim_axis='y', thumb_up_axis='z', offset_aim_rotate=0):
@@ -864,6 +898,9 @@ class EmbedJoints:
 
         cmds.delete(aim_joints)
 
+        self.set_offset_rotate(rot_ctrls, aim_axis, offset_aim_rotate)
+
+    def set_offset_rotate(self, rot_ctrls=None, aim_axis=None, offset_aim_rotate=None):
         offset_rotate = [v*offset_aim_rotate for v in AXIS_DICT[aim_axis]]
         for obj in rot_ctrls:
             cmds.rotate(*offset_rotate, obj, r=True, os=True, fo=True)
