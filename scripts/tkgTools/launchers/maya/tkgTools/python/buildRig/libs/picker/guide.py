@@ -114,7 +114,7 @@ class GuideUI(MayaQWidgetDockableMixin, QMainWindow):
         self.biped_layout()
         self.biped_signal_slots()
 
-        self.script_layout()
+        self.secondary_layout()
 
     def menubars(self):
         for menu_name, menu_action in self.menu_actions.items():
@@ -485,18 +485,15 @@ class GuideUI(MayaQWidgetDockableMixin, QMainWindow):
 
         self.set_ball_world_axis_btn.clicked.connect(lambda: self.set_ball_world_axis(axis_layout=self.ball_axis_layout))
 
-    def script_layout(self):
-        # script widget
-        self.script_widget = QWidget()
-        self.main_tab_widget.addTab(self.script_widget, 'Script')
+    def secondary_layout(self):
+        # secondary widget
+        self.secondary_widget = QWidget()
+        self.main_tab_widget.addTab(self.secondary_widget, 'Secondary')
 
         # ガイド用のscroll areaの設定
-        self.scroll_script_qvbl = QVBoxLayout()
-        self.scroll_script_qvbl.setAlignment(Qt.AlignTop)
-        self.script_widget.setLayout(self.scroll_script_qvbl)
-
-        editor = CodeEditor()
-        self.scroll_script_qvbl.addWidget(editor)
+        self.scroll_secondary_qvbl = QVBoxLayout()
+        self.scroll_secondary_qvbl.setAlignment(Qt.AlignTop)
+        self.secondary_widget.setLayout(self.scroll_secondary_qvbl)
 
     def biped_source_mesh(self):
         self.current_biped_mesh = self.mesh_le.text()
