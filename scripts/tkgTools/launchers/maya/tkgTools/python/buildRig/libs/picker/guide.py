@@ -48,7 +48,22 @@ widget.hide()
 # chbx.setPalette(set_palette)
 """
 
-class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
+class GuideUI(MayaQWidgetDockableMixin, QMainWindow):
+    """
+    # -*- coding: utf-8 -*-
+    from imp import reload
+    import traceback
+
+    try:
+        import buildRig.libs.picker.guide as guide
+        reload(guide)
+    except:
+        print(traceback.format_exc())
+
+    pickerui = guide.GuideUI()
+    pickerui.buildUI()
+    pickerui.show(dockable=True)
+    """
     def __init__(self):
         super().__init__()
         # 
@@ -98,6 +113,8 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
         self.layout()
         self.biped_layout()
         self.biped_signal_slots()
+
+        self.script_layout()
 
     def menubars(self):
         for menu_name, menu_action in self.menu_actions.items():
@@ -193,72 +210,24 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
         self.biped_qhbl.addWidget(self.mesh_btn)
 
         # counter
-        # root
-        self.root_count_hb_layout = PartsLayout(parent_layout=self.biped_qvbl,
-                                                 part_label='Root',
-                                                 value=1)
-        self.root_count_dsbox = self.root_count_hb_layout.count_box
-
-        # spine
-        self.spine_count_hb_layout = PartsLayout(parent_layout=self.biped_qvbl,
-                                                 part_label='Spine',
-                                                 value=3)
-        self.spine_count_dsbox = self.spine_count_hb_layout.count_box
-
-        # neck
-        self.neck_count_hb_layout = PartsLayout(parent_layout=self.biped_qvbl,
-                                                 part_label='Neck',
-                                                 value=1)
-        self.neck_count_dsbox = self.neck_count_hb_layout.count_box
-
-        # knee
-        self.knee_count_hb_layout = PartsLayout(parent_layout=self.biped_qvbl,
-                                                 part_label='Knee',
-                                                 value=1)
-        self.knee_count_dsbox = self.knee_count_hb_layout.count_box
-
-        # thumb
-        self.thumb_count_hb_layout = PartsLayout(parent_layout=self.biped_qvbl,
-                                                 part_label='Thumb',
-                                                 value=3)
-        self.thumb_count_dsbox = self.thumb_count_hb_layout.count_box
-
-        # index
-        self.index_count_hb_layout = PartsLayout(parent_layout=self.biped_qvbl,
-                                                 part_label='Index',
-                                                 value=3)
-        self.index_count_dsbox = self.index_count_hb_layout.count_box
-
-        # middle
-        self.middle_count_hb_layout = PartsLayout(parent_layout=self.biped_qvbl,
-                                                 part_label='Middle',
-                                                 value=3)
-        self.middle_count_dsbox = self.middle_count_hb_layout.count_box
-
-        # ring
-        self.ring_count_hb_layout = PartsLayout(parent_layout=self.biped_qvbl,
-                                                 part_label='Ring',
-                                                 value=3)
-        self.ring_count_dsbox = self.ring_count_hb_layout.count_box
-
-        # pinky
-        self.pinky_count_hb_layout = PartsLayout(parent_layout=self.biped_qvbl,
-                                                 part_label='Pinky',
-                                                 value=3)
-        self.pinky_count_dsbox = self.pinky_count_hb_layout.count_box
-
-        # boxをリストに代入しておく
-        self.parts_count_boxes = [
-            self.root_count_dsbox,
-            self.spine_count_dsbox,
-            self.neck_count_dsbox,
-            self.knee_count_dsbox,
-            self.thumb_count_dsbox,
-            self.index_count_dsbox,
-            self.middle_count_dsbox,
-            self.ring_count_dsbox,
-            self.pinky_count_dsbox,
-        ]
+        part_labels = OrderedDict({
+            'Root':1,
+            'Spine':3,
+            'Neck':1,
+            'Knee':1,
+            'Thumb':3,
+            'Index':3,
+            'Middle':3,
+            'Ring':3,
+            'Pinky':3            
+        })
+        self.parts_count_boxes = []
+        for part_label, value in part_labels.items():
+            count_hb_layout = PartsLayout(parent_layout=self.biped_qvbl,
+                                            part_label=part_label,
+                                            value=value)
+            # self.root_count_dsbox = count_hb_layout.count_box
+            self.parts_count_boxes.append(count_hb_layout.count_box)
 
         # ガイド作成ボタン
         self.create_biped_guide_btn = QPushButton('Create Biped Guide')
@@ -516,6 +485,18 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
 
         self.set_ball_world_axis_btn.clicked.connect(lambda: self.set_ball_world_axis(axis_layout=self.ball_axis_layout))
 
+    def script_layout(self):
+        # script widget
+        self.script_widget = QWidget()
+        self.main_tab_widget.addTab(self.script_widget, 'Script')
+
+        # ガイド用のscroll areaの設定
+        self.scroll_script_qvbl = QVBoxLayout()
+        self.scroll_script_qvbl.setAlignment(Qt.AlignTop)
+        self.script_widget.setLayout(self.scroll_script_qvbl)
+
+        editor = CodeEditor()
+        self.scroll_script_qvbl.addWidget(editor)
 
     def biped_source_mesh(self):
         self.current_biped_mesh = self.mesh_le.text()
@@ -555,9 +536,6 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
 
     def set_spine_axis(self, axis_layout=None):
         axis_layout.get_current_values()
-        # self.embed.set_spine_axis_pv_up(spine_aim_axis=axis_layout.aim_axis,
-        #                         spine_up_axis=axis_layout.up_axis,
-        #                         offset_aim_rotate=axis_layout.offset_rotate)
 
         brMJ.set_chain_axis(chain=self.embed.spine_rot_locs,
                    aim_axis=axis_layout.aim_axis,
@@ -573,14 +551,6 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
                                 neck_up_axis=axis_layout.up_axis,
                                 offset_aim_rotate=axis_layout.offset_rotate)
 
-        # brMJ.set_chain_axis(chain=self.embed.neck_rot_locs,
-        #            aim_axis=axis_layout.aim_axis,
-        #            up_axis=axis_layout.up_axis,
-        #            worldSpace=False,
-        #            world_axis='y',
-        #            offset_aim_rotate=axis_layout.offset_rotate,
-        #            set_tip=True)
-
     def set_head_axis(self, axis_layout=None):
         axis_layout.get_current_values()
         self.embed.set_head_axis_pv_up(head_aim_axis=axis_layout.aim_axis,
@@ -595,10 +565,6 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
 
     def set_thumb_axis(self, axis_layout=None):
         axis_layout.get_current_values()
-        # self.embed.set_thumb_axis_pv_up(thumb_aim_axis=axis_layout.aim_axis,
-        #                         thumb_up_axis=axis_layout.up_axis,
-        #                         offset_aim_rotate=axis_layout.offset_rotate)
-
         brMJ.set_chain_axis(chain=self.embed.left_thumb_rot_locs,
                    aim_axis=axis_layout.aim_axis,
                    up_axis=axis_layout.up_axis,
@@ -609,10 +575,6 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
 
     def set_index_axis(self, axis_layout=None):
         axis_layout.get_current_values()
-        # self.embed.set_index_axis_pv_up(index_aim_axis=axis_layout.aim_axis,
-        #                         index_up_axis=axis_layout.up_axis,
-        #                         offset_aim_rotate=axis_layout.offset_rotate)
-
         brMJ.set_chain_axis(chain=self.embed.left_index_rot_locs,
                    aim_axis=axis_layout.aim_axis,
                    up_axis=axis_layout.up_axis,
@@ -624,10 +586,6 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
 
     def set_middle_axis(self, axis_layout=None):
         axis_layout.get_current_values()
-        # self.embed.set_middle_axis_pv_up(middle_aim_axis=axis_layout.aim_axis,
-        #                         middle_up_axis=axis_layout.up_axis,
-        #                         offset_aim_rotate=axis_layout.offset_rotate)
-
         brMJ.set_chain_axis(chain=self.embed.left_middle_rot_locs,
                    aim_axis=axis_layout.aim_axis,
                    up_axis=axis_layout.up_axis,
@@ -639,10 +597,6 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
 
     def set_ring_axis(self, axis_layout=None):
         axis_layout.get_current_values()
-        # self.embed.set_ring_axis_pv_up(ring_aim_axis=axis_layout.aim_axis,
-        #                         ring_up_axis=axis_layout.up_axis,
-        #                         offset_aim_rotate=axis_layout.offset_rotate)
-
         brMJ.set_chain_axis(chain=self.embed.left_ring_rot_locs,
                    aim_axis=axis_layout.aim_axis,
                    up_axis=axis_layout.up_axis,
@@ -653,10 +607,6 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
 
     def set_pinky_axis(self, axis_layout=None):
         axis_layout.get_current_values()
-        # self.embed.set_pinky_axis_pv_up(pinky_aim_axis=axis_layout.aim_axis,
-        #                         pinky_up_axis=axis_layout.up_axis,
-        #                         offset_aim_rotate=axis_layout.offset_rotate)
-
         brMJ.set_chain_axis(chain=self.embed.left_pinky_rot_locs,
                    aim_axis=axis_layout.aim_axis,
                    up_axis=axis_layout.up_axis,
@@ -677,14 +627,6 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
                                       arm_up_axis=arm_axis_layout.up_axis,
                                       arm_worldSpace=False,
                                       arm_world_axis='y')
-
-        # brMJ.set_chain_axis(chain=self.embed.left_arm_rot_locs,
-        #            aim_axis=axis_layout.aim_axis,
-        #            up_axis=axis_layout.up_axis,
-        #            worldSpace=False,
-        #            world_axis='y',
-        #            offset_aim_rotate=axis_layout.offset_rotate,
-        #            set_tip=True)
 
     def set_legs_axis(self, axis_layouts=None):
         [lay.get_current_values() for lay in axis_layouts]
@@ -749,17 +691,6 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
         except:
             print(traceback.format_exc())
 
-        # self.part_layouts = [
-        #     self.spine_axis_layout,
-        #     self.neck_axis_layout,
-        #     self.head_axis_layout,
-        #     self.shoulder_axis_layout,
-        #     self.arm_axis_layout,
-        #     self.thigh_axis_layout,
-        #     self.leg_axis_layout,
-        #     self.ankle_axis_layout,
-        #     self.ball_axis_layout,
-
         try:
             # spine picker
             spine_guide_picker = CreateGuidePicker(parent_layout=self.spine_axis_layout,
@@ -776,30 +707,10 @@ class PickerUI(MayaQWidgetDockableMixin, QMainWindow):
                                                    embed_pos_ctrls=self.embed.head_pos_locs,
                                                    embed_rot_ctrls=self.embed.head_rot_locs)
 
-            # # shoulder picker
-            # shoulder_guide_picker = CreateGuidePicker(parent_layout=self.shoulder_axis_layout,
-            #                                        embed_pos_ctrls=self.embed.left_shoulder_pos_locs,
-            #                                        embed_rot_ctrls=self.embed.left_shoulder_rot_locs)
-
             # arm picker
             arm_guide_picker = CreateGuidePicker(parent_layout=self.arm_axis_layout,
                                                    embed_pos_ctrls=self.embed.left_arm_pos_locs,
                                                    embed_rot_ctrls=self.embed.left_arm_rot_locs)
-
-            # # thigh picker
-            # thigh_guide_picker = CreateGuidePicker(parent_layout=self.thigh_axis_layout,
-            #                                        embed_pos_ctrls=self.embed.left_thigh_pos_locs,
-            #                                        embed_rot_ctrls=self.embed.left_thigh_rot_locs)
-
-            # # leg picker
-            # leg_guide_picker = CreateGuidePicker(parent_layout=self.leg_axis_layout,
-            #                                        embed_pos_ctrls=self.embed.left_leg_pos_locs,
-            #                                        embed_rot_ctrls=self.embed.left_leg_rot_locs)
-
-            # # ankle picker
-            # ankle_guide_picker = CreateGuidePicker(parent_layout=self.ankle_axis_layout,
-            #                                        embed_pos_ctrls=self.embed.left_ankle_pos_locs,
-            #                                        embed_rot_ctrls=self.embed.left_ankle_rot_locs)
 
             # ball picker
             ball_guide_picker = CreateGuidePicker(parent_layout=self.ball_axis_layout,
@@ -1087,3 +998,4 @@ def check_to_checks(chbx=None, chbxes=None):
         [c.setChecked(True) for c in chbxes]
     else:
         [c.setChecked(False) for c in chbxes]
+
