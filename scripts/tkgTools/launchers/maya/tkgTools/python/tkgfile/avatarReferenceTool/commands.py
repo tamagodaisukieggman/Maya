@@ -438,7 +438,7 @@ def fbx_to_rig_for_prop(attach_ctrl=None, ref_name=None):
         bake_objects.append(ctrl)
         spl_ctrl = ctrl.split(':')[-1]
         jnt = spl_ctrl.replace('_ctrl', '')
-        if 'Root' in jnt:
+        if 'Root' == jnt:
             con = cmds.pointConstraint(jnt, attach_ctrl, w=True)
             all_consts.append(con[0])
 
