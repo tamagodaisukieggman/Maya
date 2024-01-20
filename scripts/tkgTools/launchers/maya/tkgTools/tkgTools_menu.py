@@ -346,6 +346,12 @@ class CreateMenu(object):
         )
 
         cmds.menuItem(
+            l=u'SwingTwist',
+            c='import tkgrig.addSwingTwist as addSwingTwist;reload(addSwingTwist);addSwingTwist.add_swing_twist_from_selection()',
+            ann=u'SwingTwistを追加する'
+        )
+
+        cmds.menuItem(
             l=u'Check IK Joints(aim:x, bend:y)[Select joints]',
             c='import tkgrig.utils as tkgriguls;reload(tkgriguls);tut=tkgriguls.TkgUtils();tut.check_ik_joint_axis(aim_axis="x", bend_axis="y")',
             ann=u'IK用のジョイントを確認する(aim:x, bend:y)'
