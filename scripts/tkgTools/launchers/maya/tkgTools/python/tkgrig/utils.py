@@ -462,7 +462,7 @@ class TkgUtils(object):
                 else:
                     cmds.parent(obj, tr)
 
-    def create_follicles(self):
+    def create_follicles(self, const=None):
         sel = cmds.ls(os=1, fl=1)
         mesh = sel[-1]
 
@@ -502,6 +502,9 @@ class TkgUtils(object):
                 cmds.connectAttr(fol_shape+'.outRotate', fol+'.rotate', f=1)
 
                 cmds.delete(cpt, dcmx)
+
+            if const:
+                cmds.pointConstraint(fol, obj, w=True)
 
     def create_curve_from_selection(self):
         sel = cmds.ls(os=1, fl=1)

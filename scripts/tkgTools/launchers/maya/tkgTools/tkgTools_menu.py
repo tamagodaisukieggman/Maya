@@ -1043,6 +1043,12 @@ class CreateMenu(object):
         )
 
         cmds.menuItem(
+            l=u'Create Follicle from closest objects & Constraint[Select objects > Select Mesh or Surface]',
+            c='import tkgrig.utils as tkgriguls;reload(tkgriguls);tut=tkgriguls.TkgUtils();tut.create_follicles(const=True)',
+            ann=u'選択したオブジェクトの最近傍点にfollicleノードを作成する'
+        )
+
+        cmds.menuItem(
             l=u'Closest Vertices[Select 2 objects > return 2 vertices]',
             c='import tkgrig.utils as tkgriguls;reload(tkgriguls);tut=tkgriguls.TkgUtils();tut.create_closest_points_sets()',
             ann=u'二つ目に選択したオブジェクトの最近傍頂点のsetsを作成する'
