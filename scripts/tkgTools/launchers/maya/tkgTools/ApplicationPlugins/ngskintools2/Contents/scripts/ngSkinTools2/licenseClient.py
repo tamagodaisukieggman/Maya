@@ -485,7 +485,7 @@ class Configuration:
             self.is_editable = False  # can't edit if configuration comes from license files
             return
 
-        self.load_from_string(options.loadOption(self.CONFIGURATION_VAR, ""))
+        self.load_from_string(options.load_option(self.CONFIGURATION_VAR, ""))
 
     def load_from_string(self, s):
         """
@@ -527,7 +527,7 @@ class Configuration:
 
     def save(self):
         if self.is_editable:
-            options.saveOption(self.CONFIGURATION_VAR, self.save_to_string())
+            options.save_option(self.CONFIGURATION_VAR, self.save_to_string())
 
 
 class LicenseData:
@@ -551,7 +551,7 @@ class LicenseClient:
         self.serverClient = LicenseServerClient()
         self.licenseFileHandler = LicenseFileHandler()
         self.statusChanged = signal.Signal("license status changed")
-        self.serverClient.reservation_cycle_finished_handler = self.statusChanged.emitDeferred
+        self.serverClient.reservation_cycle_finished_handler = self.statusChanged.emit_deferred
         self.conf = Configuration()
         self.errors = []
 

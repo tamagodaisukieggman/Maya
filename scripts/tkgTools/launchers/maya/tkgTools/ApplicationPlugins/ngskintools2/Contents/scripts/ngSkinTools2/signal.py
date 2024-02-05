@@ -81,6 +81,7 @@ class Signal(Object):
         self.name = name
         self.handlers = []
         self.executing = False
+        self.enabled = True
 
         self.reset()
         Signal.all.append(self)
@@ -90,7 +91,7 @@ class Signal(Object):
         self.handlers = []
         self.executing = False
 
-    def emitDeferred(self, *args):
+    def emit_deferred(self, *args):
         import maya.utils as mu
 
         mu.executeDeferred(self.emit, *args)
@@ -101,6 +102,9 @@ class Signal(Object):
         but if nobody is processing handlers at the emit time,
         it is started here as well.
         """
+        if not self.enabled:
+            return
+
         # log.info("emit: %s", self.name)
         if self.executing:
             raise Exception('Nested emit on %s detected' % self.name)

@@ -69,10 +69,19 @@ class LayerEffects(Object):
         self.__layer.__edit__(configureMirrorEffect=True, **{k: v for k, v in list(args.items()) if v is not None})
 
 
-def _build_layer_property(name, doc, editName=None):
-    if editName is None:
-        editName = name
-    return property(lambda self: self.__get_state__(name), lambda self, val: self.__edit__(**{editName: val}), doc=doc)
+def _build_layer_property(name, doc, edit_name=None, default_value=None):
+    if edit_name is None:
+        edit_name = name
+
+    def getter(self):
+        return self.__get_state__(name, default_value=default_value)
+
+    def setter(self, val):
+        if isinstance(val, (list, tuple)):
+            val = ",".join([str(i) for i in val])
+        self.__edit__(**{edit_name: val})
+
+    return property(getter, setter, doc=doc)
 
 
 class Layer(Object):
@@ -84,13 +93,18 @@ class Layer(Object):
     paint_target = _build_layer_property(
         'paintTarget', "str or int: currently active paint target for this layer (either an influence or one of named targets)"
     )  # type: Union(str, int)
-    index = _build_layer_property('index', editName='layerIndex', doc="int: layer index in parent's child list; set to reorder")  # type: int
+    index = _build_layer_property('index', edit_name='layerIndex', doc="int: layer index in parent's child list; set to reorder")  # type: int
+    locked_influences = _build_layer_property(
+        'lockedInfluences',
+        doc="list[int]: list of locked influence indexes",
+        default_value=[],
+    )  # type: list[int]
 
     @classmethod
-    def load(cls, mesh, layerId):
-        if layerId < 0:
-            raise Exception("invalid layer ID: %s" % layerId)
-        result = Layer(mesh, layerId)
+    def load(cls, mesh, layer_id):
+        if layer_id < 0:
+            raise Exception("invalid layer ID: %s" % layer_id)
+        result = Layer(mesh, layer_id)
         result.reload()
         return result
 
@@ -104,12 +118,12 @@ class Layer(Object):
         if state is not None:
             self.__set_state(state)
 
-    def __get_state__(self, k):
-        return self.__state[k]
+    def __get_state__(self, k, default_value=None):
+        return self.__state.get(k, default_value)
 
     def __query__(self, arg, **kwargs):
         keys = " ".join(["-{k} {v}".format(k=k, v=v) for k, v in list(kwargs.items())])
-        return mel.eval("ngst2Layers -id {id}  {keys} -q -{arg} {mesh} ".format(id=self.id, mesh=self.mesh, keys=keys, arg=arg))
+        return mel.eval("ngst2Layers -id {id} {keys} -q -{arg} {mesh}".format(id=self.id, mesh=self.mesh, keys=keys, arg=arg))
 
     def __edit__(self, **kwargs):
         self.__set_state(plugin.ngst2Layers(self.mesh, e=True, id=as_layer_id(self), **kwargs))
@@ -119,7 +133,10 @@ class Layer(Object):
             # some plugin functions still return empty result after edits - nevermind those
             return
         if is_string(state):
-            state = json.loads(state)
+            try:
+                state = json.loads(state)
+            except Exception as err:
+                raise Exception(str(err) + "; input body was: " + repr(state))
 
         self.__state = state
 
@@ -145,7 +162,7 @@ class Layer(Object):
         return self.mesh == other.mesh and self.id == other.id and self.__state == other.__state
 
     def __repr__(self):
-        return "[Layer #{id}]".format(id=self.id)
+        return "[Layer #{id} '#{name}']".format(id=self.id, name=self.name)
 
     @property
     def paint_targets(self):
@@ -298,13 +315,13 @@ class Layers(Object):
         self.__target = target
         self.__cached_data_node = None
 
-    def add(self, name, forceEmpty=False, parent=None):
+    def add(self, name, force_empty=False, parent=None):
         """
-        creates new layer with given name and returns it's ID; when forceEmpty flag is set to true,
+        creates new layer with given name and returns its ID; when force_empty flag is set to true,
         layer weights will not be populated from skin cluster.
         """
-        layerId = plugin.ngst2Layers(self.mesh, name=name, add=True, forceEmpty=forceEmpty)
-        result = Layer.load(self.mesh, layerId)
+        layer_id = plugin.ngst2Layers(self.mesh, name=name, add=True, forceEmpty=force_empty)
+        result = Layer.load(self.mesh, layer_id)
         result.parent = parent
         return result
 
@@ -344,10 +361,10 @@ class Layers(Object):
             Scheduled for removal. API calls should specify target layer explicitly
 
         """
-        layerId = plugin.ngst2Layers(self.mesh, q=True, currentLayer=True)
-        if layerId < 0:
+        layer_id = plugin.ngst2Layers(self.mesh, q=True, currentLayer=True)
+        if layer_id < 0:
             return None
-        return Layer.load(self.mesh, layerId)
+        return Layer.load(self.mesh, layer_id)
 
     def __edit__(self, **kwargs):
         plugin.ngst2Layers(self.mesh, e=True, **kwargs)
@@ -387,8 +404,7 @@ def init_layers(target):
     :arg str target: skin cluster or mesh node to attach layers to
     :rtype: Layers
     """
-    if not get_layers_enabled(target):
-        plugin.ngst2Layers(target, layerDataAttach=True)
+    plugin.ngst2Layers(target, layerDataAttach=True)
 
     return Layers(target)
 

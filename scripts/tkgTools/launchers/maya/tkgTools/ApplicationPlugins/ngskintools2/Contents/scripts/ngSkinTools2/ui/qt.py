@@ -1,7 +1,7 @@
 import os
 
 from maya import OpenMayaUI as omui
-from PySide2 import QtGui, QtWidgets
+from PySide2 import QtCore, QtGui, QtWidgets
 from PySide2.QtWidgets import QWidget
 from shiboken2 import wrapInstance
 
@@ -115,8 +115,22 @@ def bind_action_to_button(action, button):
 images_path = os.path.join(os.path.dirname(__file__), "images")
 
 
+def icon_path(path):
+    if path.startswith(':'):
+        return path
+    return os.path.join(images_path, path)
+
+
+def scaled_icon(path, w, h):
+    from ngSkinTools2.ui.layout import scale_multiplier
+
+    return QtGui.QIcon(
+        QtGui.QPixmap(icon_path(path)).scaled(w * scale_multiplier, h * scale_multiplier, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+    )
+
+
 def image_icon(file_name):
-    return QtGui.QIcon(os.path.join(images_path, file_name))
+    return QtGui.QIcon(icon_path(file_name))
 
 
 def select_data(combo, data):

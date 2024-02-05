@@ -107,6 +107,9 @@ def build_view(parent, actions, session, filter):
     icon_mask = QtGui.QIcon(":/blendColors.svg")
     icon_dq = QtGui.QIcon(":/rotate_M.png")
 
+    icon_locked = QtGui.QIcon(":/Lock_ON.png")
+    icon_unlocked = QtGui.QIcon(":/Lock_OFF_grey.png")
+
     id_role = QtCore.Qt.UserRole + 1
     item_size_hint = QtCore.QSize(25 * scale_multiplier, 25 * scale_multiplier)
 
@@ -132,14 +135,42 @@ def build_view(parent, actions, session, filter):
                 return icon_joint if is_joint else icon_transform
             return icon_joint_disabled if is_joint else icon_transform_disabled
 
+        def rebuild_buttons(item, item_id, buttons):
+            bar = QtWidgets.QToolBar(parent=parent)
+            bar.setMovable(False)
+            bar.setIconSize(QtCore.QSize(13 * scale_multiplier, 13 * scale_multiplier))
+
+            if "unlocked" in buttons:
+                a = bar.addAction(icon_unlocked, "Toggle locked/unlocked")
+
+                @qt.on(a.triggered)
+                def handler():
+                    layer.locked_influences = layer.locked_influences + [item_id]
+                    log.info("updated to %r", layer.locked_influences)
+                    session.events.influencesListUpdated.emit()
+
+            if "locked" in buttons:
+                a = bar.addAction(icon_locked, "Toggle locked/unlocked")
+
+                @qt.on(a.triggered)
+                def handler():
+                    layer.locked_influences = [i for i in layer.locked_influences if i != item_id]
+                    log.info("updated to %r", layer.locked_influences)
+                    session.events.influencesListUpdated.emit()
+
+            view.setItemWidget(item, 1, bar)
+
         def wanted_tree_items(items):
             if layer is None:
                 return
 
             # calculate "used" regardless as we're displaying it visually even if "show used influences only" is toggled off
             used = set((layer.get_used_influences() or []))
+            locked = set((layer.locked_influences or []))
+            log.info("locked influences: %r", locked)
             for i in items:
                 i.used = i.logicalIndex in used
+                i.locked = i.logicalIndex in locked
 
             if config.influences_show_used_influences_only() and layer is not None:
                 items = [i for i in items if i.used]
@@ -147,15 +178,15 @@ def build_view(parent, actions, session, filter):
             if is_group_layer:
                 items = []
 
-            yield "mask", "[Mask]", icon_mask
+            yield "mask", "[Mask]", icon_mask, []
             if not is_group_layer and session.state.skin_cluster_dq_channel_used:
-                yield "dq", "[DQ Weights]", icon_dq
+                yield "dq", "[DQ Weights]", icon_dq, []
 
             for i in items:
                 is_joint = i.path is not None
                 infl_label = shorten_infl_name(i.path) if is_joint else i.name
                 if filter.is_match(infl_label):
-                    yield i.logicalIndex, infl_label, get_icon(i, is_joint)
+                    yield i.logicalIndex, infl_label, get_icon(i, is_joint), ["locked" if i.locked else "unlocked"]
 
         selected_ids = []
         if session.state.currentLayer.layer:
@@ -167,22 +198,24 @@ def build_view(parent, actions, session, filter):
             tree_root = view.invisibleRootItem()
 
             item_index = 0
-            for itemId, displayName, icon in wanted_tree_items(items):
+            for item_id, displayName, icon, buttons in wanted_tree_items(items):
                 if item_index >= tree_root.childCount():
                     item = QtWidgets.QTreeWidgetItem([displayName])
                 else:
                     item = tree_root.child(item_index)
                     item.setText(0, displayName)
 
-                item.setData(0, id_role, itemId)
+                item.setData(0, id_role, item_id)
                 item.setIcon(0, icon)
                 item.setSizeHint(0, item_size_hint)
                 tree_root.addChild(item)
 
-                tree_items[itemId] = item
-                if itemId == current_id:
+                tree_items[item_id] = item
+                if item_id == current_id:
                     view.setCurrentItem(item, 0, QtCore.QItemSelectionModel.NoUpdate)
-                item.setSelected(itemId in selected_ids)
+                item.setSelected(item_id in selected_ids)
+
+                rebuild_buttons(item, item_id, buttons)
 
                 item_index += 1
 
@@ -201,7 +234,9 @@ def build_view(parent, actions, session, filter):
     view.header().setStretchLastSection(False)
     view.header().setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
 
-    view.setHeaderLabels(["Influences"])
+    view.setHeaderLabels(["Influences", ""])
+    view.header().setSectionResizeMode(1, QtWidgets.QHeaderView.Fixed)
+    view.setColumnWidth(1, 25 * scale_multiplier)
 
     # view.setHeaderHidden(True)
     def refresh_items():

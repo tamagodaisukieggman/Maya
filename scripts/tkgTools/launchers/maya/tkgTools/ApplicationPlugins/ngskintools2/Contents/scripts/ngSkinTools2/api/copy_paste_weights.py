@@ -32,5 +32,6 @@ def paste_weights(layer, operation=PasteOperation.replace, influences=None):
     """
     :type layer: ngSkinTools2.api.layers.Layer
     :param operation: one of paste_* constants
+    :param influences: list of target influences
     """
     __clipboard_operation__(layer, influences, operation)

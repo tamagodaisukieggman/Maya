@@ -11,11 +11,13 @@ from ngSkinTools2.api.python_compatibility import Object
 log = getLogger("api/paint")
 
 
+# noinspection PyClassHasNoInit
 class BrushProjectionMode(Object):
     surface = 0
     screen = 1
 
 
+# noinspection PyClassHasNoInit
 class PaintMode(Object):
     """
     Constants for paint mode
@@ -32,6 +34,7 @@ class PaintMode(Object):
         return cls.replace, cls.smooth, cls.add, cls.scale, cls.sharpen
 
 
+# noinspection PyClassHasNoInit
 class TabletMode(Object):
     unused = 0
     multiplyIntensity = 1
@@ -39,18 +42,21 @@ class TabletMode(Object):
     multiplyRadius = 3
 
 
+# noinspection PyClassHasNoInit
 class WeightsDisplayMode(Object):
     allInfluences = 0
     currentInfluence = 1
     currentInfluenceColored = 2
 
 
+# noinspection PyClassHasNoInit
 class BrushShape(Object):
     solid = 0  # 1.0 for whole brush size
     smooth = 1  # feathered edges
     gaus = 2  # very smooth from center
 
 
+# noinspection PyClassHasNoInit
 class PaintModeSettings(Object):
     """
     Brush/Flood settings
@@ -75,11 +81,14 @@ class PaintModeSettings(Object):
 
     mode = PaintMode.replace  #: Tool mode. One of the :py:class:`PaintMode` values.
 
-    # TODO: shuffle back by natural order of features, not by how it behaves in UI
-
     # varies by mode
     intensity = 1.0  #: tool intensity;
-    iterations = 1  #: iterations; repeats the same smooth operation given number of times - using this parameter instead of caling `flood_weights` multiple times.
+    iterations = 1
+    """
+     iterations; repeats the same smooth operation given number of times -
+     using this parameter instead of calling `flood_weights` multiple times.
+    """
+
     brush_shape = BrushShape.solid
 
     # varies by screen mode
@@ -161,9 +170,6 @@ def __make_dimensional_property__(name, get_dimension_func, property_name):
     return property(getval, setval)
 
 
-# TODO: move to UI;
-# API should explictly use the primary/alternative/inverted brushes and not any of this mode based magic
-# also, redo tests
 class PaintSettingsModel(Object):
     """
     Paint settings model manages paint settings persistence and storage on CPP side;
@@ -203,7 +209,8 @@ class PaintSettingsModel(Object):
         self.storage_func_save = lambda data: None
         self.storage_func_load = lambda: ""
         self.apply_settings_func = self.apply_plugin_settings
-        self.initialize_defaults()
+
+        self.setup_maya_option_var_persistence()
 
     def __save_settings(self):
         data = {
@@ -223,11 +230,13 @@ class PaintSettingsModel(Object):
             saved_data = self.storage_func_load()
             log.info("loading brush settings from %s", saved_data)
             if saved_data is None:
+                self.initialize_defaults()
                 return
             data = json.loads(saved_data)
             self.primary_settings = PaintModeSettings().from_dict(data['common'])
             self.mode_settings = to_int_keys(data['mode_settings'])
             self.projection_settings = to_int_keys(data['projection_settings'])
+            self.apply_settings()
         except Exception as err:
             log.info(err)
 
@@ -253,7 +262,7 @@ class PaintSettingsModel(Object):
         return result
 
     def apply_settings(self):
-        # TODO: very unelegant here; we should not have to re-bake and re-set all settings at once
+        # TODO: very inelegant here; we should not have to re-bake and re-set all settings at once
         # if we're switching any of dimensional settings, we need to reflect this
         self.primary_settings = self.__bake_settings(self.mode)
         primary = self.primary_settings
@@ -326,25 +335,54 @@ class PaintSettingsModel(Object):
         inverted.apply_inverted_brush()
 
 
-class PaintTool(PaintSettingsModel):
-    __paint_context = None
+class DisplaySettings(Object):
+    def __init__(self):
+        from ngSkinTools2.ui import options
+
+        self.persistence = options.PersistentDict("paint_display_settings")
 
     weights_display_mode = internals.make_editable_property('weightsDisplayMode')
-    display_node_visible = internals.make_editable_property('displayNodeVisible')
     layer_effects_display = internals.make_editable_property('layerEffectsDisplay')
     display_masked = internals.make_editable_property('displayMasked')
     show_selected_verts_only = internals.make_editable_property('showSelectedVertsOnly')
+    wireframe_color = internals.make_editable_property('wireframeColor')
+    wireframe_color_single_influence = internals.make_editable_property('wireframeColorSingleInfluence')
 
     # noinspection PyMethodMayBeStatic
     def __edit__(self, **kwargs):
         plugin.ngst2PaintSettingsCmd(**kwargs)
+        for k, v in kwargs.items():
+            self.persistence[k] = v
+
+    @property
+    def display_node_visible(self):
+        """
+        gets/sets visibility of temporary node that displays weight colors. when set to false, displays original mesh instead.
+        """
+        return plugin.ngst2PaintSettingsCmd(q=True, displayNodeVisible=True)
+
+    @display_node_visible.setter
+    def display_node_visible(self, value):
+        plugin.ngst2PaintSettingsCmd(displayNodeVisible=value)
 
     # noinspection PyMethodMayBeStatic
     def __query__(self, **kwargs):
+        for k in kwargs:
+            persisted = self.persistence[k]
+            if persisted is not None:
+                return persisted
         return plugin.ngst2PaintSettingsCmd(q=True, **kwargs)
 
+
+class PaintTool(PaintSettingsModel):
+    __paint_context = None
+
+    def __init__(self):
+        PaintSettingsModel.__init__(self)
+        self.display_settings = DisplaySettings()
+
     def update_plugin_brush_radius(self):
-        new_value = self.__query__(brushRadius=True)
+        new_value = plugin.ngst2PaintSettingsCmd(q=True, brushRadius=True)
         if self.brush_radius != new_value:
             self.brush_radius = new_value
 

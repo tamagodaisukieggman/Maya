@@ -39,17 +39,41 @@ class PersistentValue(Value):
             prefix = VAR_OPTION_PREFIX
         self.name = prefix + name
         self.default_value = default_value
-        self.value = loadOption(self.name, self.default_value)
+        self.value = load_option(self.name, self.default_value)
 
     def set(self, value):
         Value.set(self, value)
-        saveOption(self.name, self.value)
+        save_option(self.name, self.value)
 
 
-def loadOption(var_name, default_value):
+class PersistentDict(Object):
+    def __init__(self, name, default_values=None):
+        if default_values is None:
+            default_values = {}
+        self.persistence = PersistentValue(name=name, default_value=json.dumps(default_values))
+
+    def __get_values(self):
+        # type: () -> dict
+        return json.loads(self.persistence.get())
+
+    def __getitem__(self, item):
+        return self.__get_values().get(item, None)
+
+    def __setitem__(self, key, value):
+        v = self.__get_values()
+        v[key] = value
+        self.persistence.set(json.dumps(v))
+
+
+def load_option(var_name, default_value):
     """
     loads value from optionVar
     """
+
+    from ngSkinTools2 import BATCH_MODE
+
+    if BATCH_MODE:
+        return default_value
 
     if cmds.optionVar(exists=var_name):
         return cmds.optionVar(q=var_name)
@@ -57,10 +81,14 @@ def loadOption(var_name, default_value):
     return default_value
 
 
-def saveOption(varName, value):
+def save_option(varName, value):
     """
     saves option via optionVar
     """
+    from ngSkinTools2 import BATCH_MODE
+
+    if BATCH_MODE:
+        return
 
     # variable does not exist, attempt to save it
     key = None

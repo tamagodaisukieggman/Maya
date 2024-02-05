@@ -1,6 +1,7 @@
 import sys
 
 PY2 = sys.version_info[0] == 2
+PY3 = not PY2
 
 
 def is_string(obj):
@@ -21,6 +22,3 @@ else:
 
     class Object:
         pass
-
-
-

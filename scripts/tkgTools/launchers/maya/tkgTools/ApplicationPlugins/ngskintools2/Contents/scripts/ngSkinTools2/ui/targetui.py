@@ -55,7 +55,7 @@ def build_layers_ui(parent, actions, session):
     clear.setFixedSize(20, 20)
     # layout.addWidget(clear)
 
-    layers = layersview.buildView(parent, actions)
+    layers = layersview.build_view(parent, actions)
     layout.addWidget(layers)
     split.addWidget(qt.wrap_layout_into_widget(layout))
 

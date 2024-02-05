@@ -163,30 +163,29 @@ class ToggleEnabledAction(Action):
 
     def __init__(self, session):
         Action.__init__(self, session)
-        self.selected_layers = session.context.selected_layers
 
     def checked(self):
         """
         return true if most of selected layers are enabled
         :return:
         """
-        layers = self.selected_layers(default=[])
+        layers = session.context.selected_layers(default=[])
         if not layers:
             return True
 
-        majorityEnabled = 0
+        enabled_disabled_balance = 0
         for layer in layers:
             try:
                 # eat up the exception if layer id is invalid
-                majorityEnabled += 1 if layer.enabled else -1
+                enabled_disabled_balance += 1 if layer.enabled else -1
             except:
                 pass
 
-        return majorityEnabled >= 0
+        return enabled_disabled_balance >= 0
 
     def run(self):
         enabled = not self.checked()
-        selected_layers = self.selected_layers()
+        selected_layers = session.context.selected_layers()
         if not selected_layers:
             return
 
@@ -198,10 +197,10 @@ class ToggleEnabledAction(Action):
         session.events.layerListChanged.emitIfChanged()
 
     def enabled(self):
-        return session.state.layersAvailable and bool(self.selected_layers(default=[]))
+        return session.state.layersAvailable and bool(session.context.selected_layers(default=[]))
 
     def update_on_signals(self):
-        return [self.selected_layers.changed, session.events.layerListChanged, session.events.targetChanged]
+        return [session.context.selected_layers.changed, session.events.layerListChanged, session.events.targetChanged]
 
 
 def build_action_randomize_influences_colors(session, parent):

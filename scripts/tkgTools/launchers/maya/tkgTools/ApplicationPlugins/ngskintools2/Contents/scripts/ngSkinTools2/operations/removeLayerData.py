@@ -8,40 +8,40 @@ from ngSkinTools2.decorators import undoable
 from ngSkinTools2.mllInterface import MllInterface
 
 
-def asList(arg):
+def as_list(arg):
     return [] if arg is None else arg
 
 
 customNodeTypes = ['ngst2MeshDisplay', 'ngst2SkinLayerData']
 
 
-def listCustomNodes():
+def list_custom_nodes():
     """
     list all custom nodes in the scene
     """
 
     result = []
     for nodeType in customNodeTypes:
-        result.extend(asList(cmds.ls(type=nodeType)))
+        result.extend(as_list(cmds.ls(type=nodeType)))
     return result
 
 
-def listCustomNodesForMesh(mesh=None):
+def list_custom_nodes_for_mesh(mesh=None):
     """
     list custom nodes only related to provided mesh. None means current selection
     """
 
-    skinCluster = MllInterface(mesh=mesh).getTargetInfo()
-    if skinCluster is None:
+    skin_cluster = MllInterface(mesh=mesh).getTargetInfo()
+    if skin_cluster is None:
         return []
 
     # delete any ngSkinTools deformers from the history, and find upstream stuff from given skinCluster.
-    hist = asList(cmds.listHistory(skinCluster, future=True, levels=1))
+    hist = as_list(cmds.listHistory(skin_cluster, future=True, levels=1))
     return [i for i in hist if cmds.nodeType(i) in customNodeTypes]
 
 
-def listCustomNodesForMeshes(meshes):
-    return list(itertools.chain.from_iterable([listCustomNodesForMesh(i) for i in meshes]))
+def list_custom_nodes_for_meshes(meshes):
+    return list(itertools.chain.from_iterable([list_custom_nodes_for_mesh(i) for i in meshes]))
 
 
 message_scene_noCustomNodes = 'Scene does not contain any custom ngSkinTools nodes.'
@@ -56,7 +56,7 @@ message_selection_warning = (
 
 
 @undoable
-def remove_custom_nodes(interactive=False, session=None, meshes=[]):
+def remove_custom_nodes(interactive=False, session=None, meshes=None):
     """
     Removes custom ngSkinTools2 nodes from the scene or selection.
 
@@ -69,21 +69,24 @@ def remove_custom_nodes(interactive=False, session=None, meshes=[]):
     """
     from ngSkinTools2.ui import dialogs
 
-    isSelectionMode = len(meshes) > 0
+    if meshes is None:
+        meshes = []
 
-    customNodes = listCustomNodes() if not isSelectionMode else listCustomNodesForMeshes(meshes)
+    is_selection_mode = len(meshes) > 0
 
-    if not customNodes:
+    custom_nodes = list_custom_nodes() if not is_selection_mode else list_custom_nodes_for_meshes(meshes)
+
+    if not custom_nodes:
         if interactive:
-            dialogs.info(message_selection_noCustomNodes if isSelectionMode else message_scene_noCustomNodes)
+            dialogs.info(message_selection_noCustomNodes if is_selection_mode else message_scene_noCustomNodes)
         return
 
-    deleteConfirmed = True
+    delete_confirmed = True
     if interactive:
-        deleteConfirmed = dialogs.yesNo(message_selection_warning if isSelectionMode else message_scene_warning)
+        delete_confirmed = dialogs.yesNo(message_selection_warning if is_selection_mode else message_scene_warning)
 
-    if deleteConfirmed:
-        cmds.delete(customNodes)
+    if delete_confirmed:
+        cmds.delete(custom_nodes)
 
     if PaintTool.is_painting():
         # make sure that painting is canceled to restore mesh display etc
@@ -96,4 +99,4 @@ def remove_custom_nodes(interactive=False, session=None, meshes=[]):
 @undoable
 def remove_custom_nodes_from_selection(interactive=False, session=None):
     selection = cmds.ls(sl=True)
-    remove_custom_nodes(interactive=interactive, session=session, meshes=asList(selection))
+    remove_custom_nodes(interactive=interactive, session=session, meshes=as_list(selection))

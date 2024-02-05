@@ -509,9 +509,6 @@ class MllInterface(Object):
     def floodPaint(self):
         self.ngSkinLayerCmd(paintFlood=True)
 
-    def getVertexSelectionWeights(self):
-        return self.ngSkinLayerCmd(q=True, vertexSelectionWeights=True)
-
     def cacheIndexedColors(self):
         for i in range(30):
             c = cmds.colorIndex(i + 1, q=True)

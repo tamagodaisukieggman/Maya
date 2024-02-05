@@ -96,7 +96,7 @@ def import_layers(target):
         for layerId, layerName, layerParent in layerList:
             layerId = int(layerId)
             layerParent = int(layerParent)
-            newLayer = layers.add(name=layerName, forceEmpty=True, parent=layerIdMap[layerParent])
+            newLayer = layers.add(name=layerName, force_empty=True, parent=layerIdMap[layerParent])
             newLayer.index = 0
             layerIdMap[layerId] = newLayer.id
 

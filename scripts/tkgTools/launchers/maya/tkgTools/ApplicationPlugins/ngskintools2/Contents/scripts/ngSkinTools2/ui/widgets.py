@@ -1,4 +1,4 @@
-from PySide2 import QtCore, QtWidgets
+from PySide2 import QtCore, QtGui, QtWidgets
 
 from ngSkinTools2.api import PaintMode
 from ngSkinTools2.api.python_compatibility import Object
@@ -33,7 +33,7 @@ class NumberSliderGroup(Object):
     slider_resolution = 1000.0
     infinity_max = 65535
 
-    def __init__(self, value_type=float, min_value=0, max_value=1, soft_max=True, tooltip="", expo=None):
+    def __init__(self, value_type=float, min_value=0, max_value=1, soft_max=True, tooltip="", expo=None, decimals=3):
         self.value_range = 0
         self.min_value = 0
         self.max_value = 0
@@ -49,9 +49,9 @@ class NumberSliderGroup(Object):
         self.expo = expo
         self.expo_coefficient = 1.0
 
-        spinner.setMinimumWidth(80 * scale_multiplier)
+        spinner.setFixedWidth(80 * scale_multiplier)
         if self.float_mode:
-            spinner.setDecimals(3)
+            spinner.setDecimals(decimals)
 
         spinner.setToolTip(tooltip)
 
@@ -116,6 +116,14 @@ class NumberSliderGroup(Object):
     def value(self):
         return self.spinner.value()
 
+    def value_trimmed(self):
+        value = self.value()
+        if self.min_value is not None and value < self.min_value:
+            return self.min_value
+        if self.max_value is not None and value > self.max_value:
+            return self.max_value
+        return value
+
     def set_value(self, value):
         if self.value != value:
             self.spinner.setValue(value)
@@ -131,6 +139,7 @@ class NumberSliderGroup(Object):
         """
         result = self.spinner.blockSignals(block)
         self.slider.blockSignals(block)
+        self.valueChanged.enabled = not block
         return result
 
     def set_expo(self, expo, coefficient=3):
@@ -174,3 +183,27 @@ def button_row(button_defs, side_menu=None):
         result.addWidget(btn)
 
     return result
+
+
+class ColorButton(QtWidgets.QPushButton):
+    def __init__(self):
+        QtWidgets.QPushButton.__init__(self)
+        self.color = None
+        qt.on(self.clicked)(self.__pick_color)
+
+        self.color_changed = Signal("color changed")
+
+    def set_color(self, color):
+        if isinstance(color, (list, tuple)):
+            color = QtGui.QColor.fromRgb(color[0] * 255, color[1] * 255, color[2] * 255, 255)
+        self.color = color
+        self.setStyleSheet("background-color: %s;" % color.name())
+        self.color_changed.emit()
+
+    def get_color_3f(self):
+        return [i / 255.0 for i in self.color.getRgb()[:3]]
+
+    def __pick_color(self):
+        color = QtWidgets.QColorDialog.getColor(initial=self.color, options=QtWidgets.QColorDialog.DontUseNativeDialog)
+        if color.isValid():
+            self.set_color(color)

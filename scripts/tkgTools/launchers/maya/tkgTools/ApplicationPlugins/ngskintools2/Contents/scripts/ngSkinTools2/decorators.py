@@ -39,7 +39,7 @@ def undoable(function):
 
     @wraps(function)
     def result(*args, **kargs):
-        with Undo():
+        with Undo(name=function.__name__):
             return function(*args, **kargs)
 
     return result
@@ -50,16 +50,16 @@ class Undo(Object):
     an undo context for use "with Undo():"
     """
 
-    def __init__(self):
-        pass
+    def __init__(self, name=None):
+        self.name = name
 
     def __enter__(self):
-        log.debug("UNDO chunk: start")
-        cmds.undoInfo(openChunk=True)
+        log.debug("UNDO chunk %r: start", self.name)
+        cmds.undoInfo(openChunk=True, chunkName=self.name)
         return self
 
     def __exit__(self, _type, value, traceback):
-        log.debug("UNDO chunk: end")
+        log.debug("UNDO chunk %r: end", self.name)
         cmds.undoInfo(closeChunk=True)
 
 

@@ -54,7 +54,7 @@ def select_paint_brush_intensity():
 @withSession
 def paint_tool_toggle_original_mesh():
     paint = session.paint_tool
-    paint.display_node_visible = not paint.display_node_visible
+    paint.display_settings.display_node_visible = not paint.display_settings.display_node_visible
     session.events.toolChanged.emit()
 
 
@@ -65,10 +65,10 @@ def paint_tool_cycle_weights_display_mode():
     :return:
     """
     paint = session.paint_tool
-    paint.weights_display_mode = {
+    paint.display_settings.weights_display_mode = {
         WeightsDisplayMode.allInfluences: WeightsDisplayMode.currentInfluence,
         WeightsDisplayMode.currentInfluence: WeightsDisplayMode.currentInfluenceColored,
         WeightsDisplayMode.currentInfluenceColored: WeightsDisplayMode.allInfluences,
-    }.get(paint.weights_display_mode, WeightsDisplayMode.allInfluences)
+    }.get(paint.display_settings.weights_display_mode, WeightsDisplayMode.allInfluences)
 
     session.events.toolChanged.emit()

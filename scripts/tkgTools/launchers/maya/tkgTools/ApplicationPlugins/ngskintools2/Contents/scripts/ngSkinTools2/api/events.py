@@ -53,7 +53,7 @@ class ConditionalEmit(Object):
         self.signal.removeHandler(handler)
 
 
-def scriptJob(*args, **kwargs):
+def script_job(*args, **kwargs):
     """
     a proxy on top of cmds.scriptJob for scriptJob creation;
     will register an automatic cleanup procedure to kill the job
@@ -85,25 +85,25 @@ class Events(Object):
         :type state: ngSkinTools2.api.session.State
         """
 
-        def scriptJobSignal(name):
+        def script_job_signal(name):
             result = Signal(name + "_scriptJob")
-            scriptJob(e=[name, result.emit])
+            script_job(e=[name, result.emit])
             return result
 
-        self.mayaDeleteAll = scriptJobSignal('deleteAll')
+        self.mayaDeleteAll = script_job_signal('deleteAll')
 
-        self.nodeSelectionChanged = scriptJobSignal('SelectionChanged')
+        self.nodeSelectionChanged = script_job_signal('SelectionChanged')
 
-        self.undoExecuted = scriptJobSignal('Undo')
-        self.redoExecuted = scriptJobSignal('Redo')
+        self.undoExecuted = script_job_signal('Undo')
+        self.redoExecuted = script_job_signal('Redo')
         self.undoRedoExecuted = Signal('undoRedoExecuted')
         self.undoExecuted.addHandler(self.undoRedoExecuted.emit)
         self.redoExecuted.addHandler(self.undoRedoExecuted.emit)
 
-        self.toolChanged = scriptJobSignal('ToolChanged')
-        self.quitApplication = scriptJobSignal('quitApplication')
+        self.toolChanged = script_job_signal('ToolChanged')
+        self.quitApplication = script_job_signal('quitApplication')
 
-        def checkTargetChanged():
+        def check_target_changed():
             """
             verify that currently selected mesh is changed, and this means a change in LayersManager.
             """
@@ -129,7 +129,7 @@ class Events(Object):
 
             return True
 
-        self.targetChanged = event = ConditionalEmit("targetChanged", checkTargetChanged)
+        self.targetChanged = event = ConditionalEmit("targetChanged", check_target_changed)
 
         for source in [self.mayaDeleteAll, self.undoRedoExecuted, self.nodeSelectionChanged]:
             source.addHandler(event.emitIfChanged)

@@ -133,7 +133,8 @@ def build_ui(parent, global_actions):
                         paint.brush_projection_mode == mode and (mode != BrushProjectionMode.surface or paint.use_volume_neighbours == use_volume)
                     )
 
-                update_to_tool()
+                with qt.signals_blocked(a):
+                    update_to_tool()
 
             add(
                 'Surface',
@@ -242,21 +243,40 @@ def build_ui(parent, global_actions):
             log.info("brush mode:%s, brush shape: %s", paint.mode, paint.brush_shape)
             paint.update_plugin_brush_radius()
 
-            intensity.set_value(paint.intensity)
-            widgets.set_paint_expo(intensity, paint.paint_mode)
-            radius.set_range(0, 1000 if paint.brush_projection_mode == BrushProjectionMode.screen else 100, soft_max=True)
-            radius.set_value(paint.brush_radius)
-            iterations.set_value(paint.iterations)
-            iterations.set_enabled(paint.paint_mode in [PaintMode.smooth, PaintMode.sharpen])
-            stylus.setCurrentIndex(paint.tablet_mode)
-            interactive_mirror.setChecked(paint.mirror)
-            redistribute_removed_weight.setChecked(paint.distribute_to_other_influences)
-            influences_limit.set_value(paint.influences_limit)
-            sample_joint_on_stroke_start.setChecked(paint.sample_joint_on_stroke_start)
-            fixed_influences.setChecked(paint.fixed_influences_per_vertex)
-            fixed_influences.setEnabled(paint.paint_mode == PaintMode.smooth)
-            limit_to_component_selection.setChecked(paint.limit_to_component_selection)
-            limit_to_component_selection.setEnabled(fixed_influences.isEnabled())
+            with qt.signals_blocked(intensity):
+                intensity.set_value(paint.intensity)
+                widgets.set_paint_expo(intensity, paint.paint_mode)
+
+            with qt.signals_blocked(radius):
+                radius.set_range(0, 1000 if paint.brush_projection_mode == BrushProjectionMode.screen else 100, soft_max=True)
+                radius.set_value(paint.brush_radius)
+
+            with qt.signals_blocked(iterations):
+                iterations.set_value(paint.iterations)
+                iterations.set_enabled(paint.paint_mode in [PaintMode.smooth, PaintMode.sharpen])
+
+            with qt.signals_blocked(stylus):
+                stylus.setCurrentIndex(paint.tablet_mode)
+
+            with qt.signals_blocked(interactive_mirror):
+                interactive_mirror.setChecked(paint.mirror)
+
+            with qt.signals_blocked(redistribute_removed_weight):
+                redistribute_removed_weight.setChecked(paint.distribute_to_other_influences)
+
+            with qt.signals_blocked(influences_limit):
+                influences_limit.set_value(paint.influences_limit)
+
+            with qt.signals_blocked(sample_joint_on_stroke_start):
+                sample_joint_on_stroke_start.setChecked(paint.sample_joint_on_stroke_start)
+
+            with qt.signals_blocked(fixed_influences):
+                fixed_influences.setChecked(paint.fixed_influences_per_vertex)
+                fixed_influences.setEnabled(paint.paint_mode == PaintMode.smooth)
+
+            with qt.signals_blocked(limit_to_component_selection):
+                limit_to_component_selection.setChecked(paint.limit_to_component_selection)
+                limit_to_component_selection.setEnabled(fixed_influences.isEnabled())
 
         @signal.on(radius.valueChanged, qtParent=layout)
         def radius_edited():
@@ -294,14 +314,14 @@ def build_ui(parent, global_actions):
         influences_display.addItem("Current influence, grayscale", WeightsDisplayMode.currentInfluence)
         influences_display.addItem("Current influence, colored", WeightsDisplayMode.currentInfluenceColored)
         influences_display.setMinimumWidth(1)
-        influences_display.setCurrentIndex(paint.weights_display_mode)
+        influences_display.setCurrentIndex(paint.display_settings.weights_display_mode)
 
         display_toolbar = QtWidgets.QToolBar()
         display_toolbar.addAction(global_actions.randomizeInfluencesColors)
 
         @qt.on(influences_display.currentIndexChanged)
         def influences_display_changed():
-            paint.weights_display_mode = influences_display.currentData()
+            paint.display_settings.weights_display_mode = influences_display.currentData()
             update_ui_to_tool()
 
         display_layout = QtWidgets.QVBoxLayout()
@@ -319,39 +339,53 @@ def build_ui(parent, global_actions):
 
         @qt.on(show_effects.stateChanged)
         def show_effects_changed():
-            paint.layer_effects_display = show_effects.isChecked()
+            paint.display_settings.layer_effects_display = show_effects.isChecked()
 
         @qt.on(show_masked.stateChanged)
         def show_masked_changed():
-            paint.display_masked = show_masked.isChecked()
+            paint.display_settings.display_masked = show_masked.isChecked()
 
         @qt.on(show_selected_verts_only.stateChanged)
         def show_selected_verts_changed():
-            paint.show_selected_verts_only = show_selected_verts_only.isChecked()
+            paint.display_settings.show_selected_verts_only = show_selected_verts_only.isChecked()
 
         mesh_toolbar = QtWidgets.QToolBar()
         toggle_original_mesh = QtWidgets.QAction("Show Original Mesh", mesh_toolbar)
         toggle_original_mesh.setCheckable(True)
+        mesh_toolbar.addAction(toggle_original_mesh)
+        layout.addLayout(createTitledRow("", mesh_toolbar))
 
         @qt.on(toggle_original_mesh.triggered)
         def toggle_display_node_visible():
-            paint.display_node_visible = not toggle_original_mesh.isChecked()
+            paint.display_settings.display_node_visible = not toggle_original_mesh.isChecked()
             update_ui_to_tool()
 
-        mesh_toolbar.addAction(toggle_original_mesh)
+        wireframe_color_button = widgets.ColorButton()
+        layout.addLayout(createTitledRow("Wireframe color:", wireframe_color_button))
+
+        @signal.on(wireframe_color_button.color_changed)
+        def update_wireframe_color():
+            if paint.display_settings.weights_display_mode == WeightsDisplayMode.allInfluences:
+                paint.display_settings.wireframe_color = wireframe_color_button.get_color_3f()
+            else:
+                paint.display_settings.wireframe_color_single_influence = wireframe_color_button.get_color_3f()
 
         @signal.on(session.events.toolChanged, qtParent=tab.tabContents)
         def update_ui_to_tool():
-            toggle_original_mesh.setChecked(PaintTool.is_painting() and not paint.display_node_visible)
+            ds = paint.display_settings
+            toggle_original_mesh.setChecked(PaintTool.is_painting() and not ds.display_node_visible)
 
-            qt.select_data(influences_display, paint.weights_display_mode)
-            show_effects.setChecked(paint.layer_effects_display)
-            show_masked.setChecked(paint.display_masked)
-            show_selected_verts_only.setChecked(paint.show_selected_verts_only)
-            global_actions.randomizeInfluencesColors.setEnabled(paint.weights_display_mode == WeightsDisplayMode.allInfluences)
+            qt.select_data(influences_display, ds.weights_display_mode)
+            show_effects.setChecked(ds.layer_effects_display)
+            show_masked.setChecked(ds.display_masked)
+            show_selected_verts_only.setChecked(ds.show_selected_verts_only)
+            global_actions.randomizeInfluencesColors.setEnabled(ds.weights_display_mode == WeightsDisplayMode.allInfluences)
             display_toolbar.setVisible(global_actions.randomizeInfluencesColors.isEnabled())
 
-        layout.addLayout(createTitledRow("", mesh_toolbar))
+            if ds.weights_display_mode == WeightsDisplayMode.allInfluences:
+                wireframe_color_button.set_color(ds.wireframe_color)
+            else:
+                wireframe_color_button.set_color(ds.wireframe_color_single_influence)
 
         update_ui_to_tool()
 

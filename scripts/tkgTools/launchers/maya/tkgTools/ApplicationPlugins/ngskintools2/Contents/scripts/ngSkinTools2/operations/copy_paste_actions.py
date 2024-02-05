@@ -26,7 +26,7 @@ def action_copy_cut(session, parent, cut):
     operation_name = "Cut" if cut else "Copy"
     result = actions.define_action(parent, operation_name + " weights to clipboard", callback=cut_copy_callback)
 
-    @signal.on(session.events.currentLayerChanged, qtParent=parent)
+    @signal.on(session.events.currentLayerChanged, session.events.currentInfluenceChanged, qtParent=parent)
     def on_selection_changed():
         layer = session.state.currentLayer.layer
         result.setEnabled(layer is not None and len(layer.paint_targets) > 0)

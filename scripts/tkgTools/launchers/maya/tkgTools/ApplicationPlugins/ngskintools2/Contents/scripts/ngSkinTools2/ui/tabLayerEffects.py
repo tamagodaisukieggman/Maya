@@ -138,7 +138,9 @@ def build_ui(parent):
         use_max_influences = QtWidgets.QCheckBox("Limit max influences per vertex")
         max_influences = widgets.NumberSliderGroup(min_value=1, max_value=5, tooltip="", value_type=int)
         use_prune_weight = QtWidgets.QCheckBox("Prune small weights before writing to skin cluster")
-        prune_weight = widgets.NumberSliderGroup(max_value=0.05, tooltip="")
+
+        prune_weight = widgets.NumberSliderGroup(decimals=6, min_value=0.000001, max_value=0.05, tooltip="")
+        prune_weight.set_value(prune_weight.min_value)
         prune_weight.set_expo("start", 3)
 
         update_guard = qt.updateGuard()
@@ -151,9 +153,9 @@ def build_ui(parent):
                 prune_weight.set_enabled(session.state.layersAvailable)
                 if session.state.layersAvailable:
                     use_max_influences.setChecked(session.state.layers.influence_limit_per_vertex != 0)
-                    max_influences.set_value(session.state.layers.influence_limit_per_vertex)
+                    max_influences.set_value(session.state.layers.influence_limit_per_vertex if use_max_influences.isChecked() else 4)
                     use_prune_weight.setChecked(session.state.layers.prune_weights_filter_threshold != 0)
-                    prune_weight.set_value(session.state.layers.prune_weights_filter_threshold)
+                    prune_weight.set_value(session.state.layers.prune_weights_filter_threshold if use_prune_weight.isChecked() else 0.0001)
 
                 update_ui_enabled()
 
@@ -169,7 +171,7 @@ def build_ui(parent):
 
             if session.state.layersAvailable:
                 session.state.layers.influence_limit_per_vertex = max_influences.value() if use_max_influences.isChecked() else 0
-                session.state.layers.prune_weights_filter_threshold = prune_weight.value() if use_prune_weight.isChecked() else 0
+                session.state.layers.prune_weights_filter_threshold = 0 if not use_prune_weight.isChecked() else prune_weight.value_trimmed()
 
             update_ui_enabled()
 

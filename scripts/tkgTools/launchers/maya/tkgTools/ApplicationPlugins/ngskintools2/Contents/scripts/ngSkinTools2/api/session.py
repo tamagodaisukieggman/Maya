@@ -75,8 +75,6 @@ class Session(Object):
         plugin.load_plugin()
 
         self.paint_tool = PaintTool()
-        self.paint_tool.setup_maya_option_var_persistence()
-        self.paint_tool.load_settings()
 
         self.licenseClient.load_deferred()
 
