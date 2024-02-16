@@ -1,0 +1,4 @@
+■旧パス
+C:\Users\<USER-NAME>\Documents\maya\scripts\tkgTools
+
+tkgTools_oldをtkgToolsにリネームして配置する
