@@ -1,0 +1,34 @@
+//2017/09/28
+string Category = "Gallop/3D/Chara/Outline/Default";
+string keywords = "bumpmap,texture";
+string description = "OutlineDefault";
+
+#define TOON_SHADING
+#define TOON_RIM
+#define TOON_RIM_CONTROLL
+#define TOON_SPECULAR
+#define TOON_ENVIRONMENT
+#define TOON_CUTOUT
+#define USE_DIRT
+#define USE_MASK_COLOR
+#define USE_OUTLINE_MAINTEX
+#include "GallopCharaOutline.cginc"
+
+//////// techniques ////////////////////////////
+
+technique SERDefault
+{
+	pass
+	{
+		DepthTestEnable=true;
+		DepthMask = true;
+		DepthFunc = LEqual;
+		VertexProgram = compile vp40 vert();
+		FragmentProgram = compile fp40 frag();
+        CullFaceEnable = true;
+		CullFace = front;
+	}
+}
+
+
+

@@ -1,0 +1,193 @@
+# -*- coding: utf-8 -*-
+
+from __future__ import absolute_import
+from __future__ import unicode_literals
+from __future__ import division
+from __future__ import print_function
+
+import math
+
+try:
+    from builtins import range
+except Exception:
+    pass
+
+
+def clone(target_vector):
+    """
+    ベクトルを複製
+
+    :param target_vector: 対象ベクトル
+
+    :return: 複製されたベクトル
+    """
+
+    clone_vector = [0] * len(target_vector)
+
+    count = -1
+    for value in target_vector:
+        count += 1
+
+        clone_vector[count] = value
+
+    return clone_vector
+
+
+def is_same(src_vector, dst_vector, threshold=0.001):
+    """
+    同じ値のベクトルかどうか
+
+    :param src_vector: 値A
+    :param dst_vector: 値B
+    :param threshold: 閾値
+
+    :return: 同じ場合はTrue
+    """
+
+    for i in range(len(src_vector)):
+        if not (float(abs(src_vector[i] - dst_vector[i])) < threshold - threshold * 0.00001):
+            return False
+
+    return True
+
+
+def is_round(target_vector, digit):
+    """
+    丸まったベクトルかどうか
+
+    :param target_vector: 対象ベクトル
+    :param digit: 小数点以下の桁数
+
+    :return: 丸まった値の場合はTrue
+    """
+
+    for value in target_vector:
+
+        threshold = 0.001
+        if not (float(abs(value - digit)) < threshold - threshold * 0.00001):
+            return False
+
+    return True
+
+
+def get_distance(src_vector, dst_vector):
+    """
+    距離を取得
+
+    :param src_vector: 値A
+    :param dst_vector: 値B
+
+    :return: 距離
+    """
+
+    distance = get_sqr_distance(src_vector, dst_vector)
+    distance = math.sqrt(distance)
+
+    return distance
+
+
+def get_sqr_distance(src_vector, dst_vector):
+    """
+    2乗した距離を取得
+
+    :param src_vector: 値A
+    :param dst_vector: 値B
+
+    :return: 距離
+    """
+
+    distance = 0
+
+    count = -1
+    for src_value in src_vector:
+        count += 1
+
+        temp_value = dst_vector[count] - src_value
+
+        distance += temp_value * temp_value
+
+    return distance
+
+
+def add(src_vector, dst_vector):
+    """
+    ベクトルを加算
+
+    :param src_vector: 値A
+    :param dst_vector: 値B
+
+    :return: 加算ベクトル
+    """
+
+    result_vector = [0] * len(src_vector)
+
+    count = -1
+    for src_value in src_vector:
+        count += 1
+
+        result_vector[count] = src_value + dst_vector[count]
+
+    return result_vector
+
+
+def sub(src_vector, dst_vector):
+    """
+    ベクトルを減算
+
+    :param src_vector: 値A
+    :param dst_vector: 値B
+
+    :return: 減算されたベクトル
+    """
+
+    result_vector = [0] * len(src_vector)
+
+    count = -1
+    for src_value in src_vector:
+        count += 1
+
+        result_vector[count] = src_value - dst_vector[count]
+
+    return result_vector
+
+
+def multiply(src_vector, dst_vector):
+    """
+    ベクトルを乗算
+
+    :param src_vector: 値A
+    :param dst_vector: 値B
+
+    :return: 乗算されたベクトル
+    """
+
+    result_vector = [0] * len(src_vector)
+
+    count = -1
+    for src_value in src_vector:
+        count += 1
+
+        result_vector[count] = src_value * dst_vector[count]
+
+    return result_vector
+
+
+def multiply_value(src_vector, value):
+    """
+    ベクトルに値を乗算
+
+    :param src_vector: 値A
+    :param value: 乗算値
+
+    :return: 乗算されたベクトル
+    """
+
+    result_vector = [0] * len(src_vector)
+
+    count = -1
+    for src_value in src_vector:
+        count += 1
+
+        result_vector[count] = src_value * value
+
+    return result_vector

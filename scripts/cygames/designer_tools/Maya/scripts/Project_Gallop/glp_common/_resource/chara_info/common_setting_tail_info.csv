@@ -1,0 +1,7 @@
+//---------- LimitList ------------------------------,
+name,value
+string,int
+NormalBoneLimit,1
+SpBoneLimit,5
+PolygonLimit,388
+//---------- LimitListEnd ------------------------------,

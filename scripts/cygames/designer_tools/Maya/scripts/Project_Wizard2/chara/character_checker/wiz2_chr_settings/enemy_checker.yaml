@@ -1,0 +1,255 @@
+checker_name: EnemyChecker
+
+checker_ui_version: 1.0.0
+
+checker_settings:
+  use_helps: True
+  use_tools: False
+  use_task_help_link: True
+  task_help_url: "https://wisdom.cygames.jp/pages/viewpage.action?pageId=673570123"
+
+helps:
+  - name: tool_document
+    type: link
+    value: "https://wisdom.cygames.jp/pages/viewpage.action?pageId=673570123"
+
+tools:
+  - name: export_joint_attributes
+    type: command
+    command: "from Project_Wizard2.chara.character_checker import other_tools;other_tools.export_selected_joint_attributes()"
+
+post_process_settings:
+  - name: exclude_referenced
+    type: bool
+    value: True
+
+tasks:
+# データ構成系
+  - name: scene_check
+    label: データ構成系
+    type: separator
+
+  - name: ExistsReference
+    type: task
+
+  - name: Wiz2EnmFileName
+    type: task
+
+  - name: Wiz2EnmRootGroupName
+    type: task
+
+  - name: Wiz2EnmMeshName
+    type: task
+    extra_data:
+      dependent_task_names: ["Wiz2EnmFileName"]
+
+  - name: Wiz2HasOutline
+    type: task
+
+  - name: Wiz2HasJoint
+    type: task
+  
+  - name: ExistsTurtleNodes
+    type: task
+    use_fixed_method: True
+  
+  - name: ExistsNameSpace
+    type: task
+    use_fixed_method: True
+  
+  - name: ExistsUnknownNode
+    type: task
+    use_fixed_method: True
+  
+  - name: ExistsUnknownPlugin
+    type: task
+    use_fixed_method: True
+    
+    extra_data:
+      # mayaを最初に開いたときだけstereoCameraがunknownになるので除外
+      exclude_objects: ["stereoCamera"]
+      dependent_task_names: ["ExistsUnknownNode"]
+
+
+  - name: Wiz2PrpHasDuplicateNodeNames
+    type: task
+  
+  - name: Wiz2DisplayLayerSettings
+    type: task
+    extra_data:
+      error_type: WARNING
+
+  - name: Wiz2UnusedMaterial
+    type: task
+    use_fixed_method: True
+    extra_data:
+      error_type: WARNING
+
+  - name: Wiz2EnmSceneLocation
+    type: task
+
+# メッシュ系
+  - name: mesh_check
+    label: メッシュ系
+    type: separator
+
+  - name: AllTransformDefault
+    type: task
+  
+  - name: MeshPivotAtOrigin
+    type: task
+    use_fixed_method: True
+  
+  - name: LengthZeroEdge
+    type: task
+  
+  - name: FiveOrMoreSidedFace
+    type: task
+  
+  - name: HoleFace
+    type: task
+  
+  - name: LaminaFace
+    type: task
+  
+  - name: NonManifoldFace
+    type: task
+  
+  - name: ConcaveFace
+    type: task
+
+  - name: UnnecessaryHistory
+    type: task
+  
+  - name: ColorSetName
+    type: task
+    extra_data:
+      colorset_names:
+        - colorSet
+  
+  - name: ColorSetCount
+    type: task
+    extra_data:
+      color_set_count: 2
+  
+  - name: NormalLock
+    type: task
+    extra_data:
+      error_type: WARNING
+    
+  - name: Wiz2OutlineDif
+    type: task
+
+  - name: Wiz2EnmPolyCount
+    type: task
+    extra_data:
+      error_type: WARNING
+
+
+  # uv系
+  - name: uv_check
+    label: UV系
+    type: separator
+  
+  - name: UVLayout
+    type: task
+    extra_data:
+      error_type: WARNING
+  
+  - name: UVSetName
+    type: task
+    extra_data:
+      uv_set_names: ["map1","angelring"]
+  
+  # マテリアル系
+  - name: material_check
+    label: マテリアル系
+    type: separator
+
+  - name: Wiz2ProMaterialName
+    type: task
+    extra_data:
+      dependent_task_names: ["Wiz2EnmFileName"]
+  
+  - name: MaterialType
+    type: task
+    extra_data:
+      material_types: ["lambert"]
+
+      
+
+# テクスチャ系
+  - name: texture_check
+    label: テクスチャ系
+    type: separator
+
+  - name: TextureExtension
+    type: task
+    extra_data:
+      extension: ["tga"]
+
+  - name: TextureFilterType
+    type: task
+    extra_data:
+      error_type: WARNING
+    use_fixed_method: True
+
+  - name: Wiz2EnmTextureResolution
+    type: task
+    extra_data:
+      dependent_task_names: ["Wiz2ProMaterialName"]
+
+  - name: Wiz2TextureLocation
+    type: task
+    extra_data:
+      error_type: WARNING
+
+  - name: Wiz2TextureExist
+    type: task
+
+# ジョイント系
+  - name: joint_check
+    label: ジョイント系
+    type: separator
+
+  - name: JointSegmentScale
+    type: task
+    use_fixed_method: True
+
+  - name: Wiz2ProJointName
+    type: task
+  
+  - name: Wiz2ProRootJointAttr
+    type: task
+
+  - name: HasKeyframe
+    type: task
+    use_fixed_method: True
+
+  - name: Wiz2EnmJointCount
+    type: task
+    extra_data:
+      dependent_task_names: ["Wiz2EnmFileName"]
+
+# ウエイト系
+  - name: weight_check
+    label: ウエイト系
+    type: separator
+
+  - name: Wiz2BoundJoint
+    type: task
+
+  - name: WeightValue
+    type: task
+    extra_data:
+      dependent_task_names: ["Wiz2BoundJoint"]
+    
+  - name: MinInfluence
+    type: task
+    extra_data:
+      min_influence: 5
+      dependent_task_names: ["Wiz2BoundJoint"]
+
+post_process:
+  - name: used_reference
+    default_value: True

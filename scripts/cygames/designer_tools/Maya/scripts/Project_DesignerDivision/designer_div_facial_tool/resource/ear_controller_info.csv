@@ -1,0 +1,7 @@
+Enable,Part,ControllerName,TargetName,DriverName
+1,Ear_L,Ear_01_L_Ctrl,Ear_01_L,Ear_01_L_Ctrl
+1,Ear_L,Ear_02_L_Ctrl,Ear_02_L,Ear_02_L_Ctrl
+1,Ear_L,Ear_03_L_Ctrl,Ear_03_L,Ear_03_L_Ctrl
+1,Ear_R,Ear_01_R_Ctrl,Ear_01_R,Ear_01_R_Ctrl
+1,Ear_R,Ear_02_R_Ctrl,Ear_02_R,Ear_02_R_Ctrl
+1,Ear_R,Ear_03_R_Ctrl,Ear_03_R,Ear_03_R_Ctrl
