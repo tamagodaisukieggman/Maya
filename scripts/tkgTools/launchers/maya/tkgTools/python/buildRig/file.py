@@ -193,8 +193,8 @@ class Plugins:
         sys.stdout.write('{}: {}: {}\n'.format(self.__class__.__name__, function_name, self.plugin_results))
         sys.stdout.flush()
 
-plugins = Plugins(plugins=[
-    'Type',
-    'fbxmaya'
-    ])
-plugins.load()
+# plugins = Plugins(plugins=[
+#     'Type',
+#     'fbxmaya'
+#     ])
+# plugins.load()

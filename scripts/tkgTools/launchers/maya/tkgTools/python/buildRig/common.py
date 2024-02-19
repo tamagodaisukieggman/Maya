@@ -3,6 +3,7 @@ import codecs
 from collections import OrderedDict
 import fnmatch
 from imp import reload
+import inspect
 import json
 import re
 import traceback
@@ -444,3 +445,19 @@ def json_transfer(file_name=None, operation=None, export_values=None):
         except:
             with open(file_name, 'r', encoding="utf-8") as f:
                 return json.load(f, object_pairs_hook=OrderedDict)
+
+def get_args_and_defaults(func, same_val):
+    signature = inspect.signature(func)
+    args_and_defaults = {}
+
+    for name, param in signature.parameters.items():
+        if same_val:
+            args_and_defaults[name] = name
+            continue
+        
+        if param.default == inspect.Parameter.empty:
+            args_and_defaults[name] = None
+        else:
+            args_and_defaults[name] = param.default
+
+    return args_and_defaults
