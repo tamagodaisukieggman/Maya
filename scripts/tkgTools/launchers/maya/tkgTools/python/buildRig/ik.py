@@ -52,6 +52,7 @@ class Ik(brGrp.RigModule):
                  dWorldUpAxis='z',
                  roll_fk_axis='z',
                  roll_fk_ctrl_axis=[0,90,0]):
+
         super(Ik, self).__init__(module=module,
                                  side=side)
         self.rig_joints_parent = rig_joints_parent
@@ -505,11 +506,30 @@ class Ik(brGrp.RigModule):
 
         top_fk_trs_object = seg_fk.trs_objects[0]
 
-        for ik_jnt, trs_object in zip(self.ik_joints, seg_fk.trs_objects):
+        ik_scale_con_jnts = []
+        for i, (ik_jnt, trs_object) in enumerate(zip(self.ik_joints, seg_fk.trs_objects)):
             self.ik_spline_fk_ctrls.append(trs_object.nodes[-1])
 
-            cmds.connectAttr(ik_jnt+'.r', trs_object.nodes[1]+'.r', f=True)
-            cmds.connectAttr(ik_jnt+'.s', trs_object.nodes[1]+'.s', f=True)
+            children = cmds.listRelatives(trs_object.nodes[1], c=True, f=True) or list()
+
+            ik_scale_con_jnt = cmds.createNode('joint', n='{}_SCL_CON'.format(ik_jnt), ss=True)
+            cmds.matchTransform(ik_scale_con_jnt, ik_jnt)
+            cmds.parent(ik_scale_con_jnt, trs_object.nodes[1])
+
+            cmds.makeIdentity(ik_scale_con_jnt, apply=True, t=True, r=True, s=True, n=False, pn=True)
+
+            if children:
+                for c in children:
+                    cmds.parent(c, ik_scale_con_jnt)
+
+            cmds.connectAttr(ik_jnt+'.r', ik_scale_con_jnt+'.r', f=True)
+            cmds.connectAttr(ik_jnt+'.s', ik_scale_con_jnt+'.s', f=True)
+            cmds.connectAttr(ik_jnt+'.shear', ik_scale_con_jnt+'.shear', f=True)
+
+            if ik_scale_con_jnts:
+                cmds.connectAttr(ik_scale_con_jnts[i-1]+'.s', ik_scale_con_jnt+'.inverseScale', f=True)
+
+            ik_scale_con_jnts.append(ik_scale_con_jnt)
 
             # cmds.pointConstraint(ik_jnt, trs_object.nodes[1], w=True)
             # cmds.orientConstraint(ik_jnt, trs_object.nodes[1], w=True)
