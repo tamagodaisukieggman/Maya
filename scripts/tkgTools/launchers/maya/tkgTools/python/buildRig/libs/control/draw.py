@@ -192,6 +192,16 @@ class Draw(object):
         cmds.refresh()
         cmds.makeIdentity(self.curve, apply=True)
 
+    def joint_shape(self):
+        if self.curve:
+            crv_shape = brCommon.get_shapes(self.curve)[0]
+            jnt = cmds.createNode('joint', n=self.curve+'_PARENT_SHAPE_JNT', ss=True)
+            cmds.setAttr(jnt+'.drawStyle', 2)
+            cmds.parent(crv_shape, jnt, s=True, r=True)
+            new_name = jnt.replace('_PARENT_SHAPE_JNT', '')
+            cmds.delete(self.curve)
+            cmds.rename(jnt, new_name)
+
 def create_manip_ctrl(name='manip_CTRL'):
     draw_util = Draw()
 

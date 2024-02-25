@@ -76,6 +76,73 @@ class Connecters:
         parent_fk = None
         for n in self.nodes:
             if parent_fk:
-                
+
                 cmds.connectAttr(parent_fk+'.inverseMatrix', n+'.offsetParentMatrix', f=True)
             parent_fk = n
+
+def constraint_from_local_matrix(sel=None, pos=True, rot=True, scl=True, shr=True):
+    if not sel:
+        sel = cmds.ls(os=1)
+    connect_src = sel[0]
+    connect_dst = sel[1]
+
+    mmx = cmds.createNode('multMatrix', ss=1)
+    dcmx = cmds.createNode('decomposeMatrix', ss=1)
+
+    src_pa = cmds.listRelatives(connect_src, p=1, f=1)
+    if src_pa:
+        src_parents = src_pa[0].split('|')[::-1]
+
+    else:
+        src_parents = None
+
+    dup = cmds.duplicate(connect_dst, po=1)
+    cmds.parent(dup[0], connect_src)
+    cmds.setAttr('{}.matrixIn[0]'.format(mmx), *cmds.getAttr('{}.matrix'.format(dup[0])),  type='matrix')
+    cmds.delete(dup)
+
+    # cmds.setAttr('{}.matrixIn[1]'.format(mmx), *cmds.getAttr('{}.matrix'.format(connect_dst)),  type='matrix')
+    cmds.connectAttr('{}.matrix'.format(connect_src), '{}.matrixIn[1]'.format(mmx), f=1)
+
+    if src_parents:
+        for i, p in enumerate(src_parents):
+            if '' == p:
+                pass
+            else:
+                # print('dst', p)
+                # cmds.setAttr('{}.matrixIn[{}]'.format(mmx, i+2), *cmds.getAttr('{}.matrix'.format(p)),  type='matrix')
+                cmds.connectAttr('{}.matrix'.format(p), '{}.matrixIn[{}]'.format(mmx, i+2), f=1)
+
+        next_connect = len(src_parents)
+
+    else:
+        next_connect = 0
+
+
+    dst_pa = cmds.listRelatives(connect_dst, p=1, f=1)
+    if dst_pa:
+        dst_parents = dst_pa[0].split('|')
+
+    else:
+        dst_parents = None
+
+    if dst_parents:
+        for j, p in enumerate(dst_parents):
+            if '' == p:
+                pass
+            else:
+                # print('src', p)
+                # cmds.setAttr('{}.matrixIn[{}]'.format(mmx, next_connect+j+1), *cmds.getAttr('{}.matrix'.format(p)),  type='matrix')
+                mmx_num = next_connect+j+2
+                cmds.connectAttr('{}.inverseMatrix'.format(p), '{}.matrixIn[{}]'.format(mmx, mmx_num), f=1)
+
+    # cmds.connectAttr('{}.inverseMatrix'.format(connect_src), '{}.matrixIn[{}]'.format(mmx, mmx_num+1), f=1)
+    cmds.connectAttr('{}.matrixSum'.format(mmx), '{}.inputMatrix'.format(dcmx), f=1)
+    if rot:
+        cmds.connectAttr('{}.outputRotate'.format(dcmx), '{}.r'.format(connect_dst), f=1)
+    if pos:
+        cmds.connectAttr('{}.outputTranslate'.format(dcmx), '{}.t'.format(connect_dst), f=1)
+    if scl:
+        cmds.connectAttr('{}.outputScale'.format(dcmx), '{}.s'.format(connect_dst), f=1)
+    if shr:
+        cmds.connectAttr('{}.outputShear'.format(dcmx), '{}.shear'.format(connect_dst), f=1)

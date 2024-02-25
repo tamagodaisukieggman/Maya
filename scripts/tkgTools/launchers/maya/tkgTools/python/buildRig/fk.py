@@ -38,7 +38,10 @@ class Fk(brGrp.RigModule):
                  scale=5,
                  scale_step=0,
                  prefix='FK_',
-                 override_offsets=None):
+                 override_offsets=None,
+                 offsets_type='transform',
+                 scale_constraint=None,
+                 decompose_scl_rot_constraint=None):
         """
         Params:
         module = string<モジュール名を指定する>
@@ -95,6 +98,9 @@ fk.base_connection()
         self.scale_step = scale_step
         self.prefix = prefix
         self.override_offsets = override_offsets
+        self.offsets_type = offsets_type
+        self.scale_constraint = scale_constraint
+        self.decompose_scl_rot_constraint = decompose_scl_rot_constraint
 
         self.jnt_object = None
         self.trs_object = None
@@ -146,6 +152,7 @@ fk.base_connection()
         scale_steps = 0
         for i, jnt in enumerate(self.jnt_object.node_list):
             self.draw.create_curve(name=jnt.node + '_CURVE', shape=self.shape, axis=self.axis, scale=self.scale + scale_steps)
+            self.draw.joint_shape()
             scale_steps += self.scale_step
             if jnt.node in color_dict.keys():
                 brCommon.set_rgb_color(ctrl=self.draw.curve,
@@ -165,7 +172,8 @@ fk.base_connection()
                 'offsets':True,
                 'prefix':ctrl_names[0],
                 'suffix':ctrl_names[1],
-                'replace':ctrl_names[2]
+                'replace':ctrl_names[2],
+                'type':self.offsets_type
             }
             self.trs_object = brTrs.create_transforms(**settings)
             self.trs_objects.append(self.trs_object)
@@ -243,11 +251,18 @@ fk.base_connection()
 
             #
             cmds.pointConstraint(ctrl, jnt, w=True)
-            cmds.orientConstraint(ctrl, jnt, w=True)
 
-            cmds.connectAttr(ctrl+'.s', jnt+'.s', f=True)
-            cmds.connectAttr(ctrl+'.shear', jnt+'.shear', f=True)
-            # cmds.scaleConstraint(ctrl, jnt, w=True)
+            if self.decompose_scl_rot_constraint:
+                brConnecter.constraint_from_local_matrix(sel=[ctrl, jnt], pos=False, rot=True, scl=True, shr=False)
+            else:
+                cmds.orientConstraint(ctrl, jnt, w=True)
+
+                if self.scale_constraint:
+                    cmds.scaleConstraint(ctrl, jnt, w=True)
+                else:
+                    cmds.connectAttr(ctrl+'.s', jnt+'.s', f=True)
+                # cmds.connectAttr(ctrl+'.shear', jnt+'.shear', f=True)
+                # cmds.scaleConstraint(ctrl, jnt, w=True)
 
     def base_connection(self, to_nodes=None, pos=True, rot=True, scl=True, mo=True):
         if not to_nodes:

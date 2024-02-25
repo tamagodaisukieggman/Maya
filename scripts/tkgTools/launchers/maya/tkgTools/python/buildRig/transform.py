@@ -12,12 +12,18 @@ reload(brCommon)
 reload(brNode)
 
 class Transform(brNode.Node):
-    def __init__(self, node=None):
+    def __init__(self, node=None, type='transform'):
         super(Transform, self).__init__(node=node)
+
+        self.type = type
 
     def create(self):
         if not cmds.objExists(self.node):
-            cmds.createNode('transform', n=self.node, ss=True)
+            if self.type == 'transform':
+                cmds.createNode('transform', n=self.node, ss=True)
+            elif self.type == 'joint':
+                cmds.createNode('joint', n=self.node, ss=True)
+                cmds.setAttr(self.node+'.drawStyle', 2)
 
 class Transforms(brNode.Nodes):
     """
@@ -44,9 +50,10 @@ trs.nodes_rename(prefix=None, suffix=None, replace=['CTL', 'ctrl'])
 trs.create()
 trs.do_parent(reverse=False)
     """
-    def __init__(self, nodes=None, offsets=False):
+    def __init__(self, nodes=None, offsets=False, type='transform'):
         super(Transforms, self).__init__(nodes=nodes)
         self.offsets = offsets
+        self.type = type
 
         if self.offsets:
             buf_nodes = []
@@ -62,7 +69,7 @@ trs.do_parent(reverse=False)
 
     def create(self):
         for i, n in enumerate(self.nodes):
-            trs = Transform(n)
+            trs = Transform(n, self.type)
             if self.offsets and i == len(self.nodes)-1:
                 if self.node_list[i].buf_rename:
                     self.node_list[i].do_rename()
@@ -89,6 +96,8 @@ trs.do_parent(reverse=False)
                 pa = cmds.listRelatives(n, p=True) or None
                 if not pa:
                     cmds.parent(n, parent)
+                    if self.type == 'joint':
+                        cmds.makeIdentity(n, apply=True, t=True, r=True, s=True, n=False, pn=True)
             parent = n
 
     def do_parent_root(self):
@@ -104,8 +113,8 @@ trs.do_parent(reverse=False)
         self.rename(prefix, suffix, replace)
 
 def create_transforms(nodes=['grp', 'offset', 'space', 'mocap', 'drv', 'ctrl'], offsets=True,
-                      prefix=None, suffix=None, replace=None):
-    trs = Transforms(nodes=nodes, offsets=offsets)
+                      prefix=None, suffix=None, replace=None, type='transform'):
+    trs = Transforms(nodes=nodes, offsets=offsets, type=type)
     trs.nodes_rename(prefix=prefix, suffix=suffix, replace=replace)
     trs.create()
     trs.do_parent(reverse=False)

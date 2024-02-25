@@ -202,6 +202,7 @@ class Ik(brGrp.RigModule):
         # base
         self.ik_base = self.jnt_object.node_list[0]
         self.draw.create_curve(name=self.ik_base.node + '_CURVE', shape=self.ik_base_shape, axis=self.ik_base_axis, scale=self.ik_base_scale)
+        self.draw.joint_shape()
         cmds.matchTransform(self.draw.curve, self.ik_base.node)
         self.trs_object = brTrs.create_transforms(nodes=['GRP', 'OFFSET', 'SPACE', 'MOCAP', 'DRV', self.draw.curve], offsets=True,
                                                 prefix=None, suffix=None, replace=['_CURVE', '_BASE_CTRL'])
@@ -211,6 +212,7 @@ class Ik(brGrp.RigModule):
         # main
         self.ik_main = self.jnt_object.node_list[-1]
         self.draw.create_curve(name=self.ik_main.node + '_CURVE', shape=self.ik_main_shape, axis=self.ik_main_axis, scale=self.ik_main_scale)
+        self.draw.joint_shape()
         cmds.matchTransform(self.draw.curve, self.ik_main.node, pos=True, rot=False, scl=False)
         self.trs_object = brTrs.create_transforms(nodes=['GRP', 'OFFSET', 'SPACE', 'MOCAP', 'DRV', self.draw.curve], offsets=True,
                                                 prefix=None, suffix=None, replace=['_CURVE', '_MAIN_CTRL'])
@@ -224,6 +226,7 @@ class Ik(brGrp.RigModule):
         # local
         self.ik_local = self.jnt_object.node_list[-1]
         self.draw.create_curve(name=self.ik_local.node + '_CURVE', shape=self.ik_local_shape, axis=self.ik_local_axis, scale=self.ik_local_scale)
+        self.draw.joint_shape()
         cmds.matchTransform(self.draw.curve, self.ik_local.node)
         self.trs_object = brTrs.create_transforms(nodes=['GRP', 'OFFSET', 'SPACE', 'MOCAP', 'DRV', self.draw.curve], offsets=True,
                                                 prefix=None, suffix=None, replace=['_CURVE', '_LOCAL_CTRL'])
@@ -236,6 +239,7 @@ class Ik(brGrp.RigModule):
         if not self.solver in ['ikSplineSolver']:
             # poleVector
             self.draw.create_curve(name=self.ik_joints[1] + '_CURVE', shape=self.ik_pv_shape, axis=self.ik_pv_axis, scale=self.ik_pv_scale)
+            self.draw.joint_shape()
             self.trs_object = brTrs.create_transforms(nodes=['GRP', 'OFFSET', 'SPACE', 'MOCAP', 'DRV', self.draw.curve], offsets=True,
                                                     prefix=None, suffix=None, replace=['_CURVE', '_PV_CTRL'])
             self.trs_objects.append(self.trs_object)
@@ -314,6 +318,7 @@ class Ik(brGrp.RigModule):
             for i, iksj in enumerate(self.ik_spline_joints):
                 if i != 0 and i != len(self.ik_spline_joints)-1:
                     self.draw.create_curve(name=iksj + '_CURVE', shape='octahedron', axis=[0,0,0], scale=self.ik_main_scale / 1.5)
+                    self.draw.joint_shape()
                     cmds.matchTransform(self.draw.curve, iksj)
                     self.trs_object = brTrs.create_transforms(nodes=['GRP', 'OFFSET', 'SPACE', 'MOCAP', 'DRV', self.draw.curve], offsets=True,
                                                             prefix=None, suffix=None, replace=['_CURVE', '_MID_'+str(i).zfill(2)+'_CTRL'])
@@ -495,7 +500,11 @@ class Ik(brGrp.RigModule):
                          shape='cube',
                          axis=[0,0,0],
                          scale=self.ik_main_scale / 2,
-                         prefix='SEG_FK_')
+                         prefix='SEG_FK_',
+                         offsets_type='joint',
+                         override_offsets=['_SCL'],
+                         scale_constraint=True,
+                         decompose_scl_rot_constraint=False)
 
         [self.trs_objects.append(trs_object) for trs_object in seg_fk.trs_objects]
         # for trs_object in seg_fk.trs_objects:
@@ -510,43 +519,34 @@ class Ik(brGrp.RigModule):
         for i, (ik_jnt, trs_object) in enumerate(zip(self.ik_joints, seg_fk.trs_objects)):
             self.ik_spline_fk_ctrls.append(trs_object.nodes[-1])
 
-            children = cmds.listRelatives(trs_object.nodes[1], c=True, f=True) or list()
+            cmds.makeIdentity(trs_object.nodes[0], apply=True, t=True, r=True, s=True, n=False, pn=True)
 
-            ik_scale_con_jnt = cmds.createNode('joint', n='{}_SCL_CON'.format(ik_jnt), ss=True)
-            cmds.matchTransform(ik_scale_con_jnt, ik_jnt)
-            cmds.parent(ik_scale_con_jnt, trs_object.nodes[1])
+            cmds.connectAttr(ik_jnt+'.r', trs_object.nodes[0]+'.r', f=True)
+            cmds.connectAttr(ik_jnt+'.s', trs_object.nodes[0]+'.s', f=True)
+            cmds.connectAttr(ik_jnt+'.shear', trs_object.nodes[0]+'.shear', f=True)
 
-            cmds.makeIdentity(ik_scale_con_jnt, apply=True, t=True, r=True, s=True, n=False, pn=True)
+            cmds.connectAttr(trs_object.nodes[0]+'.s', trs_object.nodes[1]+'.s', f=True)
 
-            if children:
-                for c in children:
-                    cmds.parent(c, ik_scale_con_jnt)
-
-            cmds.connectAttr(ik_jnt+'.r', ik_scale_con_jnt+'.r', f=True)
-            cmds.connectAttr(ik_jnt+'.s', ik_scale_con_jnt+'.s', f=True)
-            cmds.connectAttr(ik_jnt+'.shear', ik_scale_con_jnt+'.shear', f=True)
-
+            # children = cmds.listRelatives(trs_object.nodes[0], c=True, f=True) or list()
+            #
+            # ik_scale_con_jnt = cmds.createNode('joint', n='{}_SCL_CON'.format(ik_jnt), ss=True)
+            # cmds.matchTransform(ik_scale_con_jnt, ik_jnt)
+            # cmds.parent(ik_scale_con_jnt, trs_object.nodes[1])
+            #
+            # cmds.makeIdentity(ik_scale_con_jnt, apply=True, t=True, r=True, s=True, n=False, pn=True)
+            #
+            # if children:
+            #     for c in children:
+            #         cmds.parent(c, ik_scale_con_jnt)
+            #
+            # cmds.connectAttr(ik_jnt+'.r', ik_scale_con_jnt+'.r', f=True)
+            # cmds.connectAttr(ik_jnt+'.s', ik_scale_con_jnt+'.s', f=True)
+            # # cmds.connectAttr(ik_jnt+'.shear', ik_scale_con_jnt+'.shear', f=True)
+            #
             if ik_scale_con_jnts:
-                cmds.connectAttr(ik_scale_con_jnts[i-1]+'.s', ik_scale_con_jnt+'.inverseScale', f=True)
+                cmds.connectAttr(ik_scale_con_jnts[i-1]+'.s', trs_object.nodes[0]+'.inverseScale', f=True)
 
-            ik_scale_con_jnts.append(ik_scale_con_jnt)
-
-            # cmds.pointConstraint(ik_jnt, trs_object.nodes[1], w=True)
-            # cmds.orientConstraint(ik_jnt, trs_object.nodes[1], w=True)
-
-            # # scale direct
-            # cmds.connectAttr(ik_jnt+'.s', trs_object.nodes[1]+'.s', f=True)
-            # # cmds.connectAttr(ik_jnt+'.shear', trs_object.nodes[1]+'.shear', f=True)
-
-            # # inverse scale
-            # mdn = cmds.createNode('multiplyDivide', n=trs_object.nodes[2]+'_SCL_MDN', ss=True)
-            # cmds.setAttr(mdn+'.operation', 2)
-            # cmds.setAttr(mdn+'.input1X', 1)
-            # cmds.setAttr(mdn+'.input1Y', 1)
-            # cmds.setAttr(mdn+'.input1Z', 1)
-
-            # cmds.connectAttr(trs_object.nodes[1]+'.s', mdn+'.input2', f=True)
-            # cmds.connectAttr(mdn+'.output', trs_object.nodes[2]+'.s', f=True)
+            ik_scale_con_jnts.append(trs_object.nodes[0])
 
         self.ik_spline_fkik_jnts = seg_fk.jnt_object.nodes
 
@@ -605,6 +605,7 @@ class Ik(brGrp.RigModule):
         cmds.delete(aim_con)
 
         self.draw.create_curve(name=nonLinDef[0] + '_CURVE', shape='sphere', axis=[0,0,0], scale=self.ik_main_scale / 1.5)
+        self.draw.joint_shape()
 
         # addAttr
         cmds.addAttr(self.draw.curve, ln='envelope', at='double', dv=1, max=1, min=0, k=True)
@@ -1025,4 +1026,3 @@ def create_roll(in_piv = 'in_piv',
 
     # ikhandleコンスト用のノードをankle_piv_rot_ctrlに入れてもいいが、
     # IK_left_ankle_LOCAL_CTRLのSPACEのコンストとAutoPoseをオフにしておく必要がある
-
