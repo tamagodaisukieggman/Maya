@@ -21,7 +21,7 @@ self.solvers = {
 }
 """
 
-"""
+
 # 3ジョイントを選択してIKコントローラを作成する
 # ikRPsolver
 kwargs = {'dForwardAxis': 'x',
@@ -45,7 +45,7 @@ kwargs = {'dForwardAxis': 'x',
  'roll_fk_axis': 'z',
  'roll_fk_ctrl_axis': [0, 90, 0],
  'side': None,
- 'softik': None,
+ 'softik': True,
  'solver': 1,
  'stretchy_axis': 'x'}
 
@@ -56,7 +56,7 @@ except:
     print(traceback.format_exc())
 
 ik.base_connection()
-"""
+
 
 # spineのIKを作成する
 # dForwardAxisはTwist Axis
