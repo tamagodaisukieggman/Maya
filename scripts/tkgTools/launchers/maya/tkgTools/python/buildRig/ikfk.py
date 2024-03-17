@@ -2,6 +2,7 @@
 from collections import OrderedDict
 from imp import reload
 import re
+import traceback
 
 import maya.cmds as cmds
 import maya.mel as mel
@@ -33,26 +34,27 @@ class Ikfk(brGrp.RigModule):
     def __init__(self,
                  module=None,
                  side=None,
+                 joints=None,
                  ik_rig_joints_parent=None,
                  ik_rig_ctrls_parent=None,
-                 ik_joints=None,
                  ik_base_shape='cube',
-                 ik_base_axis='x',
-                 ik_base_scale=10,
+                 ik_base_axis=[0, 0, 0],
+                 ik_base_scale=5,
                  ik_main_shape='jack',
-                 ik_main_axis='x',
-                 ik_main_scale=10,
+                 ik_main_axis=[0, 0, 0],
+                 ik_main_scale=5,
                  ik_pv_shape='locator_3d',
-                 ik_pv_axis='x',
-                 ik_pv_scale=10,
+                 ik_pv_axis=[0, 0, 0],
+                 ik_pv_scale=5,
                  ik_local_shape='cube',
-                 ik_local_axis='x',
+                 ik_local_axis=[0, 0, 0],
                  ik_local_scale=10,
                  stretchy_axis='x',
-                 ik_solver=1,
-                 dForwardAxis='-z',
-                 dWorldUpAxis='x',
-                 roll_fk_axis='x',
+                 solver=1,
+                 softik=None,
+                 dForwardAxis='x',
+                 dWorldUpAxis='z',
+                 roll_fk_axis='z',
                  roll_fk_ctrl_axis=[0,0,0],
 
                  fk_rig_joints_parent=None,
@@ -71,85 +73,43 @@ class Ikfk(brGrp.RigModule):
                  switch_axis='x',
                  switch_scale=5):
         """
-# -*- coding: utf-8 -*-
-import maya.cmds as cmds
-import maya.mel as mel
-from imp import reload
-import traceback
 
-import buildRig.ikfk as brIkfk
-reload(brIkfk)
-
-
-sel = cmds.ls(os=True, type='joint')
-
-try:
-    ikfk = brIkfk.Ikfk(module=None,
-                     side=None,
-                     ik_rig_joints_parent=None,
-                     ik_rig_ctrls_parent=None,
-                     ik_joints=sel,
-                     ik_base_shape='cube',
-                     ik_base_axis=[0,0,0],
-                     ik_base_scale=1000,
-                     ik_main_shape='jack',
-                     ik_main_axis=[0,0,0],
-                     ik_main_scale=1000,
-                     ik_pv_shape='locator_3d',
-                     ik_pv_axis=[0,0,0],
-                     ik_pv_scale=1000,
-                     ik_local_shape='cube',
-                     ik_local_axis=[0,0,0],
-                     ik_local_scale=700,
-                     stretchy_axis='x',
-                     ik_solver=1,
-                     dForwardAxis='-z',
-                     dWorldUpAxis='x',
-                     roll_fk_axis='x',
-                     roll_fk_ctrl_axis=[0,0,0],
-
-                     fk_rig_joints_parent=None,
-                     fk_rig_ctrls_parent=None,
-                     fk_joints=sel,
-                     fk_shape='cube',
-                     fk_axis=[0,0,0],
-                     fk_scale=1000,
-
-                     switch_rig_joints_parent=None,
-                     switch_rig_ctrls_parent=None,
-                     switch_rig_type='IKFK',
-                     switch_joints=sel,
-                     switch_shape='switch',
-                     switch_axis=[0,0,0],
-                     switch_scale=500)
-except:
-    print(traceback.format_exc())
         """
         super(Ikfk, self).__init__(module=module,
                                  side=side)
 
         # IK module settings
-        self.ik_rig_joints_parent = ik_rig_joints_parent
-        self.ik_rig_ctrls_parent = ik_rig_ctrls_parent
-        self.ik_joints = ik_joints
-        self.ik_base_shape = ik_base_shape
-        self.ik_base_axis = ik_base_axis
-        self.ik_base_scale = ik_base_scale
-        self.ik_main_shape = ik_main_shape
-        self.ik_main_axis = ik_main_axis
-        self.ik_main_scale = ik_main_scale
-        self.ik_pv_shape = ik_pv_shape
-        self.ik_pv_axis = ik_pv_axis
-        self.ik_pv_scale = ik_pv_scale
-        self.ik_local_shape = ik_local_shape
-        self.ik_local_axis = ik_local_axis
-        self.ik_local_scale = ik_local_scale
-        self.stretchy_axis = stretchy_axis
-        self.ik_solver = ik_solver
-        self.dForwardAxis = dForwardAxis
-        self.dWorldUpAxis = dWorldUpAxis
-        self.roll_fk_axis = roll_fk_axis
-        self.roll_fk_ctrl_axis = roll_fk_ctrl_axis
+        ik_kwargs = {'dForwardAxis': dForwardAxis,
+        'dWorldUpAxis': dWorldUpAxis,
+        'ik_base_axis': ik_base_axis,
+        'ik_base_scale': ik_base_scale,
+        'ik_base_shape': ik_base_shape,
+        'ik_local_axis': ik_local_axis,
+        'ik_local_scale': ik_local_scale,
+        'ik_local_shape': ik_local_shape,
+        'ik_main_axis': ik_main_axis,
+        'ik_main_scale': ik_main_scale,
+        'ik_main_shape': ik_main_shape,
+        'ik_pv_axis': ik_pv_axis,
+        'ik_pv_scale': ik_pv_scale,
+        'ik_pv_shape': ik_pv_shape,
+        'joints': joints,
+        'module': module,
+        'rig_ctrls_parent': ik_rig_ctrls_parent,
+        'rig_joints_parent': ik_rig_joints_parent,
+        'roll_fk_axis': roll_fk_axis,
+        'roll_fk_ctrl_axis': roll_fk_ctrl_axis,
+        'side': side,
+        'softik': softik,
+        'solver': solver,
+        'stretchy_axis': stretchy_axis}
+
+        try:
+            ik = brIk.Ik(**ik_kwargs)
+
+        except:
+            print(traceback.format_exc())
+
 
         # FK module settings
         self.fk_rig_joints_parent = fk_rig_joints_parent
@@ -178,40 +138,10 @@ except:
         # self.connection()
 
     def create_ik_module(self):
-        self.ik = brIk.Ik(module=self.module,
-                     side=self.side,
-                     rig_joints_parent=self.ik_rig_joints_parent,
-                     rig_ctrls_parent=self.ik_rig_ctrls_parent,
-                     joints=self.ik_joints,
-                     ik_base_shape=self.ik_base_shape,
-                     ik_base_axis=self.ik_base_axis,
-                     ik_base_scale=self.ik_base_scale,
-                     ik_main_shape=self.ik_main_shape,
-                     ik_main_axis=self.ik_main_axis,
-                     ik_main_scale=self.ik_main_scale,
-                     ik_pv_shape=self.ik_pv_shape,
-                     ik_pv_axis=self.ik_pv_axis,
-                     ik_pv_scale=self.ik_pv_scale,
-                     ik_local_shape=self.ik_local_shape,
-                     ik_local_axis=self.ik_local_axis,
-                     ik_local_scale=self.ik_local_scale,
-                     stretchy_axis=self.stretchy_axis,
-                     solver=self.ik_solver,
-                     dForwardAxis=self.dForwardAxis,
-                     dWorldUpAxis=self.dWorldUpAxis,
-                     roll_fk_axis = self.roll_fk_axis,
-                     roll_fk_ctrl_axis = self.roll_fk_ctrl_axis)
+        pass
 
     def create_fk_module(self):
-        self.fk = brFk.Fk(module=self.module,
-                     side=self.side,
-                     rig_joints_parent=self.fk_rig_joints_parent,
-                     rig_ctrls_parent=self.fk_rig_ctrls_parent,
-                     joints=self.fk_joints,
-                     shape=self.fk_shape,
-                     axis=self.fk_axis,
-                     scale=self.fk_scale,
-                     scale_step=self.fk_scale_step)
+        pass
 
     def create_switch_module(self):
         self.switch = brSwitch.Switch(module=self.module,
