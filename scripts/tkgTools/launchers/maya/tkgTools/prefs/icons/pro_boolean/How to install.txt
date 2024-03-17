@@ -1,0 +1,11 @@
+1. Unzip the Pro_Boolean file.
+2. Copy the pro_boolean folder to your \Documents\maya\xxxx\prefs\icons folder location.
+3. Copy the Pro_Boolean.py script to your \Documents\maya\Scripts folder location.
+4. Copy the 2 lines of python code on a Shelf or a keyboard key to fire up the Pro Boolean window.
+
+For Hotkeys and how Pro_Boolean works check the documentation.
+
+###########################################
+from Pro_Boolean import OpenImportDialog
+OpenImportDialog.show_dialog()
+###########################################
