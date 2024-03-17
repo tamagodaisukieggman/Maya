@@ -195,6 +195,7 @@ class Plugins:
 
 # plugins = Plugins(plugins=[
 #     'Type',
-#     'fbxmaya'
+#     'fbxmaya',
+#     'lookdevKit'
 #     ])
 # plugins.load()
