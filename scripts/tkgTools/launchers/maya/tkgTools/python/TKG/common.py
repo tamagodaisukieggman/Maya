@@ -15,6 +15,9 @@ def mid_point(objA=None, objB=None, percentage=0.5):
     return get_mid_point(pos1, pos2, percentage)
 
 def step_positions(nodes=None, i=1, base_include=False, tip_include=False):
+    """
+    ノード2点間に配置するための位置を配置予定の数に応じて取得する
+    """
     if i == 1:
         step = i / 2
     elif i >= 2:

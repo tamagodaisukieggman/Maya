@@ -75,3 +75,24 @@ class Duplicate:
             dups = cmds.duplicate(self.nodes, rc=True, po=True)
 
         return [cmds.rename(d, rslt) for d, rslt in zip(dups, self.virtuals)]
+
+def segment_duplicates(base=None, tip=None, i=2, base_include=None, tip_include=None, children=None):
+    """
+    baseとtipの間にジョイントを作成する
+    例：BIND_ForeArm_L > BIND_ForeArm_00_L
+    """
+    segments = []
+    mps = common.step_positions(nodes=[base, tip],
+                                   i=i,
+                                   base_include=base_include,
+                                   tip_include=tip_include)
+    for j in range(i):
+        bkwd_under = base.split('_')[-2]
+        dup = Duplicate([base], '', '', [bkwd_under, '{}_{}'.format(bkwd_under, str(j).zfill(2))], False)
+        dups = dup.duplicate()
+        cmds.xform(dups[0], t=mps[j], ws=True, a=True)
+        if children:
+            cmds.parent(dups[0], base)
+        segments.append(dups[0])
+
+    return segments
