@@ -3,6 +3,8 @@ import re
 
 import maya.cmds as cmds
 
+from . import common
+
 """
 よく使用するスクリプト
 # selection
