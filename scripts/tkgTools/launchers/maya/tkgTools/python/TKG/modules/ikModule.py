@@ -100,3 +100,5 @@ class Build(tkgModules.Module):
 
         # --------------------
         # pv aim
+
+        return ik_joints

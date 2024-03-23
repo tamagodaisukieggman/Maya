@@ -45,3 +45,13 @@ class Build(tkgModules.Module):
 
         cmds.parent(fk_joints[0], self.fk_nodes_top)
         cmds.parent(fk_offset, self.fk_ctrls_top)
+
+        # -------------------
+        # connection
+        for ctrl, jnt in zip(fk_ctrls, fk_joints):
+            cmds.pointConstraint(ctrl, jnt)
+            ori_con = cmds.orientConstraint(ctrl, jnt)[0]
+            cmds.setAttr(ori_con+'.interpType', 2)
+            cmds.scaleConstraint(ctrl, jnt)
+        
+        return fk_joints
