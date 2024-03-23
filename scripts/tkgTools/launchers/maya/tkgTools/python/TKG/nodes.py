@@ -1,20 +1,16 @@
 ﻿# -*- coding: utf-8 -*-
 from imp import reload
+import math
 import re
 
 import maya.cmds as cmds
+import maya.api.OpenMaya as om2
 
 import TKG.common as tkgCommon
 import TKG.regulation as tkgRegulation
 reload(tkgCommon)
 reload(tkgRegulation)
 
-"""
-よく使用するスクリプト
-# selection
-nodes = cmds.ls(os=True, fl=True) or []
-
-"""
 # rename
 def rename(obj=None, prefix=None, suffix=None, replace=None):
     """
@@ -215,3 +211,57 @@ def offsets(node=None, types=None):
         if i == 0:
             root_off = off
     return root_off
+
+def pole_vec(start=None, mid=None, end=None, move=None, obj=None):
+    start = cmds.xform(start, q=True, t=True, ws=True)
+    mid = cmds.xform(mid, q=True, t=True, ws=True)
+    end = cmds.xform(end, q=True, t=True, ws=True)
+
+    startV = om2.MVector(start[0], start[1], start[2])
+    midV = om2.MVector(mid[0], mid[1], mid[2])
+    endV = om2.MVector(end[0], end[1], end[2])
+    startEnd = endV - startV
+    startMid = midV - startV
+    dotP = startMid * startEnd
+    proj = float(dotP) / float(startEnd.length())
+    startEndN = startEnd.normal()
+    projV = startEndN * proj
+    arrowV = startMid - projV
+    arrowV *= 0.5
+    finalV = arrowV + midV
+    cross1 = startEnd ^ startMid
+    cross1.normalize()
+    cross2 = cross1 ^ arrowV
+    cross2.normalize()
+    arrowV.normalize()
+    matrixV = [arrowV.x, arrowV.y, arrowV.z, 0,
+               cross1.x, cross1.y, cross1.z, 0,
+               cross2.x, cross2.y, cross2.z, 0,
+               0, 0, 0, 1]
+    matrixM = om2.MMatrix(matrixV)
+    matrixFn = om2.MTransformationMatrix(matrixM)
+    # rot = matrixFn.rotation().asEulerRotation()
+    rot = matrixFn.rotation()
+
+    pvLoc = cmds.spaceLocator(n='poleVecPosLoc')
+    cmds.xform(pvLoc[0], ws=1, t=(finalV.x, finalV.y, finalV.z))
+    # cmds.xform(pvLoc[0], ws=1, rotation=(rot.x / om2.MMath.kRadiansToDegrees,
+    #                                       rot.y / om2.MMath.kRadiansToDegrees,
+    #                                       rot.z / om2.MMath.kRadiansToDegrees))
+
+    cmds.xform(pvLoc[0], ws=1, rotation=(rot.x * 180.0 / math.pi,
+                                        rot.y * 180.0 / math.pi,
+                                        rot.z * 180.0 / math.pi))
+
+    cmds.select(pvLoc[0])
+    if move is not None:
+        cmds.move(move, 0, 0, r=1, os=1, wd=1)
+
+    pvwt = None
+    if obj:
+        cmds.matchTransform(obj, pvLoc[0])
+    else:
+        pvwt = cmds.xform(pvLoc[0], q=True, t=True, ws=True)
+
+    cmds.delete(pvLoc[0])
+    return pvwt
