@@ -15,7 +15,7 @@ class Module:
         else:
             self.module = module
 
-        self.module_name = '{}_{}_MODULE'.format(self.side, self.module)
+        self.module_parent = '{}_{}_MODULE'.format(self.side, self.module)
 
         self.rig_top = 'RIG'
         self.base_rig_grps = ['MODULES', 'MODEL', 'SKEL']
@@ -34,10 +34,10 @@ class Module:
         self.create()
 
     def create(self):
-        if not cmds.objExists(self.module_name):
-            cmds.createNode('transform', n=self.module_name, ss=True)
-        parent = cmds.listRelatives(self.module_name, p=True) or None
+        if not cmds.objExists(self.module_parent):
+            cmds.createNode('transform', n=self.module_parent, ss=True)
+        parent = cmds.listRelatives(self.module_parent, p=True) or None
         if not parent:
-            cmds.parent(self.module_name, self.rig_modules)
+            cmds.parent(self.module_parent, self.rig_modules)
         elif not self.rig_modules in parent:
-            cmds.parent(self.module_name, self.rig_modules)
+            cmds.parent(self.module_parent, self.rig_modules)

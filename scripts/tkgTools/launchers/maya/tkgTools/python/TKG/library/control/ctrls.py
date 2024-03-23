@@ -60,7 +60,7 @@ def create_ikMain_ctrl(node=None, axis=[0,0,0], scale=1):
     name = tkgRegulation.ctrl_type_rename(node)
     ctrl = create_ctrl(name, shape, axis, scale)
     offset = tkgNodes.offsets(ctrl, ['Global', 'Local'])
-    cmds.matchTransform(offset, node, rot=False)
+    cmds.matchTransform(offset, node, pos=True, rot=False)
     return ctrl, offset
 
 def create_ikPv_ctrl(node=None, axis=[0,0,0], scale=1):
@@ -70,5 +70,15 @@ def create_ikPv_ctrl(node=None, axis=[0,0,0], scale=1):
     name = tkgRegulation.ctrl_type_rename(node)
     ctrl = create_ctrl(name, shape, axis, scale)
     offset = tkgNodes.offsets(ctrl, ['Global', 'Local'])
+    cmds.matchTransform(offset, node, pos=True, rot=False)
+    return ctrl, offset
+
+def create_ikAutoRot_ctrl(node=None, axis=[0,0,0], scale=1):
+    if not node:
+        node = cmds.ls(os=True, fl=True)[0] or []
+    shape = tkgRegulation.shape_type('fk')
+    name = tkgRegulation.ctrl_type_rename(node, 'Local')
+    ctrl = create_ctrl(name, shape, axis, scale)
+    offset = tkgNodes.offsets(ctrl, ['Global', 'Auto'])
     cmds.matchTransform(offset, node)
     return ctrl, offset

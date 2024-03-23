@@ -4,20 +4,39 @@ from imp import reload
 import maya.cmds as cmds
 
 import TKG.library.rigJoints as tkgRigJoints
+import TKG.nodes as tkgNodes
 import TKG.library.ik as tkgIk
 import TKG.library.control.ctrls as tkgCtrls
 import TKG.modules.baseModule as tkgModules
 reload(tkgRigJoints)
+reload(tkgNodes)
 reload(tkgIk)
 reload(tkgCtrls)
 reload(tkgModules)
 
 class Build(tkgModules.Module):
     def __init__(self, side=None, module=None):
-        super().__init__(side, module)
-        self.module_parent = self.module_name
+        sel = cmds.ls(os=True, fl=True) or []
 
-    def create_ik_limb_module(self, nodes=None, pv_idx=1):
+        super().__init__(side, module)
+
+        self.ik_nodes_top = 'IK_NODES_{}'.format(self.module_parent)
+        self.ik_ctrls_top = 'IK_CTLS_{}'.format(self.module_parent)
+
+        self.module_tops = [self.ik_nodes_top, self.ik_ctrls_top]
+        for n in self.module_tops:
+            if not cmds.objExists(n):
+                cmds.createNode('transform', n=n, ss=True)
+            parent = cmds.listRelatives(n, p=True) or None
+            if not parent:
+                cmds.parent(n, self.module_parent)
+            elif not self.module_parent in parent:
+                cmds.parent(n, self.module_parent)
+
+        if sel:
+            cmds.select(sel, r=True)
+
+    def create_ik_limb(self, nodes=None, pv_idx=1, pv_move=20):
         if not nodes:
             nodes = cmds.ls(os=True, fl=True) or []
         ik_joints = tkgRigJoints.create_ik_joints(nodes=nodes)
@@ -28,4 +47,22 @@ class Build(tkgModules.Module):
 
         ikMain_ctrl, ikMain_offset = tkgCtrls.create_ikMain_ctrl(node=ik_joints[-1], axis=[0,0,0], scale=1)
 
+        ikAutoRot_ctrl, ikAutoRot_offset = tkgCtrls.create_ikAutoRot_ctrl(node=ik_joints[-1], axis=[0,0,0], scale=1)
+
         ikPv_ctrl, ikPv_offset = tkgCtrls.create_ikPv_ctrl(node=ik_joints[pv_idx], axis=[0,0,0], scale=1)
+        tkgNodes.pole_vec(start=ik_joints[0], mid=ik_joints[pv_idx], end=ik_joints[-1], move=pv_move, obj=ikPv_offset)
+        cmds.xform(ikPv_offset, ro=[0,0,0], ws=True, a=True)
+
+        cmds.parent(ik_joints[0], self.ik_nodes_top)
+        cmds.parent(ikh, self.ik_nodes_top)
+
+        cmds.parent(ikBase_offset, self.ik_ctrls_top)
+        cmds.parent(ikMain_offset, ikBase_ctrl)
+        cmds.parent(ikPv_offset, ikBase_ctrl)
+        cmds.parent(ikAutoRot_offset, ikMain_ctrl)
+
+        # connection
+        cmds.pointConstraint(ikMain_ctrl, ikh, w=True)
+        cmds.poleVectorConstraint(ikPv_ctrl, ikh, w=True)
+
+        # pv aim
