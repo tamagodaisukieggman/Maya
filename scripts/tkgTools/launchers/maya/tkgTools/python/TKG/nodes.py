@@ -4,10 +4,10 @@ import re
 
 import maya.cmds as cmds
 
-from . import common
-from . import regulation
-reload(common)
-reload(regulation)
+from . import common as tkgCommon
+from . import regulation as tkgRegulation
+reload(tkgCommon)
+reload(tkgRegulation)
 
 """
 よく使用するスクリプト
@@ -87,12 +87,12 @@ def segment_duplicates(base=None, tip=None, i=2, base_include=None, tip_include=
     例：BIND_ForeArm_L > BIND_ForeArm_00_L
     """
     segments = []
-    mps = common.step_positions(nodes=[base, tip],
+    mps = tkgCommon.step_positions(nodes=[base, tip],
                                    i=i,
                                    base_include=base_include,
                                    tip_include=tip_include)
     for j in range(i):
-        renamed, bkwd_under = regulation.segment_padding_rename(base, j, 2, 0)
+        renamed, bkwd_under = tkgRegulation.segment_padding_rename(base, j, 2, 0)
 
         dup = Duplicate([base], '', '', [bkwd_under, renamed], False)
         dups = dup.duplicate()
