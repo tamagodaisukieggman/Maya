@@ -4,18 +4,18 @@ from imp import reload
 import maya.cmds as cmds
 
 class Module:
-    def __init__(self, module=None, side=None):
-        if not module:
-            self.module = 'default'
-        else:
-            self.module = module
-
+    def __init__(self, side=None, module=None):
         if not side:
             self.side = 'Cn'
         else:
             self.side = side
 
-        self.module_name = '{}_{}_MODULE'.format(self.module, self.side)
+        if not module:
+            self.module = 'default'
+        else:
+            self.module = module
+
+        self.module_name = '{}_{}_MODULE'.format(self.side, self.module)
 
         self.rig_top = 'RIG'
         self.base_rig_grps = ['MODULES', 'MODEL', 'SKEL']
@@ -31,6 +31,13 @@ class Module:
                 cmds.createNode('transform', n=n, ss=True)
                 cmds.parent(n, self.rig_top)
 
+        self.create()
+
     def create(self):
         if not cmds.objExists(self.module_name):
             cmds.createNode('transform', n=self.module_name, ss=True)
+        parent = cmds.listRelatives(self.module_name, p=True) or None
+        if not parent:
+            cmds.parent(self.module_name, self.rig_modules)
+        elif not self.rig_modules in parent:
+            cmds.parent(self.module_name, self.rig_modules)

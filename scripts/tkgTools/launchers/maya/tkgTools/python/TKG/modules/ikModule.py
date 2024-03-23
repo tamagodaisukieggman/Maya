@@ -13,10 +13,9 @@ reload(tkgCtrls)
 reload(tkgModules)
 
 class Build(tkgModules.Module):
-    def __init__(self, module=None, side=None):
-        super().__init__(module, side)
-        # self.module = module
-        # self.side = side
+    def __init__(self, side=None, module=None):
+        super().__init__(side, module)
+        self.module_parent = self.module_name
 
     def create_ik_limb_module(self, nodes=None, pv_idx=1):
         if not nodes:
