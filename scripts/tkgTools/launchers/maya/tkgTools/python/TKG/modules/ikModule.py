@@ -63,8 +63,10 @@ class Build(tkgModules.Module):
 
         # -------------------
         # connection
-        cmds.pointConstraint(ikMain_ctrl, ikh, w=True)
+        po_con = cmds.pointConstraint(ikMain_ctrl, ikh, w=True)[0]
         cmds.poleVectorConstraint(ikPv_ctrl, ikh, w=True)
+        ori_con = cmds.orientConstraint(ikAutoRot_ctrl, ik_joints[-1], w=True, mo=True)[0]
+        cmds.setAttr(ori_con+'.interpType', 2)
 
         # -------------------
         # ikAutoRot connection
@@ -89,6 +91,12 @@ class Build(tkgModules.Module):
         # --------------------
         # stretchy
         tkgIk.stretchy(main_ctrl=ikMain_ctrl, ikHandle=ikh, stretchy_axis='x', default_reverse=False)
+
+        # --------------------
+        # softik
+        cmds.delete(po_con)
+        softik_st_loc = tkgIk.create_softik(ik_ctrl=ikMain_ctrl, ikHandle=ikh)
+        cmds.parent(softik_st_loc, self.ik_nodes_top)
 
         # --------------------
         # pv aim

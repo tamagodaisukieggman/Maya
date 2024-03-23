@@ -265,3 +265,23 @@ def pole_vec(start=None, mid=None, end=None, move=None, obj=None):
 
     cmds.delete(pvLoc[0])
     return pvwt
+
+def m_obj(obj):
+    selection_list = om2.MSelectionList()
+    selection_list.add(obj)
+    return selection_list.getDependNode(0)
+
+def fn_addNumAttr(obj=None, longName=None, shortName=None, minValue=None, maxValue=None, defaultValue=None, numericData=om2.MFnNumericData.kFloat):
+    m_object = m_obj(obj)
+    m_dependency_node = om2.MFnDependencyNode(m_object)
+
+    num_att_fn = om2.MFnNumericAttribute(m_object)
+    attr = num_att_fn.create(longName, shortName, numericData, defaultValue) # float
+    num_att_fn.keyable=True
+
+    if maxValue != None:
+        num_att_fn.setMax(maxValue)
+    if minValue != None:
+        num_att_fn.setMin(minValue)
+
+    m_dependency_node.addAttribute(attr)
