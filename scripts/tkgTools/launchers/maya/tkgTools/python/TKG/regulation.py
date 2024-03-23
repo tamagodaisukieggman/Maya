@@ -20,7 +20,29 @@ def segment_padding_rename(base=None, num=None, pudding=None, pattern=0):
 def node_type_rename(node=None, type=None):
     if type == 'ikHandle':
         return tkgNodes.rename(node, '', '_IKH', None)
-    elif type == 'End':
+    elif type == 'end':
         return tkgNodes.rename(node, '', '_END', None)
     elif type == 'ikSplineCrv':
         return tkgNodes.rename(node, '', '_CRV', None)
+
+def offset_type_rename(node=None, type=None):
+    if type:
+        return tkgNodes.rename(node, 'OFF_{}_'.format(type), '', None)
+    else:
+        return tkgNodes.rename(node, 'OFF_', '', None)
+
+def ctrl_type_rename(node=None, type=None):
+    if type:
+        return tkgNodes.rename(node, 'CTL_{}_'.format(type), '', None)
+    else:
+        return tkgNodes.rename(node, 'CTL_', '', None)
+
+def shape_type(type=None):
+    if type == 'fk':
+        return 'cube'
+    elif type == 'ikBase':
+        return 'round_cube'
+    elif type == 'ikMain':
+        return 'jack'
+    elif type == 'ikPv':
+        return 'sphere2'

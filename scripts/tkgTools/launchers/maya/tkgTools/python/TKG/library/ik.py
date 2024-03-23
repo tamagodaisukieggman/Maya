@@ -45,7 +45,7 @@ def create_spline_ikHandle(start=None, end=None):
 
     ik_spline_joints = tkgNodes.get_ancestors(start=start,
                                               end=ik_spline_end_jnt,
-                                              parents=[])
+                                              parents=[])[::-1]
 
     ik_spline_crv = tkgNodes.create_curve_on_nodes(nodes=ik_spline_joints,
                                    name=tkgRegulation.node_type_rename(end, 'ikSplineCrv'))

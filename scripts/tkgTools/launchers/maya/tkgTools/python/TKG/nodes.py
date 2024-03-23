@@ -141,3 +141,77 @@ def get_ancestors(start=None, end=None, parents=[]):
             parents = get_ancestors(start=start, end=end_pa[0], parents=parents)
 
     return parents
+
+def get_transform(node):
+    if node:
+        if cmds.nodeType(node) == 'transform':
+            transform = node
+        else:
+            transform = cmds.listRelatives(node, type='transform', parent=True)[0]
+
+        return transform
+
+    else:
+        return None
+
+def set_rgb(node, color):
+    rgb = ("R","G","B")
+    for channel, color in zip(rgb, color):
+        cmds.setAttr(node + ".overrideColor{}".format(channel), color)
+
+def set_rgb_color(ctrl=None, color=[1,1,1]):
+    # shape = cmds.listRelatives(ctrl, s=True, f=True)[0]
+    shapes = cmds.listRelatives(ctrl, s=True, f=True)
+    for shape in shapes:
+        cmds.setAttr(shape + ".overrideEnabled",1)
+        cmds.setAttr(shape + ".overrideRGBColors",1)
+        set_rgb(shape, color)
+
+def set_obj_color(obj=None, color=[0.5, 0.5, 0.5], outliner=None):
+    cmds.setAttr(obj+'.useObjectColor', 2)
+    cmds.setAttr(obj+'.wireColorRGB', *color)
+
+    if outliner:
+        cmds.setAttr(obj+'.useOutlinerColor', 1)
+        cmds.setAttr(obj+'.outlinerColor', *color)
+
+def merge_curves(sel=None):
+    if not sel:
+        sel = cmds.ls(os=True)
+    # cmds.select(sel[0], r=True)
+    # cmds.makeIdentity(apply=True, t=True, r=True, s=True, n=False, pn=True)
+    if not sel:
+        return
+    shape = cmds.listRelatives(sel[0], s=True, f=True) or list()
+    # cmds.select(sel[0], r=True)
+    # mel.eval('channelBoxCommand -freezeAll;')
+    if shape:
+        for sh in shape:
+            cmds.parent(sh, sel[1], s=True, r=True)
+
+    cmds.delete(sel[0])
+
+    cmds.select(sel[1], r=True)
+
+def offset(node=None, type=None):
+    if not node:
+        node = cmds.ls(os=True, fl=True)[0] or []
+    name = tkgRegulation.offset_type_rename(node, type)
+    off = cmds.createNode('transform', n=name, ss=True)
+    cmds.matchTransform(off, node)
+
+    parent = cmds.listRelatives(node, p=True, f=True) or None
+    if parent:
+        cmds.parent(off, parent[0])
+
+    cmds.parent(node, off)
+
+    return off
+
+def offsets(node=None, types=None):
+    root_off = None
+    for i, ty in enumerate(types):
+        off = offset(node, ty)
+        if i == 0:
+            root_off = off
+    return root_off

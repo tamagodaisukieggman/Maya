@@ -62,7 +62,7 @@ def create_end_joint(node=None):
     else:
         end_parent = parent[0]
     mid_point = tkgCommon.mid_point(node, end_parent, percentage=-0.1)
-    end_jnt = tkgRegulation.node_type_rename(node, 'End')
+    end_jnt = tkgRegulation.node_type_rename(node, 'end')
     cmds.createNode('joint', n=end_jnt, ss=True)
     cmds.xform(end_jnt, t=mid_point, ws=True, a=True)
     cmds.parent(end_jnt, node)
