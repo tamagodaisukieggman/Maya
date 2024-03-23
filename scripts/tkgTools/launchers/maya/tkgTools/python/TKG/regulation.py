@@ -1,0 +1,14 @@
+﻿# -*- coding: utf-8 -*-
+
+"""
+命名規則によって変更する関数
+"""
+
+# 
+def segment_padding_rename(base=None, num=None, pudding=None, pattern=0):
+    """
+    0：BIND_ForeArm_L > BIND_ForeArm_00_L
+    """
+    if pattern == 0:
+        bkwd_under = base.split('_')[-2]
+        return '{}_{}'.format(bkwd_under, str(num).zfill(pudding)), bkwd_under

@@ -1,9 +1,13 @@
 ﻿# -*- coding: utf-8 -*-
+from imp import reload
 import re
 
 import maya.cmds as cmds
 
 from . import common
+from . import regulation
+reload(common)
+reload(regulation)
 
 """
 よく使用するスクリプト
@@ -76,6 +80,7 @@ class Duplicate:
 
         return [cmds.rename(d, rslt) for d, rslt in zip(dups, self.virtuals)]
 
+
 def segment_duplicates(base=None, tip=None, i=2, base_include=None, tip_include=None, children=None):
     """
     baseとtipの間にジョイントを作成する
@@ -87,8 +92,9 @@ def segment_duplicates(base=None, tip=None, i=2, base_include=None, tip_include=
                                    base_include=base_include,
                                    tip_include=tip_include)
     for j in range(i):
-        bkwd_under = base.split('_')[-2]
-        dup = Duplicate([base], '', '', [bkwd_under, '{}_{}'.format(bkwd_under, str(j).zfill(2))], False)
+        renamed, bkwd_under = regulation.segment_padding_rename(base, j, 2, 0)
+
+        dup = Duplicate([base], '', '', [bkwd_under, renamed], False)
         dups = dup.duplicate()
         cmds.xform(dups[0], t=mps[j], ws=True, a=True)
         if children:

@@ -8,17 +8,45 @@ import maya.cmds as cmds
 from .. import nodes as tkgNodes
 reload(tkgNodes)
 
-def create_limb_joints(nodes=None):
+def create_limb_joints(nodes=None,
+                       blend_prefix=None,
+                       blend_suffix=None,
+                       blend_replace=None,
+                       first_segments_num=8,
+                       second_segments_num=8,
+                       fk_prefix=None,
+                       fk_suffix=None,
+                       fk_replace=None,
+                       ik_prefix=None,
+                       ik_suffix=None,
+                       ik_replace=None):
     if not nodes:
         nodes = cmds.ls(os=True, fl=True) or []
 
-    # BLEND joints
-    dup = tkgNodes.Duplicate(nodes, '', '', ['BIND_', 'BLEND_'])
-    dups = dup.duplicate()
+    # blend joints
+    dup = tkgNodes.Duplicate(nodes, blend_prefix, blend_suffix, blend_replace)
+    blend_joints = dup.duplicate()
 
-    segments = tkgNodes.segment_duplicates(base=dups[0],
-                                tip=dups[1],
-                                i=8,
+    blend_first_segments = tkgNodes.segment_duplicates(base=blend_joints[0],
+                                tip=blend_joints[1],
+                                i=first_segments_num,
                                 base_include=True,
                                 tip_include=True,
                                 children=True)
+
+    blend_second_segments = tkgNodes.segment_duplicates(base=blend_joints[1],
+                                tip=blend_joints[2],
+                                i=second_segments_num,
+                                base_include=True,
+                                tip_include=True,
+                                children=True)
+
+    # fk joints
+    dup = tkgNodes.Duplicate(nodes, fk_prefix, fk_suffix, fk_replace)
+    fk_joints = dup.duplicate()
+
+    # ik joints
+    dup = tkgNodes.Duplicate(nodes, ik_prefix, ik_suffix, ik_replace)
+    ik_joints = dup.duplicate()
+
+    return [blend_joints, blend_first_segments, blend_second_segments], fk_joints, ik_joints
