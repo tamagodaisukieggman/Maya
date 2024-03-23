@@ -22,3 +22,5 @@ def node_type_rename(node=None, type=None):
         return tkgNodes.rename(node, '', '_IKH', None)
     elif type == 'End':
         return tkgNodes.rename(node, '', '_END', None)
+    elif type == 'ikSplineCrv':
+        return tkgNodes.rename(node, '', '_CRV', None)

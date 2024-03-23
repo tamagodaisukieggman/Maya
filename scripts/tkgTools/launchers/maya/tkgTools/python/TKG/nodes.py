@@ -102,3 +102,42 @@ def segment_duplicates(base=None, tip=None, i=2, base_include=None, tip_include=
         segments.append(dups[0])
 
     return segments
+
+def get_shapes(node):
+    shape_list = cmds.listRelatives(node, s=True, ni=True)
+
+    if not shape_list:
+        shape_list = cmds.ls(node, s=True)
+
+    if shape_list:
+        return shape_list
+    else:
+        return None
+
+def fix_shapes(node):
+    curve_shapes = get_shapes(node)
+    for i, shp in enumerate(curve_shapes):
+        cmds.setAttr('{}.lineWidth'.format(shp), 2)
+
+        if i == 0:
+            cmds.rename(shp, node + "Shape")
+        else:
+            cmds.rename(shp, "{}Shape_{}".format(node, i))
+
+def create_curve_on_nodes(nodes=None, name=None):
+    pts = [cmds.xform(j,q=True,ws=True,t=True) for j in nodes]
+    crv = cmds.curve(ep=pts, d=3, n=name)
+    fix_shapes(crv)
+    return crv
+
+def get_ancestors(start=None, end=None, parents=[]):
+    start_pa = cmds.listRelatives(start, p=True) or None
+    end_pa = cmds.listRelatives(end, p=True) or None
+    if not end in parents:
+        parents.append(end)
+    if end_pa:
+        if start_pa[0] != end_pa[0]:
+            parents.append(end_pa[0])
+            parents = get_ancestors(start=start, end=end_pa[0], parents=parents)
+
+    return parents
