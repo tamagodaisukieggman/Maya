@@ -61,8 +61,34 @@ class Build(tkgModules.Module):
         cmds.parent(ikPv_offset, ikBase_ctrl)
         cmds.parent(ikAutoRot_offset, ikMain_ctrl)
 
+        # -------------------
         # connection
         cmds.pointConstraint(ikMain_ctrl, ikh, w=True)
         cmds.poleVectorConstraint(ikPv_ctrl, ikh, w=True)
 
+        # -------------------
+        # ikAutoRot connection
+        autoRot = cmds.listRelatives(ikAutoRot_ctrl, p=True)[0]
+        autoRot_ori_con = cmds.orientConstraint(ik_joints[pv_idx], autoRot, w=True, mo=True)[0]
+        cmds.setAttr(autoRot_ori_con+'.interpType', 2)
+        cmds.disconnectAttr(autoRot_ori_con+'.constraintRotateX', autoRot+'.rx')
+        cmds.disconnectAttr(autoRot_ori_con+'.constraintRotateY', autoRot+'.ry')
+        cmds.disconnectAttr(autoRot_ori_con+'.constraintRotateZ', autoRot+'.rz')
+
+        # local pairBlend
+        pbn = cmds.createNode('pairBlend', n=autoRot+'_PBN', ss=True)
+        cmds.setAttr(pbn+'.rotInterpolation', 1)
+
+        cmds.connectAttr(autoRot_ori_con+'.constraintRotate', pbn+'.inRotate2', f=True)
+        cmds.connectAttr(pbn+'.outRotate', autoRot+'.r', f=True)
+
+        # local pairBlend addAttr
+        cmds.addAttr(ikAutoRot_ctrl, ln='autoPose', sn='ap', at='double', dv=0, max=1, min=0, k=True)
+        cmds.connectAttr(ikAutoRot_ctrl+'.ap', pbn+'.weight', f=True)
+
+        # --------------------
+        # stretchy
+        tkgIk.stretchy(main_ctrl=ikMain_ctrl, ikHandle=ikh, stretchy_axis='x', default_reverse=False)
+
+        # --------------------
         # pv aim
