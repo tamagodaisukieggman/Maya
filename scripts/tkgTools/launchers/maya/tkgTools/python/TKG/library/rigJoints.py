@@ -12,6 +12,14 @@ reload(tkgCommon)
 reload(tkgNodes)
 reload(tkgRegulation)
 
+def create_fk_joints(nodes=None):
+    dup = tkgNodes.Duplicate(nodes, *tkgRegulation.node_type_rename(node=None, type='fk'))
+    return dup.duplicate()
+
+def create_ik_joints(nodes=None):
+    dup = tkgNodes.Duplicate(nodes, *tkgRegulation.node_type_rename(node=None, type='ik'))
+    return dup.duplicate()
+
 def create_limb_joints(nodes=None,
                        blend_prefix=None,
                        blend_suffix=None,
@@ -46,12 +54,10 @@ def create_limb_joints(nodes=None,
                                 children=True)
 
     # fk joints
-    dup = tkgNodes.Duplicate(nodes, fk_prefix, fk_suffix, fk_replace)
-    fk_joints = dup.duplicate()
+    fk_joints = create_fk_joints(nodes, fk_prefix, fk_suffix, fk_replace)
 
     # ik joints
-    dup = tkgNodes.Duplicate(nodes, ik_prefix, ik_suffix, ik_replace)
-    ik_joints = dup.duplicate()
+    ik_joints = create_ik_joints(nodes, ik_prefix, ik_suffix, ik_replace)
 
     return [blend_joints, blend_first_segments, blend_second_segments], fk_joints, ik_joints
 

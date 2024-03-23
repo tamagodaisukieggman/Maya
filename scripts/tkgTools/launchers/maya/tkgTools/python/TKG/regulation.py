@@ -24,6 +24,10 @@ def node_type_rename(node=None, type=None):
         return tkgNodes.rename(node, '', '_END', None)
     elif type == 'ikSplineCrv':
         return tkgNodes.rename(node, '', '_CRV', None)
+    elif type == 'fk':
+        return ['', '',['BIND_', 'FK_']]
+    elif type == 'ik':
+        return ['', '',['BIND_', 'IK_']]
 
 def offset_type_rename(node=None, type=None):
     if type:

@@ -60,7 +60,7 @@ def create_ikMain_ctrl(node=None, axis=[0,0,0], scale=1):
     name = tkgRegulation.ctrl_type_rename(node)
     ctrl = create_ctrl(name, shape, axis, scale)
     offset = tkgNodes.offsets(ctrl, ['Global', 'Local'])
-    cmds.matchTransform(offset, node)
+    cmds.matchTransform(offset, node, rot=False)
     return ctrl, offset
 
 def create_ikPv_ctrl(node=None, axis=[0,0,0], scale=1):
