@@ -5,8 +5,12 @@ import traceback
 
 import maya.cmds as cmds
 
-from .. import nodes as tkgNodes
+import TKG.common as tkgCommon
+import TKG.nodes as tkgNodes
+import TKG.regulation as tkgRegulation
+reload(tkgCommon)
 reload(tkgNodes)
+reload(tkgRegulation)
 
 def create_limb_joints(nodes=None,
                        blend_prefix=None,
@@ -50,3 +54,16 @@ def create_limb_joints(nodes=None,
     ik_joints = dup.duplicate()
 
     return [blend_joints, blend_first_segments, blend_second_segments], fk_joints, ik_joints
+
+def create_end_joint(node=None):
+    parent = cmds.listRelatives(node, p=True) or None
+    if not parent:
+        return
+    else:
+        end_parent = parent[0]
+    mid_point = tkgCommon.mid_point(node, end_parent, percentage=-0.1)
+    end_jnt = tkgRegulation.node_type_rename(node, 'End')
+    cmds.createNode('joint', n=end_jnt, ss=True)
+    cmds.xform(end_jnt, t=mid_point, ws=True, a=True)
+    cmds.parent(end_jnt, node)
+    return end_jnt

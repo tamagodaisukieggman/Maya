@@ -4,8 +4,8 @@ import re
 
 import maya.cmds as cmds
 
-from . import common as tkgCommon
-from . import regulation as tkgRegulation
+import TKG.common as tkgCommon
+import TKG.regulation as tkgRegulation
 reload(tkgCommon)
 reload(tkgRegulation)
 
