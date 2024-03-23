@@ -34,13 +34,20 @@ def create_fk_ctrls(nodes=None, axis=[0,0,0], scale=1):
     if not nodes:
         nodes = cmds.ls(os=True, fl=True) or []
     pa_ctrl = None
-    for n in nodes:
+    pa_offset = None
+    ctrls = []
+    for i, n in enumerate(nodes):
         ctrl, offset = create_fk_ctrl(n, axis, scale)
+        ctrls.append(ctrl)
 
         if pa_ctrl:
             cmds.parent(offset, pa_ctrl)
 
         pa_ctrl = ctrl
+
+        if i == 0:
+            pa_offset = offset
+    return pa_offset, ctrls
 
 # IK ctrl
 def create_ikBase_ctrl(node=None, axis=[0,0,0], scale=1):
