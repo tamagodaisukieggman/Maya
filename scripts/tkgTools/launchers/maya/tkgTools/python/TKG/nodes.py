@@ -120,9 +120,9 @@ def fix_shapes(node):
         else:
             cmds.rename(shp, "{}Shape_{}".format(node, i))
 
-def create_curve_on_nodes(nodes=None, name=None):
+def create_curve_on_nodes(nodes=None, name=None, d=3):
     pts = [cmds.xform(j,q=True,ws=True,t=True) for j in nodes]
-    crv = cmds.curve(ep=pts, d=3, n=name)
+    crv = cmds.curve(ep=pts, d=d, n=name)
     fix_shapes(crv)
     return crv
 
