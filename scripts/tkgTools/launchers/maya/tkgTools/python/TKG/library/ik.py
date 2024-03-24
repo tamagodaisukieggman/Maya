@@ -61,7 +61,7 @@ def create_spline_ikHandle(start=None, end=None):
 
     return cmds.ikHandle(**settings)[0]
 
-def stretchy(main_ctrl=None, start=None, end=None):
+def stretchy_base(main_ctrl=None, start=None, end=None):
     # start = 'IK_Arm_L'
     # end = 'IK_Hand_L'
     # main_ctrl = 'CTL_IK_Hand_L'
@@ -89,14 +89,13 @@ def stretchy(main_ctrl=None, start=None, end=None):
     cmds.connectAttr(main_ctrl+'.worldMatrix[0]', stretch_dbn+'.inMatrix2', f=True)
 
     cmds.connectAttr(crv_info+'.arcLength', stretch_md+'.input2X', f=True)
-    cmds.connectAttr(crv_info+'.arcLength', stretch_cdn+'.secondTerm', f=True)
 
     cmds.connectAttr(stretch_dbn+'.distance', stretch_md+'.input1X', f=True)
 
     cmds.connectAttr(stretch_md+'.outputX', stretch_cdn+'.firstTerm', f=True)
     cmds.connectAttr(stretch_md+'.outputX', stretch_cdn+'.colorIfTrueR', f=True)
 
-    return crv, stretch_cdn, start_stretch_parent
+    return crv, stretch_cdn, start_stretch_parent, stretch_dbn
 
 # def stretchy(main_ctrl=None, ikHandle=None, stretchy_axis='x', default_reverse=False):
 #     # lookdevKitをロードしないといけない
@@ -365,6 +364,86 @@ def stretchy(main_ctrl=None, start=None, end=None):
 #     # hide channelbox
 #     for st_node in stretch_nodes:
 #         cmds.setAttr('{0}.ihi'.format(st_node), 0)
+
+def softik_base(main_ctrl=None, start=None, end=None, max_value=1, length_distanceBetween=None):
+    softik_aim_loc = cmds.spaceLocator(n=start+'_SOFTIK_AIM_LOC')
+    softik_pos = cmds.createNode('transform', n=start+'_SOFTIK_POS', ss=True)
+
+    cmds.pointConstraint(start, softik_aim_loc, w=True)
+    cmds.aimConstraint(main_ctrl,
+                    softik_aim_loc,
+                    weight=1,
+                    upVector=(0, 1, 0),
+                    worldUpType='vector',
+                    aimVector=(1, 0, 0),
+                    worldUpVector=(0, 1, 0))
+
+    cmds.matchTransform(softik_pos, softik_aim_loc)
+    cmds.parent(softik_pos, softik_aim_loc)
+
+    # softik calcs
+    e = 2.718281828459045235360287471352
+
+    ik_joints = tkgNodes.get_ancestors(start=start,
+                                              end=end,
+                                              parents=[])[::-1]
+
+    length = tkgCommon.chain_length(ik_joints)
+
+    if not cmds.objExists(main_ctrl+'.soft'):
+        cmds.addAttr(main_ctrl, ln='soft', at='double', min=0.001, max=max_value, dv=0.01, k=True)
+
+    dis_pma = cmds.createNode('plusMinusAverage', ss=True)
+    dis_range_pma = cmds.createNode('plusMinusAverage', ss=True)
+    remap_md = cmds.createNode('multiplyDivide', ss=True)
+    pow_md = cmds.createNode('multiplyDivide', ss=True)
+    rev_pma = cmds.createNode('plusMinusAverage', ss=True)
+    soft_mdl = cmds.createNode('multDoubleLinear', ss=True)
+    soft_adl = cmds.createNode('addDoubleLinear', ss=True)
+    soft_cdn = cmds.createNode('condition', ss=True)
+
+    cmds.setAttr(dis_pma+'.input1D[0]', sum(length))
+    cmds.setAttr(dis_pma+'.operation', 2)
+
+    cmds.setAttr(dis_range_pma+'.operation', 2)
+
+    cmds.setAttr(remap_md+'.operation', 2)
+
+    cmds.setAttr(pow_md+'.operation', 3)
+    cmds.setAttr(pow_md+'.input1X', e)
+
+    cmds.setAttr(rev_pma+'.operation', 2)
+    cmds.setAttr(rev_pma+'.input1D[0]', 1)
+
+    cmds.setAttr(soft_cdn+'.operation', 2)
+
+    # 
+    cmds.connectAttr(main_ctrl+'.soft', dis_pma+'.input1D[1]')
+
+    cmds.connectAttr(dis_pma+'.output1D', dis_range_pma+'.input1D[0]')
+    cmds.connectAttr(length_distanceBetween+'.distance', dis_range_pma+'.input1D[1]')
+
+    cmds.connectAttr(dis_range_pma+'.output1D', remap_md+'.input1X')
+    cmds.connectAttr(main_ctrl+'.soft', remap_md+'.input2X')
+
+    cmds.connectAttr(remap_md+'.outputX', pow_md+'.input2X')
+
+    cmds.connectAttr(pow_md+'.outputX', rev_pma+'.input1D[1]')
+
+    cmds.connectAttr(main_ctrl+'.soft', soft_mdl+'.input1')
+    cmds.connectAttr(rev_pma+'.output1D', soft_mdl+'.input2')
+
+    cmds.connectAttr(soft_mdl+'.output', soft_adl+'.input1')
+    cmds.connectAttr(dis_pma+'.output1D', soft_adl+'.input2')
+
+    cmds.connectAttr(length_distanceBetween+'.distance', soft_cdn+'.firstTerm')
+    cmds.connectAttr(dis_pma+'.output1D', soft_cdn+'.secondTerm')
+    cmds.connectAttr(length_distanceBetween+'.distance', soft_cdn+'.colorIfFalseR')
+    cmds.connectAttr(soft_adl+'.output', soft_cdn+'.colorIfTrueR')
+
+    cmds.connectAttr(soft_cdn+'.outColorR', softik_pos+'.tx')
+
+    return softik_pos
 
 def get_ikHandle_joints_distance(setHandle):
     endEffector = cmds.ikHandle(setHandle, q=1, endEffector=1)
