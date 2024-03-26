@@ -62,24 +62,31 @@ def create_spline_ikHandle(start=None, end=None):
     return cmds.ikHandle(**settings)[0]
 
 class StretchSoftIK:
-    def __init__(self, main_ctrl=None, start=None, end=None):
+    def __init__(self, main_ctrl=None, ikhandle=None, start=None, end=None, axis='x'):
         # start = 'IK_Arm_L'
         # end = 'IK_Hand_L'
         # main_ctrl = 'CTL_IK_Hand_L'
 
         self.main_ctrl = main_ctrl
+        self.ikhandle = ikhandle
         self.start = start
         self.end = end
+        self.axis = axis
+        self.stretch_cdn = None
         self.stretch_dbn = None
 
-    def stretchy_between(self, objA=None, objB=None):
+        self.ik_joints = tkgNodes.get_ancestors(start=self.start,
+                                                end=self.end,
+                                                parents=[])[::-1]
+
+    def stretch_between(self, objA=None, objB=None):
         self.stretch_dbn = cmds.createNode('distanceBetween', ss=True)
         start_stretch_parent = '{0}_stretch_parent'.format(objA)
         cmds.duplicate(objA, n=start_stretch_parent, po=True)
         cmds.connectAttr(start_stretch_parent+'.worldMatrix[0]', self.stretch_dbn+'.inMatrix1', f=True)
         cmds.connectAttr(objB+'.worldMatrix[0]', self.stretch_dbn+'.inMatrix2', f=True)
 
-    def stretchy_base(self):
+    def stretch_base(self):
         crv = tkgNodes.create_curve_on_nodes(nodes=[self.start, self.end],
                                             name=self.end+'_STRETCH_CRV',
                                             d=1)
@@ -88,29 +95,34 @@ class StretchSoftIK:
 
         crv_info = cmds.createNode('curveInfo', ss=True)
         stretch_md = cmds.createNode('multiplyDivide', ss=True)
-        stretch_cdn = cmds.createNode('condition', ss=True)
+        self.stretch_cdn = cmds.createNode('condition', ss=True)
+        stretch_value_md = cmds.createNode('multiplyDivide', ss=True)
 
         cmds.setAttr(stretch_md+'.operation', 2)
-        cmds.setAttr(stretch_cdn+'.secondTerm', 1)
-        cmds.setAttr(stretch_cdn+'.operation', 2)
+        cmds.setAttr(self.stretch_cdn+'.secondTerm', 1)
+        cmds.setAttr(self.stretch_cdn+'.operation', 2)
 
         cmds.connectAttr(crv_shape+'.worldSpace[0]', crv_info+'.inputCurve', f=True)
 
         if not self.stretch_dbn:
-            self.stretchy_between(self.start, self.main_ctrl)
+            self.stretch_between(self.start, self.main_ctrl)
 
         cmds.connectAttr(crv_info+'.arcLength', stretch_md+'.input2X', f=True)
 
         cmds.connectAttr(self.stretch_dbn+'.distance', stretch_md+'.input1X', f=True)
 
-        cmds.connectAttr(stretch_md+'.outputX', stretch_cdn+'.firstTerm', f=True)
-        cmds.connectAttr(stretch_md+'.outputX', stretch_cdn+'.colorIfTrueR', f=True)
+        cmds.connectAttr(stretch_md+'.outputX', self.stretch_cdn+'.firstTerm', f=True)
+        cmds.connectAttr(stretch_value_md+'.outputX', self.stretch_cdn+'.colorIfTrueR', f=True)
 
-        return crv, stretch_cdn
+        if not cmds.objExists(self.main_ctrl+'.stretch'):
+            cmds.addAttr(self.main_ctrl, ln='stretch', at='double', min=0, max=1, dv=0, k=True)
+
+        cmds.connectAttr(stretch_md+'.outputX', stretch_value_md+'.input1X', f=True)
+        cmds.connectAttr(self.main_ctrl+'.stretch', stretch_value_md+'.input2X', f=True)
 
     def softik_base(self, max_value=10):
         softik_aim_loc = cmds.spaceLocator(n=self.start+'_SOFTIK_AIM_LOC')
-        softik_pos = cmds.createNode('transform', n=self.start+'_SOFTIK_POS', ss=True)
+        self.softik_pos = cmds.createNode('transform', n=self.start+'_self.softik_pos', ss=True)
 
         cmds.pointConstraint(self.start, softik_aim_loc, w=True)
         cmds.aimConstraint(self.main_ctrl,
@@ -121,17 +133,13 @@ class StretchSoftIK:
                         aimVector=(1, 0, 0),
                         worldUpVector=(0, 1, 0))
 
-        cmds.matchTransform(softik_pos, softik_aim_loc)
-        cmds.parent(softik_pos, softik_aim_loc)
+        cmds.matchTransform(self.softik_pos, softik_aim_loc)
+        cmds.parent(self.softik_pos, softik_aim_loc)
 
         # softik calcs
         e = 2.718281828459045235360287471352
 
-        ik_joints = tkgNodes.get_ancestors(start=self.start,
-                                                end=self.end,
-                                                parents=[])[::-1]
-
-        length = tkgCommon.chain_length(ik_joints)
+        length = tkgCommon.chain_length(self.ik_joints)
 
         if not cmds.objExists(self.main_ctrl+'.soft'):
             cmds.addAttr(self.main_ctrl, ln='soft', at='double', min=0.001, max=max_value, dv=0.01, k=True)
@@ -146,7 +154,7 @@ class StretchSoftIK:
         soft_cdn = cmds.createNode('condition', ss=True)
 
         if not self.stretch_dbn:
-            self.stretchy_between(self.start, self.main_ctrl)
+            self.stretch_between(self.start, self.main_ctrl)
 
         cmds.setAttr(dis_pma+'.input1D[0]', sum(length))
         cmds.setAttr(dis_pma+'.operation', 2)
@@ -187,9 +195,14 @@ class StretchSoftIK:
         cmds.connectAttr(self.stretch_dbn+'.distance', soft_cdn+'.colorIfFalseR')
         cmds.connectAttr(soft_adl+'.output', soft_cdn+'.colorIfTrueR')
 
-        cmds.connectAttr(soft_cdn+'.outColorR', softik_pos+'.tx')
+        cmds.connectAttr(soft_cdn+'.outColorR', self.softik_pos+'.tx')
 
-        return softik_pos
+    def stretch_connection(self):
+        for ikj in self.ik_joints:
+            cmds.connectAttr(self.stretch_cdn+'.outColorR', ikj+'.s'+self.axis, f=True)
+
+    def softik_connection(self):
+        cmds.pointConstraint(self.softik_pos, self.ikhandle, w=True)
 
 def get_ikHandle_joints_distance(setHandle):
     endEffector = cmds.ikHandle(setHandle, q=1, endEffector=1)
