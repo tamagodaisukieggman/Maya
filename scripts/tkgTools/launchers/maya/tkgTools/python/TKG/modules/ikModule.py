@@ -90,13 +90,13 @@ class Build(tkgModules.Module):
 
         # --------------------
         # stretchy
-        tkgIk.stretchy(main_ctrl=ikMain_ctrl, ikHandle=ikh, stretchy_axis='x', default_reverse=False)
+        # tkgIk.stretchy(main_ctrl=ikMain_ctrl, ikHandle=ikh, stretchy_axis='x', default_reverse=False)
 
         # --------------------
         # softik
-        cmds.delete(po_con)
-        softik_st_loc = tkgIk.create_softik(ik_ctrl=ikMain_ctrl, ikHandle=ikh)
-        cmds.parent(softik_st_loc, self.ik_nodes_top)
+        # cmds.delete(po_con)
+        # softik_st_loc = tkgIk.create_softik(ik_ctrl=ikMain_ctrl, ikHandle=ikh)
+        # cmds.parent(softik_st_loc, self.ik_nodes_top)
 
         # --------------------
         # pv aim
