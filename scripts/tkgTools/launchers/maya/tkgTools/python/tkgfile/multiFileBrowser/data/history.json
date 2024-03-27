@@ -1,7 +1,6 @@
 {
     "Multi_File_Browser": {
         "path": [
-            "//cydrive01/104_projects/148_wizard2/30_design/02_3DCG/01_キャラ/モデルチェック/キャラ揺れ骨追加確認/01_check/20231012/aether01/scenes/p2_c_aether01.ma",
             "//cydrive01/104_projects/148_wizard2/30_design/02_3DCG/01_キャラ/モデルチェック/キャラ揺れ骨追加確認/01_check/20231012/esperanza01/p2_c_esperanza01bone1012.ma",
             "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/data/projects/wizard2/data/20231012/esperanza01/p2_c_esperanza01bone1012.ma",
             "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/data/projects/wizard2/data/20231012/aether01/scenes/p2_c_aether01.ma",
@@ -100,7 +99,8 @@
             "F:/Google Drive/マイドライブ/CG/maya/rig/learning/Optimizing_Rigs_for_Parallel_Evaluation/Lesson_7_scripts_and_Maya_files/07_ik_expression_end.ma",
             "F:/Google Drive/マイドライブ/CG/maya/rig/libs/rigs/biped/CGTarian-Ray-2018-10-02.ma",
             "F:/Google Drive/マイドライブ/CG/maya/rig/library/TOMAS_RIG/TOMAS_RIG_1.ma",
-            "F:/Google Drive/マイドライブ/CG/maya/rig/libs/rigs/biped/sheriff_public.ma"
+            "F:/Google Drive/マイドライブ/CG/maya/rig/libs/rigs/biped/sheriff_public.ma",
+            "F:/myTechData/Maya/sandbox/scenes/limbA_ver000_take000.ma"
         ],
         "bookmark": {
             "world": {
@@ -150,6 +150,6 @@
                 ]
             }
         },
-        "curpath": "F:/Google Drive/マイドライブ/CG/maya/rig/libs/rigs/biped/sheriff_public.ma"
+        "curpath": "F:/myTechData/Maya/sandbox/scenes/limbA_ver000_take000.ma"
     }
 }

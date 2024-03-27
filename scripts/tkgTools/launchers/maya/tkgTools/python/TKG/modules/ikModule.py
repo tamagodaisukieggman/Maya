@@ -63,7 +63,7 @@ class Build(tkgModules.Module):
 
         # -------------------
         # connection
-        po_con = cmds.pointConstraint(ikMain_ctrl, ikh, w=True)[0]
+        # po_con = cmds.pointConstraint(ikMain_ctrl, ikh, w=True)[0]
         cmds.poleVectorConstraint(ikPv_ctrl, ikh, w=True)
         ori_con = cmds.orientConstraint(ikAutoRot_ctrl, ik_joints[-1], w=True, mo=True)[0]
         cmds.setAttr(ori_con+'.interpType', 2)

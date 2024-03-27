@@ -87,7 +87,7 @@ class StretchSoftIK:
         cmds.connectAttr(objB+'.worldMatrix[0]', self.stretch_dbn+'.inMatrix2', f=True)
 
     def stretch_base(self):
-        crv = tkgNodes.create_curve_on_nodes(nodes=[self.start, self.end],
+        crv = tkgNodes.create_curve_on_nodes(nodes=self.ik_joints,
                                             name=self.end+'_STRETCH_CRV',
                                             d=1)
 
@@ -198,8 +198,11 @@ class StretchSoftIK:
         cmds.connectAttr(soft_cdn+'.outColorR', self.softik_pos+'.tx')
 
     def stretch_connection(self):
-        for ikj in self.ik_joints:
-            cmds.connectAttr(self.stretch_cdn+'.outColorR', ikj+'.s'+self.axis, f=True)
+        length = len(self.ik_joints)
+        for i, ikj in enumerate(self.ik_joints):
+            cmds.setAttr(ikj+'.ssc', True)
+            if not i == length - 1:
+                cmds.connectAttr(self.stretch_cdn+'.outColorR', ikj+'.s'+self.axis, f=True)
 
     def softik_connection(self):
         cmds.pointConstraint(self.softik_pos, self.ikhandle, w=True)
