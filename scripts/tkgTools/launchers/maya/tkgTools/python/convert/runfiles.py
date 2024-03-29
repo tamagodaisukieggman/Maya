@@ -186,7 +186,10 @@ def bake_undo(nodes=None, playmin=None, playmax=None, at=['tx', 'ty', 'tz', 'rx'
 
     cmds.undoInfo(closeChunk=True)
 
-def convert_files(convert_type=None):
+def options_enm_m_ghost01():
+    cmds.delete('Thigh_L', 'Thigh_R')
+
+def convert_files(convert_type=None, match_source=False):
     if convert_type == 'p1_p2':
         to_joints_filePath, from_joints_filePath = p2_JOINT_PATH, p1_JOINT_PATH
     elif convert_type == 'p2_p1':
@@ -205,9 +208,17 @@ def convert_files(convert_type=None):
         # import
         playmin, playmax = file_import(_file)
 
+        # Match Source
+        if match_source:
+            cmds.setAttr('HIKproperties1.ForceActorSpace', True)
+
         # bake
         nodes = cmds.ls('import:Root', dag=True, type='joint')
         bake_undo(nodes, playmin, playmax, ['tx', 'ty', 'tz', 'rx', 'ry', 'rz'])
+
+        # options
+        if 'enm_m_ghost01' in convert_type:
+            options_enm_m_ghost01()
 
         # export
         fbxspl = _file.split('/')
@@ -220,4 +231,15 @@ def convert_files(convert_type=None):
         cmds.undo()
         cmds.undo()
 
-convert_files('p1_enm_m_ghost01')
+
+def hik_convert_p1_p2():
+    convert_files('p1_p2')
+
+def hik_convert_p2_p1():
+    convert_files('p2_p1')
+
+def hik_convert_p1_enm_m_ghost01():
+    convert_files('p1_enm_m_ghost01')
+
+def hik_convert_p2_enm_m_ghost01():
+    convert_files('p2_enm_m_ghost01')
