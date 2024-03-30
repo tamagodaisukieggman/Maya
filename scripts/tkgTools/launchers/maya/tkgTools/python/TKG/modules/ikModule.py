@@ -100,8 +100,13 @@ class Build(tkgModules.Module):
         cmds.connectAttr(ikAutoRot_ctrl+'.ap', pbn+'.weight', f=True)
 
         # --------------------
-        # stretchy
-        tkgIk.stretchy(main_ctrl=ikMain_ctrl, ikHandle=ikh, stretchy_axis='x', default_reverse=False)
+        # stretchy and softik
+        stretch_and_soft = tkgIk.StretchSoftIK(main_ctrl=ikMain_ctrl, ikhandle=ikh, start=ik_joints[0], end=ik_joints[-1], axis='x')
+        stretch_and_soft.stretch_base()
+        stretch_and_soft.stretch_connection()
+
+        stretch_and_soft.softik_base(max_value=10)
+        stretch_and_soft.softik_connection()
 
         # --------------------
         # softik

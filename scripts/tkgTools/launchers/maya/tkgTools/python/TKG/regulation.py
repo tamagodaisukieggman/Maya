@@ -9,6 +9,9 @@ import TKG.nodes as tkgNodes
 reload(tkgNodes)
 
 class NameRegulation:
+    """
+    name: [prefix, suffix, [replace1, replace2]]
+    """
     def __init__(self):
         self.ikHandle = ['', '_IKH', None]
         self.end = ['', '_END', None]
@@ -20,9 +23,9 @@ class NameRegulation:
         self.dev_000()
 
     def dev_000(self):
+        # 検証用の名前
+        self.fk = ['FK_', '', None]
         self.ik = ['IK_', '', None]
-
-
 
 name_reg = NameRegulation()
 
