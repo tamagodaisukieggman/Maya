@@ -74,7 +74,7 @@ def shape_type(type=None):
     elif type == 'ikPv':
         return 'sphere2'
     elif type == 'scIkPv':
-        return 'circle'
+        return 'pacman'
 
 def axis_vector(axis):
     axis_dict = {

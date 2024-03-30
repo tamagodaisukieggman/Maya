@@ -56,7 +56,7 @@ class Build(tkgModules.Module):
 
         # stable ik pv
         sc_ik_joints, sc_pv_node, sc_ikh = tkgIk.create_stable_ik_pv(nodes=nodes, aim_axis='x', up_axis='y', freeze=True)
-        scIkPv_ctrl, scIkPv_offset = tkgCtrls.create_scIkPv_ctrl(node=sc_pv_node, axis=[0,0,0], scale=1)
+        scIkPv_ctrl, scIkPv_offset = tkgCtrls.create_scIkPv_ctrl(node=sc_pv_node, axis=[0,0,0], scale=2)
         cmds.parent(sc_ikh, self.ik_nodes_top)
         cmds.parent(scIkPv_offset, sc_pv_node)
         cmds.parent(ikPv_offset, scIkPv_ctrl)
