@@ -56,7 +56,10 @@ class Build(tkgModules.Module):
 
         # stable ik pv
         sc_ik_joints, sc_pv_node, sc_ikh = tkgIk.create_stable_ik_pv(nodes=nodes, aim_axis='x', up_axis='y', freeze=True)
-        cmds.parent(sc_ikh, ikMain_ctrl)
+        scIkPv_ctrl, scIkPv_offset = tkgCtrls.create_scIkPv_ctrl(node=sc_pv_node, axis=[0,0,0], scale=1)
+        cmds.parent(sc_ikh, self.ik_nodes_top)
+        cmds.parent(scIkPv_offset, sc_pv_node)
+        cmds.parent(ikPv_offset, scIkPv_ctrl)
 
         # 
         cmds.parent(ik_joints[0], self.ik_nodes_top)
@@ -65,7 +68,6 @@ class Build(tkgModules.Module):
 
         cmds.parent(ikBase_offset, self.ik_ctrls_top)
         cmds.parent(ikMain_offset, ikBase_ctrl)
-        cmds.parent(ikPv_offset, sc_pv_node)
         # cmds.parent(ikPv_offset, ikBase_ctrl)
         cmds.parent(ikAutoRot_offset, ikMain_ctrl)
 
@@ -75,6 +77,8 @@ class Build(tkgModules.Module):
         cmds.poleVectorConstraint(ikPv_ctrl, ikh, w=True)
         ori_con = cmds.orientConstraint(ikAutoRot_ctrl, ik_joints[-1], w=True, mo=True)[0]
         cmds.setAttr(ori_con+'.interpType', 2)
+
+        cmds.pointConstraint(ikMain_ctrl, sc_ikh, w=True)[0]
 
         cmds.pointConstraint(ikBase_ctrl, ik_joints[0], w=True)[0]
         cmds.pointConstraint(ikBase_ctrl, sc_ik_joints[0], w=True)[0]
@@ -106,7 +110,12 @@ class Build(tkgModules.Module):
         stretch_and_soft.stretch_connection()
 
         stretch_and_soft.softik_base(max_value=10)
-        stretch_and_soft.softik_connection()
+        stretch_and_soft.softik_connection(ikh_con=po_con)
+
+        cmds.parent(stretch_and_soft.start_stretch_parent, ikBase_ctrl)
+
+        cmds.parent(stretch_and_soft.crv, self.ik_nodes_top)
+        cmds.parent(stretch_and_soft.softik_aim_loc, self.ik_nodes_top)
 
         # --------------------
         # softik

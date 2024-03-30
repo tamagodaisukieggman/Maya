@@ -89,3 +89,13 @@ def create_ikAutoRot_ctrl(node=None, axis=[0,0,0], scale=1):
     offset = tkgNodes.offsets(ctrl, ['Global', 'Auto'])
     cmds.matchTransform(offset, node)
     return ctrl, offset
+
+def create_scIkPv_ctrl(node=None, axis=[0,0,0], scale=1):
+    if not node:
+        node = cmds.ls(os=True, fl=True)[0] or []
+    shape = tkgRegulation.shape_type('scIkPv')
+    name = tkgRegulation.ctrl_type_rename(node, 'Local')
+    ctrl = create_ctrl(name, shape, axis, scale)
+    offset = tkgNodes.offsets(ctrl, ['Global', 'Auto'])
+    cmds.matchTransform(offset, node)
+    return ctrl, offset
