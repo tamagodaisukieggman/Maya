@@ -174,7 +174,7 @@ class StretchSoftIK:
         length = tkgCommon.chain_length(self.ik_joints)
 
         if not cmds.objExists(self.main_ctrl+'.soft'):
-            cmds.addAttr(self.main_ctrl, ln='soft', at='double', min=0.001, max=max_value, dv=0.01, k=True)
+            cmds.addAttr(self.main_ctrl, ln='soft', at='double', min=0.0001, max=max_value, dv=0.0001, k=True)
 
         self.dis_pma = cmds.createNode('plusMinusAverage', ss=True)
         dis_range_pma = cmds.createNode('plusMinusAverage', ss=True)
