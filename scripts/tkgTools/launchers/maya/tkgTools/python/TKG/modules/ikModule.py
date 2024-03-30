@@ -49,24 +49,35 @@ class Build(tkgModules.Module):
 
         ikAutoRot_ctrl, ikAutoRot_offset = tkgCtrls.create_ikAutoRot_ctrl(node=ik_joints[-1], axis=[0,0,0], scale=1)
 
+        # ik pv
         ikPv_ctrl, ikPv_offset = tkgCtrls.create_ikPv_ctrl(node=ik_joints[pv_idx], axis=[0,0,0], scale=1)
         tkgNodes.pole_vec(start=ik_joints[0], mid=ik_joints[pv_idx], end=ik_joints[-1], move=pv_move, obj=ikPv_offset)
         cmds.xform(ikPv_offset, ro=[0,0,0], ws=True, a=True)
 
+        # stable ik pv
+        sc_ik_joints, sc_pv_node, sc_ikh = tkgIk.create_stable_ik_pv(nodes=nodes, aim_axis='x', up_axis='y', freeze=True)
+        cmds.parent(sc_ikh, ikMain_ctrl)
+
+        # 
         cmds.parent(ik_joints[0], self.ik_nodes_top)
+        cmds.parent(sc_ik_joints[0], self.ik_nodes_top)
         cmds.parent(ikh, self.ik_nodes_top)
 
         cmds.parent(ikBase_offset, self.ik_ctrls_top)
         cmds.parent(ikMain_offset, ikBase_ctrl)
-        cmds.parent(ikPv_offset, ikBase_ctrl)
+        cmds.parent(ikPv_offset, sc_pv_node)
+        # cmds.parent(ikPv_offset, ikBase_ctrl)
         cmds.parent(ikAutoRot_offset, ikMain_ctrl)
 
         # -------------------
         # connection
-        # po_con = cmds.pointConstraint(ikMain_ctrl, ikh, w=True)[0]
+        po_con = cmds.pointConstraint(ikMain_ctrl, ikh, w=True)[0]
         cmds.poleVectorConstraint(ikPv_ctrl, ikh, w=True)
         ori_con = cmds.orientConstraint(ikAutoRot_ctrl, ik_joints[-1], w=True, mo=True)[0]
         cmds.setAttr(ori_con+'.interpType', 2)
+
+        cmds.pointConstraint(ikBase_ctrl, ik_joints[0], w=True)[0]
+        cmds.pointConstraint(ikBase_ctrl, sc_ik_joints[0], w=True)[0]
 
         # -------------------
         # ikAutoRot connection
@@ -90,7 +101,7 @@ class Build(tkgModules.Module):
 
         # --------------------
         # stretchy
-        # tkgIk.stretchy(main_ctrl=ikMain_ctrl, ikHandle=ikh, stretchy_axis='x', default_reverse=False)
+        tkgIk.stretchy(main_ctrl=ikMain_ctrl, ikHandle=ikh, stretchy_axis='x', default_reverse=False)
 
         # --------------------
         # softik

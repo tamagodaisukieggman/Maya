@@ -41,8 +41,6 @@ class Draw(object):
     def __init__(self, curve=None):
         if curve:
             self.curve = tkgNodes.get_transform(curve)
-        elif len(cmds.ls(sl=True)):
-            self.curve = tkgNodes.get_transform(cmds.ls(sl=True)[0])
         else:
             self.curve = None
 

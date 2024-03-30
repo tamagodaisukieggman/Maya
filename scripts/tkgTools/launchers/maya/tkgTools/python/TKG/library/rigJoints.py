@@ -20,6 +20,39 @@ def create_ik_joints(nodes=None):
     dup = tkgNodes.Duplicate(nodes, *tkgRegulation.node_type_rename(node=None, type='ik'))
     return dup.duplicate()
 
+def create_sc_ik_joints(nodes=None, aim_axis='x', up_axis='y', freeze=None):
+    start = nodes[0]
+    middle = nodes[1]
+    end = nodes[2]
+
+    pv_start = cmds.duplicate(start, n=tkgRegulation.node_type_rename(node=start, type='sc_ik_dummy'), po=True)[0]
+    pv_end = cmds.duplicate(end, n=tkgRegulation.node_type_rename(node=end, type='sc_ik_dummy'), po=True)[0]
+
+    aim_axis_vector = tkgRegulation.axis_vector(aim_axis)
+    up_axis_vector = tkgRegulation.axis_vector(up_axis)
+
+    cmds.delete(cmds.aimConstraint(end,
+                    pv_start,
+                    aimVector=aim_axis_vector,
+                    upVector=up_axis_vector,
+                    worldUpType='object',
+                    worldUpObject=middle,
+                    offset=[0,0,0],
+                    w=True))
+
+    if freeze:
+        cmds.makeIdentity(pv_start,
+                        apply=True,
+                        t=False,
+                        r=True,
+                        s=False,
+                        n=False,
+                        pn=True)
+
+    cmds.parent(pv_end, pv_start)
+
+    return [pv_start, pv_end]
+
 def create_limb_joints(nodes=None,
                        blend_prefix=None,
                        blend_suffix=None,

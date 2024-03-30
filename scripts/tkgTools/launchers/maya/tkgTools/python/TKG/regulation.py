@@ -8,6 +8,24 @@ from imp import reload
 import TKG.nodes as tkgNodes
 reload(tkgNodes)
 
+class NameRegulation:
+    def __init__(self):
+        self.ikHandle = ['', '_IKH', None]
+        self.end = ['', '_END', None]
+        self.ikSplineCrv = ['', '_CRV', None]
+        self.fk = ['', '',['BIND_', 'FK_']]
+        self.ik = ['', '',['BIND_', 'IK_']]
+        self.sc_ik_dummy = ['SC_IK_', '', None]
+
+        self.dev_000()
+
+    def dev_000(self):
+        self.ik = ['IK_', '', None]
+
+
+
+name_reg = NameRegulation()
+
 # 
 def segment_padding_rename(base=None, num=None, pudding=None, pattern=0):
     """
@@ -19,15 +37,17 @@ def segment_padding_rename(base=None, num=None, pudding=None, pattern=0):
 
 def node_type_rename(node=None, type=None):
     if type == 'ikHandle':
-        return tkgNodes.rename(node, '', '_IKH', None)
+        return tkgNodes.rename(node, *name_reg.ikHandle)
     elif type == 'end':
-        return tkgNodes.rename(node, '', '_END', None)
+        return tkgNodes.rename(node, *name_reg.end)
     elif type == 'ikSplineCrv':
-        return tkgNodes.rename(node, '', '_CRV', None)
+        return tkgNodes.rename(node, *name_reg.ikSplineCrv)
     elif type == 'fk':
-        return ['', '',['BIND_', 'FK_']]
+        return name_reg.fk
     elif type == 'ik':
-        return ['', '',['BIND_', 'IK_']]
+        return name_reg.ik
+    elif type == 'sc_ik_dummy':
+        return tkgNodes.rename(node, *name_reg.sc_ik_dummy)
 
 def offset_type_rename(node=None, type=None):
     if type:

@@ -31,6 +31,13 @@ def ik_settings(solver=None):
 
     return settings
 
+def create_SC_ikHandle(start=None, end=None):
+    settings = ik_settings(solver=0)
+    settings['name'] = tkgRegulation.node_type_rename(end, 'ikHandle')
+    settings['startJoint'] = start
+    settings['endEffector'] = end
+    return cmds.ikHandle(**settings)[0]
+
 def create_RP_ikHandle(start=None, end=None):
     settings = ik_settings(solver=1)
     settings['name'] = tkgRegulation.node_type_rename(end, 'ikHandle')
@@ -60,6 +67,20 @@ def create_spline_ikHandle(start=None, end=None):
     settings['rtm'] = True
 
     return cmds.ikHandle(**settings)[0]
+
+def create_stable_ik_pv(nodes=None, aim_axis='x', up_axis='y', freeze=None):
+    sc_ik_joints = tkgRigJoints.create_sc_ik_joints(nodes=nodes,
+                                                    aim_axis=aim_axis,
+                                                    up_axis=up_axis,
+                                                    freeze=freeze)
+    sc_ikh = create_SC_ikHandle(*sc_ik_joints)
+
+    sc_pv_node = cmds.createNode('transform', n='PV_'+sc_ikh, ss=True)
+    cmds.parent(sc_pv_node, sc_ik_joints[0])
+
+    cmds.pointConstraint(sc_ik_joints[0], sc_ikh, sc_pv_node, w=True)
+
+    return sc_ik_joints, sc_pv_node, sc_ikh
 
 class StretchSoftIK:
     def __init__(self, main_ctrl=None, ikhandle=None, start=None, end=None, axis='x'):
