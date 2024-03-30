@@ -1,8 +1,6 @@
 {
     "Multi_File_Browser": {
         "path": [
-            "//cydrive01/104_projects/148_wizard2/30_design/02_3DCG/01_キャラ/モデルチェック/キャラ揺れ骨追加確認/01_check/20231012/esperanza01/p2_c_esperanza01bone1012.ma",
-            "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/data/projects/wizard2/data/20231012/esperanza01/p2_c_esperanza01bone1012.ma",
             "C:/Users/CF0990/Documents/maya/scripts/tkgTools/tkgRig/data/projects/wizard2/data/20231012/aether01/scenes/p2_c_aether01.ma",
             "C:/cygames/wiz2/team/3dcg/mot/ava/p1/cmn/scenes/an_p1_cmn_emote_104.ma",
             "//cydrive01/104_projects/148_wizard2/30_design/02_3DCG/01_キャラ/モデルチェック/キャラ揺れ骨追加確認/01_check/20231012/aether01/scenes/p2_c_aether01_joint.ma",
@@ -100,6 +98,8 @@
             "F:/Google Drive/マイドライブ/CG/maya/rig/libs/rigs/biped/CGTarian-Ray-2018-10-02.ma",
             "F:/Google Drive/マイドライブ/CG/maya/rig/library/TOMAS_RIG/TOMAS_RIG_1.ma",
             "F:/Google Drive/マイドライブ/CG/maya/rig/libs/rigs/biped/sheriff_public.ma",
+            "F:/myTechData/Maya/character-anatomy/rig/joints/limb/leg.ma",
+            "F:/myTechData/Maya/character-anatomy/biped/sample/TOMAS_RIG/TOMAS_RIG_1.ma",
             "F:/myTechData/Maya/sandbox/scenes/limbA_ver000_take000.ma"
         ],
         "bookmark": {
