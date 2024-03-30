@@ -50,3 +50,14 @@ def shape_type(type=None):
         return 'jack'
     elif type == 'ikPv':
         return 'sphere2'
+
+def axis_vector(axis):
+    axis_dict = {
+        'x':[1,0,0],
+        'y':[0,1,0],
+        'z':[0,0,1],
+        '-x':[-1,0,0],
+        '-y':[0,-1,0],
+        '-z':[0,0,-1]
+    }
+    return axis_dict[axis]
