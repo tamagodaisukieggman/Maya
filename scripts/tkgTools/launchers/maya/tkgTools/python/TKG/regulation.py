@@ -20,6 +20,16 @@ class NameRegulation:
         self.ik = ['', '',['BIND_', 'IK_']]
         self.sc_ik_dummy = ['SC_IK_', '', None]
 
+        # utility node
+        self.distanceBetween = ['', '_DBN', None]
+        self.curveInfo = ['', '_CRVINFO', None]
+        self.multiplyDivide = ['', '_MD', None]
+        self.condition = ['', '_CDN', None]
+        self.pairBlend = ['', '_PBN', None]
+        self.plusMinusAverage = ['', '_PMA', None]
+        self.multDoubleLinear = ['', '_MDL', None]
+        self.addDoubleLinear = ['', '_ADL', None]
+
         self.dev_000()
 
     def dev_000(self):
@@ -51,6 +61,24 @@ def node_type_rename(node=None, type=None):
         return name_reg.ik
     elif type == 'sc_ik_dummy':
         return tkgNodes.rename(node, *name_reg.sc_ik_dummy)
+
+    # utility node
+    elif type == 'distanceBetween':
+        return tkgNodes.rename(node, *name_reg.distanceBetween)
+    elif type == 'curveInfo':
+        return tkgNodes.rename(node, *name_reg.curveInfo)
+    elif type == 'multiplyDivide':
+        return tkgNodes.rename(node, *name_reg.multiplyDivide)
+    elif type == 'condition':
+        return tkgNodes.rename(node, *name_reg.condition)
+    elif type == 'pairBlend':
+        return tkgNodes.rename(node, *name_reg.pairBlend)
+    elif type == 'plusMinusAverage':
+        return tkgNodes.rename(node, *name_reg.plusMinusAverage)
+    elif type == 'multDoubleLinear':
+        return tkgNodes.rename(node, *name_reg.multDoubleLinear)
+    elif type == 'addDoubleLinear':
+        return tkgNodes.rename(node, *name_reg.addDoubleLinear)
 
 def offset_type_rename(node=None, type=None):
     if type:

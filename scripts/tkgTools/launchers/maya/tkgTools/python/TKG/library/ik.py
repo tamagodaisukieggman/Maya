@@ -82,6 +82,8 @@ def create_stable_ik_pv(nodes=None, aim_axis='x', up_axis='y', freeze=None):
     cmds.parent(sc_pv_node, sc_ik_joints[0])
 
     cmds.pointConstraint(sc_ik_joints[0], sc_ikh, sc_pv_node, w=True)
+    ori_con = cmds.orientConstraint(sc_ik_joints[0], sc_pv_node, w=True)[0]
+    cmds.setAttr(ori_con+'.interpType', 2)
 
     return sc_ik_joints, sc_pv_node, sc_ikh
 
@@ -110,7 +112,9 @@ class StretchSoftIK:
                                                 parents=[])[::-1]
 
     def stretch_between(self, objA=None, objB=None):
-        self.stretch_dbn = cmds.createNode('distanceBetween', ss=True)
+        self.stretch_dbn = cmds.createNode('distanceBetween',
+                                           n=tkgRegulation.node_type_rename(objB, 'distanceBetween'),
+                                           ss=True)
         self.start_stretch_parent = '{0}_stretch_parent'.format(objA)
         cmds.duplicate(objA, n=self.start_stretch_parent, po=True)
         cmds.setAttr(self.start_stretch_parent+'.drawStyle', 2)
@@ -124,10 +128,18 @@ class StretchSoftIK:
 
         crv_shape = tkgNodes.get_shapes(self.crv)[0]
 
-        self.crv_info = cmds.createNode('curveInfo', ss=True)
-        stretch_md = cmds.createNode('multiplyDivide', ss=True)
-        self.stretch_cdn = cmds.createNode('condition', ss=True)
-        self.stretch_value_pb = cmds.createNode('pairBlend', ss=True)
+        self.crv_info = cmds.createNode('curveInfo',
+                                        n='STRETCH_'+tkgRegulation.node_type_rename(self.crv, 'curveInfo'),
+                                        ss=True)
+        stretch_md = cmds.createNode('multiplyDivide',
+                                     n='STRETCH_'+tkgRegulation.node_type_rename(self.main_ctrl, 'multiplyDivide'),
+                                     ss=True)
+        self.stretch_cdn = cmds.createNode('condition',
+                                           n='STRETCH_'+tkgRegulation.node_type_rename(self.main_ctrl, 'condition'),
+                                           ss=True)
+        self.stretch_value_pb = cmds.createNode('pairBlend',
+                                                n='STRETCH_'+tkgRegulation.node_type_rename(self.main_ctrl, 'pairBlend'),
+                                                ss=True)
 
         cmds.setAttr(stretch_md+'.operation', 2)
         cmds.setAttr(self.stretch_cdn+'.operation', 3)
@@ -176,14 +188,30 @@ class StretchSoftIK:
         if not cmds.objExists(self.main_ctrl+'.soft'):
             cmds.addAttr(self.main_ctrl, ln='soft', at='double', min=0.0001, max=max_value, dv=0.0001, k=True)
 
-        self.dis_pma = cmds.createNode('plusMinusAverage', ss=True)
-        dis_range_pma = cmds.createNode('plusMinusAverage', ss=True)
-        remap_md = cmds.createNode('multiplyDivide', ss=True)
-        pow_md = cmds.createNode('multiplyDivide', ss=True)
-        rev_pma = cmds.createNode('plusMinusAverage', ss=True)
-        soft_mdl = cmds.createNode('multDoubleLinear', ss=True)
-        soft_adl = cmds.createNode('addDoubleLinear', ss=True)
-        soft_cdn = cmds.createNode('condition', ss=True)
+        self.dis_pma = cmds.createNode('plusMinusAverage',
+                                       n='SOFT_DIS_'+tkgRegulation.node_type_rename(self.main_ctrl, 'plusMinusAverage'),
+                                       ss=True)
+        dis_range_pma = cmds.createNode('plusMinusAverage',
+                                        n='SOFT_RANGE_'+tkgRegulation.node_type_rename(self.main_ctrl, 'plusMinusAverage'),
+                                        ss=True)
+        remap_md = cmds.createNode('multiplyDivide',
+                                   n='SOFT_REMAP_'+tkgRegulation.node_type_rename(self.main_ctrl, 'multiplyDivide'),
+                                   ss=True)
+        pow_md = cmds.createNode('multiplyDivide',
+                                 n='SOFT_POWER_'+tkgRegulation.node_type_rename(self.main_ctrl, 'multiplyDivide'),
+                                 ss=True)
+        rev_pma = cmds.createNode('plusMinusAverage',
+                                  n='SOFT_REVERSE_'+tkgRegulation.node_type_rename(self.main_ctrl, 'plusMinusAverage'),
+                                  ss=True)
+        soft_mdl = cmds.createNode('multDoubleLinear',
+                                   n='SOFT_'+tkgRegulation.node_type_rename(self.main_ctrl, 'multDoubleLinear'),
+                                   ss=True)
+        soft_adl = cmds.createNode('addDoubleLinear',
+                                   n='SOFT_'+tkgRegulation.node_type_rename(self.main_ctrl, 'addDoubleLinear'),
+                                   ss=True)
+        soft_cdn = cmds.createNode('condition',
+                                   n='SOFT_'+tkgRegulation.node_type_rename(self.main_ctrl, 'condition'),
+                                   ss=True)
 
         if not self.stretch_dbn:
             self.stretch_between(self.start, self.main_ctrl)
@@ -241,7 +269,9 @@ class StretchSoftIK:
             cmds.delete(ikh_con)
         cmds.pointConstraint(self.softik_pos, self.ikhandle, w=True)
 
-        pbn = cmds.createNode('pairBlend', ss=True)
+        pbn = cmds.createNode('pairBlend',
+                              n='SOFT_CONNECT_'+tkgRegulation.node_type_rename(self.main_ctrl, 'pairBlend'),
+                              ss=True)
 
         cmds.connectAttr(self.main_ctrl+'.stretch', pbn+'.weight', f=True)
         cmds.connectAttr(self.crv_info+'.arcLength', pbn+'.inTranslateX1', f=True)
