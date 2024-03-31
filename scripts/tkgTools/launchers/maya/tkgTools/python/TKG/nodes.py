@@ -292,6 +292,8 @@ def get_up_stream(node=None):
     if pa:
         parents = pa[0].split('|')[::-1]
         parents.remove('')
+    else:
+        parents = []
     return parents
 
 def get_world_rot(node=None):
@@ -337,9 +339,9 @@ def matrix_constraint(src=None, dst=None):
 
     dst_stream = get_up_stream(node=dst)[::-1]
 
-    if len(src_stream) < len(dst_stream):
+    if len(src_stream) <= len(dst_stream):
         same_nodes = [n for n in dst_stream if n in src_stream]
-    elif len(src_stream) > len(dst_stream):
+    elif len(src_stream) >= len(dst_stream):
         same_nodes = [n for n in src_stream if n in dst_stream]
     [src_stream.remove(n) for n in same_nodes]
     [dst_stream.remove(n) for n in same_nodes]
@@ -360,6 +362,9 @@ def matrix_constraint(src=None, dst=None):
         src_end_idx = i+1
 
     dst_end_idx = 0
+    if not dst_stream:
+        dst_end_idx = src_end_idx+1
+
     for j, n in enumerate(dst_stream):
         cmds.connectAttr(n+'.inverseMatrix', pos_mmx+'.matrixIn[{}]'.format(src_end_idx+j+1), f=True)
         cmds.connectAttr(n+'.inverseMatrix', rot_mmx+'.matrixIn[{}]'.format(src_end_idx+j+1), f=True)
