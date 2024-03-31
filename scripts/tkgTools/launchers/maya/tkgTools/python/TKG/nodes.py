@@ -285,3 +285,114 @@ def fn_addNumAttr(obj=None, longName=None, shortName=None, minValue=None, maxVal
         num_att_fn.setMin(minValue)
 
     m_dependency_node.addAttribute(attr)
+
+def get_up_stream(node=None):
+    pa = cmds.listRelatives(node, p=True, f=True) or []
+    parents = None
+    if pa:
+        parents = pa[0].split('|')[::-1]
+        parents.remove('')
+    return parents
+
+def get_world_rot(node=None):
+    return cmds.xform(node, q=True, ro=True, ws=True)
+
+def get_world_pos(node=None):
+    return cmds.xform(node, q=True, t=True, ws=True)
+
+def get_world_pos_rot(node=None):
+    node_tr = []
+    for t in get_world_pos(node):
+        node_tr.append(t)
+    for ro in get_world_rot(node):
+        node_tr.append(ro)
+    return node_tr
+
+def matrix_constraint(src=None, dst=None):
+    if not src or not dst:
+        sel = cmds.ls(os=True)
+        src = sel[0]
+        dst = sel[1]
+
+    src_tr = get_world_pos_rot(src)
+    dst_tr = get_world_pos_rot(dst)
+
+    round_src_tr = [tkgCommon.round_value(v, 3) for v in src_tr]
+    round_dst_tr = [tkgCommon.round_value(v, 3) for v in dst_tr]
+
+    not_same = None
+    for s, d in zip(round_src_tr, round_dst_tr):
+        if s != d:
+            not_same = True
+            break
+
+    src_stream = get_up_stream(node=src)
+
+    if not_same:
+        dst_dup = cmds.duplicate(dst, n=dst+'_MAT_DUP', po=True)[0]
+        cmds.parent(dst_dup, src)
+
+        src_stream = get_up_stream(node=dst_dup)
+        src = dst_dup
+
+    dst_stream = get_up_stream(node=dst)[::-1]
+
+    if len(src_stream) < len(dst_stream):
+        same_nodes = [n for n in dst_stream if n in src_stream]
+    elif len(src_stream) > len(dst_stream):
+        same_nodes = [n for n in src_stream if n in dst_stream]
+    [src_stream.remove(n) for n in same_nodes]
+    [dst_stream.remove(n) for n in same_nodes]
+
+    pos_mmx = cmds.createNode('multMatrix', ss=True)
+    rot_mmx = cmds.createNode('multMatrix', ss=True)
+
+    pos_dcmx = cmds.createNode('decomposeMatrix', ss=True)
+    rot_dcmx = cmds.createNode('decomposeMatrix', ss=True)
+
+    cmds.connectAttr(src+'.matrix', pos_mmx+'.matrixIn[0]', f=True)
+    cmds.connectAttr(src+'.matrix', rot_mmx+'.matrixIn[0]', f=True)
+
+    src_end_idx = 0
+    for i, n in enumerate(src_stream):
+        cmds.connectAttr(n+'.matrix', pos_mmx+'.matrixIn[{}]'.format(i+1), f=True)
+        cmds.connectAttr(n+'.matrix', rot_mmx+'.matrixIn[{}]'.format(i+1), f=True)
+        src_end_idx = i+1
+
+    dst_end_idx = 0
+    for j, n in enumerate(dst_stream):
+        cmds.connectAttr(n+'.inverseMatrix', pos_mmx+'.matrixIn[{}]'.format(src_end_idx+j+1), f=True)
+        cmds.connectAttr(n+'.inverseMatrix', rot_mmx+'.matrixIn[{}]'.format(src_end_idx+j+1), f=True)
+        dst_end_idx = src_end_idx+j+1
+
+    cmds.connectAttr(pos_mmx+'.matrixSum', pos_dcmx+'.inputMatrix', f=True)
+    cmds.connectAttr(rot_mmx+'.matrixSum', rot_dcmx+'.inputMatrix', f=True)
+
+    cmds.connectAttr(pos_dcmx+'.outputTranslate', dst+'.t', f=True)
+    cmds.connectAttr(pos_dcmx+'.outputScale', dst+'.s', f=True)
+    cmds.connectAttr(pos_dcmx+'.outputShear', dst+'.shear', f=True)
+
+    if cmds.objectType(dst) == 'joint':
+        cmp_mat = cmds.createNode('composeMatrix', ss=True)
+        inv_mat = cmds.createNode('inverseMatrix', ss=True)
+
+        cmds.connectAttr(dst+'.jo', cmp_mat+'.inputRotate', f=True)
+        cmds.connectAttr(dst+'.rotateOrder', cmp_mat+'.inputRotateOrder', f=True)
+        cmds.connectAttr(cmp_mat+'.outputMatrix', inv_mat+'.inputMatrix', f=True)
+
+        if not cmds.objExists(dst+'.ijom'):
+            cmds.addAttr(dst, ln='inverseJointOrientMatrix', sn='ijom', at='matrix', k=True)
+
+        cmds.setAttr(
+            dst+'.inverseJointOrientMatrix',
+            cmds.getAttr(inv_mat+'.outputMatrix'),
+            type='matrix'
+        )
+
+        cmds.setAttr(
+            rot_mmx+'.matrixIn[{}]'.format(dst_end_idx+1),
+            cmds.getAttr(dst+'.inverseJointOrientMatrix'),
+            type='matrix'
+        )
+
+    cmds.connectAttr(rot_dcmx+'.outputRotate', dst+'.r', f=True)

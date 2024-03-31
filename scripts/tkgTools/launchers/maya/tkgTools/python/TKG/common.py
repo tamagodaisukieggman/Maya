@@ -3,6 +3,12 @@ import math
 
 import maya.cmds as cmds
 
+def truncate(f, n):
+    return math.floor(f * 10 ** n) / 10 ** n
+
+def round_value(value=None, digit=None):
+    return truncate(round(value, digit), digit)
+
 def get_mid_point(pos1, pos2, percentage=0.5):
     mid_point = [pos1[0] + (pos2[0] - pos1[0]) * percentage,
                  pos1[1] + (pos2[1] - pos1[1]) * percentage,
