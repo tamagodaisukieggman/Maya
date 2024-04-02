@@ -141,10 +141,58 @@ class FileExplorer(MayaQWidgetDockableMixin, QMainWindow):
     def addFileView(self):
         self.splitterHorizontal.addWidget(self.fileView)
 
-    # bookmark用メソッド
+    # ブックマークビューメソッド
     def addBookmarkView(self):
         self.splitterHorizontal.addWidget(self.bookmarkView)
         self.bookmarkView.changeRootPath(self.dataPath)
+        self.bookmarkView.menuActions['Add Bookmark'] = {'cmd':partial(self.showBookmarkDialog)}
+
+    def showBookmarkDialog(self):
+        self.bookmarkDialog = QDialog(self)
+        bookmarkVBoxLayout = QVBoxLayout()
+        self.bookmarkDialog.setLayout(bookmarkVBoxLayout)
+
+        bookmarkFile = ''
+        if self.bookmarkView.curFilePath.endswith('.json'):
+            bookmarkFile = os.path.splitext(os.path.basename(self.bookmarkView.curFilePath))[0]
+
+        self.bookmarkFileNameText = QLineEdit(bookmarkFile)
+        self.bookmarkFileNameText.setPlaceholderText('Enter Bookmark File Name...')
+        bookmarkVBoxLayout.addWidget(self.bookmarkFileNameText)
+
+        self.bookmarkKeyNameText = QLineEdit()
+        self.bookmarkKeyNameText.setPlaceholderText('Enter Bookmark Key Name...')
+        bookmarkVBoxLayout.addWidget(self.bookmarkKeyNameText)
+
+        bookmarkOkBtn = QPushButton('OK')
+        bookmarkVBoxLayout.addWidget(bookmarkOkBtn)
+        bookmarkOkBtn.clicked.connect(self.addBookmark)
+
+        self.bookmarkDialog.setWindowTitle('Add Bookmark')
+        self.bookmarkDialog.exec_()
+
+    # ブックマーク追加
+    def addBookmark(self):        
+        # ブックマークデータをJSONファイルに保存
+        bookmarkDir = self.bookmarkView.curFilePath
+        if os.path.isfile(self.bookmarkView.curFilePath):
+            bookmarkDir = '/'.join(self.bookmarkView.curFilePath.split('/')[0:-1])
+        bookmarkFilePath = '{}/{}.json'.format(bookmarkDir, self.bookmarkFileNameText.text())
+
+        bookmarkData = None
+        if os.path.isfile(bookmarkFilePath):
+            with open(bookmarkFilePath, 'r', encoding="utf-8") as f:
+                bookmarkData = json.load(f, object_pairs_hook=OrderedDict)
+
+        if not bookmarkData:
+            bookmarkData = {self.bookmarkKeyNameText.text(): self.fileView.curFilePath}
+
+        elif bookmarkData:
+            bookmarkData[self.bookmarkKeyNameText.text()] = self.fileView.curFilePath
+
+        with open(bookmarkFilePath, 'w') as bookmarkFile:
+            json.dump(bookmarkData, bookmarkFile, indent=4)
+
 
 class FileView(QTreeView):
     def __init__(self, parent=None):
@@ -173,6 +221,11 @@ class FileView(QTreeView):
         # 右クリックメニューを有効にする
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.openMenu)
+
+        # 右クリックメニューに追加する機能
+        self.menuActions = OrderedDict()
+        self.menuActions['Create New Folder'] = {'cmd':partial(self.showCreateDirDialog)}
+        self.menuActions['Show in Explorer'] = {'cmd':partial(self.showInExplorer)}
 
         # 現在のパスを返す
         self.curFilePath = None
@@ -258,13 +311,50 @@ class FileView(QTreeView):
 
     # 右クリック用のメニュー
     def openMenu(self, position):
-        menu = QMenu()
-        bookmarkAction = menu.addAction('Add Bookmark')
-        action = menu.exec_(self.viewport().mapToGlobal(position))
-        print('self.curFilePath', self.curFilePath)
+        sender = self.sender()
+        self.contextMenu = QMenu(sender)
 
-        if action == bookmark_action:
-            pass
+        for menuName, menuCmd in self.menuActions.items():
+            action = self.contextMenu.addAction(menuName)
+            action.triggered.connect(menuCmd['cmd'])
+
+        # QMenuの表示
+        self.contextMenu.exec_(sender.mapToGlobal(position))
+
+
+    # フォルダ作成
+    def showCreateDirDialog(self):
+        self.createDirDialog = QDialog(self)
+        createDirVBoxLayout = QVBoxLayout()
+        self.createDirDialog.setLayout(createDirVBoxLayout)
+
+        self.folderNameText = QLineEdit()
+        createDirVBoxLayout.addWidget(self.folderNameText)
+
+        createDirOkBtn = QPushButton('OK')
+        createDirVBoxLayout.addWidget(createDirOkBtn)
+        createDirOkBtn.clicked.connect(self.createDir)
+
+        self.createDirDialog.setWindowTitle('Create Directory')
+        self.createDirDialog.exec_()
+
+    def createDir(self):
+        folderName = self.folderNameText.text()
+        newDir = '{}/{}'.format(self.curFilePath, folderName)
+        if not os.path.isdir(newDir):
+            os.makedirs(newDir)
+        else:
+            print('{} already exists'.format(newDir))
+        # self.showCreateDirDialog.close()
+
+    # エクスプローラで表示
+    def showInExplorer(self):
+        if os.name == 'nt':
+            path = self.curFilePath.replace('/', '\\')
+            subprocess.Popen('explorer /select,"{}"'.format(path))
+        elif os.name == 'posix':
+            subprocess.Popen(['open', '-R', self.curFilePath])
+
 
 if __name__ == '__main__':
     ui = FileExplorer()
