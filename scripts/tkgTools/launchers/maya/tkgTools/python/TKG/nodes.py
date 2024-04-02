@@ -348,17 +348,21 @@ def matrix_constraint(src=None, dst=None):
 
     pos_mmx = cmds.createNode('multMatrix', ss=True)
     rot_mmx = cmds.createNode('multMatrix', ss=True)
+    scl_mmx = cmds.createNode('multMatrix', ss=True)
 
     pos_dcmx = cmds.createNode('decomposeMatrix', ss=True)
     rot_dcmx = cmds.createNode('decomposeMatrix', ss=True)
+    scl_dcmx = cmds.createNode('decomposeMatrix', ss=True)
 
     cmds.connectAttr(src+'.matrix', pos_mmx+'.matrixIn[0]', f=True)
     cmds.connectAttr(src+'.matrix', rot_mmx+'.matrixIn[0]', f=True)
+    cmds.connectAttr(src+'.matrix', scl_mmx+'.matrixIn[0]', f=True)
 
     src_end_idx = 0
     for i, n in enumerate(src_stream):
         cmds.connectAttr(n+'.matrix', pos_mmx+'.matrixIn[{}]'.format(i+1), f=True)
         cmds.connectAttr(n+'.matrix', rot_mmx+'.matrixIn[{}]'.format(i+1), f=True)
+        cmds.connectAttr(n+'.matrix', scl_mmx+'.matrixIn[{}]'.format(i+1), f=True)
         src_end_idx = i+1
 
     dst_end_idx = 0
@@ -368,15 +372,18 @@ def matrix_constraint(src=None, dst=None):
     for j, n in enumerate(dst_stream):
         cmds.connectAttr(n+'.inverseMatrix', pos_mmx+'.matrixIn[{}]'.format(src_end_idx+j+1), f=True)
         cmds.connectAttr(n+'.inverseMatrix', rot_mmx+'.matrixIn[{}]'.format(src_end_idx+j+1), f=True)
+        cmds.connectAttr(n+'.inverseMatrix', scl_mmx+'.matrixIn[{}]'.format(src_end_idx+j+1), f=True)
         dst_end_idx = src_end_idx+j+1
 
     cmds.connectAttr(pos_mmx+'.matrixSum', pos_dcmx+'.inputMatrix', f=True)
     cmds.connectAttr(rot_mmx+'.matrixSum', rot_dcmx+'.inputMatrix', f=True)
+    cmds.connectAttr(scl_mmx+'.matrixSum', scl_dcmx+'.inputMatrix', f=True)
 
+    # translate connection
     cmds.connectAttr(pos_dcmx+'.outputTranslate', dst+'.t', f=True)
-    cmds.connectAttr(pos_dcmx+'.outputScale', dst+'.s', f=True)
     cmds.connectAttr(pos_dcmx+'.outputShear', dst+'.shear', f=True)
 
+    # rotate connection
     if cmds.objectType(dst) == 'joint':
         cmp_mat = cmds.createNode('composeMatrix', ss=True)
         inv_mat = cmds.createNode('inverseMatrix', ss=True)
@@ -401,3 +408,6 @@ def matrix_constraint(src=None, dst=None):
         )
 
     cmds.connectAttr(rot_dcmx+'.outputRotate', dst+'.r', f=True)
+
+    # scale connection
+    cmds.connectAttr(scl_dcmx+'.outputScale', dst+'.s', f=True)

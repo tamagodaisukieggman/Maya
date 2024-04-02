@@ -45,54 +45,81 @@ class FileExplorer(MayaQWidgetDockableMixin, QMainWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        # ウィンドウタイトルの設定
         self.setWindowTitle(self.__class__.__name__)
+
+        self.dirPath = '/'.join(__file__.replace('\\', '/').split('/')[0:-1])
+        self.dataPath = '{}/{}'.format(self.dirPath, 'data')
+        self.iconsPath = '{}/{}'.format(self.dirPath, 'icons')
+        self.bookmarksPath = '{}/{}'.format(self.dataPath, 'bookmarks')
+
+        pathDirs = [self.dataPath, self.iconsPath, self.bookmarksPath]
+        for path in pathDirs:
+            if not os.path.isdir(path):
+                os.makedirs(path)
 
         # ドライブの取得
         self.drives = [drive.absolutePath() for drive in QDir.drives()]
         self.fileView = FileView(self)
+        self.bookmarkView = FileView(self)
 
         self.widgets()
         self.addPathInput()
         self.addSearchLineEdit()
         self.addDriveSelection()
+        self.addBookmarkView()
         self.addFileView()
+
+        # initialize
+        self.setDefaultDrive()
+        self.pathStock = []
 
     def widgets(self):
         self.setGeometry(10, 10, 960, 540)
 
         # set widget
-        self.top_widget = QWidget(self)
-        self.setCentralWidget(self.top_widget)
+        self.topWidget = QWidget(self)
+        self.setCentralWidget(self.topWidget)
 
         # set layout
-        self.top_vbox_layout = QVBoxLayout(self)
-        self.top_widget.setLayout(self.top_vbox_layout)
+        self.topVboxLayout = QVBoxLayout(self)
+        self.topWidget.setLayout(self.topVboxLayout)
 
-        # top horizontal
-        self.top_hbox_layout = QHBoxLayout(self)
-        self.top_vbox_layout.addLayout(self.top_hbox_layout)
+        # top hori layout
+        self.pathVboxLayout = QVBoxLayout(self)
+        self.topVboxLayout.addLayout(self.pathVboxLayout)
 
-        # vertical A in top horizontal
-        self.top_vbox_A_layout = QVBoxLayout(self)
-        self.top_hbox_layout.addLayout(self.top_vbox_A_layout)
+        # top tree layout
+        self.treeHboxLayout = QHBoxLayout(self)
+        self.topVboxLayout.addLayout(self.treeHboxLayout)
+
+        # QSplitter
+        self.splitterHorizontal = QSplitter(Qt.Horizontal)
+        self.treeHboxLayout.addWidget(self.splitterHorizontal)
 
     def addPathInput(self):
         # パス入力用のテキストフィールドを追加
         self.pathInput = QLineEdit()
-        self.pathInput.setPlaceholderText("Enter path to focus...")
+        self.pathInput.setPlaceholderText('Enter path to focus...')
         self.pathInput.returnPressed.connect(self.focusOnPath)
-        self.top_vbox_layout.addWidget(self.pathInput)
+        self.pathVboxLayout.addWidget(self.pathInput)
 
     def focusOnPath(self):
         path = self.pathInput.text()
+        path = path.replace('\\', '/')
+        self.pathInput.setText(path)
         self.fileView.focusOnPath(path)
+        if path in self.pathStock:
+            self.pathStock.remove(path)
+        self.pathStock.append(path)
 
+    # ファイル検索用
     def addSearchLineEdit(self):
         # 検索用のフィールド
         self.searchBar = QLineEdit()
-        self.searchBar.setPlaceholderText("Search...")
+        self.searchBar.setPlaceholderText('Search...')
         self.searchBar.textChanged.connect(self.fileView.searchFiles)
-        self.top_vbox_layout.addWidget(self.searchBar)
+        self.pathVboxLayout.addWidget(self.searchBar)
 
     # ドライブの選択
     def addDriveSelection(self):
@@ -100,7 +127,11 @@ class FileExplorer(MayaQWidgetDockableMixin, QMainWindow):
         self.driveComboBox = QComboBox()
         self.driveComboBox.addItems(self.drives)
         self.driveComboBox.currentIndexChanged.connect(self.changeDrive)
-        self.top_vbox_layout.addWidget(self.driveComboBox)
+        self.pathVboxLayout.addWidget(self.driveComboBox)
+
+    def setDefaultDrive(self):
+        selectedDrivePath = self.drives[0]
+        self.fileView.changeRootPath(selectedDrivePath)
 
     def changeDrive(self, index):
         selectedDrivePath = self.drives[index]
@@ -108,7 +139,12 @@ class FileExplorer(MayaQWidgetDockableMixin, QMainWindow):
 
     # Treeを追加
     def addFileView(self):
-        self.top_vbox_layout.addWidget(self.fileView)
+        self.splitterHorizontal.addWidget(self.fileView)
+
+    # bookmark用メソッド
+    def addBookmarkView(self):
+        self.splitterHorizontal.addWidget(self.bookmarkView)
+        self.bookmarkView.changeRootPath(self.dataPath)
 
 class FileView(QTreeView):
     def __init__(self, parent=None):
@@ -134,9 +170,22 @@ class FileView(QTreeView):
         # sortを有効にする
         self.setSortingEnabled(True)
 
+        # 右クリックメニューを有効にする
+        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.customContextMenuRequested.connect(self.openMenu)
+
+        # 現在のパスを返す
+        self.curFilePath = None
+        self.clicked.connect(self.getPath)
+
+    # 選択項目の取得
+    def getPath(self, index):
+        indexSource = self.proxyModel.mapToSource(index)
+        self.curFilePath = self.fileSystemModel.filePath(indexSource)
+
     # ファイル検索メソッド
     def searchFiles(self, pattern):
-        if pattern.strip() == "*":
+        if pattern.strip() == '*':
             return
 
         if pattern:  # 検索パターンが空ではない場合
@@ -206,6 +255,16 @@ class FileView(QTreeView):
             proxyIndex = self.proxyModel.mapFromSource(index)
             self.setRootIndex(proxyIndex)
             self.scrollTo(proxyIndex, QTreeView.PositionAtCenter)
+
+    # 右クリック用のメニュー
+    def openMenu(self, position):
+        menu = QMenu()
+        bookmarkAction = menu.addAction('Add Bookmark')
+        action = menu.exec_(self.viewport().mapToGlobal(position))
+        print('self.curFilePath', self.curFilePath)
+
+        if action == bookmark_action:
+            pass
 
 if __name__ == '__main__':
     ui = FileExplorer()
