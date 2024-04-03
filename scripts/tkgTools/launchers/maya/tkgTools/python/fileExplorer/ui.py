@@ -264,6 +264,7 @@ class FileView(QTreeView):
         self.menuActions['Create New Folder'] = {'cmd':partial(self.showCreateDirDialog)}
         self.menuActions['Show in Explorer'] = {'cmd':partial(self.showInExplorer)}
         self.menuActions['File Open'] = {'cmd':partial(self.fileOpen)}
+        self.menuActions['Text File Viewer'] = {'cmd':partial(self.textFileViewer)}
 
         # 現在のパスを返す
         self.curFilePath = None
@@ -378,6 +379,12 @@ class FileView(QTreeView):
         file = File(path='{}'.format(self.curFilePath))
         file.fileOpen()
 
+    # テキストファイルを表示
+    def textFileViewer(self):
+        fileViewer = FileViewer()
+        fileViewer.loadFileContent(self.curFilePath)
+        fileViewer.show()
+
     # フォルダ作成
     def showCreateDirDialog(self):
         self.createDirDialog = QDialog(self)
@@ -429,6 +436,40 @@ class File:
 
     def fileReference(self):
         pass
+
+class FileViewer(MayaQWidgetDockableMixin, QMainWindow):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # ウィンドウタイトルの設定
+        self.setWindowTitle(self.__class__.__name__)
+
+        self.widgets()
+
+    def widgets(self):
+        # self.setGeometry(10, 10, 960, 540)
+
+        # set widget
+        self.topWidget = QWidget(self)
+        self.setCentralWidget(self.topWidget)
+
+        # set layout
+        self.topHboxLayout = QHBoxLayout(self)
+        self.topWidget.setLayout(self.topHboxLayout)
+
+        # テキストエディタの設定
+        self.textEdit = QTextEdit(self)
+        self.textEdit.setReadOnly(True)  # 編集不可に設定
+        self.topHboxLayout.addWidget(self.textEdit)
+
+    def loadFileContent(self, filePath):
+        file = QFile(filePath)
+        if file.open(QFile.ReadOnly | QFile.Text):
+            textStream = QTextStream(file)
+            self.textEdit.setText(textStream.readAll())
+            file.close()
+        else:
+            self.textEdit.setText("ファイルを開くことができませんでした。")
 
 if __name__ == '__main__':
     ui = FileExplorer()
