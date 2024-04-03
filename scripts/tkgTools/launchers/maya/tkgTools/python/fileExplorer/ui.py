@@ -263,12 +263,16 @@ class FileView(QTreeView):
         self.menuActions = OrderedDict()
         self.menuActions['Create New Folder'] = {'cmd':partial(self.showCreateDirDialog)}
         self.menuActions['Show in Explorer'] = {'cmd':partial(self.showInExplorer)}
+        self.menuActions['Copy Path'] = {'cmd':partial(self.copyPath)}
         self.menuActions['File Open'] = {'cmd':partial(self.fileOpen)}
         self.menuActions['Text File Viewer'] = {'cmd':partial(self.textFileViewer)}
 
         # 現在のパスを返す
         self.curFilePath = None
         self.clicked.connect(self.getPath)
+
+        # パスコピー用
+        self.clipboard = QClipboard()
 
     # 選択項目の取得
     def getPath(self, index):
@@ -417,6 +421,9 @@ class FileView(QTreeView):
             subprocess.Popen('explorer /select,"{}"'.format(path))
         elif os.name == 'posix':
             subprocess.Popen(['open', '-R', self.curFilePath])
+
+    def copyPath(self):
+        self.clipboard.setText(self.curFilePath)
 
 class File:
     def __init__(self, path=None, namespace=None):
