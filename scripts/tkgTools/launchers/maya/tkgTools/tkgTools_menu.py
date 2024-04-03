@@ -125,6 +125,10 @@ class CreateMenu(object):
             c='import tkgfile.utils as tkgfileuls;reload(tkgfileuls);tut=tkgfileuls.TkgUtils();tut.remove_CgAbBlastPanelOptChangeCallback()',
         )
         cmds.menuItem(
+            l=u'FileExplorer',
+            c='from imp import reload;import fileExplorer.ui as fileExplorer;reload(fileExplorer);feui = fileExplorer.FileExplorer();feui.show(dockable=True)',
+        )
+        cmds.menuItem(
             l=u'MultiFileBrowser',
             c='import tkgfile.multiFileBrowser.filedirectorytree as filedirectorytree;reload(filedirectorytree);fst = filedirectorytree.FileDirectoryTree();fst.buildUI();fst.show(dockable=True)',
         )

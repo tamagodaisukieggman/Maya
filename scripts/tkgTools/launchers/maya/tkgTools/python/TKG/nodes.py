@@ -411,3 +411,4 @@ def matrix_constraint(src=None, dst=None):
 
     # scale connection
     cmds.connectAttr(scl_dcmx+'.outputScale', dst+'.s', f=True)
+    # cmds.connectAttr(src+'.s', dst+'.s', f=True)

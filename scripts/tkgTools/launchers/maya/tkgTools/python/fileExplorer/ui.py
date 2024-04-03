@@ -59,10 +59,17 @@ class FileExplorer(MayaQWidgetDockableMixin, QMainWindow):
                 os.makedirs(path)
 
         # ドライブの取得
-        self.drives = [drive.absolutePath() for drive in QDir.drives()]
+        self.drives = []
+        [self.drives.append(drive.absolutePath()) for drive in QDir.drives()]
+
+        # Treeの作成
         self.fileView = FileView(self)
         self.bookmarkView = FileView(self)
 
+        # My Computerの追加
+        self.drives.append(self.fileView.fileSystemModel.myComputer())
+
+        # 構築
         self.widgets()
         self.addPathInput()
         self.addSearchLineEdit()
@@ -73,6 +80,7 @@ class FileExplorer(MayaQWidgetDockableMixin, QMainWindow):
         # initialize
         self.setDefaultDrive()
         self.pathStock = []
+        self.bookmarkData = None
 
     def widgets(self):
         self.setGeometry(10, 10, 960, 540)
@@ -101,7 +109,7 @@ class FileExplorer(MayaQWidgetDockableMixin, QMainWindow):
         # パス入力用のテキストフィールドを追加
         self.pathInput = QLineEdit()
         self.pathInput.setPlaceholderText('Enter path to focus...')
-        self.pathInput.returnPressed.connect(self.focusOnPath)
+        self.pathInput.textChanged.connect(self.focusOnPath)
         self.pathVboxLayout.addWidget(self.pathInput)
 
     def focusOnPath(self):
@@ -125,9 +133,13 @@ class FileExplorer(MayaQWidgetDockableMixin, QMainWindow):
     def addDriveSelection(self):
         # ドライブ選択用のComboBoxを追加
         self.driveComboBox = QComboBox()
-        self.driveComboBox.addItems(self.drives)
+        self.comboBoxes(self.driveComboBox, self.drives)
         self.driveComboBox.currentIndexChanged.connect(self.changeDrive)
         self.pathVboxLayout.addWidget(self.driveComboBox)
+
+    def comboBoxes(self, comboBox=None, listItems=None):
+        comboBox.clear()
+        comboBox.addItems(listItems)
 
     def setDefaultDrive(self):
         selectedDrivePath = self.drives[0]
@@ -146,6 +158,7 @@ class FileExplorer(MayaQWidgetDockableMixin, QMainWindow):
         self.splitterHorizontal.addWidget(self.bookmarkView)
         self.bookmarkView.changeRootPath(self.dataPath)
         self.bookmarkView.menuActions['Add Bookmark'] = {'cmd':partial(self.showBookmarkDialog)}
+        self.bookmarkView.menuActions['Show Bookmark List'] = {'cmd':partial(self.showBookmarkedList)}
 
     def showBookmarkDialog(self):
         self.bookmarkDialog = QDialog(self)
@@ -172,27 +185,51 @@ class FileExplorer(MayaQWidgetDockableMixin, QMainWindow):
         self.bookmarkDialog.exec_()
 
     # ブックマーク追加
-    def addBookmark(self):        
+    def addBookmark(self):
         # ブックマークデータをJSONファイルに保存
-        bookmarkDir = self.bookmarkView.curFilePath
-        if os.path.isfile(self.bookmarkView.curFilePath):
-            bookmarkDir = '/'.join(self.bookmarkView.curFilePath.split('/')[0:-1])
-        bookmarkFilePath = '{}/{}.json'.format(bookmarkDir, self.bookmarkFileNameText.text())
+        self.readBookmark(pop=True)
+        # if not self.bookmarkData:
+        #     self.bookmarkData = {self.bookmarkKeyNameText.text(): self.fileView.curFilePath}
+        #
+        # elif self.bookmarkData:
+        self.bookmarkData[self.bookmarkKeyNameText.text()] = self.fileView.curFilePath
 
-        bookmarkData = None
-        if os.path.isfile(bookmarkFilePath):
-            with open(bookmarkFilePath, 'r', encoding="utf-8") as f:
-                bookmarkData = json.load(f, object_pairs_hook=OrderedDict)
+        with open(self.bookmarkFilePath, 'w') as bookmarkFile:
+            json.dump(self.bookmarkData, bookmarkFile, indent=4)
 
-        if not bookmarkData:
-            bookmarkData = {self.bookmarkKeyNameText.text(): self.fileView.curFilePath}
+    # ブックマークの読み込み
+    def readBookmark(self, pop=None):
+        if pop:
+            bookmarkDir = self.bookmarkView.curFilePath
+            if os.path.isfile(bookmarkDir):
+                bookmarkDir = '/'.join(bookmarkDir.split('/')[0:-1])
+            self.bookmarkFilePath = '{}/{}.json'.format(bookmarkDir, self.bookmarkFileNameText.text())
+        else:
+            self.bookmarkFilePath = self.bookmarkView.curFilePath
 
-        elif bookmarkData:
-            bookmarkData[self.bookmarkKeyNameText.text()] = self.fileView.curFilePath
+        if os.path.isfile(self.bookmarkFilePath):
+            with open(self.bookmarkFilePath, 'r', encoding="utf-8") as f:
+                self.bookmarkData = json.load(f, object_pairs_hook=OrderedDict)
+        else:
+            self.bookmarkData = {}
 
-        with open(bookmarkFilePath, 'w') as bookmarkFile:
-            json.dump(bookmarkData, bookmarkFile, indent=4)
+    def showBookmarkedList(self):
+        self.readBookmark()
+        if self.bookmarkData:
+            for keyName, path in self.bookmarkData.items():
+                self.bookmarkView.menuActions['{} -> {}'.format(keyName, path)] = {'cmd':partial(self.selectBookmark, path)}
 
+    def selectBookmark(self, path):
+        self.pathInput.setText(path)
+        self.fileView.curFilePath = path
+        if os.path.isdir(path):
+            dirname = path
+        else:
+            dirname = os.path.dirname(path)
+        if not dirname in self.drives:
+            self.drives.append(dirname)
+        self.comboBoxes(self.driveComboBox, self.drives)
+        self.driveComboBox.setCurrentText(dirname)
 
 class FileView(QTreeView):
     def __init__(self, parent=None):
@@ -213,7 +250,7 @@ class FileView(QTreeView):
         self.setModel(self.proxyModel)
 
         # ルートパスを設定（ここではホームディレクトリを例としています）
-        self.setRootIndex(self.proxyModel.mapFromSource(self.fileSystemModel.index(QDir.homePath())))
+        # self.setRootIndex(self.proxyModel.mapFromSource(self.fileSystemModel.index(QDir.homePath())))
 
         # sortを有効にする
         self.setSortingEnabled(True)
@@ -226,6 +263,7 @@ class FileView(QTreeView):
         self.menuActions = OrderedDict()
         self.menuActions['Create New Folder'] = {'cmd':partial(self.showCreateDirDialog)}
         self.menuActions['Show in Explorer'] = {'cmd':partial(self.showInExplorer)}
+        self.menuActions['File Open'] = {'cmd':partial(self.fileOpen)}
 
         # 現在のパスを返す
         self.curFilePath = None
@@ -235,6 +273,14 @@ class FileView(QTreeView):
     def getPath(self, index):
         indexSource = self.proxyModel.mapToSource(index)
         self.curFilePath = self.fileSystemModel.filePath(indexSource)
+
+    # def getPath(self):
+    #     sender = self.sender()
+    #     indexes = sender.selectionModel().selectedIndexes()
+    #     index = indexes[0]
+    #     proxyIndex = self.proxyModel.mapFromSource(index)
+    #     self.curFilePath = self.fileSystemModel.filePath(proxyIndex)
+    #     print(self.curFilePath)
 
     # ファイル検索メソッド
     def searchFiles(self, pattern):
@@ -303,11 +349,18 @@ class FileView(QTreeView):
 
     # ドライブ選択用のメソッド
     def changeRootPath(self, path):
-        index = self.fileSystemModel.index(path)
-        if index.isValid():
-            proxyIndex = self.proxyModel.mapFromSource(index)
-            self.setRootIndex(proxyIndex)
-            self.scrollTo(proxyIndex, QTreeView.PositionAtCenter)
+        proxyIndex = self.proxyModel.mapFromSource(self.fileSystemModel.index(path))
+        self.setRootIndex(proxyIndex)
+        self.scrollTo(proxyIndex, QTreeView.PositionAtCenter)
+
+        # if path == 'My Computer':
+        #     self.setRootIndex(self.proxyModel.mapFromSource(self.fileSystemModel.index(path)))
+        #     return
+        # index = self.fileSystemModel.index(path)
+        # if index.isValid():
+        #     proxyIndex = self.proxyModel.mapFromSource(index)
+        #     self.setRootIndex(proxyIndex)
+        #     self.scrollTo(proxyIndex, QTreeView.PositionAtCenter)
 
     # 右クリック用のメニュー
     def openMenu(self, position):
@@ -321,6 +374,9 @@ class FileView(QTreeView):
         # QMenuの表示
         self.contextMenu.exec_(sender.mapToGlobal(position))
 
+    def fileOpen(self):
+        file = File(path='{}'.format(self.curFilePath))
+        file.fileOpen()
 
     # フォルダ作成
     def showCreateDirDialog(self):
@@ -355,6 +411,24 @@ class FileView(QTreeView):
         elif os.name == 'posix':
             subprocess.Popen(['open', '-R', self.curFilePath])
 
+class File:
+    def __init__(self, path=None, namespace=None):
+        self.path = path
+        self.namespace = namespace
+
+    def fileOpen(self):
+        if os.path.isfile(self.path):
+            cmds.file(self.path,
+                      ignoreVersion=True,
+                      options="v=0;p=17;f=0",
+                      o=True,
+                      f=True)
+
+    def fileImport(self):
+        pass
+
+    def fileReference(self):
+        pass
 
 if __name__ == '__main__':
     ui = FileExplorer()
