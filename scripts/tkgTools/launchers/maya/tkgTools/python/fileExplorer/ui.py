@@ -73,6 +73,7 @@ class FileExplorer(MayaQWidgetDockableMixin, QMainWindow):
         self.widgets()
         self.addPathInput()
         self.addSearchLineEdit()
+        self.addNamespaceLineEdit()
         self.addDriveSelection()
         self.addBookmarkView()
         self.addFileView()
@@ -112,6 +113,12 @@ class FileExplorer(MayaQWidgetDockableMixin, QMainWindow):
         self.pathInput.textChanged.connect(self.focusOnPath)
         self.pathVboxLayout.addWidget(self.pathInput)
 
+        self.selectedPathLine = QLineEdit()
+        self.selectedPathLine.setReadOnly(True)
+        self.pathVboxLayout.addWidget(self.selectedPathLine)
+        # selectedの受け渡し
+        self.fileView.selectedPathLine = self.selectedPathLine
+
     def focusOnPath(self):
         path = self.pathInput.text()
         path = path.replace('\\', '/')
@@ -128,6 +135,18 @@ class FileExplorer(MayaQWidgetDockableMixin, QMainWindow):
         self.searchBar.setPlaceholderText('Search...')
         self.searchBar.textChanged.connect(self.fileView.searchFiles)
         self.pathVboxLayout.addWidget(self.searchBar)
+
+    # NameSpace
+    def addNamespaceLineEdit(self):
+        # 検索用のフィールド
+        self.namespaceBar = QLineEdit()
+        self.namespaceBar.setPlaceholderText('Namespace...')
+        self.namespaceBar.textChanged.connect(self.setNamespace)
+        self.pathVboxLayout.addWidget(self.namespaceBar)
+
+    def setNamespace(self):
+        sender = self.sender()
+        self.fileView.namespace = sender.text()
 
     # ドライブの選択
     def addDriveSelection(self):
@@ -259,12 +278,20 @@ class FileView(QTreeView):
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.openMenu)
 
+        # Namespace用
+        self.namespace = None
+
+        # 項目が選択されたとき用
+        self.selectedPathLine = None
+
         # 右クリックメニューに追加する機能
         self.menuActions = OrderedDict()
         self.menuActions['Create New Folder'] = {'cmd':partial(self.showCreateDirDialog)}
         self.menuActions['Show in Explorer'] = {'cmd':partial(self.showInExplorer)}
         self.menuActions['Copy Path'] = {'cmd':partial(self.copyPath)}
         self.menuActions['File Open'] = {'cmd':partial(self.fileOpen)}
+        self.menuActions['File Import'] = {'cmd':partial(self.fileImport)}
+        self.menuActions['File Reference'] = {'cmd':partial(self.fileReference)}
         self.menuActions['Text File Viewer'] = {'cmd':partial(self.textFileViewer)}
 
         # 現在のパスを返す
@@ -286,6 +313,16 @@ class FileView(QTreeView):
     #     proxyIndex = self.proxyModel.mapFromSource(index)
     #     self.curFilePath = self.fileSystemModel.filePath(proxyIndex)
     #     print(self.curFilePath)
+
+        self.whenGetPath()
+
+    # 選択されたときに実行される
+    def whenGetPath(self):
+        self.setTextFromPath()
+
+    def setTextFromPath(self):
+        if self.selectedPathLine:
+            self.selectedPathLine.setText(self.curFilePath)
 
     # ファイル検索メソッド
     def searchFiles(self, pattern):
@@ -383,6 +420,14 @@ class FileView(QTreeView):
         file = File(path='{}'.format(self.curFilePath))
         file.fileOpen()
 
+    def fileImport(self):
+        file = File(path='{}'.format(self.curFilePath))
+        file.fileImport()
+
+    def fileReference(self):
+        file = File(path='{}'.format(self.curFilePath), namespace=self.namespace)
+        file.fileReference()
+
     # テキストファイルを表示
     def textFileViewer(self):
         fileViewer = FileViewer()
@@ -430,19 +475,60 @@ class File:
         self.path = path
         self.namespace = namespace
 
+        self.settings = None
+        self.resetSettings()
+
+    def resetSettings(self):
+        self.settings = OrderedDict({
+            'ignoreVersion':True,
+        })
+
     def fileOpen(self):
-        if os.path.isfile(self.path):
-            cmds.file(self.path,
-                      ignoreVersion=True,
-                      options="v=0;p=17;f=0",
-                      o=True,
-                      f=True)
+        self.settings['options'] = "v=0;p=17;f=0"
+        self.settings['o'] = True
+        self.settings['f'] = True
+        self.doFileCommand()
 
     def fileImport(self):
-        pass
+        self.settings['options'] = "v=0;p=17;f=0"
+        self.settings['pr'] = True
+        self.settings['i'] = True
+        self.settings['mergeNamespacesOnClash'] = False
+        self.settings['importTimeRange'] = 'combine'
+        self.doFileCommand()
 
     def fileReference(self):
-        pass
+        self.settings['options'] = "v=0;"
+        self.settings['namespace'] = self.namespace
+        self.settings['r'] = True
+        self.settings['gl'] = True
+        self.settings['mergeNamespacesOnClash'] = True
+        self.doFileCommand()
+
+    def fileSave(self):
+        if self.path.endswith('.mb'):
+            fileType = 'mayaBinary'
+        elif self.path.endswith('.ma'):
+            fileType = 'mayaAscii'
+
+        cmds.file(rn=self.path)
+        self.settings.pop('ignoreVersion')
+        self.settings['type'] = fileType
+        self.settings['options'] = "v=0;"
+        self.settings['save'] = True
+        self.doSaveFileCommand()
+
+    def doFileCommand(self):
+        if os.path.isfile(self.path):
+            cmds.file(self.path, **self.settings)
+        self.resetSettings()
+
+    def doSaveFileCommand(self):
+        saveDir = os.path.dirname(self.path)
+        if not os.path.isdir(saveDir):
+            os.makedirs(saveDir)
+        cmds.file(**self.settings)
+        self.resetSettings()
 
 class FileViewer(MayaQWidgetDockableMixin, QMainWindow):
     def __init__(self, *args, **kwargs):
