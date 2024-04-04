@@ -26,6 +26,7 @@ def load_plugins():
     plugins = [
         'fbxmaya',
         'quatNodes',
+        'curveWarp',
         '{}/plug-ins/CharcoalEditor/{}/CharcoalEditor2.mll'.format(script_path, maya_version)
     ]
     plugin_results = []
