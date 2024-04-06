@@ -2,5 +2,6 @@
     "main": "F:/myTechData/Maya",
     "tkgTools": "F:/myTechData/Maya/scripts/tkgTools/launchers/maya/tkgTools",
     "limbJoints": "F:/myTechData/Maya/character-anatomy/rig/joints/limb",
-    "TKG": "F:/myTechData/Maya/scripts/tkgTools/launchers/maya/tkgTools/python/TKG"
+    "TKG": "F:/myTechData/Maya/scripts/tkgTools/launchers/maya/tkgTools/python/TKG",
+    "TOMAS": "F:/myTechData/Maya/character-anatomy/biped/sample/TOMAS_RIG"
 }
