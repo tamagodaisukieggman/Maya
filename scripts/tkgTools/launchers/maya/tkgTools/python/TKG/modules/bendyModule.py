@@ -8,11 +8,13 @@ import TKG.nodes as tkgNodes
 import TKG.library.fk as tkgFk
 import TKG.library.control.ctrls as tkgCtrls
 import TKG.modules.baseModule as tkgModules
+import TKG.regulation as tkgRegulation
 reload(tkgRigJoints)
 reload(tkgNodes)
 reload(tkgFk)
 reload(tkgCtrls)
 reload(tkgModules)
+reload(tkgRegulation)
 
 class Build(tkgModules.Module):
     def __init__(self, side=None, module=None):
@@ -20,22 +22,17 @@ class Build(tkgModules.Module):
 
         super().__init__(side, module)
 
-        self.create_module_parts('FK')
+        self.create_module_parts('BENDY')
 
         if sel:
             cmds.select(sel, r=True)
 
-    def create_fk_limb(self, nodes=None):
+    def create_bendy_limb(self, nodes=None):
         if not nodes:
             nodes = cmds.ls(os=True, fl=True) or []
-        fk_joints = tkgRigJoints.create_fk_joints(nodes=nodes)
 
-        fk_offset, fk_ctrls = tkgCtrls.create_fk_ctrls(nodes=fk_joints, axis=[0,0,0], scale=1)
+        num_reg = tkgRegulation.NumRegulation()
 
-        cmds.parent(fk_joints[0], self.nodes_top)
-        cmds.parent(fk_offset, self.ctrls_top)
+        bendy_joints = tkgRigJoints.create_bendy_joints(nodes, num_reg.bendy_limb_num)
 
-        # -------------------
-        # connection
-        
-        return fk_joints
+        cmds.parent(bendy_joints[0], self.nodes_top)

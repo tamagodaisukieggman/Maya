@@ -20,18 +20,7 @@ class Build(tkgModules.Module):
 
         super().__init__(side, module)
 
-        self.ik_nodes_top = 'IK_NODES_{}'.format(self.module_parent)
-        self.ik_ctrls_top = 'IK_CTLS_{}'.format(self.module_parent)
-
-        self.module_tops = [self.ik_nodes_top, self.ik_ctrls_top]
-        for n in self.module_tops:
-            if not cmds.objExists(n):
-                cmds.createNode('transform', n=n, ss=True)
-            parent = cmds.listRelatives(n, p=True) or None
-            if not parent:
-                cmds.parent(n, self.module_parent)
-            elif not self.module_parent in parent:
-                cmds.parent(n, self.module_parent)
+        self.create_module_parts('IK')
 
         if sel:
             cmds.select(sel, r=True)
@@ -62,11 +51,11 @@ class Build(tkgModules.Module):
         cmds.parent(ikPv_offset, scIkPv_ctrl)
 
         # 
-        cmds.parent(ik_joints[0], self.ik_nodes_top)
-        cmds.parent(sc_ik_joints[0], self.ik_nodes_top)
-        cmds.parent(ikh, self.ik_nodes_top)
+        cmds.parent(ik_joints[0], self.nodes_top)
+        cmds.parent(sc_ik_joints[0], self.nodes_top)
+        cmds.parent(ikh, self.nodes_top)
 
-        cmds.parent(ikBase_offset, self.ik_ctrls_top)
+        cmds.parent(ikBase_offset, self.ctrls_top)
         cmds.parent(ikMain_offset, ikBase_ctrl)
         # cmds.parent(ikPv_offset, ikBase_ctrl)
         cmds.parent(ikAutoRot_offset, ikMain_ctrl)
@@ -114,14 +103,14 @@ class Build(tkgModules.Module):
 
         cmds.parent(stretch_and_soft.start_stretch_parent, ikBase_ctrl)
 
-        cmds.parent(stretch_and_soft.crv, self.ik_nodes_top)
-        cmds.parent(stretch_and_soft.softik_aim_loc, self.ik_nodes_top)
+        cmds.parent(stretch_and_soft.crv, self.nodes_top)
+        cmds.parent(stretch_and_soft.softik_aim_loc, self.nodes_top)
 
         # --------------------
         # softik
         # cmds.delete(po_con)
         # softik_st_loc = tkgIk.create_softik(ik_ctrl=ikMain_ctrl, ikHandle=ikh)
-        # cmds.parent(softik_st_loc, self.ik_nodes_top)
+        # cmds.parent(softik_st_loc, self.nodes_top)
 
         # --------------------
         # pv aim

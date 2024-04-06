@@ -3,6 +3,9 @@ from imp import reload
 
 import maya.cmds as cmds
 
+import TKG.regulation as tkgRegulation
+reload(tkgRegulation)
+
 class Module:
     def __init__(self, side=None, module=None):
         if not side:
@@ -31,6 +34,9 @@ class Module:
                 cmds.createNode('transform', n=n, ss=True)
                 cmds.parent(n, self.rig_top)
 
+        self.nodes_top = None
+        self.ctrls_top = None
+
         self.create()
 
     def create(self):
@@ -41,3 +47,18 @@ class Module:
             cmds.parent(self.module_parent, self.rig_modules)
         elif not self.rig_modules in parent:
             cmds.parent(self.module_parent, self.rig_modules)
+
+    def create_module_parts(self, module=None):
+        self.nodes_top = '{}_'.format(module) + tkgRegulation.node_type_rename(node=self.module_parent, type='nodes_top')
+        self.ctrls_top = '{}_'.format(module) + tkgRegulation.node_type_rename(node=self.module_parent, type='ctrls_top')
+
+        self.module_tops = [self.nodes_top, self.ctrls_top]
+        for n in self.module_tops:
+            if not cmds.objExists(n):
+                cmds.createNode('transform', n=n, ss=True)
+            parent = cmds.listRelatives(n, p=True) or None
+            if not parent:
+                cmds.parent(n, self.module_parent)
+            elif not self.module_parent in parent:
+                cmds.parent(n, self.module_parent)
+

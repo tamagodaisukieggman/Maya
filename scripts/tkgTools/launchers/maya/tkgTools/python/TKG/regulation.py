@@ -21,6 +21,10 @@ class NameRegulation:
         self.sc_ik_dummy = ['SC_IK_', '', None]
         self.bendy = ['', '', ['BIND_', 'BENDY_']]
 
+        # module parts
+        self.nodes_top = ['NODES_', '', None]
+        self.ctrls_top = ['CTRLS_', '', None]
+
         # utility node
         self.distanceBetween = ['', '_DBN', None]
         self.curveInfo = ['', '_CRVINFO', None]
@@ -44,6 +48,10 @@ class NameRegulation:
         self.bendy = ['BENDY_', '', None]
 
 name_reg = NameRegulation()
+
+class NumRegulation:
+    def __init__(self):
+        self.bendy_limb_num = 5
 
 # 
 def segment_padding_rename(base=None, num=None, pudding=None, pattern=0):
@@ -69,6 +77,12 @@ def node_type_rename(node=None, type=None):
         return tkgNodes.rename(node, *name_reg.sc_ik_dummy)
     elif type == 'bendy':
         return name_reg.bendy
+
+    # module parts
+    elif type == 'nodes_top':
+        return tkgNodes.rename(node, *name_reg.nodes_top)
+    elif type == 'ctrls_top':
+        return tkgNodes.rename(node, *name_reg.ctrls_top)
 
     # utility node
     elif type == 'distanceBetween':
