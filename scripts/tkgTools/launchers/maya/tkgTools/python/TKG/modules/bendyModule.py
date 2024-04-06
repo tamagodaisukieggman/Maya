@@ -33,6 +33,12 @@ class Build(tkgModules.Module):
 
         num_reg = tkgRegulation.NumRegulation()
 
-        bendy_joints = tkgRigJoints.create_bendy_joints(nodes, num_reg.bendy_limb_num)
+        bendy_joints, bendy_segments_list = tkgRigJoints.create_bendy_joints(nodes, num_reg.bendy_limb_num)
+
+        bendy_main_offset, bendy_main_ctrls = tkgCtrls.create_bendy_ctrls(nodes=bendy_joints, axis=[0,0,0], scale=1)
+
+        for bendy_segments in bendy_segments_list:
+            bendys_offset, bendys_ctrls = tkgCtrls.create_bendy_ctrls(nodes=bendy_segments, axis=[0,0,0], scale=1)
 
         cmds.parent(bendy_joints[0], self.nodes_top)
+        cmds.parent(bendy_main_offset, self.ctrls_top)

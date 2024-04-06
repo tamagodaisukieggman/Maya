@@ -127,3 +127,39 @@ def create_scIkPv_ctrl(node=None, axis=[0,0,0], scale=1):
     offset = tkgNodes.offsets(ctrl, ['Global', 'Auto'])
     cmds.matchTransform(offset, node)
     return ctrl, offset
+
+# bendy ctrl
+def create_bendy_ctrl(node=None, axis=[0,0,0], scale=1):
+    if not node:
+        node = cmds.ls(os=True, fl=True)[0] or []
+    shape = tkgRegulation.shape_type('bendy')
+    name = tkgRegulation.ctrl_type_rename(node)
+    ctrl = create_ctrl(name, shape, axis, scale)
+    offset = tkgNodes.offsets(ctrl, ['Global', 'Local'])
+    cmds.matchTransform(offset, node)
+
+    virtual_parent_ctrl = None
+    parent = cmds.listRelatives(node, p=True) or None
+    if parent:
+        virtual_parent_ctrl = tkgRegulation.ctrl_type_rename(parent[0])
+
+    if virtual_parent_ctrl:
+        if cmds.objExists(virtual_parent_ctrl):
+            cmds.parent(offset, virtual_parent_ctrl)
+
+    return ctrl, offset
+
+def create_bendy_ctrls(nodes=None, axis=[0,0,0], scale=1):
+    if not nodes:
+        nodes = cmds.ls(os=True, fl=True) or []
+
+    pa_offset = None
+    ctrls = []
+    for i, n in enumerate(nodes):
+        ctrl, offset = create_bendy_ctrl(n, axis, scale)
+        ctrls.append(ctrl)
+
+        if i == 0:
+            pa_offset = offset
+
+    return pa_offset, ctrls

@@ -76,7 +76,7 @@ def node_type_rename(node=None, type=None):
     elif type == 'sc_ik_dummy':
         return tkgNodes.rename(node, *name_reg.sc_ik_dummy)
     elif type == 'bendy':
-        return name_reg.bendy
+        return tkgNodes.rename(node, *name_reg.bendy)
 
     # module parts
     elif type == 'nodes_top':
@@ -131,6 +131,8 @@ def shape_type(type=None):
         return 'sphere2'
     elif type == 'scIkPv':
         return 'pacman'
+    elif type == 'bendy':
+        return 'circle'
 
 def axis_vector(axis):
     axis_dict = {

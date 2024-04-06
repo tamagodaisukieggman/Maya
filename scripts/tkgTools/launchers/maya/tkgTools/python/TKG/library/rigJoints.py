@@ -58,17 +58,28 @@ def create_bendy_joints(nodes=None, bendy_num=8):
         nodes = cmds.ls(os=True, fl=True) or []
 
     # bendy joints
-    dup = tkgNodes.Duplicate(nodes, *tkgRegulation.node_type_rename(node=None, type='bendy'))
-    bendy_joints = dup.duplicate()
+    bendy_joints = []
+    bendy_segments_list = []
+    for i, node in enumerate(nodes):
+        bendy = tkgRegulation.node_type_rename(node, 'bendy')
+        if not cmds.objExists(bendy):
+            cmds.duplicate(node, n=bendy, po=True)
 
-    bendy_segments = tkgNodes.segment_duplicates(base=bendy_joints[0],
-                                tip=bendy_joints[1],
-                                i=bendy_num,
-                                base_include=True,
-                                tip_include=True,
-                                children=True)
+        if i != 0:
+            bendy_segments = tkgNodes.segment_duplicates(base=bendy_joints[i-1],
+                                        tip=bendy,
+                                        i=bendy_num,
+                                        base_include=True,
+                                        tip_include=True,
+                                        children=True)
 
-    return [bendy_joints, bendy_segments]
+            cmds.parent(bendy, bendy_joints[i-1])
+
+            bendy_segments_list.append(bendy_segments)
+
+        bendy_joints.append(bendy)
+
+    return bendy_joints, bendy_segments_list
 
 def create_end_joint(node=None):
     parent = cmds.listRelatives(node, p=True) or None
