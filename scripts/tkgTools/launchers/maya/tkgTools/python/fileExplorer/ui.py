@@ -177,7 +177,8 @@ class FileExplorer(MayaQWidgetDockableMixin, QMainWindow):
         self.splitterHorizontal.addWidget(self.bookmarkView)
         self.bookmarkView.changeRootPath(self.dataPath)
         self.bookmarkView.menuActions['Add Bookmark'] = {'cmd':partial(self.showBookmarkDialog)}
-        self.bookmarkView.menuActions['Show Bookmark List'] = {'cmd':partial(self.showBookmarkedList)}
+        # self.bookmarkView.menuActions['Show Bookmark List'] = {'cmd':partial(self.showBookmarkedList)}
+        self.bookmarkView.showBookmarkedList = self.showBookmarkedList
 
     def showBookmarkDialog(self):
         self.bookmarkDialog = QDialog(self)
@@ -234,9 +235,19 @@ class FileExplorer(MayaQWidgetDockableMixin, QMainWindow):
 
     def showBookmarkedList(self):
         self.readBookmark()
-        if self.bookmarkData:
-            for keyName, path in self.bookmarkData.items():
-                self.bookmarkView.menuActions['{} -> {}'.format(keyName, path)] = {'cmd':partial(self.selectBookmark, path)}
+
+        _bookmarkData = OrderedDict()
+        for keyName, path in self.bookmarkData.items():
+            _bookmarkData[keyName] = path
+
+        addedBookmarkActions = OrderedDict()
+        if _bookmarkData:
+            for keyName, path in _bookmarkData.items():
+                actionName = '{} -> {}'.format(keyName, path)
+                addedBookmarkActions[actionName] = path
+                self.bookmarkView.menuActions[actionName] = {'cmd':partial(self.selectBookmark, path)}
+
+        return addedBookmarkActions
 
     def selectBookmark(self, path):
         self.pathInput.setText(path)
@@ -273,6 +284,10 @@ class FileView(QTreeView):
 
         # sortを有効にする
         self.setSortingEnabled(True)
+
+        # showBookmarkedList用
+        self.showBookmarkedList = None
+        self._bookmarkData = OrderedDict()
 
         # 右クリックメニューを有効にする
         self.setContextMenuPolicy(Qt.CustomContextMenu)
@@ -408,6 +423,12 @@ class FileView(QTreeView):
     def openMenu(self, position):
         sender = self.sender()
         self.contextMenu = QMenu(sender)
+
+        # bookmarksの表示
+        if self.showBookmarkedList:
+            if self._bookmarkData:
+                [self.menuActions.pop(key) for key, value in self._bookmarkData.items()]
+            self._bookmarkData = self.showBookmarkedList()
 
         for menuName, menuCmd in self.menuActions.items():
             action = self.contextMenu.addAction(menuName)

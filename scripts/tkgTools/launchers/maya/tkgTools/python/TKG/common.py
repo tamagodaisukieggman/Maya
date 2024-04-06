@@ -87,3 +87,30 @@ def chain_length(chain_list=None):
             length = distance_between(obj, chain_list[i-1])
             chain_length.append(length)
     return chain_length
+
+def get_sublists(lst, n):
+    """
+    リストからn個ずつの要素を持つサブリストを生成する関数。
+    ここではn=3としています。
+    """
+    return [lst[i:i + n] for i in range(0, len(lst), n)]
+
+def calculate_centroid(points):
+    """
+    重心の取得
+    """
+    # 座標の数を取得
+    num_points = len(points)
+    # それぞれの座標の和を初期化
+    sum_x = sum_y = sum_z = 0.0
+    # すべての座標をループして合計を取得
+    for point in points:
+        sum_x += point[0]
+        sum_y += point[1]
+        sum_z += point[2]
+    # 位置の平均を取得して重心を計算
+    centroid_x = sum_x / num_points
+    centroid_y = sum_y / num_points
+    centroid_z = sum_z / num_points
+    # 重心の位置を返す
+    return [centroid_x, centroid_y, centroid_z]
