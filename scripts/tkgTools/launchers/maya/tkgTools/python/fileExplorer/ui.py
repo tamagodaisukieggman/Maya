@@ -214,6 +214,9 @@ class FileExplorer(MayaQWidgetDockableMixin, QMainWindow):
         # elif self.bookmarkData:
         self.bookmarkData[self.bookmarkKeyNameText.text()] = self.fileView.curFilePath
 
+        sorted_bookmarkData = sorted(self.bookmarkData.items())
+        self.bookmarkData = dict((x, y) for x, y in sorted_bookmarkData)
+
         with open(self.bookmarkFilePath, 'w') as bookmarkFile:
             json.dump(self.bookmarkData, bookmarkFile, indent=4)
 
@@ -239,6 +242,9 @@ class FileExplorer(MayaQWidgetDockableMixin, QMainWindow):
         _bookmarkData = OrderedDict()
         for keyName, path in self.bookmarkData.items():
             _bookmarkData[keyName] = path
+
+        sorted_bookmarkData = sorted(_bookmarkData.items())
+        _bookmarkData = dict((x, y) for x, y in sorted_bookmarkData)
 
         addedBookmarkActions = OrderedDict()
         if _bookmarkData:
