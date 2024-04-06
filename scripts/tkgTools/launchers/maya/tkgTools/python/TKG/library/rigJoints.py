@@ -53,46 +53,22 @@ def create_sc_ik_joints(nodes=None, aim_axis='x', up_axis='y', freeze=None):
 
     return [pv_start, pv_end]
 
-def create_limb_joints(nodes=None,
-                       blend_prefix=None,
-                       blend_suffix=None,
-                       blend_replace=None,
-                       first_segments_num=8,
-                       second_segments_num=8,
-                       fk_prefix=None,
-                       fk_suffix=None,
-                       fk_replace=None,
-                       ik_prefix=None,
-                       ik_suffix=None,
-                       ik_replace=None):
+def create_bendy_joints(nodes=None, bendy_num=8):
     if not nodes:
         nodes = cmds.ls(os=True, fl=True) or []
 
-    # blend joints
-    dup = tkgNodes.Duplicate(nodes, blend_prefix, blend_suffix, blend_replace)
-    blend_joints = dup.duplicate()
+    # bendy joints
+    dup = tkgNodes.Duplicate(nodes, *tkgRegulation.node_type_rename(node=None, type='bendy'))
+    bendy_joints = dup.duplicate()
 
-    blend_first_segments = tkgNodes.segment_duplicates(base=blend_joints[0],
-                                tip=blend_joints[1],
-                                i=first_segments_num,
+    bendy_segments = tkgNodes.segment_duplicates(base=bendy_joints[0],
+                                tip=bendy_joints[1],
+                                i=bendy_num,
                                 base_include=True,
                                 tip_include=True,
                                 children=True)
 
-    blend_second_segments = tkgNodes.segment_duplicates(base=blend_joints[1],
-                                tip=blend_joints[2],
-                                i=second_segments_num,
-                                base_include=True,
-                                tip_include=True,
-                                children=True)
-
-    # fk joints
-    fk_joints = create_fk_joints(nodes, fk_prefix, fk_suffix, fk_replace)
-
-    # ik joints
-    ik_joints = create_ik_joints(nodes, ik_prefix, ik_suffix, ik_replace)
-
-    return [blend_joints, blend_first_segments, blend_second_segments], fk_joints, ik_joints
+    return [bendy_joints, bendy_segments]
 
 def create_end_joint(node=None):
     parent = cmds.listRelatives(node, p=True) or None

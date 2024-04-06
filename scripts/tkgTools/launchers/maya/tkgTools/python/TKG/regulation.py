@@ -19,6 +19,7 @@ class NameRegulation:
         self.fk = ['', '',['BIND_', 'FK_']]
         self.ik = ['', '',['BIND_', 'IK_']]
         self.sc_ik_dummy = ['SC_IK_', '', None]
+        self.bendy = ['', '', ['BIND_', 'BENDY_']]
 
         # utility node
         self.distanceBetween = ['', '_DBN', None]
@@ -40,6 +41,7 @@ class NameRegulation:
         # 検証用の名前
         self.fk = ['FK_', '', None]
         self.ik = ['IK_', '', None]
+        self.bendy = ['BENDY_', '', None]
 
 name_reg = NameRegulation()
 
@@ -65,6 +67,8 @@ def node_type_rename(node=None, type=None):
         return name_reg.ik
     elif type == 'sc_ik_dummy':
         return tkgNodes.rename(node, *name_reg.sc_ik_dummy)
+    elif type == 'bendy':
+        return name_reg.bendy
 
     # utility node
     elif type == 'distanceBetween':
