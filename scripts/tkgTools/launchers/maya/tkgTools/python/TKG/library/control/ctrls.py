@@ -14,9 +14,37 @@ reload(tkgDraw)
 
 draw_util = tkgDraw.Draw()
 
+def create_controller_node(ctrl=None):
+    ctrler_sets = tkgRegulation.absolute_name('controller_node_sets')
+    if not cmds.objExists(ctrler_sets):
+        cmds.sets(em=True, n=ctrler_sets)
+    if not cmds.objExists(ctrler_sets+'.ctrlMouseVisibility'):
+        cmds.addAttr(ctrler_sets, ln='ctrlMouseVisibility', sn='cmv', at='bool', k=True)
+
+    ctrler_sets_cdn = tkgRegulation.ctrl_type_rename(ctrler_sets, 'condition')
+    if not cmds.objExists(ctrler_sets_cdn):
+        cmds.createNode('condition', n=ctrler_sets_cdn, ss=True)
+
+        cmds.setAttr(ctrler_sets_cdn+'.secondTerm', 1)
+        cmds.setAttr(ctrler_sets_cdn+'.colorIfTrueR', 2)
+        cmds.setAttr(ctrler_sets_cdn+'.colorIfFalseR', 0)
+
+        cmds.connectAttr(ctrler_sets+'.ctrlMouseVisibility', ctrler_sets_cdn+'.firstTerm', f=True)
+
+    ctrler = tkgRegulation.ctrl_type_rename(ctrl, 'controller')
+    if not cmds.objExists(ctrler):
+        cmds.createNode('controller', n=ctrler, ss=True)
+        cmds.sets(ctrler, add=ctrler_sets)
+
+        cmds.connectAttr(ctrler_sets_cdn+'.outColorR', ctrler+'.visibilityMode', f=True)
+        cmds.connectAttr(ctrl+'.message', ctrler+'.controllerObject', f=True)
+
 def create_ctrl(name='default', shape='', axis=[0,0,0], scale=1):
     draw_util.create_curve(name, shape, axis, scale)
     draw_util.joint_shape()
+
+    create_controller_node(draw_util.curve)
+
     return draw_util.curve
 
 # FK ctrl

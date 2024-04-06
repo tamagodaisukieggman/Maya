@@ -29,6 +29,10 @@ class NameRegulation:
         self.plusMinusAverage = ['', '_PMA', None]
         self.multDoubleLinear = ['', '_MDL', None]
         self.addDoubleLinear = ['', '_ADL', None]
+        self.controller = ['', '_CTRLER', None]
+
+        # absolute name
+        self.controller_node_sets = 'CTRLER_NODE_SETS'
 
         self.dev_000()
 
@@ -79,6 +83,12 @@ def node_type_rename(node=None, type=None):
         return tkgNodes.rename(node, *name_reg.multDoubleLinear)
     elif type == 'addDoubleLinear':
         return tkgNodes.rename(node, *name_reg.addDoubleLinear)
+    elif type == 'controller':
+        return tkgNodes.rename(node, *name_reg.controller)
+
+def absolute_name(type=None):
+    if type == 'controller_node_sets':
+        return name_reg.controller_node_sets
 
 def offset_type_rename(node=None, type=None):
     if type:
