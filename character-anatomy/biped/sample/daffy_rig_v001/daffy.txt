@@ -1,0 +1,7 @@
+Daffy Duck model and rig by Rijah Kazuo (Rigstation.com)
+Compatible with Maya 2018+, no need for external plugins.
+
+Please don't use it commercially, this is a fan project aimed for animation students.
+
+
+Enjoy!
