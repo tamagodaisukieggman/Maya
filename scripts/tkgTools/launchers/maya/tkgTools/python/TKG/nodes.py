@@ -412,3 +412,34 @@ def matrix_constraint(src=None, dst=None):
     # scale connection
     cmds.connectAttr(scl_dcmx+'.outputScale', dst+'.s', f=True)
     # cmds.connectAttr(src+'.s', dst+'.s', f=True)
+
+def simple_connect_fkik(fk=None, ik=None, dst=None):
+    pb = cmds.createNode('pairBlend', ss=True)
+    bcn = cmds.createNode('blendColors', ss=True)
+
+    pr_ucn = cmds.createNode('unitConversion', ss=True)
+    s_ucn = cmds.createNode('unitConversion', ss=True)
+
+    cmds.setAttr(pr_ucn+'.conversionFactor', 0.1)
+    cmds.setAttr(s_ucn+'.conversionFactor', 0.1)
+
+    cmds.connectAttr(fk+'.t', pb+'.inTranslate1', f=True)
+    cmds.connectAttr(fk+'.r', pb+'.inRotate1', f=True)
+    cmds.connectAttr(fk+'.s', bcn+'.color2', f=True)
+
+    cmds.connectAttr(ik+'.t', pb+'.inTranslate2', f=True)
+    cmds.connectAttr(ik+'.r', pb+'.inRotate2', f=True)
+    cmds.connectAttr(ik+'.s', bcn+'.color1', f=True)
+
+    cmds.connectAttr(pb+'.outTranslate', dst+'.t', f=True)
+    cmds.connectAttr(pb+'.outRotate', dst+'.r', f=True)
+    cmds.connectAttr(bcn+'.output', dst+'.s', f=True)
+
+    if not cmds.objExists(dst+'.ikfk'):
+        cmds.addAttr(dst, ln='ikfk', at='double', min=0, max=10, dv=0, k=True)
+
+    cmds.connectAttr(dst+'.ikfk', pr_ucn+'.input', f=True)
+    cmds.connectAttr(pr_ucn+'.output', pb+'.weight', f=True)
+
+    cmds.connectAttr(dst+'.ikfk', s_ucn+'.input', f=True)
+    cmds.connectAttr(s_ucn+'.output', bcn+'.blender', f=True)
