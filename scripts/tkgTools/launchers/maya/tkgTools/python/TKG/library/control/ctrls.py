@@ -128,11 +128,14 @@ def create_scIkPv_ctrl(node=None, axis=[0,0,0], scale=1):
     cmds.matchTransform(offset, node)
     return ctrl, offset
 
-# bendy ctrl
-def create_bendy_ctrl(node=None, axis=[0,0,0], scale=1):
+# bendy limb ctrl
+def create_bendy_limb_ctrl(node=None, axis=[0,0,0], scale=1, type='bendy'):
     if not node:
         node = cmds.ls(os=True, fl=True)[0] or []
-    shape = tkgRegulation.shape_type('bendy')
+    if type == 'bendy':
+        shape = tkgRegulation.shape_type('bendy_limb')
+    elif type == 'main':
+        shape = tkgRegulation.shape_type('bendy_limb_main')
     name = tkgRegulation.ctrl_type_rename(node)
     ctrl = create_ctrl(name, shape, axis, scale)
     offset = tkgNodes.offsets(ctrl, ['Global', 'Local'])
@@ -149,17 +152,18 @@ def create_bendy_ctrl(node=None, axis=[0,0,0], scale=1):
 
     return ctrl, offset
 
-def create_bendy_ctrls(nodes=None, axis=[0,0,0], scale=1):
+def create_bendy_limb_ctrls(nodes=None, axis=[0,0,0], scale=1, type='bendy'):
     if not nodes:
         nodes = cmds.ls(os=True, fl=True) or []
 
     pa_offset = None
     ctrls = []
     for i, n in enumerate(nodes):
-        ctrl, offset = create_bendy_ctrl(n, axis, scale)
+        ctrl, offset = create_bendy_limb_ctrl(n, axis, scale, type)
         ctrls.append(ctrl)
 
         if i == 0:
             pa_offset = offset
 
     return pa_offset, ctrls
+

@@ -22,23 +22,15 @@ class Build(tkgModules.Module):
 
         super().__init__(side, module)
 
-        self.create_module_parts('BENDY')
+        self.create_module_parts('BLEND')
 
         if sel:
             cmds.select(sel, r=True)
 
-    def create_bendy_limb(self, nodes=None):
+    def create_blend_limb(self, nodes=None):
         if not nodes:
             nodes = cmds.ls(os=True, fl=True) or []
 
-        num_reg = tkgRegulation.NumRegulation()
+        blend_limb_joints = tkgRigJoints.create_blend_joints(nodes)
 
-        bendy_limb_joints, bendy_segments_list = tkgRigJoints.create_bendy_limb_joints(nodes, num_reg.bendy_limb_num)
-
-        bendy_main_offset, bendy_main_ctrls = tkgCtrls.create_bendy_limb_ctrls(nodes=bendy_limb_joints, axis=[0,0,0], scale=1, type='main')
-
-        for bendy_segments in bendy_segments_list:
-            bendys_offset, bendys_ctrls = tkgCtrls.create_bendy_limb_ctrls(nodes=bendy_segments, axis=[0,0,0], scale=1, type='bendy')
-
-        cmds.parent(bendy_limb_joints[0], self.nodes_top)
-        cmds.parent(bendy_main_offset, self.ctrls_top)
+        cmds.parent(blend_limb_joints[0], self.nodes_top)

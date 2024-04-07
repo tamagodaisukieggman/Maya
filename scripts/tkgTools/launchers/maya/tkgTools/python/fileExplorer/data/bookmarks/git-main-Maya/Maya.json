@@ -1,7 +1,8 @@
 {
-    "main": "F:/myTechData/Maya",
-    "tkgTools": "F:/myTechData/Maya/scripts/tkgTools/launchers/maya/tkgTools",
-    "limbJoints": "F:/myTechData/Maya/character-anatomy/rig/joints/limb",
     "TKG": "F:/myTechData/Maya/scripts/tkgTools/launchers/maya/tkgTools/python/TKG",
-    "TOMAS": "F:/myTechData/Maya/character-anatomy/biped/sample/TOMAS_RIG"
+    "TOMAS": "F:/myTechData/Maya/character-anatomy/biped/sample/TOMAS_RIG",
+    "character-anatomy": "F:/myTechData/Maya/character-anatomy",
+    "limbJoints": "F:/myTechData/Maya/character-anatomy/rig/joints/limb",
+    "main": "F:/myTechData/Maya",
+    "tkgTools": "F:/myTechData/Maya/scripts/tkgTools/launchers/maya/tkgTools"
 }

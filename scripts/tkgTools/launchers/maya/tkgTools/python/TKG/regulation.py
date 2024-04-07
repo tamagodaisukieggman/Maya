@@ -18,8 +18,9 @@ class NameRegulation:
         self.ikSplineCrv = ['', '_CRV', None]
         self.fk = ['', '',['BIND_', 'FK_']]
         self.ik = ['', '',['BIND_', 'IK_']]
+        self.blend = ['', '',['BIND_', 'BLEND_']]
         self.sc_ik_dummy = ['SC_IK_', '', None]
-        self.bendy = ['', '', ['BIND_', 'BENDY_']]
+        self.bendy_limb = ['', '', ['BIND_', 'BENDY_LIMB_']]
 
         # module parts
         self.nodes_top = ['NODES_', '', None]
@@ -45,7 +46,8 @@ class NameRegulation:
         # 検証用の名前
         self.fk = ['FK_', '', None]
         self.ik = ['IK_', '', None]
-        self.bendy = ['BENDY_', '', None]
+        self.blend = ['BLEND_', '', None]
+        self.bendy_limb = ['BENDY_LIMB_', '', None]
 
 name_reg = NameRegulation()
 
@@ -73,10 +75,12 @@ def node_type_rename(node=None, type=None):
         return name_reg.fk
     elif type == 'ik':
         return name_reg.ik
+    elif type == 'blend':
+        return name_reg.blend
     elif type == 'sc_ik_dummy':
         return tkgNodes.rename(node, *name_reg.sc_ik_dummy)
-    elif type == 'bendy':
-        return tkgNodes.rename(node, *name_reg.bendy)
+    elif type == 'bendy_limb':
+        return tkgNodes.rename(node, *name_reg.bendy_limb)
 
     # module parts
     elif type == 'nodes_top':
@@ -131,8 +135,10 @@ def shape_type(type=None):
         return 'sphere2'
     elif type == 'scIkPv':
         return 'pacman'
-    elif type == 'bendy':
+    elif type == 'bendy_limb':
         return 'circle'
+    elif type == 'bendy_limb_main':
+        return 'drop'
 
 def axis_vector(axis):
     axis_dict = {

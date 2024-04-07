@@ -20,6 +20,10 @@ def create_ik_joints(nodes=None):
     dup = tkgNodes.Duplicate(nodes, *tkgRegulation.node_type_rename(node=None, type='ik'))
     return dup.duplicate()
 
+def create_blend_joints(nodes=None):
+    dup = tkgNodes.Duplicate(nodes, *tkgRegulation.node_type_rename(node=None, type='blend'))
+    return dup.duplicate()
+
 def create_sc_ik_joints(nodes=None, aim_axis='x', up_axis='y', freeze=None):
     start = nodes[0]
     middle = nodes[1]
@@ -53,33 +57,33 @@ def create_sc_ik_joints(nodes=None, aim_axis='x', up_axis='y', freeze=None):
 
     return [pv_start, pv_end]
 
-def create_bendy_joints(nodes=None, bendy_num=8):
+def create_bendy_limb_joints(nodes=None, bendy_num=8):
     if not nodes:
         nodes = cmds.ls(os=True, fl=True) or []
 
     # bendy joints
-    bendy_joints = []
+    bendy_limb_joints = []
     bendy_segments_list = []
     for i, node in enumerate(nodes):
-        bendy = tkgRegulation.node_type_rename(node, 'bendy')
+        bendy = tkgRegulation.node_type_rename(node, 'bendy_limb')
         if not cmds.objExists(bendy):
             cmds.duplicate(node, n=bendy, po=True)
 
         if i != 0:
-            bendy_segments = tkgNodes.segment_duplicates(base=bendy_joints[i-1],
+            bendy_segments = tkgNodes.segment_duplicates(base=bendy_limb_joints[i-1],
                                         tip=bendy,
                                         i=bendy_num,
                                         base_include=True,
                                         tip_include=True,
                                         children=True)
 
-            cmds.parent(bendy, bendy_joints[i-1])
+            cmds.parent(bendy, bendy_limb_joints[i-1])
 
             bendy_segments_list.append(bendy_segments)
 
-        bendy_joints.append(bendy)
+        bendy_limb_joints.append(bendy)
 
-    return bendy_joints, bendy_segments_list
+    return bendy_limb_joints, bendy_segments_list
 
 def create_end_joint(node=None):
     parent = cmds.listRelatives(node, p=True) or None
