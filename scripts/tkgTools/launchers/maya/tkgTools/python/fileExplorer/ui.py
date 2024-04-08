@@ -28,6 +28,7 @@ import math
 import os
 import pickle
 import re
+import shutil
 import subprocess
 import sys
 import time
@@ -112,12 +113,20 @@ class FileExplorer(MayaQWidgetDockableMixin, QMainWindow):
         self.pathInput.setPlaceholderText('Enter path to focus...')
         self.pathInput.textChanged.connect(self.focusOnPath)
         self.pathVboxLayout.addWidget(self.pathInput)
+        self.fileView.pathInput = self.pathInput
 
         self.selectedPathLine = QLineEdit()
         self.selectedPathLine.setReadOnly(True)
         self.pathVboxLayout.addWidget(self.selectedPathLine)
         # selectedの受け渡し
         self.fileView.selectedPathLine = self.selectedPathLine
+
+        # コピー先のパス
+        self.copyDataPathInput = QLineEdit()
+        self.copyDataPathInput.setPlaceholderText('To copy data path from selected...')
+        # self.copyDataPathInput.textChanged.connect(self.focusOnPath)
+        self.pathVboxLayout.addWidget(self.copyDataPathInput)
+        self.fileView.copyDataPathInput = self.copyDataPathInput
 
     def focusOnPath(self):
         path = self.pathInput.text()
@@ -305,11 +314,17 @@ class FileView(QTreeView):
         # 項目が選択されたとき用
         self.selectedPathLine = None
 
+        # setPathToCopyDataPath用
+        self.copyDataPathInput = None
+        self.pathInput = None
+
         # 右クリックメニューに追加する機能
         self.menuActions = OrderedDict()
         self.menuActions['Create New Folder'] = {'cmd':partial(self.showCreateDirDialog)}
         self.menuActions['Show in Explorer'] = {'cmd':partial(self.showInExplorer)}
-        self.menuActions['Copy Path'] = {'cmd':partial(self.copyPath)}
+        self.menuActions['Copy Path in clipboard'] = {'cmd':partial(self.copyPathInClipboard)}
+        self.menuActions['Set path to Copy Data Path from selection'] = {'cmd':partial(self.setPathToCopyDataPath)}
+        self.menuActions['Go to Copy Data Path'] = {'cmd':partial(self.goToCopyDataPath)}
         self.menuActions['File Open'] = {'cmd':partial(self.fileOpen)}
         self.menuActions['File Import'] = {'cmd':partial(self.fileImport)}
         self.menuActions['File Reference'] = {'cmd':partial(self.fileReference)}
@@ -470,6 +485,9 @@ class FileView(QTreeView):
         self.folderNameText = QLineEdit()
         createDirVBoxLayout.addWidget(self.folderNameText)
 
+        self.createChrDirCheck = QCheckBox('Character Forlder')
+        createDirVBoxLayout.addWidget(self.createChrDirCheck)
+
         createDirOkBtn = QPushButton('OK')
         createDirVBoxLayout.addWidget(createDirOkBtn)
         createDirOkBtn.clicked.connect(self.createDir)
@@ -484,7 +502,12 @@ class FileView(QTreeView):
             os.makedirs(newDir)
         else:
             print('{} already exists'.format(newDir))
-        # self.showCreateDirDialog.close()
+
+        if self.createChrDirCheck.isChecked():
+            chrDirs = ['scenes', 'fbx', 'sourceimages']
+            for chrD in chrDirs:
+                if not os.path.isdir('{}/{}'.format(newDir, chrD)):
+                    os.makedirs('{}/{}'.format(newDir, chrD))
 
     # エクスプローラで表示
     def showInExplorer(self):
@@ -494,8 +517,20 @@ class FileView(QTreeView):
         elif os.name == 'posix':
             subprocess.Popen(['open', '-R', self.curFilePath])
 
-    def copyPath(self):
+    def copyPathInClipboard(self):
         self.clipboard.setText(self.curFilePath)
+
+    def setPathToCopyDataPath(self):
+        self.copyDataPathInput.setText(self.curFilePath)
+
+    def goToCopyDataPath(self):
+        copyDataPath = self.copyDataPathInput.text()
+        copyPathDir = os.path.dirname(copyDataPath)
+        if not os.path.isdir(copyPathDir):
+            os.makedirs(copyPathDir)
+        if not os.path.isfile(copyDataPath):
+            shutil.copy(self.curFilePath, copyDataPath)
+        self.pathInput.setText(copyDataPath)
 
 class File:
     def __init__(self, path=None, namespace=None):
