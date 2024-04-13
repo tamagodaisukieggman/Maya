@@ -1,3 +1,11 @@
 {
-    "enm_m_goblin01": "C:/cygames/wiz2/team/3dcg/rig/work/development/enm/goblin01/scenes/enm_m_goblin01.ma"
+    "costume": "C:/cygames/wiz2/team/3dcg/chr/ply/costume",
+    "enm_m_bat01": "C:/cygames/wiz2/team/3dcg/rig/work/development/enm/bat01/scenes/enm_m_bat01.ma",
+    "enm_m_ghost01": "C:/cygames/wiz2/team/3dcg/rig/work/development/enm/ghost01/scenes/enm_m_ghost01.ma",
+    "enm_m_goblin01": "C:/cygames/wiz2/team/3dcg/rig/work/development/enm/goblin01/scenes/enm_m_goblin01.ma",
+    "rig_enm_m_bat01": "C:/cygames/wiz2/team/3dcg/rig/bat/enm/scenes/bat_00.ma",
+    "rig_enm_m_ghost01": "C:/cygames/wiz2/team/3dcg/rig/ghost/enm/scenes/ghost_00.ma",
+    "rig_enm_m_goblin01": "C:/cygames/wiz2/team/3dcg/rig/ghost/enm/scenes/ghost_00.ma",
+    "share_enm_m_bat01": "C:/cygames/wiz2/team/3dcg/rig/work/share/enm/bat01/scenes/enm_m_bat01.ma",
+    "share_enm_m_goblin01": "C:/cygames/wiz2/team/3dcg/rig/work/share/enm/goblin01/scenes/enm_m_goblin01.ma"
 }

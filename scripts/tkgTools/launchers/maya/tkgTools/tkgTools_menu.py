@@ -915,6 +915,26 @@ class CreateMenu(object):
         )
 
         cmds.menuItem(
+            l=u'Lock All Influences',
+            c='from imp import reload;import tkgrig.utils as tkgriguls;reload(tkgriguls);tkgriguls.set_liw(True)'
+        )
+
+        cmds.menuItem(
+            l=u'Unlock All Influences',
+            c='from imp import reload;import tkgrig.utils as tkgriguls;reload(tkgriguls);tkgriguls.set_liw(False)'
+        )
+
+        cmds.menuItem(
+            l=u'QuadDrawTool',
+            c='cmds.QuadDrawTool()'
+        )
+
+        cmds.menuItem(
+            l=u'MultiCutTool',
+            c='cmds.MultiCutTool()'
+        )
+
+        cmds.menuItem(
             l=u'WeightManager',
             c='import tkgrig.weightmanager as weightmanager;reload(weightmanager);wmer=weightmanager.WeightManager();wmer.buildUI();wmer.show(dockable=True)'
         )

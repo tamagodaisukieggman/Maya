@@ -1101,6 +1101,21 @@ for n, points in get_points.items():
 
         cmds.select(sel[1], r=True)
 
+def set_liw(liw_sts=False):
+    mesh = cmds.ls(os=True)
+    if mesh:
+        mesh = mesh[0]
+    else:
+        return
+
+    # Get the skin cluster of the mesh
+    skin_cluster = cmds.ls(cmds.listHistory(mesh), type='skinCluster')[0]
+
+    # Get the influences (joints) affecting the skin
+    influences = cmds.skinCluster(skin_cluster, query=True, inf=True)
+
+    for inf in influences:
+        cmds.setAttr(inf + '.liw', liw_sts)
 
 # Copy to Clipboard
 def copy_to_clipboard(text):
