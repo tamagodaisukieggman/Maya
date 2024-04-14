@@ -141,7 +141,7 @@ class FileExplorer(MayaQWidgetDockableMixin, QMainWindow):
     def focusOnPath(self):
         path = self.pathInput.text()
         path = path.replace('\\', '/')
-        self.pathInput.setText(path)
+        # self.pathInput.setText(path)
         self.fileView.focusOnPath(path)
         if path in self.pathStock:
             self.pathStock.remove(path)
@@ -338,6 +338,7 @@ class FileView(QTreeView):
         self.menuActions['File Open'] = {'cmd':partial(self.fileOpen)}
         self.menuActions['File Import'] = {'cmd':partial(self.fileImport)}
         self.menuActions['File Reference'] = {'cmd':partial(self.fileReference)}
+        self.menuActions['File Save'] = {'cmd':partial(self.fileSave)}
         self.menuActions['Text File Viewer'] = {'cmd':partial(self.textFileViewer)}
 
         # 現在のパスを返す
@@ -479,6 +480,11 @@ class FileView(QTreeView):
     def fileReference(self):
         file = File(path='{}'.format(self.curFilePath), namespace=self.namespace)
         file.fileReference()
+
+    def fileSave(self):
+        savePath = self.pathInput.text()
+        file = File(path=savePath)
+        file.fileSave()
 
     # テキストファイルを表示
     def textFileViewer(self):
