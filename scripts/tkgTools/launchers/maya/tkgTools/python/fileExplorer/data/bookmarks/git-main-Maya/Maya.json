@@ -6,5 +6,6 @@
     "limbJoints": "F:/myTechData/Maya/character-anatomy/rig/joints/limb",
     "main": "F:/myTechData/Maya",
     "sheriff_public": "F:/myTechData/Maya/character-anatomy/biped/sample/sheriff_public.ma",
-    "tkgTools": "F:/myTechData/Maya/scripts/tkgTools/launchers/maya/tkgTools"
+    "tkgTools": "F:/myTechData/Maya/scripts/tkgTools/launchers/maya/tkgTools",
+    "torsoJoints": "F:/myTechData/Maya/character-anatomy/rig/joints/torso/spine.ma"
 }

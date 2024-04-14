@@ -146,6 +146,40 @@ def create_loft_from_curves(nodes=None, offset=[5,0,0]):
 
     return lofted
 
+def closest_follicle_on_surface(node=None, surface=None):
+    surface_shape = cmds.listRelatives(surface, s=True) or None
+    if surface_shape:
+        surface_shape = surface_shape[0]
+
+    wt = cmds.xform(node, q=True, t=True, ws=True)
+
+    surface_u = cmds.getAttr(surface_shape+'.minMaxRangeU')[0][1]
+
+    cpos = cmds.createNode('closestPointOnSurface', ss=True)
+    fol = cmds.createNode('follicle', ss=True)
+    fol_pa = cmds.listRelatives(fol, p=True) or None
+    if fol_pa:
+        fol_pa = fol_pa[0]
+
+    cmds.setAttr(cpos+'.inPosition', *wt)
+
+    cmds.connectAttr(surface_shape+'.local', cpos+'.inputSurface', f=True)
+
+    cpos_pu = cmds.getAttr(cpos+'.parameterU')
+    cpos_pv = cmds.getAttr(cpos+'.parameterV')
+
+    cmds.setAttr(fol+'.parameterU', cpos_pu/surface_u)
+    cmds.setAttr(fol+'.parameterV', cpos_pv)
+
+    cmds.connectAttr(surface_shape+'.local', fol+'.inputSurface', f=True)
+    cmds.connectAttr(fol+'.outTranslate', fol_pa+'.t', f=True)
+    cmds.connectAttr(fol+'.outRotate', fol_pa+'.r', f=True)
+
+    cmds.delete(cpos)
+
+    cmds.setAttr(fol_pa+'.displayLocalAxis', 1)
+
+    return fol_pa
 
 def get_ancestors(start=None, end=None, parents=[]):
     start_pa = cmds.listRelatives(start, p=True) or None
