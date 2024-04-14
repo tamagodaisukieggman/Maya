@@ -126,6 +126,27 @@ def create_curve_on_nodes(nodes=None, name=None, d=3):
     fix_shapes(crv)
     return crv
 
+def loft_curves(crvs=None):
+    lofted = cmds.loft(*crvs, ch=1, u=0, c=0, ar=1, d=3, ss=1, rn=1, po=3, rsn=True)
+    cmds.DeleteHistory()
+    return lofted[0]
+
+def create_loft_from_curves(nodes=None, offset=[5,0,0]):
+    first_crv = create_curve_on_nodes(nodes=nodes, name='FIRST_CRV', d=3)
+    second_crv = create_curve_on_nodes(nodes=nodes, name='SECOND_CRV', d=3)
+
+    neg_offset = [n*-1 for n in offset]
+
+    cmds.xform(first_crv, t=offset, os=True, ws=True)
+    cmds.xform(second_crv, t=neg_offset, os=True, ws=True)
+
+    lofted = loft_curves([first_crv, second_crv])
+
+    cmds.delete(first_crv, second_crv)
+
+    return lofted
+
+
 def get_ancestors(start=None, end=None, parents=[]):
     start_pa = cmds.listRelatives(start, p=True) or None
     end_pa = cmds.listRelatives(end, p=True) or None
