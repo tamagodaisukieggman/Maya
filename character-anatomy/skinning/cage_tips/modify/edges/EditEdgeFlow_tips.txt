@@ -1,1 +1,0 @@
-■Multi-Cut ToolでCtrl + Shift + RMBでもオンオフを設定できる
