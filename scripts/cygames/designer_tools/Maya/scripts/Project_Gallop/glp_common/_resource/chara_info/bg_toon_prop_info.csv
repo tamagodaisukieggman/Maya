@@ -1,6 +1,0 @@
-//---------- MayaDirectoryList ------------------------------,,,
-name,id,check,unused_id_list
-string,int,int,list
-scenes,0,1,
-sourceimages,1,1,
-//---------- MayaDirectoryListEnd ------------------------------,,,

@@ -1,7 +1,0 @@
-//---------- LimitList ------------------------------,
-name,value
-string,int
-NormalBoneLimit,62
-SpBoneLimit,51
-PolygonLimit,11666
-//---------- LimitListEnd ------------------------------,
