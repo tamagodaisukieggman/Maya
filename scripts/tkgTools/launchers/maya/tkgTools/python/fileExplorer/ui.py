@@ -4,18 +4,6 @@ from __future__ import unicode_literals
 from __future__ import print_function
 from __future__ import division
 
-try:
-    from PySide2.QtCore import *
-    from PySide2.QtGui import *
-    from PySide2.QtWidgets import *
-    from PySide2 import __version__
-    from shiboken2 import wrapInstance
-except ImportError:
-    from PySide.QtCore import *
-    from PySide.QtGui import *
-    from PySide import __version__
-    from shiboken import wrapInstance
-
 import base64
 import codecs
 from collections import OrderedDict
@@ -41,6 +29,28 @@ from maya import mel
 from maya import OpenMayaUI as omui
 import maya.api.OpenMaya as om2
 from maya.app.general.mayaMixin import MayaQWidgetBaseMixin, MayaQWidgetDockableMixin
+
+ver = cmds.about(v=True)
+
+if int(ver) >= 2025:
+    from PySide6.QtCore import *
+    from PySide6.QtGui import *
+    from PySide6.QtWidgets import *
+    from PySide6 import __version__
+    from shiboken6 import wrapInstance
+else:
+    try:
+        from PySide2.QtCore import *
+        from PySide2.QtGui import *
+        from PySide2.QtWidgets import *
+        from PySide2 import __version__
+        from shiboken2 import wrapInstance
+    except Exception as e:
+        from PySide.QtCore import *
+        from PySide.QtGui import *
+        from PySide import __version__
+        from shiboken import wrapInstance
+
 
 class FileExplorer(MayaQWidgetDockableMixin, QMainWindow):
     def __init__(self, *args, **kwargs):
