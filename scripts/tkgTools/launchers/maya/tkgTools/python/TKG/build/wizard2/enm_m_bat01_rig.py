@@ -743,7 +743,7 @@ select -r FeatherC_01_L_ctrlShape.cv[0:1] FeatherC_01_L_ctrlShape.cv[4:5] Feathe
 move -r -os -wd 21.711149 0 0 ;
 
 select -r FeatherC_01_R_ctrlShape.cv[2:3] FeatherC_01_R_ctrlShape.cv[6:7] FeatherC_01_R_ctrlShape.cv[11:12] FeatherC_01_R_ctrlShape.cv[14:15] ;
-move -r -os -wd 21.711149 0 0 ;
+move -r -os -wd -21.711149 0 0 ;
 
 select -r FeatherD_01_L_ctrlShape.cv[0:1] FeatherD_01_L_ctrlShape.cv[4:5] FeatherD_01_L_ctrlShape.cv[8:10] FeatherD_01_L_ctrlShape.cv[13] ;
 move -r -os -wd 36.039723 0 0 ;
