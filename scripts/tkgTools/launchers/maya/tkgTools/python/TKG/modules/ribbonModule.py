@@ -53,17 +53,52 @@ class Build(tkgModules.Module):
             ribbon_segments.remove(_del_seg)
             cmds.delete(_del_seg)
 
-        bendy_main_offset, bendy_main_ctrls = tkgCtrls.create_bendy_limb_ctrls(nodes=ribbon_joints, axis=[0,0,0], scale=1, type='main')
+        bendy_main_offset, bendy_main_ctrls, bendy_main_offsets = tkgCtrls.create_bendy_limb_ctrls(nodes=ribbon_joints, axis=[0,0,0], scale=1, type='main')
 
-        for bendy_segments in ribbon_segments_list:
-            bendys_offset, bendys_ctrls = tkgCtrls.create_bendy_limb_ctrls(nodes=bendy_segments, axis=[0,0,0], scale=1, type='bendy')
+        ribbons_offset_list = []
+        ribbons_ctrls_list = []
+        for ribbon_segments in ribbon_segments_list:
+            ribbons_offset, ribbons_ctrls, ribbon_offsets = tkgCtrls.create_bendy_limb_ctrls(nodes=ribbon_segments, axis=[0,0,0], scale=1, type='bendy')
+
+            ribbons_offset_list.append(ribbon_offsets)
+            ribbons_ctrls_list.append(ribbons_ctrls)
 
         cmds.parent(ribbon_joints[0], self.nodes_top)
         cmds.parent(bendy_main_offset, self.ctrls_top)
 
         # skin surfaceの作成
-        base_skin_surface = tkgNodes.create_loft_from_curves(nodes=nodes, offset=[5,0,0])
+        first_skin_surface = tkgNodes.create_loft_from_curves(nodes=nodes, offset=[5,0,0])
 
+        base_ribbon_jnt = ribbon_segments_list[0][0]
+        tip_ribbon_jnt = ribbon_segments_list[-1][-1]
+
+        first_skin_surface_sc = cmds.skinCluster([base_ribbon_jnt, tip_ribbon_jnt],
+                                    first_skin_surface,
+                                    n='{}_skinCluster'.format(first_skin_surface),
+                                    tsb=True)[0]
+        crv_bind=cmds.listConnections('{}.bindPose'.format(first_skin_surface_sc),c=0,d=1,p=0)
+        if crv_bind:cmds.delete(crv_bind)
+
+        # follicleのnullをoffsetの親にする
+        flat_ribbons_offset_list = []
+        for ribbon_offsets in ribbons_offset_list:
+            for ribbon_offset in ribbon_offsets:
+                flat_ribbons_offset_list.append(ribbon_offset)
+
+        k = 0
         for ribbon_segments in ribbon_segments_list:
             for node in ribbon_segments:
-                tkgNodes.closest_follicle_on_surface(node, base_skin_surface)
+                fol = tkgNodes.closest_follicle_on_surface(node, first_skin_surface)
+                fol_nul = cmds.createNode('transform', n='OFF_'+fol, ss=True)
+                cmds.matchTransform(fol_nul, fol)
+
+                ribbons_offset_pa = cmds.listRelatives(flat_ribbons_offset_list[k], p=True) or None
+                if ribbons_offset_pa:
+                    ribbons_offset_pa = ribbons_offset_pa[0]
+                    cmds.parent(fol_nul, ribbons_offset_pa)
+                    cmds.parent(flat_ribbons_offset_list[k], fol_nul)
+
+                if not node == base_ribbon_jnt and not node == tip_ribbon_jnt:
+                    cmds.parentConstraint(fol, fol_nul, w=True)
+
+                k += 1

@@ -158,12 +158,14 @@ def create_bendy_limb_ctrls(nodes=None, axis=[0,0,0], scale=1, type='bendy'):
 
     pa_offset = None
     ctrls = []
+    offsets = []
     for i, n in enumerate(nodes):
         ctrl, offset = create_bendy_limb_ctrl(n, axis, scale, type)
         ctrls.append(ctrl)
+        offsets.append(offset)
 
         if i == 0:
             pa_offset = offset
 
-    return pa_offset, ctrls
+    return pa_offset, ctrls, offsets
 

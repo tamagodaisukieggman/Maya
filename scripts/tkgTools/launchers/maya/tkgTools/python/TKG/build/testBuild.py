@@ -39,12 +39,11 @@ blendMod.create_blend_limb()
 # ribbon module
 
 import TKG.nodes as tkgNodes
+import TKG.modules.ribbonModule as tkgRibbonModule
 reload(tkgNodes)
+reload(tkgRibbonModule)
 
 nodes = cmds.ls(os=True)
-surface = tkgNodes.create_loft_from_curves(nodes=nodes, offset=[5,0,0])
 
-surface = 'loftedSurface1'
-nodes = cmds.ls(os=True)
-for node in nodes:
-    tkgNodes.closest_follicle_on_surface(node, surface)
+ribbonMod = tkgRibbonModule.Build('Lt', 'arm')
+ribbonMod.create_ribbon(nodes)

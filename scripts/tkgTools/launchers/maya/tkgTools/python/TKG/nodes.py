@@ -179,7 +179,10 @@ def closest_follicle_on_surface(node=None, surface=None):
 
     cmds.setAttr(fol_pa+'.displayLocalAxis', 1)
 
-    return fol_pa
+    renamed_fol = 'FOL_'+ node
+    cmds.rename(fol_pa, renamed_fol)
+
+    return renamed_fol
 
 def get_ancestors(start=None, end=None, parents=[]):
     start_pa = cmds.listRelatives(start, p=True) or None
