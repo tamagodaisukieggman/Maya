@@ -5,6 +5,30 @@ UI込みのスクリプトになります
 import maya.cmds as cmds
 import maya.mel as mel
 
+def get_mid_point(pos1, pos2, percentage=0.5):
+    mid_point = [pos1[0] + (pos2[0] - pos1[0]) * percentage,
+                 pos1[1] + (pos2[1] - pos1[1]) * percentage,
+                 pos1[2] + (pos2[2] - pos1[2]) * percentage]
+    return mid_point
+
+def mid_obj_point(objA=None, objB=None, percentage=0.5):
+    pos1 = cmds.xform(objA, q=True, t=True, ws=True)
+    pos2 = cmds.xform(objB, q=True, t=True, ws=True)
+    return get_mid_point(pos1, pos2, percentage)
+
+def create_end_joint(node=None, end_parent=None):
+    # parent = cmds.listRelatives(node, p=True) or None
+    # if not parent:
+    #     return
+    # else:
+    #     end_parent = parent[0]
+    mid_point = mid_obj_point(node, end_parent, percentage=-0.1)
+    end_jnt = node+'_end'
+    cmds.createNode('joint', n=end_jnt, ss=True)
+    cmds.xform(end_jnt, t=mid_point, ws=True, a=True)
+    cmds.parent(end_jnt, node)
+    return end_jnt
+
 class AutoOverlap(object):
     def __init__(self):
         self.MAIN_WINDOW = 'attachOverlap'
@@ -439,10 +463,20 @@ class AutoOverlap(object):
             cmds.setAttr(controlCurve + '.sz', l=True, cb=False, k=False)
 
             # Return group containing all needed objects to make curve dynamic.
+
+            """
+            Advanced Twist
+            """
+            cmds.setAttr(splineIK[0]+'.dTwistControlEnable', True)
+            controlCurve_dup = cmds.duplicate(controlCurve, n=controlCurve+'_up', po=True)[0]
+            cmds.parent(controlCurve_dup, controlCurve)
+            cmds.xform(controlCurve_dup, t=[0, 10, 0], os=True)
+
             return dynamicGrp, controlCurve
         else:
             cmds.confirmDialog( title='Please select joint.', message='Please make sure to select a joint with at least one child joint.' )
             raise RuntimeError("Selection was not a joint with at least one child joint.")
+
 
     def create_dynamics(self, *args, **kwargs):
         u"""UIから実行するための関数になります
@@ -452,6 +486,9 @@ class AutoOverlap(object):
         if not sel or not 1 < len(sel):
             cmds.warning('Please select FK ctrls.')
             return
+
+        end = create_end_joint(node=sel[-1], end_parent=sel[-2])
+        sel.append(end)
 
         bake_sets = '{0}_aol_bake_sets'.format(sel[0])
         if not cmds.objExists(bake_sets):
