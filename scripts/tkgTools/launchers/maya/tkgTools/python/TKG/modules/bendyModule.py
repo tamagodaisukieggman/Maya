@@ -27,11 +27,13 @@ class Build(tkgModules.Module):
         if sel:
             cmds.select(sel, r=True)
 
-    def create_bendy_limb(self, nodes=None):
+    def create_bendy_limb(self, nodes=None, num=None):
         if not nodes:
             nodes = cmds.ls(os=True, fl=True) or []
 
         num_reg = tkgRegulation.NumRegulation()
+        if num:
+            num_reg.bendy_limb_num = num
 
         bendy_limb_joints, bendy_segments_list = tkgRigJoints.create_bendy_limb_joints(nodes, num_reg.bendy_limb_num)
 

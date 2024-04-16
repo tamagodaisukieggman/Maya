@@ -21,6 +21,7 @@ class NameRegulation:
         self.blend = ['', '',['BIND_', 'BLEND_']]
         self.sc_ik_dummy = ['SC_IK_', '', None]
         self.bendy_limb = ['', '', ['BIND_', 'BENDY_LIMB_']]
+        self.ribbon = ['', '', ['BIND_', 'RIBBON_']]
 
         # module parts
         self.nodes_top = ['NODES_', '', None]
@@ -48,12 +49,14 @@ class NameRegulation:
         self.ik = ['IK_', '', None]
         self.blend = ['BLEND_', '', None]
         self.bendy_limb = ['BENDY_LIMB_', '', None]
+        self.ribbon = ['RIBBON_', '', None]
 
 name_reg = NameRegulation()
 
 class NumRegulation:
     def __init__(self):
         self.bendy_limb_num = 5
+        self.ribbon_num = 3
 
 # 
 def segment_padding_rename(base=None, num=None, pudding=None, pattern=0):
@@ -81,6 +84,8 @@ def node_type_rename(node=None, type=None):
         return tkgNodes.rename(node, *name_reg.sc_ik_dummy)
     elif type == 'bendy_limb':
         return tkgNodes.rename(node, *name_reg.bendy_limb)
+    elif type == 'ribbon':
+        return tkgNodes.rename(node, *name_reg.ribbon)
 
     # module parts
     elif type == 'nodes_top':

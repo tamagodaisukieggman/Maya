@@ -85,6 +85,34 @@ def create_bendy_limb_joints(nodes=None, bendy_num=8):
 
     return bendy_limb_joints, bendy_segments_list
 
+def create_ribbon_joints(nodes=None, ribbon_num=8, base_include=True, tip_include=True):
+    if not nodes:
+        nodes = cmds.ls(os=True, fl=True) or []
+
+    # ribbon joints
+    ribbon_joints = []
+    ribbon_segments_list = []
+    for i, node in enumerate(nodes):
+        ribbon = tkgRegulation.node_type_rename(node, 'ribbon')
+        if not cmds.objExists(ribbon):
+            cmds.duplicate(node, n=ribbon, po=True)
+
+        if i != 0:
+            ribbon_segments = tkgNodes.segment_duplicates(base=ribbon_joints[i-1],
+                                        tip=ribbon,
+                                        i=ribbon_num,
+                                        base_include=base_include,
+                                        tip_include=tip_include,
+                                        children=True)
+
+            cmds.parent(ribbon, ribbon_joints[i-1])
+
+            ribbon_segments_list.append(ribbon_segments)
+
+        ribbon_joints.append(ribbon)
+
+    return ribbon_joints, ribbon_segments_list
+
 def create_end_joint(node=None):
     parent = cmds.listRelatives(node, p=True) or None
     if not parent:
