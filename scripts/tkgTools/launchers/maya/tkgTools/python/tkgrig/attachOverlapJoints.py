@@ -22,10 +22,11 @@ def create_end_joint(node=None, end_parent=None):
     #     return
     # else:
     #     end_parent = parent[0]
-    mid_point = mid_obj_point(node, end_parent, percentage=-0.1)
+    mid_point = mid_obj_point(node, end_parent, percentage=-1)
     end_jnt = node+'_end'
     cmds.createNode('joint', n=end_jnt, ss=True)
     cmds.xform(end_jnt, t=mid_point, ws=True, a=True)
+    cmds.matchTransform(end_jnt, node, pos=False, rot=True, scl=False)
     cmds.parent(end_jnt, node)
     return end_jnt
 
@@ -471,6 +472,11 @@ class AutoOverlap(object):
             controlCurve_dup = cmds.duplicate(controlCurve, n=controlCurve+'_up', po=True)[0]
             cmds.parent(controlCurve_dup, controlCurve)
             cmds.xform(controlCurve_dup, t=[0, 10, 0], os=True)
+
+            cmds.setAttr(splineIK[0]+'.dWorldUpType', 3)
+            cmds.setAttr(splineIK[0]+'.dForwardAxis', 4)
+
+            cmds.connectAttr(controlCurve_dup + ".worldMatrix[0]", splineIK[0] + ".dWorldUpMatrix", f=True)
 
             return dynamicGrp, controlCurve
         else:
