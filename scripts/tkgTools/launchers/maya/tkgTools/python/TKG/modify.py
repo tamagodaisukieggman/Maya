@@ -104,3 +104,60 @@ def aim_component_selection(aim_axis='y', up_axis='x'):
     aim_con_end = cmds.aimConstraint(up_loc, up_obj,
                        aimVector=tkgRegulation.axis_vector(neg_axis), upVector=tkgRegulation.axis_vector(up_axis),
                        worldUpType='vector', worldUpVector=[0,1,0])[0]
+
+def create_bend_base_cage(twist=None, twist_direction='-'):
+    sel = cmds.ls(os=True)
+
+    cylinder = cmds.polyCylinder(r=1, h=2, sx=8, sy=5)
+
+    if twist:
+        mel.eval('''
+        select -r {0}.vtx[0:7] ;
+        rotate -r -p 5.96046e-08cm -1cm 2.98023e-08cm -os -fo 0 {1}45 0 ;
+
+        select -r {0}.vtx[8:15] ;
+        rotate -r -p 5.96046e-08cm -0.6cm 2.98023e-08cm -os -fo 0 {1}36 0 ;
+
+        select -r {0}.vtx[16:23] ;
+        rotate -r -p 5.96046e-08cm -0.2cm 2.98023e-08cm -os -fo 0 {1}27 0 ;
+
+        select -r {0}.vtx[24:31] ;
+        rotate -r -p 5.96046e-08cm 0.2cm 2.98023e-08cm -os -fo 0 {1}18 0 ;
+
+        select -r {0}.vtx[32:39] ;
+        rotate -r -p 5.96046e-08cm 0.6cm 2.98023e-08cm -os -fo 0 {1}9 0 ;
+        '''.format(cylinder[0], twist_direction))
+
+    cylinderShape = cmds.listRelatives(cylinder[0], s=True) or None
+    if cylinderShape:
+        cylinderShape = cylinderShape[0]
+    mel.eval('''
+    delete `polyMoveVertex -ch 1 |{0}|{1}.vtx[0]`; polySplit -ch 1 -sma 180 -ep 30 0.5 -ep 22 0.5 |{0}|{1};  select -cl;
+    delete `polyMoveVertex -ch 1 |{0}|{1}.vtx[0]`; polySplit -ch 1 -sma 180 -ep 27 0.5 -ep 19 0.5 |{0}|{1};  select -cl;
+
+    delete `polyMoveVertex -ch 1 |{0}|{1}.vtx[0]`; polySplit -ch 1 -sma 180 -ep 79 1 -ep 30 1 |{0}|{1};  select -cl;
+    delete `polyMoveVertex -ch 1 |{0}|{1}.vtx[0]`; polySplit -ch 1 -sma 180 -ep 14 1 -ep 89 0 |{0}|{1};  select -cl;
+
+    delete `polyMoveVertex -ch 1 |{0}|{1}.vtx[0]`; polySplit -ch 1 -sma 180 -ep 35 0 -ep 27 1 |{0}|{1};  select -cl;
+    delete `polyMoveVertex -ch 1 |{0}|{1}.vtx[0]`; polySplit -ch 1 -sma 180 -ep 11 0 -ep 92 0 |{0}|{1};  select -cl;
+    '''.format(cylinder[0], cylinderShape))
+
+    delEdges= [cylinder[0]+'.e[19]',
+     cylinder[0]+'.e[27]',
+     cylinder[0]+'.e[88:89]',
+     cylinder[0]+'.e[18]',
+     cylinder[0]+'.e[23]',
+     cylinder[0]+'.e[26]',
+     cylinder[0]+'.e[31]',
+     cylinder[0]+'.e[16:17]',
+     cylinder[0]+'.e[24:25]']
+
+    cmds.polyDelEdge(delEdges, cv=True, ch=1)
+
+    cmds.select(cylinder[0])
+    cmds.DeleteHistory()
+
+    if sel:
+        cmds.select(sel, r=True)
+
+    return cylinder

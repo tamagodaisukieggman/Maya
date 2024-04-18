@@ -1,0 +1,2 @@
+Cylinderを用意して、元のメッシュをLiveSurfaceにし、
+CylinderをMeshのConformでけっこう綺麗なケージが作れる
