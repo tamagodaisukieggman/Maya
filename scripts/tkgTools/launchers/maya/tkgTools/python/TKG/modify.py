@@ -105,7 +105,8 @@ def aim_component_selection(aim_axis='y', up_axis='x'):
                        aimVector=tkgRegulation.axis_vector(neg_axis), upVector=tkgRegulation.axis_vector(up_axis),
                        worldUpType='vector', worldUpVector=[0,1,0])[0]
 
-def create_bend_base_cage(twist=None, twist_direction='-'):
+def create_bend_base_cage(twist=None, twist_direction='-',
+                          inside=None, body_type=None):
     sel = cmds.ls(os=True)
 
     cylinder = cmds.polyCylinder(r=1, h=2, sx=8, sy=5)
@@ -153,6 +154,93 @@ def create_bend_base_cage(twist=None, twist_direction='-'):
      cylinder[0]+'.e[24:25]']
 
     cmds.polyDelEdge(delEdges, cv=True, ch=1)
+
+    mel.eval('''
+    delete `polyMoveVertex -ch 1 |{0}|{1}.vtx[0]`; polySplit -ch 1 -sma 180 -ep 49 0.5 -ep 71 0.5 -ep 55 0.5 -ep 54 0.5 -ep 53 0.5 -ep 52 0.5 -ep 59 0.5 -ep 68 0.5 -ep 51 0.5 -ep 50 0.5 -ep 49 0.5 |{0}|{1};
+    delete {0}.f[30:31];
+    '''.format(cylinder[0], cylinderShape))
+
+    if inside:
+        mel.eval('''
+        select -r {0}.e[91] ;
+        polySpinEdge -ch 1 -offset -1;
+
+        select -r {0}.e[88] ;
+        polySpinEdge -ch 1 -offset 1;
+
+        // polySmooth  -mth 0 -sdt 2 -ovb 1 -ofb 3 -ofc 0 -ost 0 -ocr 0 -dv 1 -bnr 1 -c 1 -kb 1 -ksb 1 -khe 0 -kt 1 -kmb 1 -suv 1 -peh 0 -sl 1 -dpe 1 -ps 0.1 -ro 1 -ch 1 {0};
+        '''.format(cylinder[0], cylinderShape))
+
+    if body_type == 'shoulder':
+        mel.eval('''
+        delete {0}.f[14:16] {0}.f[21:24] {0}.f[29] {0}.f[36:39];
+
+        select -r {0}.e[8:10] {0}.e[15] ;
+        polyExtrudeEdge -constructionHistory 1 -keepFacesTogether 1 -pvx 5.960464478e-08 -pvy -0.6000000238 -pvz -0.4999999404 -divisions 1 -twist 0 -taper 1 -offset 0 -thickness 0 -smoothingAngle 30 {0}.e[8:10] {0}.e[15];
+        setAttr "polyExtrudeEdge7.localTranslate" -type double3 0 0.335907 0 ;
+        move -r -os -wd 0 0.377342 0 ;
+
+        select -r {0}.vtx[39] {0}.vtx[47] ;
+        MergeToCenter;
+
+        select -r {0}.vtx[38] {0}.vtx[46] ;
+        MergeToCenter;
+
+        select -r {0}.e[77] {0}.e[79:81] ;
+        polyExtrudeEdge -constructionHistory 1 -keepFacesTogether 1 -pvx 5.960464478e-08 -pvy -0.1669936366 -pvz -0.4999999776 -divisions 1 -twist 0 -taper 1 -offset 0 -thickness 0 -smoothingAngle 30 {0}.e[77] {0}.e[79:81];
+        move -r -os -wd 0 0.306544 -0.540454 ;
+
+        select -r {0}.e[84] {0}.e[86] {0}.e[88] {0}.e[90] ;
+        polyExtrudeEdge -constructionHistory 1 -keepFacesTogether 1 -pvx 5.960464478e-08 -pvy 0.1395501941 -pvz -1.040453672 -divisions 1 -twist 0 -taper 1 -offset 0 -thickness 0 -smoothingAngle 30 {0}.e[84] {0}.e[86] {0}.e[88] {0}.e[90];
+        move -r -os -wd 0 0.180369 -0.788511 ;
+
+        select -r {0}.e[87] {0}.e[89] {0}.e[96] {0}.e[98] ;
+        polyExtrudeEdge -constructionHistory 1 -keepFacesTogether 1 -pvx 5.960464478e-08 -pvy 0.1321274936 -pvz -0.6644824743 -divisions 1 -twist 0 -taper 1 -offset 0 -thickness 0 -smoothingAngle 30 {0}.e[87] {0}.e[89] {0}.e[96] {0}.e[98];
+
+        move -r -os -wd 0 0.710065 0 ;
+
+        select -r {0}.vtx[26] {0}.vtx[58] ;
+        MergeToCenter;
+
+        select -r {0}.vtx[22] {0}.vtx[56] ;
+        MergeToCenter;
+
+        select -r {0}.e[101] {0}.e[103] {0}.e[105] {0}.e[107] ;
+        polyExtrudeEdge -constructionHistory 1 -keepFacesTogether 1 -pvx 5.960464478e-08 -pvy 0.8425088525 -pvz -0.6644824743 -divisions 1 -twist 0 -taper 1 -offset 0 -thickness 0 -smoothingAngle 30 {0}.e[101] {0}.e[103] {0}.e[105] {0}.e[107];
+
+        move -r -os -wd 0 0.408848 0 ;
+
+        select -r {0}.vtx[31] {0}.vtx[62] ;
+        MergeToCenter;
+
+        select -r {0}.vtx[27] {0}.vtx[60] ;
+        MergeToCenter;
+
+        setAttr "{0}.rotateX" -90;
+        setAttr "{0}.rotateY" 90;
+        '''.format(cylinder[0]))
+
+    elif body_type == 'hip':
+        mel.eval('''
+        delete {0}.f[10] {0}.f[20:21] {0}.f[28:31] {0}.f[39:41];
+        delete `polyMoveVertex -ch 1 |{0}|{1}.vtx[0]`; polySplit -ch 1 -sma 180 -ep 26 0 -ep 20 0.5 -ep 77 0.5 -ep 8 0.5 -ep 32 0.5 -ep 39 0.5 -ep 38 0.5 -ep 13 0.5 -ep 17 0.5 -ep 78 0.5 -ep 19 0.5 -ep 25 0.5 -ep 59 1 |{0}|{1};
+
+        delete `polyMoveVertex -ch 1 |{0}|{1}.vtx[0]`; polySplit -ch 1 -sma 180 -ep 91 0.5 -ep 54 1 |{0}|{1};
+        delete `polyMoveVertex -ch 1 |{0}|{1}.vtx[0]`; polySplit -ch 1 -sma 180 -ep 94 0.5 -ep 0 1 |{0}|{1};
+        delete `polyMoveVertex -ch 1 |{0}|{1}.vtx[0]`; polySplit -ch 1 -sma 180 -ep 97 0.5 -ep 37 0 |{0}|{1};
+        delete `polyMoveVertex -ch 1 |{0}|{1}.vtx[0]`; polySplit -ch 1 -sma 180 -ep 102 0.5 -ep 31 0 |{0}|{1};
+
+        select -r {0}.e[82] ;
+        polySpinEdge -ch 1 -offset 1;
+
+        select -r {0}.e[13] ;
+        polySpinEdge -ch 1 -offset -1;
+
+        delete `polyMoveVertex -ch 1 |{0}|{1}.vtx[0]`; polySplit -ch 1 -sma 180 -ep 104 0.3 -ep 80 0.3 -ep 77 0.7 -ep 94 0.3 -ep 83 0.7 -ep 84 0.7 -ep 85 0.7 -ep 107 0.7 -ep 17 0.7 -ep 88 0.3 -ep 19 0.7 -ep 25 0.7 -ep 110 0.3 |{0}|{1};  select -cl;
+
+        setAttr "{0}.rotateY" 180;
+
+        '''.format(cylinder[0], cylinderShape))
 
     cmds.select(cylinder[0])
     cmds.DeleteHistory()
