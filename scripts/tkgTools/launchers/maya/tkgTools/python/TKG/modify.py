@@ -237,6 +237,12 @@ def create_bend_base_cage(twist=None, twist_direction='-',
         polySpinEdge -ch 1 -offset -1;
 
         delete `polyMoveVertex -ch 1 |{0}|{1}.vtx[0]`; polySplit -ch 1 -sma 180 -ep 104 0.3 -ep 80 0.3 -ep 77 0.7 -ep 94 0.3 -ep 83 0.7 -ep 84 0.7 -ep 85 0.7 -ep 107 0.7 -ep 17 0.7 -ep 88 0.3 -ep 19 0.7 -ep 25 0.7 -ep 110 0.3 |{0}|{1};  select -cl;
+        delete `polyMoveVertex -ch 1 |{0}|{1}.vtx[0]`; polySplit -ch 1 -sma 180 -ep 37 1 -ep 108 0.46404 -ep 5 1 |{0}|{1};  select -cl;
+
+        select -r {0}.vtx[9] {0}.vtx[58] ;
+        MergeToCenter;
+
+        delete `polyMoveVertex -ch 1 |{0}|{1}.vtx[0]`; polySplit -ch 1 -sma 180 -ep 37 1 -ep 4 0.620851 |{0}|{1};  select -cl;
 
         setAttr "{0}.rotateY" 180;
 
