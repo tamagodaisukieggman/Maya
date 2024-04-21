@@ -116,3 +116,73 @@ class Build(tkgModules.Module):
         # pv aim
 
         return ik_joints
+
+    def create_ik_spline(self, nodes=None, aim_axis='+y', up_axis='+z'):
+        if not nodes:
+            nodes = cmds.ls(os=True, fl=True) or []
+        ik_joints = tkgRigJoints.create_ik_joints(nodes=nodes)
+
+        ikh, ik_spline_crv = tkgIk.create_spline_ikHandle(ik_joints[0], ik_joints[-1])
+
+        ikBase_ctrl, ikBase_offset = tkgCtrls.create_ikBase_ctrl(node=ik_joints[0], axis=[0,0,90], scale=1)
+
+        ikMain_ctrl, ikMain_offset = tkgCtrls.create_ikMain_ctrl(node=ik_joints[-1], axis=[0,0,0], scale=1)
+
+        cmds.parent(ik_joints[0], self.nodes_top)
+        cmds.parent(ikh, self.nodes_top)
+        cmds.parent(ik_spline_crv, self.nodes_top)
+        cmds.parent(ikBase_offset, self.ctrls_top)
+        cmds.parent(ikMain_offset, self.ctrls_top)
+
+        # advanced twist
+        dForward_axis = {
+            '+x':0,
+            '-x':1,
+            '+y':2,
+            '-y':3,
+            '+z':4,
+            '-z':5
+        }
+
+        dWorldUp_axis = {
+            '+y':0,
+            '-y':1,
+            '*y':2,
+            '+z':3,
+            '-z':4,
+            '*z':5,
+            '+x':6,
+            '-x':7,
+            '*x':8
+        }
+
+        up_axis_vectors = {
+            '+y':[0,1,0],
+            '-y':[0,-1,0],
+            '*y':[0,1,0],
+            '+z':[0,0,1],
+            '-z':[0,0,-1],
+            '*z':[0,0,1],
+            '+x':[1,0,0],
+            '-x':[-1,0,0],
+            '*x':[1,0,0]
+        }
+
+        cmds.setAttr('{}.dTwistControlEnable'.format(ikh), 1)
+        cmds.setAttr('{}.dWorldUpType'.format(ikh), 4)
+        cmds.setAttr('{}.dForwardAxis'.format(ikh), dForward_axis[aim_axis])
+        cmds.setAttr('{}.dWorldUpAxis'.format(ikh), dWorldUp_axis[up_axis])
+        cmds.setAttr('{}.dWorldUpVector'.format(ikh), *up_axis_vectors[up_axis])
+        cmds.setAttr('{}.dWorldUpVectorEnd'.format(ikh), *up_axis_vectors[up_axis])
+
+        cmds.connectAttr('{}.worldMatrix[0]'.format(ikBase_ctrl), '{}.dWorldUpMatrix'.format(ikh))
+        cmds.connectAttr('{}.worldMatrix[0]'.format(ikMain_ctrl), '{}.dWorldUpMatrixEnd'.format(ikh))
+
+        # skin bind
+        # ik_spline_skin_joints = tkgRigJoints.create_start_end_joints(ik_joints)
+        skin_ik_spline_sc = cmds.skinCluster([ikBase_ctrl, ikMain_ctrl],
+                                    ik_spline_crv,
+                                    n='{}_skinCluster'.format(ik_spline_crv),
+                                    tsb=True)[0]
+        crv_bind=cmds.listConnections('{}.bindPose'.format(skin_ik_spline_sc),c=0,d=1,p=0)
+        if crv_bind:cmds.delete(crv_bind)

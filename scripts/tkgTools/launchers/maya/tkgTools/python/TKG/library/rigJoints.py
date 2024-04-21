@@ -24,6 +24,20 @@ def create_blend_joints(nodes=None):
     dup = tkgNodes.Duplicate(nodes, *tkgRegulation.node_type_rename(node=None, type='blend'))
     return dup.duplicate()
 
+def create_start_end_joints(nodes=None):
+    start_name = tkgRegulation.node_type_rename(node=nodes[0], type='start')
+    end_name = tkgRegulation.node_type_rename(node=nodes[-1], type='end')
+    start_dup = cmds.duplicate(nodes[0], n=start_name, po=True)[0]
+    end_dup = cmds.duplicate(nodes[-1], n=end_name, po=True)[0]
+    start_dup_pa = cmds.listRelatives(start_dup, p=True) or None
+    if start_dup_pa:
+        cmds.parent(start_dup, w=True)
+    end_dup_pa = cmds.listRelatives(end_dup, p=True) or None
+    if end_dup_pa:
+        cmds.parent(end_dup, w=True)
+
+    return start_dup, end_dup
+
 def create_sc_ik_joints(nodes=None, aim_axis='x', up_axis='y', freeze=None):
     start = nodes[0]
     middle = nodes[1]

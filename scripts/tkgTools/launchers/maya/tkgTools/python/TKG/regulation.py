@@ -22,6 +22,8 @@ class NameRegulation:
         self.sc_ik_dummy = ['SC_IK_', '', None]
         self.bendy_limb = ['', '', ['BIND_', 'BENDY_LIMB_']]
         self.ribbon = ['', '', ['BIND_', 'RIBBON_']]
+        self.start = ['START_', '', None]
+        self.end = ['END_', '', None]
 
         # module parts
         self.nodes_top = ['NODES_', '', None]
@@ -86,6 +88,10 @@ def node_type_rename(node=None, type=None):
         return tkgNodes.rename(node, *name_reg.bendy_limb)
     elif type == 'ribbon':
         return tkgNodes.rename(node, *name_reg.ribbon)
+    elif type == 'start':
+        return tkgNodes.rename(node, *name_reg.start)
+    elif type == 'end':
+        return tkgNodes.rename(node, *name_reg.end)
 
     # module parts
     elif type == 'nodes_top':

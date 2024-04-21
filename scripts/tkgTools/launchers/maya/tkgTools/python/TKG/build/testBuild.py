@@ -4,12 +4,19 @@ from imp import reload
 ######################################
 # For Limb
 ######################################
-# ik module
+# ik limb
 import TKG.modules.ikModule as tkgIkModule
 reload(tkgIkModule)
 
 ikMod = tkgIkModule.Build('Lt', 'arm')
 ikMod.create_ik_limb()
+
+# ik spline
+import TKG.modules.ikModule as tkgIkModule
+reload(tkgIkModule)
+
+ikMod = tkgIkModule.Build('Lt', 'arm')
+ikMod.create_ik_spline()
 
 # fk module
 import TKG.modules.fkModule as tkgFkModule

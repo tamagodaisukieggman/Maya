@@ -66,7 +66,7 @@ def create_spline_ikHandle(start=None, end=None):
     settings['scv'] = False
     settings['rtm'] = True
 
-    return cmds.ikHandle(**settings)[0]
+    return cmds.ikHandle(**settings)[0], ik_spline_crv
 
 def create_stable_ik_pv(nodes=None, aim_axis='x', up_axis='y', freeze=None):
     sc_ik_joints = tkgRigJoints.create_sc_ik_joints(nodes=nodes,
