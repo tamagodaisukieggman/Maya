@@ -186,3 +186,13 @@ class Build(tkgModules.Module):
                                     tsb=True)[0]
         crv_bind=cmds.listConnections('{}.bindPose'.format(skin_ik_spline_sc),c=0,d=1,p=0)
         if crv_bind:cmds.delete(crv_bind)
+
+        # --------------------
+        # stretchy and softik
+        stretch_and_soft = tkgIk.StretchSoftIK(main_ctrl=ikMain_ctrl,
+                                               ikhandle=ikh,
+                                               start=ik_joints[0],
+                                               end=ik_joints[-1],
+                                               axis='y')
+        stretch_and_soft.stretch_base()
+        stretch_and_soft.stretch_connection()
