@@ -54,6 +54,7 @@ class Build(tkgModules.Module):
             cmds.delete(_del_seg)
 
         bendy_main_offset, bendy_main_ctrls, bendy_main_offsets = tkgCtrls.create_bendy_limb_ctrls(nodes=ribbon_joints, axis=[0,0,0], scale=1, type='main')
+        [cmds.parentConstraint(ctrl, sec, w=True) for sec, ctrl in zip(ribbon_joints, bendy_main_ctrls)]
 
         ribbons_offset_list = []
         ribbons_ctrls_list = []
@@ -62,6 +63,9 @@ class Build(tkgModules.Module):
 
             ribbons_offset_list.append(ribbon_offsets)
             ribbons_ctrls_list.append(ribbons_ctrls)
+
+            # ribbon部分のコンスト
+            [cmds.parentConstraint(ctrl, sec, w=True) for sec, ctrl in zip(ribbon_segments, ribbons_ctrls)]
 
         cmds.parent(ribbon_joints[0], self.nodes_top)
         cmds.parent(bendy_main_offset, self.ctrls_top)
@@ -87,6 +91,8 @@ class Build(tkgModules.Module):
             for ribbon_offset in ribbon_offsets:
                 flat_ribbons_offset_list.append(ribbon_offset)
 
+        fol_nul_end = flat_ribbons_offset_list[-1]
+
         k = 0
         for ribbon_segments in ribbon_segments_list:
             for node in ribbon_segments:
@@ -98,6 +104,10 @@ class Build(tkgModules.Module):
                 if ribbons_offset_pa:
                     ribbons_offset_pa = ribbons_offset_pa[0]
                     cmds.parent(fol_nul, ribbons_offset_pa)
+
+                    if flat_ribbons_offset_list[k] == fol_nul_end:
+                        cmds.parent(fol_nul, bendy_main_ctrls[-1])
+
                     cmds.parent(flat_ribbons_offset_list[k], fol_nul)
 
                 if not node == base_ribbon_jnt and not node == tip_ribbon_jnt:
