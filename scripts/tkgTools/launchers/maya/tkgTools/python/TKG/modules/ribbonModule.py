@@ -79,6 +79,8 @@ class Build(tkgModules.Module):
         crv_bind=cmds.listConnections('{}.bindPose'.format(first_skin_surface_sc),c=0,d=1,p=0)
         if crv_bind:cmds.delete(crv_bind)
 
+        cmds.parent(first_skin_surface, self.nodes_top)
+
         # follicleのnullをoffsetの親にする
         flat_ribbons_offset_list = []
         for ribbon_offsets in ribbons_offset_list:
@@ -99,6 +101,9 @@ class Build(tkgModules.Module):
                     cmds.parent(flat_ribbons_offset_list[k], fol_nul)
 
                 if not node == base_ribbon_jnt and not node == tip_ribbon_jnt:
-                    cmds.parentConstraint(fol, fol_nul, w=True)
+                    # cmds.parentConstraint(fol, fol_nul, w=True)
+                    tkgNodes.matrix_constraint(src=fol, dst=fol_nul)
+
+                cmds.parent(fol, self.nodes_top)
 
                 k += 1
