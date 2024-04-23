@@ -514,12 +514,19 @@ chara_root_joint = 'Root'
 namespace = 'chr'
 
 ref_path = 'c:/cygames/wiz2/team/3dcg/chr/enm/minion/bat01/scenes/enm_m_bat01.ma'
+# ref_path = 'C:/cygames/wiz2/team/3dcg/rig/work/share/enm/bat01/scenes/enm_m_bat01.ma'
 cmds.file(ref_path, ignoreVersion=1, namespace=namespace, r=1, gl=1, mergeNamespacesOnClash=1, options="v=0;")
 
 if not namespace.endswith(':'):
     namespace = namespace + ':'
 
 joints = cmds.ls(namespace + chara_root_joint, dag=True, type='joint')
+
+jaw_joints = cmds.ls('*:Jaw*', type='joint')
+lip_joints = cmds.ls('*:*Lip*', type='joint')
+
+joints = [j for j in joints if not j in jaw_joints]
+joints = [j for j in joints if not j in lip_joints]
 
 # spine_jnt = 'Spine1'
 # cmds.joint(n=spine_jnt)
@@ -635,6 +642,90 @@ cmds.pointConstraint('Root_ctrl', namespace + 'Root', w=True)
 # Spine1
 cmds.pointConstraint('Spine1_ctrl', namespace + 'Spine1', w=True)
 
+# Jaw
+jaw = namespace + 'Jaw'
+ctrl_p_grp, ctrls, consts = create_temp_ctrls(joints=[jaw])
+set_rgb_color(ctrl=ctrls[0], color=[0.2, 0.1, 0.9])
+
+mel.eval('''
+select -r Jaw_ctrl.cv[0] Jaw_ctrl.cv[7:9] Jaw_ctrl.cv[12:15] ;
+move -r -os -wd 0 0 36.217899 ;
+
+select -r Jaw_ctrl.cv[1:6] Jaw_ctrl.cv[10:11] ;
+scale -r -p 0cm 45.156493cm -7.141019cm 15 1 1 ;
+
+select -r Jaw_ctrl.cv[9] Jaw_ctrl.cv[12:14] ;
+move -r -os -wd 0 -27.172281 0 ;
+
+transformLimits -rx -30 -30 -erx 1 0 Jaw_ctrl;
+''')
+
+cmds.parent(ctrl_p_grp, 'Spine1_ctrl')
+
+# Lip Driven
+mel.eval('''
+// setAttr
+setAttr "Jaw_ctrl.rotateZ" 0;
+setAttr "Jaw_ctrl.rotateX" 0;
+setAttr "Jaw_ctrl.rotateY" 0;
+
+// left
+setDrivenKeyframe -currentDriver Jaw_ctrl.rotateX chr:LowerLip_01_L.rotateX;
+setDrivenKeyframe -currentDriver Jaw_ctrl.rotateX chr:LowerLip_01_L.rotateY;
+setDrivenKeyframe -currentDriver Jaw_ctrl.rotateX chr:LowerLip_01_L.rotateZ;
+
+setDrivenKeyframe -currentDriver Jaw_ctrl.rotateX chr:LowerLip_02_L.rotateX;
+setDrivenKeyframe -currentDriver Jaw_ctrl.rotateX chr:LowerLip_02_L.rotateY;
+setDrivenKeyframe -currentDriver Jaw_ctrl.rotateX chr:LowerLip_02_L.rotateZ;
+
+// right
+setDrivenKeyframe -currentDriver Jaw_ctrl.rotateX chr:LowerLip_01_R.rotateX;
+setDrivenKeyframe -currentDriver Jaw_ctrl.rotateX chr:LowerLip_01_R.rotateY;
+setDrivenKeyframe -currentDriver Jaw_ctrl.rotateX chr:LowerLip_01_R.rotateZ;
+
+setDrivenKeyframe -currentDriver Jaw_ctrl.rotateX chr:LowerLip_02_R.rotateX;
+setDrivenKeyframe -currentDriver Jaw_ctrl.rotateX chr:LowerLip_02_R.rotateY;
+setDrivenKeyframe -currentDriver Jaw_ctrl.rotateX chr:LowerLip_02_R.rotateZ;
+
+// setAttr
+setAttr "Jaw_ctrl.rotateZ" 0;
+setAttr "Jaw_ctrl.rotateX" -30;
+setAttr "Jaw_ctrl.rotateY" 0;
+
+setAttr "chr:LowerLip_01_R.rotateX" -18.121;
+setAttr "chr:LowerLip_01_L.rotateX" -18.121;
+setAttr "chr:LowerLip_01_R.rotateY" 5.363;
+setAttr "chr:LowerLip_01_L.rotateY" 5.363;
+setAttr "chr:LowerLip_01_R.rotateZ" -6.258;
+setAttr "chr:LowerLip_01_L.rotateZ" -6.258;
+
+setAttr "chr:LowerLip_02_R.rotateX" 39.16;
+setAttr "chr:LowerLip_02_L.rotateX" 39.16;
+setAttr "chr:LowerLip_02_R.rotateY" 19.96;
+setAttr "chr:LowerLip_02_L.rotateY" 19.96;
+setAttr "chr:LowerLip_02_R.rotateZ" 23.323;
+setAttr "chr:LowerLip_02_L.rotateZ" 23.323;
+
+// set driven
+setDrivenKeyframe -currentDriver Jaw_ctrl.rotateX chr:LowerLip_01_L.rotateX;
+setDrivenKeyframe -currentDriver Jaw_ctrl.rotateX chr:LowerLip_01_L.rotateY;
+setDrivenKeyframe -currentDriver Jaw_ctrl.rotateX chr:LowerLip_01_L.rotateZ;
+setDrivenKeyframe -currentDriver Jaw_ctrl.rotateX chr:LowerLip_02_L.rotateX;
+setDrivenKeyframe -currentDriver Jaw_ctrl.rotateX chr:LowerLip_02_L.rotateY;
+setDrivenKeyframe -currentDriver Jaw_ctrl.rotateX chr:LowerLip_02_L.rotateZ;
+setDrivenKeyframe -currentDriver Jaw_ctrl.rotateX chr:LowerLip_01_R.rotateX;
+setDrivenKeyframe -currentDriver Jaw_ctrl.rotateX chr:LowerLip_01_R.rotateY;
+setDrivenKeyframe -currentDriver Jaw_ctrl.rotateX chr:LowerLip_01_R.rotateZ;
+setDrivenKeyframe -currentDriver Jaw_ctrl.rotateX chr:LowerLip_02_R.rotateX;
+setDrivenKeyframe -currentDriver Jaw_ctrl.rotateX chr:LowerLip_02_R.rotateY;
+setDrivenKeyframe -currentDriver Jaw_ctrl.rotateX chr:LowerLip_02_R.rotateZ;
+
+// reset
+setAttr "Jaw_ctrl.rotateZ" 0;
+setAttr "Jaw_ctrl.rotateX" 0;
+setAttr "Jaw_ctrl.rotateY" 0;
+
+''')
 
 #######################################################
 # Create Sets
@@ -686,6 +777,8 @@ for sets in empty_sets:
         if 'items' in sets_settings.keys():
             [cmds.sets(item, add=sets) for item in sets_settings['items']]
 
+[joints.append(j) for j in jaw_joints]
+[joints.append(j) for j in lip_joints]
 
 [cmds.sets(obj, add='export_sets') for obj in joints]
 
@@ -838,6 +931,8 @@ for ctrl in unlock_ctrls:
     cmds.pointConstraint(ctrl, namespace + ctrl.replace('_ctrl', ''))
 
 cmds.sets(spine_ctrl, add='fk_ctrl_sets')
+
+cmds.sets('Jaw_ctrl', add='fk_ctrl_sets')
 
 # cmds.delete(spine_jnt)
 
