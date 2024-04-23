@@ -124,10 +124,17 @@ class CreateMenu(object):
             l=u'Delete CgAbBlastPanelOptChangeCallback',
             c='import tkgfile.utils as tkgfileuls;reload(tkgfileuls);tut=tkgfileuls.TkgUtils();tut.remove_CgAbBlastPanelOptChangeCallback()',
         )
+
         cmds.menuItem(
             l=u'FileExplorer',
             c='from imp import reload;import fileExplorer.ui as fileExplorer;reload(fileExplorer);feui = fileExplorer.FileExplorer();feui.show(dockable=True)',
         )
+
+        cmds.menuItem(
+            l=u'mel2py',
+            c='from imp import reload;import mel2py;reload(mel2py);mel2py.Serpens_start()',
+        )
+
         cmds.menuItem(
             l=u'MultiFileBrowser',
             c='import tkgfile.multiFileBrowser.filedirectorytree as filedirectorytree;reload(filedirectorytree);fst = filedirectorytree.FileDirectoryTree();fst.buildUI();fst.show(dockable=True)',
@@ -1213,7 +1220,7 @@ class CreateMenu(object):
         # Reload menu
         cmds.menuItem(
             l=u'ReloadMenu',
-            c='import tkgTools_menu;reload(tkgTools_menu);tm=tkgTools_menu.TkgTools();tm.main();'
+            c='import tkgTools_menu;reload(tkgTools_menu);create_menu = tkgTools_menu.CreateMenu();create_menu.main();'
         )
 
         cmds.menuItem(
