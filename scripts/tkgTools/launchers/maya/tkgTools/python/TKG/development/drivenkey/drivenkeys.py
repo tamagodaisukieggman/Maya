@@ -1,0 +1,78 @@
+import maya.cmds as cmds
+
+# set
+def setDrivenKey(driver=None, driverAttr=None, driverValues=None,
+                  driven=None, drivenAttrs=None, drivenValues=None,
+                  itt='clamped', ott='clamped'):
+    for i, drv in enumerate(driverValues):
+        for j, dnat in enumerate(drivenAttrs):
+            dnv = drivenValues[j]
+            drivenAnimCrv = cmds.setDrivenKeyframe('{}.{}'.format(driven, dnat),
+                                   currentDriver='{}.{}'.format(driver, driverAttr),
+                                   driverValue=driverValues[i], value=dnv[i],
+                                   itt=itt, ott=ott,
+                                   ib=True)
+
+
+def getDrivenAnimCrvs(node=None):
+    animCurvesList = []
+    animCurves = cmds.listConnections(node, s=True, d=False, scn=True, type='animCurve')
+    if not animCurves:
+        blendWeighteds = cmds.listConnections(node, scn=True, type='blendWeighted')
+
+        for bwd in blendWeighteds:
+            animCurves = cmds.listConnections(bwd, scn=True, type='animCurve')
+            [animCurvesList.append(ac) for ac in animCurves if not ac in animCurvesList]
+    else:
+        [animCurvesList.append(ac) for ac in animCurves if not ac in animCurvesList]
+
+    animCrvDrivers = {}
+    for ac in animCurvesList:
+        acPlugs = cmds.listConnections(ac, s=True, d=False, p=True, scn=True)
+        if acPlugs:
+            animCrvDrivers[ac] = acPlugs
+
+    return animCrvDrivers
+
+
+sel = cmds.ls(os=True)
+
+driver = sel[0]
+driverAttr = 'tx'
+driverValues = [0, 30]
+
+driven = sel[1]
+drivenAttrs = ['rz', 'rx']
+drivenValues = [[0, 10], [0, 40]]
+
+preInf = 'CycleWithOffset'
+postInf = 'CycleWithOffset'
+
+prePostInfDict = {
+    'Constant':0,
+    'Linear':1,
+    'Cycle':3,
+    'CycleWithOffset':4,
+    'Oscillate':5
+}
+
+setDrivenKey(driver, driverAttr, driverValues,
+              driven, drivenAttrs, drivenValues)
+
+animCurves = cmds.listConnections(driver, d=True, scn=True, type='animCurve')
+
+for ac in animCurves:
+    cmds.setAttr(ac+'.preInfinity', prePostInfDict[preInf])
+    cmds.setAttr(ac+'.postInfinity', prePostInfDict[postInf])
+
+
+# graph editor
+# cmds.animCurveEditor('graphEditor1GraphEd', edit=1, displayInfinities=True)
+# cmds.optionVar(intValue=('graphEditorDisplayInfinities', True))
+# cmds.GraphEditor()
+
+
+# get drivenkeys
+node = cmds.ls(os=True)[0]
+
+animCrvDrivers = getDrivenAnimCrvs(node=node)
