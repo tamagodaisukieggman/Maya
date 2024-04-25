@@ -13,6 +13,27 @@ def setDrivenKey(driver=None, driverAttr=None, driverValues=None,
                                    itt=itt, ott=ott,
                                    ib=True)
 
+def setDrivenKeys(driver=None, driverAttr=None, driverValues=None,
+                  driven=None, drivenAttrs=None, drivenValues=None,
+                  preInf='CycleWithOffset', postInf='CycleWithOffset'):
+
+    prePostInfDict = {
+        'Constant':0,
+        'Linear':1,
+        'Cycle':3,
+        'CycleWithOffset':4,
+        'Oscillate':5
+    }
+
+    setDrivenKey(driver, driverAttr, driverValues,
+                  driven, drivenAttrs, drivenValues)
+
+    animCurves = cmds.listConnections(driver, d=True, scn=True, type='animCurve')
+
+    for ac in animCurves:
+        cmds.setAttr(ac+'.preInfinity', prePostInfDict[preInf])
+        cmds.setAttr(ac+'.postInfinity', prePostInfDict[postInf])
+
 
 def getDrivenAnimCrvs(node=None):
     animCurvesList = []
@@ -48,23 +69,9 @@ drivenValues = [[0, 10], [0, 40]]
 preInf = 'CycleWithOffset'
 postInf = 'CycleWithOffset'
 
-prePostInfDict = {
-    'Constant':0,
-    'Linear':1,
-    'Cycle':3,
-    'CycleWithOffset':4,
-    'Oscillate':5
-}
-
-setDrivenKey(driver, driverAttr, driverValues,
-              driven, drivenAttrs, drivenValues)
-
-animCurves = cmds.listConnections(driver, d=True, scn=True, type='animCurve')
-
-for ac in animCurves:
-    cmds.setAttr(ac+'.preInfinity', prePostInfDict[preInf])
-    cmds.setAttr(ac+'.postInfinity', prePostInfDict[postInf])
-
+setDrivenKeys(driver, driverAttr, driverValues,
+                  driven, drivenAttrs, drivenValues,
+                  preInf, postInf)
 
 # graph editor
 # cmds.animCurveEditor('graphEditor1GraphEd', edit=1, displayInfinities=True)
