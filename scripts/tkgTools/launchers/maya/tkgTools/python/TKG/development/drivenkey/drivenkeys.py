@@ -35,7 +35,7 @@ def setDrivenKeys(driver=None, driverAttr=None, driverValues=None,
         cmds.setAttr(ac+'.postInfinity', prePostInfDict[postInf])
 
 
-def getDrivenAnimCrvs(node=None):
+def getDriverAnimCrvs(node=None):
     animCurvesList = []
     animCurves = cmds.listConnections(node, s=True, d=False, scn=True, type='animCurve')
     if not animCurves:
@@ -122,7 +122,7 @@ setDrivenKeys(driver, driverAttr, driverValues,
 
 # get drivenkeys
 node = cmds.ls(os=True)[0]
-animCrvDrivers = getDrivenAnimCrvs(node=node)
+animCrvDrivers = getDriverAnimCrvs(node=node)
 animCrvValues = getAnimCrvValues(animCrvs=animCrvDrivers)
 
 # set keyframe attrs
