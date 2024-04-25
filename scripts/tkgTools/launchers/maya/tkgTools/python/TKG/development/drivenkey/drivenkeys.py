@@ -123,6 +123,11 @@ setDrivenKeys(driver, driverAttr, driverValues,
 # get drivenkeys
 node = cmds.ls(os=True)[0]
 animCrvDrivers = getDriverAnimCrvs(node=node)
+
+for animCrv in animCrvDrivers:
+    
+
+
 animCrvValues = getAnimCrvValues(animCrvs=animCrvDrivers)
 
 # set keyframe attrs
