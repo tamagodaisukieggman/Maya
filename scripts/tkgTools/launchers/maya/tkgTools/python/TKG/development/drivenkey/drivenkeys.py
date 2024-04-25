@@ -81,5 +81,23 @@ setDrivenKeys(driver, driverAttr, driverValues,
 
 # get drivenkeys
 node = cmds.ls(os=True)[0]
-
 animCrvDrivers = getDrivenAnimCrvs(node=node)
+
+# get keyframe attrs
+keyTimes = cmds.keyframe(animCrv, floatChange=True, q=True)
+keyValues = cmds.keyframe(animCrv, valueChange=True, q=True)
+keyItts = cmds.keyTangent(animCrv, inTangentType=True, q=True)
+keyOtts = cmds.keyTangent(animCrv, outTangentType=True, q=True)
+
+# get keyTangent attrs
+keyInAngles = cmds.keyTangent(animCrv, inAngle=True, q=True)
+keyInWeights = cmds.keyTangent(animCrv, inWeight=True, q=True)
+keyOutAngles = cmds.keyTangent(animCrv, outAngle=True, q=True)
+keyOutWeights = cmds.keyTangent(animCrv, outWeight=True, q=True)
+
+# set keyframe attrs
+t = 10.0
+if t in keyTimes:
+    i = keyTimes.index(t)
+cmds.setKeyframe(animCrv, f=t, insert=True)
+cmds.keyframe(animCrv, e=True, absolute=True, index=(i,i), vc=0.5)
