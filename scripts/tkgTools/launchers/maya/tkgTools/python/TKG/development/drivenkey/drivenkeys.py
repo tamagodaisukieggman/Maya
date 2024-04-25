@@ -56,6 +56,47 @@ def getDrivenAnimCrvs(node=None):
     return animCrvDrivers
 
 
+def getAnimCrvValues(animCrvs=None):
+    prePostInfDict = {
+        0:'Constant',
+        1:'Linear',
+        3:'Cycle',
+        4:'CycleWithOffset',
+        5:'Oscillate'
+    }
+
+    animCrvValues = {}
+    for animCrv in animCrvs:
+        animCrvValues[animCrv] = {}
+        # get keyframe attrs
+        keyTimes = cmds.keyframe(animCrv, floatChange=True, q=True)
+        keyValues = cmds.keyframe(animCrv, valueChange=True, q=True)
+
+        animCrvValues[animCrv]['keyTimes'] = keyTimes
+        animCrvValues[animCrv]['keyValues'] = keyValues
+
+        # get keyTangent attrs
+        keyItts = cmds.keyTangent(animCrv, inTangentType=True, q=True)
+        keyOtts = cmds.keyTangent(animCrv, outTangentType=True, q=True)
+        keyInAngles = cmds.keyTangent(animCrv, inAngle=True, q=True)
+        keyInWeights = cmds.keyTangent(animCrv, inWeight=True, q=True)
+        keyOutAngles = cmds.keyTangent(animCrv, outAngle=True, q=True)
+        keyOutWeights = cmds.keyTangent(animCrv, outWeight=True, q=True)
+
+        animCrvValues[animCrv]['keyItts'] = keyItts
+        animCrvValues[animCrv]['keyOtts'] = keyOtts
+        animCrvValues[animCrv]['keyInAngles'] = keyInAngles
+        animCrvValues[animCrv]['keyInWeights'] = keyInWeights
+        animCrvValues[animCrv]['keyOutAngles'] = keyOutAngles
+        animCrvValues[animCrv]['keyOutWeights'] = keyOutWeights
+
+        # get inf attrs
+        animCrvValues[animCrv]['preInfinity'] = prePostInfDict[cmds.getAttr(animCrv+'.preInfinity')]
+        animCrvValues[animCrv]['postInfinity'] = prePostInfDict[cmds.getAttr(animCrv+'.postInfinity')]
+
+    return animCrvValues
+
+
 sel = cmds.ls(os=True)
 
 driver = sel[0]
@@ -82,18 +123,7 @@ setDrivenKeys(driver, driverAttr, driverValues,
 # get drivenkeys
 node = cmds.ls(os=True)[0]
 animCrvDrivers = getDrivenAnimCrvs(node=node)
-
-# get keyframe attrs
-keyTimes = cmds.keyframe(animCrv, floatChange=True, q=True)
-keyValues = cmds.keyframe(animCrv, valueChange=True, q=True)
-keyItts = cmds.keyTangent(animCrv, inTangentType=True, q=True)
-keyOtts = cmds.keyTangent(animCrv, outTangentType=True, q=True)
-
-# get keyTangent attrs
-keyInAngles = cmds.keyTangent(animCrv, inAngle=True, q=True)
-keyInWeights = cmds.keyTangent(animCrv, inWeight=True, q=True)
-keyOutAngles = cmds.keyTangent(animCrv, outAngle=True, q=True)
-keyOutWeights = cmds.keyTangent(animCrv, outWeight=True, q=True)
+animCrvValues = getAnimCrvValues(animCrvs=animCrvDrivers)
 
 # set keyframe attrs
 t = 10.0
