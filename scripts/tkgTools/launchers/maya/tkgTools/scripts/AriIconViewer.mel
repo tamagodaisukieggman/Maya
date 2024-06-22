@@ -1,0 +1,142 @@
+//--------------------------------------------------------------------------
+//
+// ScriptName : AriIconViewer
+// Contents   : Mayaに登録されているデフォルトアイコンを一覧
+// Author     : Ari
+// URL        : http://cgjishu.net/
+// Since      : 2014/05
+// LastUpdate : 2018/11/25
+// Note       : 
+//
+//--------------------------------------------------------------------------
+
+
+global proc AriIconViewer_buttonGo(string $png){
+	
+	global string $AriIconViewer_UI_PreviewIcon;
+	global string $AriIconViewerPreviewLabel;
+	
+	iconTextButton -e -i $png ($AriIconViewer_UI_PreviewIcon);
+	textField -e -text $png $AriIconViewerPreviewLabel;
+}
+global proc AriIconViewer_save(){
+	global string $AriIconViewer_UI_PreviewIcon;
+	string $png=`iconTextButton -q -i $AriIconViewer_UI_PreviewIcon`;
+	global string $AriIconViewerSavePath;
+	if ($AriIconViewerSavePath=="")$AriIconViewerSavePath=`internalVar -ubd`;
+	string $defDirectory=$AriIconViewerSavePath+$png;
+	string $pathList[]=`fileDialog2 -ds 2 -fm 0 -sff $png -ff "PNG (*.png)" -dir $defDirectory`;
+	string $path=$pathList[0];
+	if(endsWith($path,".png")){
+		print $path;
+		resourceManager -saveAs $png $path;
+		string $basename = basename( $path, "");
+		$AriIconViewerSavePath = startString ($path,size($path)-size($basename));
+	}
+}
+global proc AriIconViewer_ListGo(){
+	global string $AriIconViewer_UI_PreviewIcon;
+	global string $AriIconViewerSarchField;
+	global string $AriIconViewerFlowLayout;
+	global string $AriIconViewerScrollLayout;
+	global string $AriIconViewer_UI_SearchLabel;
+	global string $AriIconViewer_UI_abcLabel;
+	string $textABC = `textField -q -text $AriIconViewer_UI_abcLabel`;
+	string $pngList[] = `resourceManager -nameFilter "*.png"`;
+	string $searchText = `textField -q  -text $AriIconViewer_UI_SearchLabel`;
+	if(`flowLayout -ex $AriIconViewerFlowLayout`){
+		deleteUI $AriIconViewerFlowLayout;
+	}
+	$AriIconViewerFlowLayout = `flowLayout -h 3500 -cs 1  -wrap true -p $AriIconViewerScrollLayout`;
+	string $png;
+	int $counter = 0;
+	string $initialList[];
+	if($textABC != "ALL"){
+		string $toupperABC = toupper($textABC);
+		for($png in $pngList){
+			string $touPngText = toupper($png);
+			if(startsWith($touPngText,$toupperABC)){
+				$initialList[$counter] = $png;
+				$counter++;
+			}
+		}
+	}
+	else{
+		$initialList = $pngList;
+	}
+	string $viewPngList[];
+	vector $viewPngList_size[];
+	$counter = 0;
+	for($png in $initialList){
+		string $touPngText = toupper($png);
+		string $touSearchText = toupper($searchText);
+		if(`gmatch $touPngText ("*"+$touSearchText+"*")`){
+			$viewPngList[$counter] = $png;
+			$counter++;
+		}
+	}
+	print $viewPngList_size;
+	string $nowString = (startString($pngList[0],1));
+	//text -bgc 0 0 0  -w 12 -h 32  -l " ";
+	for($png in $viewPngList){
+		string $oneString = `toupper (startString($png,1))`;
+		if($nowString != $oneString){
+			button  -w 24 -h 32  -l $oneString -c ("AriIconViewer_abcChange(\""+$oneString+"\")");;
+			$nowString = $oneString;
+		}
+		iconTextButton -w 32 -h 32 -i $png -c ("AriIconViewer_buttonGo(\""+$png+"\")") ;
+	}
+	setParent..;
+	print (size($viewPngList)+"\n");
+}
+global proc AriIconViewer_abcChange(string $textABC){
+	global string $AriIconViewer_UI_abcLabel;
+	textField -e -text $textABC $AriIconViewer_UI_abcLabel;
+	AriIconViewer_ListGo();
+}
+global proc AriIconViewer(){
+	global string $AriIconViewer_UI_PreviewIcon;
+	global string $AriIconViewerPreviewLabel;
+	global string $AriIconViewerSarchField;
+	global string $AriIconViewerScrollLayout;
+	global string $AriIconViewer_UI_SearchLabel;
+	global string $AriIconViewer_UI_abcLabel;
+	string $alphabet[] = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
+	if((`window -ex  AriIconViewer`)==true)deleteUI AriIconViewer;
+	window -title "AriIconViewer"  -w 400 -h 100 AriIconViewer;
+	string $form=`formLayout`;
+	$AriIconViewer_UI_PreviewIcon  = `iconTextButton -i "commandButton.png"`;
+	$AriIconViewerPreviewLabel     = `textField -ed false -text "commandButton.png" -w 300`;
+	$AriIconViewer_UI_SearchLabel  = `textField -cc "AriIconViewer_ListGo();" -w 300`;
+	$saveButton=`button -l "png出力" -c "AriIconViewer_save" -w 80`;
+	string $buttonABC = `rowLayout -nc 30`;
+	button -l "ALL" -w 30 -c ("AriIconViewer_abcChange(\"ALL\")");
+	for($text in  $alphabet){
+		button -l $text -w 16 -c ("AriIconViewer_abcChange(\""+$text+"\")");
+	}
+	$AriIconViewer_UI_abcLabel = `textField -w 30 -ed false -text "ALL"`;
+	setParent..;
+	setParent..;
+	$AriIconViewerScrollLayout = `scrollLayout -cr true -mcw 200`;
+	setParent..;
+	setParent..;
+	setParent..;
+	formLayout -edit 
+	-af $AriIconViewer_UI_PreviewIcon "top"   0
+	-af $AriIconViewer_UI_PreviewIcon "left"   0
+	-af $AriIconViewerPreviewLabel "top"   0
+	-ac $AriIconViewerPreviewLabel "left"   0 $AriIconViewer_UI_PreviewIcon
+	-ac $AriIconViewer_UI_SearchLabel "top" 0 $AriIconViewerPreviewLabel
+	-ac $AriIconViewer_UI_SearchLabel "left"   0 $AriIconViewer_UI_PreviewIcon
+	-af $saveButton "top" 0 
+	-ac $saveButton "left" 0 $AriIconViewerPreviewLabel
+	-ac $buttonABC "top" 0 $AriIconViewer_UI_SearchLabel
+	-ac $buttonABC "left"   0 $AriIconViewer_UI_PreviewIcon
+	-ac $AriIconViewerScrollLayout "top"   0 $buttonABC
+	-af $AriIconViewerScrollLayout "left"   0
+	-af $AriIconViewerScrollLayout "bottom" 0
+	-af $AriIconViewerScrollLayout "right" 0
+	$form;
+	showWindow;
+	AriIconViewer_ListGo();
+}
