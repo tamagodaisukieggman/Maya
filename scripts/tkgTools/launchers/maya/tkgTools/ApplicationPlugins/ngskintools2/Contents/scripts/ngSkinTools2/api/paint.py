@@ -2,10 +2,10 @@ import copy
 import json
 
 from maya import cmds
-from PySide2 import QtCore
 
 from ngSkinTools2.api import internals, plugin
 from ngSkinTools2.api.log import getLogger
+from ngSkinTools2.api.pyside import QtCore
 from ngSkinTools2.api.python_compatibility import Object
 
 log = getLogger("api/paint")
@@ -47,6 +47,12 @@ class WeightsDisplayMode(Object):
     allInfluences = 0
     currentInfluence = 1
     currentInfluenceColored = 2
+
+
+# noinspection PyClassHasNoInit
+class MaskDisplayMode(Object):
+    default_ = 0
+    color_ramp = 1
 
 
 # noinspection PyClassHasNoInit
@@ -103,7 +109,10 @@ class PaintModeSettings(Object):
     tablet_mode = TabletMode.unused
     use_volume_neighbours = False
     limit_to_component_selection = False
-    fixed_influences_per_vertex = False  #: only applicable for smooth: is it allowed to add additional influences to a vertex when smoothing
+    fixed_influences_per_vertex = False
+    """
+    only applicable for smooth mode; when set to True, smoothing will not add additional influences to a vertex.
+    """
 
     def apply_primary_brush(self):
         self.__apply(1)
@@ -342,6 +351,7 @@ class DisplaySettings(Object):
         self.persistence = options.PersistentDict("paint_display_settings")
 
     weights_display_mode = internals.make_editable_property('weightsDisplayMode')
+    mask_display_mode = internals.make_editable_property('maskDisplayMode')
     layer_effects_display = internals.make_editable_property('layerEffectsDisplay')
     display_masked = internals.make_editable_property('displayMasked')
     show_selected_verts_only = internals.make_editable_property('showSelectedVertsOnly')

@@ -1,10 +1,6 @@
 import os
 
-from maya import OpenMayaUI as omui
-from PySide2 import QtCore, QtGui, QtWidgets
-from PySide2.QtWidgets import QWidget
-from shiboken2 import wrapInstance
-
+from ngSkinTools2.api.pyside import QtCore, QtGui, QtWidgets, get_main_window
 from ngSkinTools2.api.python_compatibility import Object
 
 
@@ -140,4 +136,4 @@ def select_data(combo, data):
     combo.setCurrentIndex(combo.findData(data))
 
 
-mainWindow = wrapInstance(int(omui.MQtUtil.mainWindow()), QWidget)
+mainWindow = get_main_window()

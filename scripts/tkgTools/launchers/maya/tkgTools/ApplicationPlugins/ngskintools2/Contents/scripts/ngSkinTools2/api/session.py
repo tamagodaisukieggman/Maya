@@ -87,7 +87,7 @@ class Session(Object):
 
         @signal.on(self.events.targetChanged)
         def on_target_change():
-            log.info("clearing target context")
+            log.info("target changed: clearing target context")
             self.context.selected_layers.set([])
 
         self.events.nodeSelectionChanged.emit()

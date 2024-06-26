@@ -1,7 +1,6 @@
-from PySide2 import QtCore, QtWidgets
-
 from ngSkinTools2 import api, cleanup, signal
 from ngSkinTools2.api import VertexTransferMode
+from ngSkinTools2.api.pyside import QtCore, QtWidgets
 from ngSkinTools2.api.session import session
 from ngSkinTools2.api.transfer import LayersTransfer
 from ngSkinTools2.decorators import undoable

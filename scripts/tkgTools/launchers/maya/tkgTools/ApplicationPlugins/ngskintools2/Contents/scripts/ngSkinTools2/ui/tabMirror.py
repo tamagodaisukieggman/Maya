@@ -1,9 +1,8 @@
-from PySide2 import QtWidgets
-
 from ngSkinTools2 import signal
 from ngSkinTools2.api import Mirror, MirrorOptions, VertexTransferMode
 from ngSkinTools2.api.log import getLogger
 from ngSkinTools2.api.mirror import set_reference_mesh_from_selection
+from ngSkinTools2.api.pyside import QtWidgets
 from ngSkinTools2.api.session import session
 from ngSkinTools2.ui import qt
 from ngSkinTools2.ui.layout import TabSetup, createTitledRow

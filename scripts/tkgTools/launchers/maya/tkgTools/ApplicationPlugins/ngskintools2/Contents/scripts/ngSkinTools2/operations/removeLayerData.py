@@ -2,10 +2,9 @@ import itertools
 
 from maya import cmds
 
-from ngSkinTools2.api import PaintTool
+from ngSkinTools2.api import PaintTool, target_info
 from ngSkinTools2.api.session import Session
 from ngSkinTools2.decorators import undoable
-from ngSkinTools2.mllInterface import MllInterface
 
 
 def as_list(arg):
@@ -31,7 +30,7 @@ def list_custom_nodes_for_mesh(mesh=None):
     list custom nodes only related to provided mesh. None means current selection
     """
 
-    skin_cluster = MllInterface(mesh=mesh).getTargetInfo()
+    skin_cluster = target_info.get_related_skin_cluster(mesh)
     if skin_cluster is None:
         return []
 

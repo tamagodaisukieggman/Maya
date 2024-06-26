@@ -1,8 +1,7 @@
-from PySide2 import QtCore, QtWidgets
-
 from ngSkinTools2 import api, signal
 from ngSkinTools2.api.log import getLogger
 from ngSkinTools2.api.mirror import MirrorOptions
+from ngSkinTools2.api.pyside import QtCore, QtWidgets
 from ngSkinTools2.api.session import session
 from ngSkinTools2.ui import qt, widgets
 from ngSkinTools2.ui.layout import TabSetup, createTitledRow

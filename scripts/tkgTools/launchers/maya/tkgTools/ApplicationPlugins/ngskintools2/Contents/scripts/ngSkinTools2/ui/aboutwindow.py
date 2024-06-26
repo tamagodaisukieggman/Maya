@@ -1,10 +1,8 @@
 import os
 from xml.sax.saxutils import escape as escape
 
-from PySide2 import QtWidgets
-from PySide2.QtCore import Qt
-
 from ngSkinTools2 import cleanup, version
+from ngSkinTools2.api.pyside import Qt, QtWidgets
 from ngSkinTools2.api.session import session
 from ngSkinTools2.ui import qt
 from ngSkinTools2.ui.layout import scale_multiplier
@@ -32,9 +30,9 @@ def show(parent):
             return layout
 
         def logo():
-            from PySide2 import QtSvg
+            from ngSkinTools2.api.pyside import QSvgWidget
 
-            w = QtSvg.QSvgWidget(os.path.join(os.path.dirname(__file__), "images", "logo.svg"))
+            w = QSvgWidget(os.path.join(os.path.dirname(__file__), "images", "logo.svg"))
 
             w.setFixedSize(*((70 * scale_multiplier,) * 2))
             layout.addWidget(w)
@@ -45,7 +43,7 @@ def show(parent):
         result.setAutoFillBackground(True)
 
         hSplit = QtWidgets.QHBoxLayout()
-        hSplit.setMargin(30)
+        hSplit.setContentsMargins(30, 30, 30, 30)
         result.setLayout(hSplit)
 
         hSplit.addLayout(leftSide())
@@ -59,7 +57,7 @@ def show(parent):
         result = QtWidgets.QWidget()
         layout = QtWidgets.QVBoxLayout()
         result.setLayout(layout)
-        layout.setMargin(30)
+        layout.setContentsMargins(30, 30, 30, 30)
 
         status = session.licenseClient.current_status()
         if status.licensed_to != "":
@@ -85,7 +83,7 @@ def show(parent):
     window.setWindowTitle("About ngSkinTools")
     layout = QtWidgets.QVBoxLayout()
     window.setLayout(layout)
-    layout.setMargin(0)
+    layout.setContentsMargins(0, 0, 0, 0)
 
     layout.addWidget(header())
     layout.addWidget(body())

@@ -1,13 +1,13 @@
 import random
 
 from maya import cmds
-from PySide2 import QtCore, QtWidgets
 
 import ngSkinTools2.api
 from ngSkinTools2 import signal
 from ngSkinTools2.api import Mirror
 from ngSkinTools2.api.layers import generate_layer_name
 from ngSkinTools2.api.log import getLogger
+from ngSkinTools2.api.pyside import QAction, QtCore
 from ngSkinTools2.api.session import session, withSession
 from ngSkinTools2.decorators import undoable
 from ngSkinTools2.ui import dialogs, qt
@@ -209,7 +209,7 @@ def build_action_randomize_influences_colors(session, parent):
     :type session: ngSkinTools2.api.session.Session
     """
 
-    result = QtWidgets.QAction("Randomize colors", parent)
+    result = QAction("Randomize colors", parent)
     result.setToolTip("Choose random colors for each influence, selecting from Maya's pallete of indexed colors")
 
     def color_filter(c):

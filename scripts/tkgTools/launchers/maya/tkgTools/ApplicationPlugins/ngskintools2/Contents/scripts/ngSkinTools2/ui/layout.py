@@ -1,6 +1,6 @@
 from maya import cmds
-from PySide2 import QtCore, QtWidgets
 
+from ngSkinTools2.api.pyside import QtCore, QtWidgets
 from ngSkinTools2.api.python_compatibility import Object
 from ngSkinTools2.ui import qt
 
@@ -13,7 +13,7 @@ except:
 
 def createTitledRow(title, contents, *additional_rows):
     row = QtWidgets.QFormLayout()
-    row.setMargin(0)
+    row.setContentsMargins(0, 0, 0, 0)
     label = QtWidgets.QLabel(title)
     # label.setAlignment(QtCore.Qt.AlignRight |QtCore.Qt.)
     label.setFixedWidth(100 * scale_multiplier)
@@ -31,7 +31,7 @@ def createTitledRow(title, contents, *additional_rows):
 class TabSetup(Object):
     def __init__(self):
         self.innerLayout = innerLayout = QtWidgets.QVBoxLayout()
-        innerLayout.setMargin(0)
+        innerLayout.setContentsMargins(0, 0, 0, 0)
         innerLayout.setSpacing(3 * scale_multiplier)
 
         self.scrollArea = scrollArea = QtWidgets.QScrollArea()
@@ -45,6 +45,6 @@ class TabSetup(Object):
         self.mainLayout = mainLayout = QtWidgets.QVBoxLayout()
         mainLayout.addWidget(scrollArea)
         mainLayout.addLayout(lowerButtonsRow)
-        mainLayout.setMargin(7)
+        mainLayout.setContentsMargins(7, 7, 7, 7)
 
         self.tabContents = qt.wrap_layout_into_widget(mainLayout)

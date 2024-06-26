@@ -1,10 +1,9 @@
-from PySide2 import QtGui, QtWidgets
-
 from ngSkinTools2 import signal
 from ngSkinTools2.api import BrushShape, PaintMode, PaintTool, WeightsDisplayMode
 from ngSkinTools2.api import eventtypes as et
 from ngSkinTools2.api.log import getLogger
-from ngSkinTools2.api.paint import BrushProjectionMode
+from ngSkinTools2.api.paint import BrushProjectionMode, MaskDisplayMode
+from ngSkinTools2.api.pyside import QAction, QActionGroup, QtGui, QtWidgets
 from ngSkinTools2.api.session import session
 from ngSkinTools2.ui import qt, widgets
 from ngSkinTools2.ui.layout import TabSetup, createTitledRow
@@ -31,13 +30,13 @@ def build_ui(parent, global_actions):
         def brush_mode_row3():
             row = QtWidgets.QVBoxLayout()
 
-            group = QtWidgets.QActionGroup(parent)
+            group = QActionGroup(parent)
 
             actions = {}
 
             # noinspection PyShadowingNames
             def create_brush_mode_button(t, mode, label, tooltip):
-                a = QtWidgets.QAction(label, parent)
+                a = QAction(label, parent)
                 a.setToolTip(tooltip)
                 a.setCheckable(True)
                 actions[mode] = a
@@ -73,10 +72,10 @@ def build_ui(parent, global_actions):
         def brush_shape_row():
             # noinspection PyShadowingNames
             result = QtWidgets.QToolBar()
-            group = QtWidgets.QActionGroup(parent)
+            group = QActionGroup(parent)
 
             def add_brush_shape_action(icon, title, shape, checked=False):
-                a = QtWidgets.QAction(title, parent)
+                a = QAction(title, parent)
                 a.setCheckable(True)
                 a.setIcon(QtGui.QIcon(icon))
                 a.setChecked(checked)
@@ -107,10 +106,10 @@ def build_ui(parent, global_actions):
         def brush_projection_mode_row():
             # noinspection PyShadowingNames
             result = QtWidgets.QToolBar()
-            group = QtWidgets.QActionGroup(parent)
+            group = QActionGroup(parent)
 
             def add(title, tooltip, mode, use_volume, checked):
-                a = QtWidgets.QAction(title, parent)
+                a = QAction(title, parent)
                 a.setCheckable(True)
                 a.setChecked(checked)
                 a.setToolTip(tooltip)
@@ -329,6 +328,19 @@ def build_ui(parent, global_actions):
         display_layout.addWidget(display_toolbar)
         layout.addLayout(createTitledRow("Influences display:", display_layout))
 
+        mask_display = QtWidgets.QComboBox()
+        mask_display.addItem("Default", MaskDisplayMode.default_)
+        mask_display.addItem("Color ramp", MaskDisplayMode.color_ramp)
+        mask_display.setMinimumWidth(1)
+        mask_display.setCurrentIndex(paint.display_settings.weights_display_mode)
+
+        @qt.on(mask_display.currentIndexChanged)
+        def influences_display_changed():
+            paint.display_settings.mask_display_mode = mask_display.currentData()
+            update_ui_to_tool()
+
+        layout.addLayout(createTitledRow("Mask display:", mask_display))
+
         show_effects = QtWidgets.QCheckBox("Show layer effects")
         layout.addLayout(createTitledRow("", show_effects))
         show_masked = QtWidgets.QCheckBox("Show masked weights")
@@ -350,7 +362,7 @@ def build_ui(parent, global_actions):
             paint.display_settings.show_selected_verts_only = show_selected_verts_only.isChecked()
 
         mesh_toolbar = QtWidgets.QToolBar()
-        toggle_original_mesh = QtWidgets.QAction("Show Original Mesh", mesh_toolbar)
+        toggle_original_mesh = QAction("Show Original Mesh", mesh_toolbar)
         toggle_original_mesh.setCheckable(True)
         mesh_toolbar.addAction(toggle_original_mesh)
         layout.addLayout(createTitledRow("", mesh_toolbar))
@@ -376,6 +388,7 @@ def build_ui(parent, global_actions):
             toggle_original_mesh.setChecked(PaintTool.is_painting() and not ds.display_node_visible)
 
             qt.select_data(influences_display, ds.weights_display_mode)
+            qt.select_data(mask_display, ds.mask_display_mode)
             show_effects.setChecked(ds.layer_effects_display)
             show_masked.setChecked(ds.display_masked)
             show_selected_verts_only.setChecked(ds.show_selected_verts_only)

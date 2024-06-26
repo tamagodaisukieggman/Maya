@@ -1,10 +1,8 @@
 import webbrowser
 
-from PySide2 import QtWidgets
-from PySide2.QtCore import Qt
-
 from ngSkinTools2.api import versioncheck
 from ngSkinTools2.api.log import getLogger
+from ngSkinTools2.api.pyside import Qt, QtWidgets
 from ngSkinTools2.ui.options import bind_checkbox, config
 
 from .. import cleanup, signal, version
@@ -93,7 +91,7 @@ def show(parent, silent_mode):
     window.setWindowTitle("ngSkinTools2 version update")
     layout = QtWidgets.QVBoxLayout()
     window.setLayout(layout)
-    layout.setMargin(0)
+    layout.setContentsMargins(0, 0, 0, 0)
 
     layout.addWidget(body())
     layout.addStretch(2)

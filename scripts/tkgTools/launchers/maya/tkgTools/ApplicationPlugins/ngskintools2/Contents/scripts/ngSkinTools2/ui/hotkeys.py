@@ -6,7 +6,8 @@ These functions will be embedded in end-user's hotkey setup by absolute path (pa
 so the names should not fluctuate.
 """
 
-from ngSkinTools2.api import PaintTool, WeightsDisplayMode, plugin
+from ngSkinTools2.api import NamedPaintTarget, PaintTool, WeightsDisplayMode, plugin
+from ngSkinTools2.api.paint import MaskDisplayMode
 from ngSkinTools2.api.session import session, withSession
 from ngSkinTools2.operations.paint import FloodAction, PaintAction
 from ngSkinTools2.ui.action import do_action_hotkey
@@ -65,10 +66,21 @@ def paint_tool_cycle_weights_display_mode():
     :return:
     """
     paint = session.paint_tool
-    paint.display_settings.weights_display_mode = {
-        WeightsDisplayMode.allInfluences: WeightsDisplayMode.currentInfluence,
-        WeightsDisplayMode.currentInfluence: WeightsDisplayMode.currentInfluenceColored,
-        WeightsDisplayMode.currentInfluenceColored: WeightsDisplayMode.allInfluences,
-    }.get(paint.display_settings.weights_display_mode, WeightsDisplayMode.allInfluences)
+
+    targets = session.state.currentInfluence.targets
+    is_mask_mode = targets is not None and len(targets) == 1 and targets[0] == NamedPaintTarget.MASK
+
+    settings = paint.display_settings
+    if is_mask_mode:
+        settings.mask_display_mode = {
+            MaskDisplayMode.default_: MaskDisplayMode.color_ramp,
+            MaskDisplayMode.color_ramp: MaskDisplayMode.default_,
+        }.get(settings.mask_display_mode, MaskDisplayMode.default_)
+    else:
+        settings.weights_display_mode = {
+            WeightsDisplayMode.allInfluences: WeightsDisplayMode.currentInfluence,
+            WeightsDisplayMode.currentInfluence: WeightsDisplayMode.currentInfluenceColored,
+            WeightsDisplayMode.currentInfluenceColored: WeightsDisplayMode.allInfluences,
+        }.get(settings.weights_display_mode, WeightsDisplayMode.allInfluences)
 
     session.events.toolChanged.emit()

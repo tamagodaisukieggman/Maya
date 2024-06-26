@@ -1,7 +1,6 @@
-from PySide2 import QtGui, QtWidgets
-
 from ngSkinTools2 import signal
 from ngSkinTools2.api import PasteOperation
+from ngSkinTools2.api.pyside import QAction, QtGui, QtWidgets
 from ngSkinTools2.api.python_compatibility import Object
 from ngSkinTools2.api.session import Session
 from ngSkinTools2.operations import import_export_actions, import_v1_actions
@@ -16,7 +15,7 @@ from ngSkinTools2.ui.updatewindow import build_action_check_for_updates
 
 
 def define_action(parent, label, callback=None, icon=None, shortcut=None, tooltip=None):
-    result = QtWidgets.QAction(label, parent)
+    result = QAction(label, parent)
     if icon is not None:
         result.setIcon(QtGui.QIcon(icon))
     if callback is not None:
@@ -50,7 +49,7 @@ def build_action_delete_custom_nodes_for_selection(parent, session):
 
 class Actions(Object):
     def separator(self, parent, label=""):
-        separator = QtWidgets.QAction(parent)
+        separator = QAction(parent)
         separator.setText(label)
         separator.setSeparator(True)
         return separator

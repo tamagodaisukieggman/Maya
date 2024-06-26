@@ -1,6 +1,5 @@
-from PySide2 import QtWidgets
-
 from ngSkinTools2 import signal
+from ngSkinTools2.api.pyside import QtWidgets
 from ngSkinTools2.ui import qt, widgets
 
 

@@ -1,6 +1,5 @@
-from PySide2 import QtCore, QtWidgets
-
 from ngSkinTools2 import signal
+from ngSkinTools2.api.pyside import QAction, QtCore, QtWidgets
 from ngSkinTools2.api.session import Session
 from ngSkinTools2.operations import import_v1_actions
 from ngSkinTools2.ui import influencesview, layersview, qt
@@ -28,7 +27,7 @@ def build_layers_ui(parent, actions, session):
         filter.setEditable(True)
         filter.lineEdit().setPlaceholderText("Search...")
         result.addWidget(filter)
-        clear = QtWidgets.QAction(result)
+        clear = QAction(result)
         clear.setIcon(img)
         filter.lineEdit().addAction(clear, QtWidgets.QLineEdit.TrailingPosition)
 
@@ -49,7 +48,7 @@ def build_layers_ui(parent, actions, session):
     split = QtWidgets.QSplitter(orientation=QtCore.Qt.Horizontal, parent=parent)
 
     layout = QtWidgets.QVBoxLayout()
-    layout.setMargin(0)
+    layout.setContentsMargins(0, 0, 0, 0)
     layout.setSpacing(3)
     clear = QtWidgets.QPushButton()
     clear.setFixedSize(20, 20)
@@ -60,7 +59,7 @@ def build_layers_ui(parent, actions, session):
     split.addWidget(qt.wrap_layout_into_widget(layout))
 
     layout = QtWidgets.QVBoxLayout()
-    layout.setMargin(0)
+    layout.setContentsMargins(0, 0, 0, 0)
     layout.setSpacing(3)
     influences = influencesview.build_view(parent, actions, session, filter=influencesFilter)
     layout.addWidget(influences)
@@ -111,7 +110,7 @@ def build_no_layers_ui(parent, actions, session):
         return result
 
     layout = QtWidgets.QVBoxLayout()
-    layout.setMargin(30)
+    layout.setContentsMargins(30, 30, 30, 30)
 
     selection_display = QtWidgets.QLabel("pPlane1")
     selection_display.setStyleSheet("font-weight: bold")

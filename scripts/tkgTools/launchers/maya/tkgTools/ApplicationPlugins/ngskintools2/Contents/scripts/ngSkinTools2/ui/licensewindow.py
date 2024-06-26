@@ -1,8 +1,6 @@
-from PySide2 import QtGui, QtWidgets
-from PySide2.QtCore import Qt
-
 from ngSkinTools2 import cleanup, licenseClient, signal
 from ngSkinTools2.api.log import getLogger
+from ngSkinTools2.api.pyside import Qt, QtGui, QtWidgets
 from ngSkinTools2.api.python_compatibility import Object
 from ngSkinTools2.api.session import session, withSession
 from ngSkinTools2.licenseClient import LicenseData
@@ -186,7 +184,7 @@ def show(parent, license_info=None):
     window.setWindowTitle("ngSkinTools license activation")
     layout = QtWidgets.QVBoxLayout()
     window.setLayout(layout)
-    layout.setMargin(0)
+    layout.setContentsMargins(0, 0, 0, 0)
 
     # noinspection PyShadowingNames
     def license_status():
@@ -227,7 +225,7 @@ def show(parent, license_info=None):
         update_license_status()
         update_message()
 
-        layout.setMargin(25)
+        layout.setContentsMargins(25, 25, 25, 25)
         return result
 
     def activation_method():
@@ -282,7 +280,7 @@ def show(parent, license_info=None):
 
     def activation_code_link_info():
         result = QtWidgets.QVBoxLayout()
-        result.setMargin(0)
+        result.setContentsMargins(0, 0, 0, 0)
         result.addSpacing(10)
         result.addWidget(QtWidgets.QLabel("Use this link to generate activation code:"))
         link_text = QtWidgets.QTextEdit()

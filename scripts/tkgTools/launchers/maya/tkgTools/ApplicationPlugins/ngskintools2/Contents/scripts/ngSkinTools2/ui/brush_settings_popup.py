@@ -1,7 +1,6 @@
-from PySide2 import QtCore, QtGui, QtWidgets
-
 from ngSkinTools2.api import PaintTool
 from ngSkinTools2.api.paint import popups
+from ngSkinTools2.api.pyside import QtCore, QtGui, QtWidgets
 from ngSkinTools2.ui import qt, widgets
 from ngSkinTools2.ui.layout import scale_multiplier
 
@@ -52,7 +51,7 @@ def brush_settings_popup(paint):
     group.setLayout(layout)
 
     layout = QtWidgets.QVBoxLayout()
-    layout.setMargin(4 * scale_multiplier)
+    layout.setContentsMargins(4 * scale_multiplier, 4 * scale_multiplier, 4 * scale_multiplier, 4 * scale_multiplier)
     layout.addWidget(group)
 
     window.setLayout(layout)

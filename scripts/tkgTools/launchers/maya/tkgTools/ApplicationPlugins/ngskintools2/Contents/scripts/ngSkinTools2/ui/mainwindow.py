@@ -1,9 +1,8 @@
-import maya.OpenMayaUI as omui
-import shiboken2
+from maya import OpenMayaUI as omui
 from maya import cmds
-from PySide2 import QtCore, QtGui, QtWidgets
 
 from ngSkinTools2.api.log import getLogger
+from ngSkinTools2.api.pyside import QtCore, QtGui, QtWidgets, QWidget, wrap_instance
 from ngSkinTools2.api.session import session
 from ngSkinTools2.ui.options import config
 
@@ -138,7 +137,7 @@ def build_ui(parent):
     split.setContentsMargins(spacing_h, spacing_v, spacing_h, spacing_v)
 
     def build_icon_label():
-        w = qt.QWidget()
+        w = QWidget()
         w.setStyleSheet("background-color: #dcce87;color: #373737;")
         l = QtWidgets.QHBoxLayout()
         icon = QtWidgets.QLabel()
@@ -172,10 +171,10 @@ def build_ui(parent):
 
     error_section = QtWidgets.QVBoxLayout()
     error_section.addWidget(build_license_error())
-    error_section.setMargin(0)
+    error_section.setContentsMargins(0, 0, 0, 0)
 
     layout = QtWidgets.QVBoxLayout(window)
-    layout.setMargin(0)
+    layout.setContentsMargins(0, 0, 0, 0)
     layout.addWidget(build_menu(window, actions))
     layout.addLayout(error_section)
     layout.addWidget(split)
@@ -241,7 +240,7 @@ def resume_in_workspace_control():
     """
 
     cmds.workspaceControl(DOCK_NAME, e=True, label="ngSkinTools " + version.pluginVersion())
-    widget = shiboken2.wrapInstance(int(omui.MQtUtil.findControl(DOCK_NAME)), QtWidgets.QWidget)
+    widget = wrap_instance(omui.MQtUtil.findControl(DOCK_NAME), QtWidgets.QWidget)
 
     ui, _ = build_ui(widget)
     widget.layout().addWidget(ui)

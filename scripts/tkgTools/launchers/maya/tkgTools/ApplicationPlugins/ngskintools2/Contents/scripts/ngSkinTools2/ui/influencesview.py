@@ -1,12 +1,12 @@
 import re
 
 from maya import cmds
-from PySide2 import QtCore, QtGui, QtWidgets
 
 from ngSkinTools2 import signal
 from ngSkinTools2.api.influenceMapping import InfluenceInfo
 from ngSkinTools2.api.layers import Layer
 from ngSkinTools2.api.log import getLogger
+from ngSkinTools2.api.pyside import QtCore, QtGui, QtWidgets
 from ngSkinTools2.api.python_compatibility import Object
 from ngSkinTools2.api.target_info import list_influences
 from ngSkinTools2.signal import Signal
@@ -140,23 +140,30 @@ def build_view(parent, actions, session, filter):
             bar.setMovable(False)
             bar.setIconSize(QtCore.QSize(13 * scale_multiplier, 13 * scale_multiplier))
 
+            def add_or_remove(input_list, items, should_add):
+                if should_add:
+                    return list(input_list) + list(items)
+                return [i for i in input_list if i not in items]
+
+            def lock_unlock_handler(lock):
+                def handler():
+                    targets = layer.paint_targets
+                    if item_id not in targets:
+                        targets = (item_id,)
+
+                    layer.locked_influences = add_or_remove(layer.locked_influences, targets, lock)
+                    log.info("updated locked influences to %r", layer.locked_influences)
+                    session.events.influencesListUpdated.emit()
+
+                return handler
+
             if "unlocked" in buttons:
                 a = bar.addAction(icon_unlocked, "Toggle locked/unlocked")
-
-                @qt.on(a.triggered)
-                def handler():
-                    layer.locked_influences = layer.locked_influences + [item_id]
-                    log.info("updated to %r", layer.locked_influences)
-                    session.events.influencesListUpdated.emit()
+                qt.on(a.triggered)(lock_unlock_handler(True))
 
             if "locked" in buttons:
                 a = bar.addAction(icon_locked, "Toggle locked/unlocked")
-
-                @qt.on(a.triggered)
-                def handler():
-                    layer.locked_influences = [i for i in layer.locked_influences if i != item_id]
-                    log.info("updated to %r", layer.locked_influences)
-                    session.events.influencesListUpdated.emit()
+                qt.on(a.triggered)(lock_unlock_handler(False))
 
             view.setItemWidget(item, 1, bar)
 
@@ -167,7 +174,6 @@ def build_view(parent, actions, session, filter):
             # calculate "used" regardless as we're displaying it visually even if "show used influences only" is toggled off
             used = set((layer.get_used_influences() or []))
             locked = set((layer.locked_influences or []))
-            log.info("locked influences: %r", locked)
             for i in items:
                 i.used = i.logicalIndex in used
                 i.locked = i.logicalIndex in locked

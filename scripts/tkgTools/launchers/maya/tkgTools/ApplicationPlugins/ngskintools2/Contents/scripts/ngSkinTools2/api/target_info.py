@@ -71,8 +71,8 @@ def add_influences(influences, target):
         return result
 
     existing = long_names([i.name if not i.path else i.path for i in list_influences(skin_cluster)])
-
-    for i in long_names(influences) - existing:
+    influences = long_names(influences)
+    for i in influences - existing:
         cmds.skinCluster(skin_cluster, edit=True, addInfluence=i, weight=0)
 
 

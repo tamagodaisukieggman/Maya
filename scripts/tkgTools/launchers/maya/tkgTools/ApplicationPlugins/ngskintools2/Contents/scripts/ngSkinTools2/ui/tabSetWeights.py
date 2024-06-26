@@ -1,8 +1,7 @@
-from PySide2 import QtWidgets
-
 from ngSkinTools2 import signal
 from ngSkinTools2.api import PaintMode, PaintModeSettings, flood_weights
 from ngSkinTools2.api.log import getLogger
+from ngSkinTools2.api.pyside import QAction, QActionGroup, QtWidgets
 from ngSkinTools2.api.python_compatibility import Object
 from ngSkinTools2.api.session import session
 from ngSkinTools2.signal import Signal
@@ -49,12 +48,12 @@ def build_ui(parent):
         def mode_row():
             row = QtWidgets.QVBoxLayout()
 
-            group = QtWidgets.QActionGroup(parent)
+            group = QActionGroup(parent)
 
             actions = {}
 
             def create_mode_button(toolbar, mode, label, tooltip):
-                a = QtWidgets.QAction(label, parent)
+                a = QAction(label, parent)
                 a.setToolTip(tooltip)
                 a.setStatusTip(tooltip)
                 a.setCheckable(True)

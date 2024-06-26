@@ -1,6 +1,5 @@
-from PySide2 import QtWidgets
-
 from ngSkinTools2 import api, signal
+from ngSkinTools2.api.pyside import QtWidgets
 from ngSkinTools2.ui.options import PersistentValue
 
 filter_normal_json = 'JSON files(*.json)'
