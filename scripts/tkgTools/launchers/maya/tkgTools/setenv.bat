@@ -51,3 +51,8 @@ set MAYA_PACKAGE_PATH=%MAYA_PACKAGE_PATH%;%launcherPath%ApplicationPlugins\ngski
 :: site-packagesの追加
 :: ----------------------------------------
 set PYTHONPATH=%PYTHONPATH%;%launcherPath%site-packages
+
+:: ----------------------------------------
+:: Legacy View Portの有効化
+:: ----------------------------------------
+MAYA_ENABLE_DEPRECATED_VIEWPORT=1
