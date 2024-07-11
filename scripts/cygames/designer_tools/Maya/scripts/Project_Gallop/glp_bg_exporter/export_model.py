@@ -37,7 +37,7 @@ def create_all(trans_nodes=[]):
 
     if len(trans_nodes) == 0:
         # 確認メッセージ
-        message_str = '「CyExportModel」によってエクスポートされるデータを確認用として作成します。'
+        message_str = '「TkgExportModel」によってエクスポートされるデータを確認用として作成します。'
         message_str += '\n' + '※作成されるデータはフラグによる追加処理を実行した後のものになります。'
         message_str += '\n'
         message_str += '\n' + '実行しますか？'

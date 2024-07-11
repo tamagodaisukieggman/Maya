@@ -23,7 +23,7 @@ from ..base_common import classes as base_class
 
 # ツールマニュアル
 # GallopSymmetricalWeightChecker：スキニングの対称性チェック
-# https://wisdom.cygames.jp/pages/viewpage.action?pageId=164733995
+# https://wisdom.tkgpublic.jp/pages/viewpage.action?pageId=164733995
 
 
 class Main(object):

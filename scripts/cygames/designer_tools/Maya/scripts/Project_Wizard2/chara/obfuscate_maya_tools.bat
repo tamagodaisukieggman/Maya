@@ -7,23 +7,23 @@ cd /d %~dp0
 set TARGET_ROOT=%1
 set EXPIRY_DATE=2023-12-31
 set TIME_STAMP=%date:~0,4%%date:~5,2%%date:~8,2%
-:: ƒoƒbƒ`‚Æ“¯‚¶ƒtƒHƒ‹ƒ_‚Éo—Í‚·‚é
-set OUT_FOLDER=%CD%\cygames_%TIME_STAMP%
+:: ï¿½oï¿½bï¿½`ï¿½Æ“ï¿½ï¿½ï¿½ï¿½tï¿½Hï¿½ï¿½ï¿½_ï¿½Éoï¿½Í‚ï¿½ï¿½ï¿½
+set OUT_FOLDER=%CD%\tkgpublic_%TIME_STAMP%
 
 if not defined TARGET_ROOT (
     echo;
-    echo “ï“Ç‰»‚µ‚½‚¢ƒtƒHƒ‹ƒ_‚ð‚±‚Ì.bat‚Éƒhƒ‰ƒbƒO•ƒhƒƒbƒv‚µ‚Ä‚­‚¾‚³‚¢
+    echo ï¿½ï¿½Ç‰ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½tï¿½Hï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.batï¿½Éƒhï¿½ï¿½ï¿½bï¿½Oï¿½ï¿½ï¿½hï¿½ï¿½ï¿½bï¿½vï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     echo;
     pause
     exit /b 1
 )
 
-:: .pyˆÈŠO‚Ìƒtƒ@ƒCƒ‹(maya2022.bat‚âreadme.txt)‚àŠO•”‹¦—Í‰ïŽÐ‚Ö“n‚µ‚½‚¢‚Ì‚Åæ‚Éo—Íæ‚É‘S•”ƒRƒs[‚µ‚Ä‚¨‚­
+:: .pyï¿½ÈŠOï¿½Ìƒtï¿½@ï¿½Cï¿½ï¿½(maya2022.batï¿½ï¿½readme.txt)ï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½ï¿½ï¿½Í‰ï¿½Ð‚Ö“nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì‚Åï¿½Éoï¿½Íï¿½É‘Sï¿½ï¿½ï¿½Rï¿½sï¿½[ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½
 robocopy %TARGET_ROOT% %OUT_FOLDER% /s /e /mir
 
-:: —LŒøŠúŒÀ‚Í‚Â‚¯‚È‚­‚ÄOK (2023/3 PMŠm”FÏ‚Ý)
-:: PyArmor‚ÍƒCƒ“ƒXƒg[ƒ‹Žž‚ÉŠÂ‹«•Ï”‚ÌPATH‚É’Ç‰Á‚µ‚Ä‚¢‚é‘O’ñ
-:: “ï“Ç‰»‚µ‚½.py‚ðo—Í
+:: ï¿½Lï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í‚Â‚ï¿½ï¿½È‚ï¿½ï¿½ï¿½OK (2023/3 PMï¿½mï¿½Fï¿½Ï‚ï¿½)
+:: PyArmorï¿½ÍƒCï¿½ï¿½ï¿½Xï¿½gï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ÉŠÂ‹ï¿½ï¿½Ïï¿½ï¿½ï¿½PATHï¿½É’Ç‰ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Oï¿½ï¿½
+:: ï¿½ï¿½Ç‰ï¿½ï¿½ï¿½ï¿½ï¿½.pyï¿½ï¿½ï¿½oï¿½ï¿½
 pyarmor-7 obfuscate --recursive --restrict 0 --exclude "pytransform,chara_utility\__init__.py,normal_editor\__init__.py,menu.py,userSetup.py" -O %OUT_FOLDER% %TARGET_ROOT%
 
 endlocal

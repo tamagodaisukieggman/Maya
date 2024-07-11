@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'D:\CyDesignerTools_Legacy\Maya\scripts\Project_Gallop\glp_dirt_psd_maker\ui\customMultilineModal.ui'
+# Form implementation generated from reading ui file 'D:\TkgDesignerTools_Legacy\Maya\scripts\Project_Gallop\glp_dirt_psd_maker\ui\customMultilineModal.ui'
 #
 # Created: Tue Jun  8 11:38:11 2021
 #      by: pyside2-uic  running on PySide2 2.0.0~alpha0

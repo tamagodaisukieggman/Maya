@@ -3,7 +3,7 @@ import subprocess
 import sys
 
 MAYA_EXE = "C:/Program Files/Autodesk/Maya2023/bin/maya.exe"
-TEST_MEL_PATH = "C:/cygames/shrdev/shr/tools/in/ext/maya/2023/modules/shr/tests/maya_test/exec_maya.mel"
+TEST_MEL_PATH = "C:/tkgpublic/shrdev/shr/tools/in/ext/maya/2023/modules/shr/tests/maya_test/exec_maya.mel"
 
 
 def remote_maya_test():

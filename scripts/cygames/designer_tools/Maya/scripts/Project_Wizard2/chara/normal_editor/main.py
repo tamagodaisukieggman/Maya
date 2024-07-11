@@ -43,7 +43,7 @@ reload(view)
 reload(drag_normal)
 
 # ===============================================
-# ツールマニュアル: https://wisdom.cygames.jp/pages/viewpage.action?pageId=495099672
+# ツールマニュアル: https://wisdom.tkgpublic.jp/pages/viewpage.action?pageId=495099672
 # ===============================================
 def main():
     main = Main()
@@ -369,7 +369,7 @@ class Main(object):
         import webbrowser
         try:
             webbrowser.open(
-                'https://wisdom.cygames.jp/pages/viewpage.action?pageId=495099672')
+                'https://wisdom.tkgpublic.jp/pages/viewpage.action?pageId=495099672')
         except Exception:
             print('マニュアルページがみつかりませんでした。')
 

@@ -1,5 +1,5 @@
 ﻿# -*- coding=utf-8 -*-
-# https://wisdom.cygames.jp/pages/viewpage.action?pageId=50413795
+# https://wisdom.tkgpublic.jp/pages/viewpage.action?pageId=50413795
 
 from __future__ import unicode_literals
 from __future__ import print_function

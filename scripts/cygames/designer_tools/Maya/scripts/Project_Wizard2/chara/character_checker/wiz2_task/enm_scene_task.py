@@ -26,8 +26,8 @@ class Wiz2EnmSceneLocation(CheckTaskBase):
         else:
             raise ValueError("")
         
-        boss_path = "C:/cygames/wiz2/team/3dcg/chr/enm/boss/"
-        minion_path = "C:/cygames/wiz2/team/3dcg/chr/enm/minion/"
+        boss_path = "C:/tkgpublic/wiz2/team/3dcg/chr/enm/boss/"
+        minion_path = "C:/tkgpublic/wiz2/team/3dcg/chr/enm/minion/"
         is_valid_path = True
         if enm_type == "boss":
             if boss_path not in self.maya_scene_data.name:

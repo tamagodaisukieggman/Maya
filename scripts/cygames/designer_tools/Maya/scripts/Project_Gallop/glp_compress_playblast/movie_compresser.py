@@ -17,12 +17,12 @@ import sys
 
 try:
     # gallop_maya_bootバッチから起動していれば各バージョンのサイトパッケージのパスが通っているはず
-    # py2: %APPDATA%\Cygames\GallopBoot\libs\python\python27\site-package
-    # py3: %APPDATA%\Cygames\GallopBoot\libs\python\python37\site-package
+    # py2: %APPDATA%\TKG\GallopBoot\libs\python\python27\site-package
+    # py3: %APPDATA%\TKG\GallopBoot\libs\python\python37\site-package
     if sys.version_info.major != 2:
         # ffmpeg
         appdata_path = os.getenv('APPDATA')
-        ffmpeg_dir = os.path.join(appdata_path, 'Cygames\\GallopBoot\\apps\\gpl\\ffmpeg-n5.0-latest-win64-gpl-shared-5.0\\bin')
+        ffmpeg_dir = os.path.join(appdata_path, 'TKG\\GallopBoot\\apps\\gpl\\ffmpeg-n5.0-latest-win64-gpl-shared-5.0\\bin')
         path_list = os.environ["Path"].split(';')
         if ffmpeg_dir not in path_list:
             os.environ["path"] += os.pathsep + ffmpeg_dir

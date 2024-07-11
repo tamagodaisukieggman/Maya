@@ -84,7 +84,7 @@ reload(facial_tear_anim_controller)
 reload(facial_blend_viewer)
 
 # ツールマニュアルページ
-# https://wisdom.cygames.jp/pages/viewpage.action?pageId=364265323#GallopCharaFaicialTool:キャラフェイシャルツール
+# https://wisdom.tkgpublic.jp/pages/viewpage.action?pageId=364265323#GallopCharaFaicialTool:キャラフェイシャルツール
 
 # ===============================================
 
@@ -142,7 +142,7 @@ class Main(object):
 
         self.window_name = self.tool_name + 'Win'
 
-        self.manual_url = 'https://wisdom.cygames.jp/pages/viewpage.action?pageId=364265323#GallopCharaFaicialTool:キャラフェイシャルツール'
+        self.manual_url = 'https://wisdom.tkgpublic.jp/pages/viewpage.action?pageId=364265323#GallopCharaFaicialTool:キャラフェイシャルツール'
 
         # スクリプトのパス関連
         self.script_file_path = os.path.abspath(__file__)

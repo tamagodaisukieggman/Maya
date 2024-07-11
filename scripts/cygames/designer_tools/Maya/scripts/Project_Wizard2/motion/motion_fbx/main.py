@@ -34,7 +34,7 @@ g_chara_prefixes = ['p1', 'p2', 'chr']  # 優先順
 g_namespace_parts_dict = {'bottoms': 'b', 'hair': 'h', 'shoes': 's', 'tops': 't', 'costume': ''}
 # Wizard2のモーション用でシーン内にあるtiming_boxノードのscaleZに
 # モーション分割用に入っているIN,LOOP,OUT用のキーフレームがある場合は分割アニメーションをエクスポートする
-g_ws_root = 'C:/cygames/wiz2'  # Perforceのワークスペース
+g_ws_root = 'C:/tkgpublic/wiz2'  # Perforceのワークスペース
 
 
 def main():
@@ -1211,7 +1211,7 @@ def show_manual():
     """コンフルのツールマニュアルページを開く
     """
     try:
-        webbrowser.open('https://wisdom.cygames.jp/pages/viewpage.action?pageId=513849649')
+        webbrowser.open('https://wisdom.tkgpublic.jp/pages/viewpage.action?pageId=513849649')
     except Exception:
         cmds.warning('マニュアルページがみつかりませんでした')
 

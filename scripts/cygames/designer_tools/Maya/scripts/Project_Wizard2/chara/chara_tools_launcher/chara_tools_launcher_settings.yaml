@@ -1,6 +1,6 @@
 ﻿sub_settings_path:
-  - C:\cygames\wiz2\tools\maya\settings\chara_tools_launcher\chara_tools_launcher_settings_3dcg.yaml
-  - C:\cygames\wiz2\tools\maya\settings\chara_tools_launcher\chara_tools_launcher_settings_user.yaml
+  - C:\tkgpublic\wiz2\tools\maya\settings\chara_tools_launcher\chara_tools_launcher_settings_3dcg.yaml
+  - C:\tkgpublic\wiz2\tools\maya\settings\chara_tools_launcher\chara_tools_launcher_settings_user.yaml
 
 tools:
   # カテゴリの作成
@@ -118,13 +118,13 @@ tools:
         command: from Project_Wizard2.chara import chara_check_animation_importer;chara_check_animation_importer.remove()
         enable: True
 
-  - name: CyWeightEditor
-    label: CyWeightEditor
+  - name: TkgWeightEditor
+    label: TkgWeightEditor
     icon: exportSmoothSkin.png
     type: command
-    tooltip: "Cygames標準のweight editor"
+    tooltip: "TKG標準のweight editor"
     type: command
-    command: import CyWeightEditor;import importlib;importlib.reload(CyWeightEditor);CyWeightEditor.UI()
+    command: import TkgWeightEditor;import importlib;importlib.reload(TkgWeightEditor);TkgWeightEditor.UI()
     enable: True
 
   - name: joint

@@ -16,7 +16,7 @@ def main():
         cmds.deleteUI(window_name)
     window = cmds.window(window_name, title="モーション下駄対応", iconName='HipTY', width=100, height=50)
     cmds.columnLayout(adjustableColumn=True)
-    cmds.text(l='<a href="https://wisdom.cygames.jp/pages/viewpage.action?pageId=495120346">help</a>', hl=True, align='left')
+    cmds.text(l='<a href="https://wisdom.tkgpublic.jp/pages/viewpage.action?pageId=495120346">help</a>', hl=True, align='left')
     cmds.text(label='キャラの下駄履き対応のモーション班用ツールです。\n' +
                     '選択したフォルダ内の全てのfbx内のHipジョイントのアニメーションカーブのTransform Yを1.5上にシフトします。\n' +
                     '使い捨てツールなので必要なくなったらメニューから外しますのでTAまでご連絡ください。', align='left', wordWrap=True)

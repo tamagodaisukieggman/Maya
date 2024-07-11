@@ -114,9 +114,9 @@ v2f vert(appdata_t v)
 
     // 顔用のライティング処理
     float3 vtxVector = posWorld - _FaceCenterPos.xyz;
-    float3 rawCylinderNormal = posWorld - (_FaceCenterPos.xyz + (dot(_FaceUp, vtxVector) * _FaceUp));
-    float3 cylinderNormal = normalize(rawCylinderNormal);
-    normal = lerp(mul(GetObjectToWorldMatrix(),float4(normal,0)).xyz, cylinderNormal, _CylinderBlend);
+    float3 rawTkglinderNormal = posWorld - (_FaceCenterPos.xyz + (dot(_FaceUp, vtxVector) * _FaceUp));
+    float3 cylinderNormal = normalize(rawTkglinderNormal);
+    normal = lerp(mul(GetObjectToWorldMatrix(),float4(normal,0)).xyz, cylinderNormal, _TkglinderBlend);
 
     // 顔ライティングの場合法線はすでにモデルマトリックスと計算済みなのでそのまま使う
     o.normalDir = normal;

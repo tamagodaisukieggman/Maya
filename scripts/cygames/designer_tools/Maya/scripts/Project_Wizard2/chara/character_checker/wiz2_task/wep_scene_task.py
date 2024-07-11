@@ -15,7 +15,7 @@ class Wiz2WepSceneLocation(CheckTaskBase):
         self.checker_info.label_name = "シーンの場所"
 
     def exec_task_method(self):
-        weapon_path = "C:/cygames/wiz2/team/3dcg/chr/wep/general/"
+        weapon_path = "C:/tkgpublic/wiz2/team/3dcg/chr/wep/general/"
         is_valid_path = True
         if weapon_path not in self.maya_scene_data.name:
             is_valid_path = False

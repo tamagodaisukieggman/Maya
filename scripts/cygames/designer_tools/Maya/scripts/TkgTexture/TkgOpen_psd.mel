@@ -1,0 +1,45 @@
+global proc TkgOpen_psd(){
+
+string $select_transfoem[] = `ls -sl -type "transform"`;
+string $select_matelias[] = `ls -sl -type "lambert"`;
+string $x , $mat_all[];
+
+if((`size $select_transfoem`) > 0){
+    for($x in $select_transfoem){
+        int $i = 0;
+        select $x;
+        hyperShade -smn "";
+        string $mat[] = `ls -sl`;
+        for($v in $mat){
+           $mat_all[$i] = $v;
+           $i++;
+        }       
+    }
+    $mat_all = stringArrayRemoveDuplicates($mat_all);//----�d���}�e���A���폜
+    yk_open_psd_cmd($mat_all);
+    select $select_transfoem;
+}
+else if((`size $select_matelias`) > 0){
+    yk_open_psd_cmd($select_matelias);
+    select $select_matelias;
+}  
+else{}  
+
+}
+
+global proc yk_open_psd_cmd(string $shader[]){//----�}�e���A������psd�J���֐�
+string $buffer[];
+for($c in $shader){
+    string $texnode[] = `listConnections -d false -type file $c`;
+    if((`size $texnode`) == 0){continue;}
+    string $texfile = `getAttr ($texnode[0] + ".fileTextureName")`;
+    int $size = `tokenize $texfile "." $buffer`;
+    if(`filetest -e ($buffer[0] + ".psd")`){
+        system("load" + $buffer[0] + ".psd");
+    }
+    else{
+        warning($texfile + "�Ɠ����t�H���_����psd�t�@�C��������܂���");
+    }
+}
+
+}

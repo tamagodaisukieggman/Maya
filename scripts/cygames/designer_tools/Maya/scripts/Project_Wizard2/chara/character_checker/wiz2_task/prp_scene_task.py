@@ -26,8 +26,8 @@ class Wiz2ProSceneLocation(CheckTaskBase):
         else:
             raise ValueError("")
         
-        costume_path = "C:/cygames/wiz2/team/3dcg/chr/pro/costume/"
-        general_path = "C:/cygames/wiz2/team/3dcg/chr/pro/general/"
+        costume_path = "C:/tkgpublic/wiz2/team/3dcg/chr/pro/costume/"
+        general_path = "C:/tkgpublic/wiz2/team/3dcg/chr/pro/general/"
         is_valid_path = True
         if prop_type == "costume":
             if costume_path not in self.maya_scene_data.name:

@@ -141,7 +141,7 @@ class SkinWeightCmd(OpenMayaMPx.MPxCommand):
 
 
 def initializePlugin(obj):
-    mplugin = OpenMayaMPx.MFnPlugin(obj, 'Cygames', '1.0', 'Any')
+    mplugin = OpenMayaMPx.MFnPlugin(obj, 'TKG', '1.0', 'Any')
     try:
         mplugin.registerCommand(
             SkinWeightCmd.kPluginCmdName,

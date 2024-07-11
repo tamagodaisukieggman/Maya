@@ -21,7 +21,7 @@ class DetailController:
         """コンフルのツールマニュアルページを開く"""
         try:
             webbrowser.open(
-                "https://wisdom.cygames.jp/pages/viewpage.action?pageId=756510863"
+                "https://wisdom.tkgpublic.jp/pages/viewpage.action?pageId=756510863"
             )
         except Exception:
             cmds.warning("マニュアルページがみつかりませんでした")

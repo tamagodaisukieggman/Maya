@@ -5,7 +5,7 @@ import maya.cmds as cmds
 import maya.mel as mel
 
 
-IMPORT_PATH = "c:/cygames/wiz2/team/3dcg/mot/weightcheck/fbx/"
+IMPORT_PATH = "c:/tkgpublic/wiz2/team/3dcg/mot/weightcheck/fbx/"
 # IMPORT_PATH = f"{Path(__file__).parent.as_posix()}/fbx/"
 IMPORT_NAMES = {
     "p1": ["an_p1_cmn_emote_900.fbx", "an_p1_cmn_emote_901.fbx"],

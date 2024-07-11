@@ -5,7 +5,7 @@ def main():
     :return: None
     """
     import maya.utils
-    menu_cmd = 'from menu import CygamesMenu;CygamesMenu.main()'
+    menu_cmd = 'from menu import TKGMenu;TKGMenu.main()'
     maya.utils.executeDeferred(menu_cmd)
 
 

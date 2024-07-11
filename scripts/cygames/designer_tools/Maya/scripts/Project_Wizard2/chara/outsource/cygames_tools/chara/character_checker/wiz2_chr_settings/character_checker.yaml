@@ -6,12 +6,12 @@ checker_settings:
   use_helps: False
   use_tools: False
   use_task_help_link: False
-  task_help_url: "https://wisdom.cygames.jp/pages/viewpage.action?pageId=673570123"
+  task_help_url: "https://wisdom.tkgpublic.jp/pages/viewpage.action?pageId=673570123"
 
 helps:
   - name: tool_document
     type: link
-    value: "https://wisdom.cygames.jp/pages/viewpage.action?pageId=673570123"
+    value: "https://wisdom.tkgpublic.jp/pages/viewpage.action?pageId=673570123"
 
 tools:
   - name: export_joint_attributes

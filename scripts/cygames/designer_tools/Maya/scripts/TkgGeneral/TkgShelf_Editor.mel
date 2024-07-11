@@ -1,0 +1,173 @@
+//---------------------------------------------------------���[�h
+
+global proc TkgShelf_Editor_Load(int $set)
+{
+
+menuItem -e -l "Load Set 1" TkgShelf_Editor_Item_l1;  
+menuItem -e -l "Load Set 2" TkgShelf_Editor_Item_l2; 
+menuItem -e -l "Load Set 3" TkgShelf_Editor_Item_l3;
+menuItem -e -l ("Load Set " + $set + " ��"Tkg("CyShelf_Editor_Item_l" + $set);
+
+int $file_1 , $file_2;
+string $buffer_icon[], $buffer_para[] , $buffer_winodw_size[] , $langu;
+string $myDir = `internalVar -userScriptDir`;
+
+$file_1 = `fopen ($myDir + "/" + "/TkgShelf_Editor_Savefile_" + $set + ".txt") "r"`;
+string $exampleFileName = ($myDir + "TkgShelf_Editor_Savefile_" + $set + ".txt");
+string $save_icon = freadAllText($exampleFileName);   
+if((`size $save_icon `) == 0){return;}
+//string $save_icon = `fread $file_1 $save_icon`; //----1024�o�C�g����������̂ŕs�g�p
+
+int $size = `tokenize $save_icon "��" $buffer_icon`;
+string $x;
+for($x in $buffer_icon){
+    int $size = `tokenize $x "��" $buffer_para`;
+    string $type = `substring $buffer_para[3] 1 6`;//----����w��iimport������΁j
+    if($type == "import"){
+       $langu = "python";
+    }
+    else{
+        $langu = "mel";
+	}
+    if($buffer_para[2] == " "){
+        shelfButton -rpt true -stp $langu -i1 $buffer_para[0] -l $buffer_para[1] -c $buffer_para[3] -ann $buffer_para[4] -p "TkgShelf_Editor_TAB";   
+    }
+    else{
+        shelfButton -rpt true -stp $langu -i1 $buffer_para[0] -l $buffer_para[1] -iol $buffer_para[2] -c $buffer_para[3] -ann $buffer_para[4] -p "TkgShelf_Editor_TAB";              
+    } 
+}
+fclose $file_1;
+
+$file_2 = `fopen ($myDir + "/" + "/TkgShelf_Editor_Save_window_" + $set + ".txt") "r"`;//----window
+string $save_icon_size = `fread $file_2$save_icon_size`;
+int $size = `tokenize $save_icon_size "," $buffer_winodw_size`;
+float $w = $buffer_winodw_size[0];//----�e�L�X�g�̐�����float�^�ɕϊ�
+float $h = $buffer_winodw_size[1];//----�e�L�X�g�̐�����float�^�ɕϊ�
+window -e -wh $w $h TkgShelf_Editor_WINDOW;	
+
+fclose $file_2;
+      
+}
+
+//---------------------------------------------------------�Z�[�u
+
+global proc TkgShelf_Editor_Save()
+{
+string $star1 , $star2 , $star3;
+int $set;
+string $star1 = `menuItem -q -l TkgShelf_Editor_Item_l1`;//----�Z�[�u��\���̏���
+string $star2 = `menuItem -q -l TkgShelf_Editor_Item_l2`;
+string $star3 = `menuItem -q -l TkgShelf_Editor_Item_l3`;
+if(`gmatch $star1 ("\*" + "��" + "\*")` == 1){    
+    $set = 1;
+}
+if(`gmatch $star2 ("\*" + "��" + "\*")` == 1){    
+    $set = 2;
+}
+if(`gmatch $star3 ("\*" + "��" + "\*")` == 1){    
+    $set = 3;
+}
+string $save1 =` confirmDialog -t "Confirm" -m ("Set " + $set + "  ��Save���Ă�낵���ł���?") -b "Yes" -b "No" `;
+if($save1 == "No"){return;} 
+ 
+string $shelf_name[] =`shelfLayout -q -ca "TkgShelf_Editor_TAB"`;
+string $myDir = `internalVar -userScriptDir`;
+if((`size $shelf_name`) > 0){
+    shelfButton -q -l $shelf_name[0];   
+    int $file_1 = `fopen ($myDir + "/" + "TkgShelf_Editor_Savefile_" + $set + ".txt") "w"`;
+    fopen ($myDir + "/" + "TkgShelf_Editor_Savefile_" + $set + ".txt") "a";
+    
+    string $x;
+    for($x in $shelf_name){
+        string $Iconname = `shelfButton -q -i1 $x`;//----�C���[�W
+        string $name = `shelfButton -q -l $x`;//----���O
+        string $IOL = `shelfButton -q -iol $x`;//----�I�[�o�[���C���O
+        string $comamnd_1 = `shelfButton -q -c $x`;//----�R�}���h���e
+        string $ann_1 = `shelfButton -q -ann $x`;//----����
+        
+        if(`size $Iconname` > 500 || `size $name` > 500 || `size $IOL` > 500 || `size $comamnd_1` > 500 || `size $ann_1` > 500){//----�e�ʂł����R�}���h������ƃX�g�b�v
+            confirmDialog -t "" -m "�����R�}���h�̃V�F���t���܂܂�Ă���̂ŃZ�[�u�ł��܂���ł���" -b "OK";
+            continue;
+        }
+        
+        if(`size $Iconname` == 0){$Iconname = " ";}
+        if(`size $name` == 0){$name = " ";}
+        if(`size $IOL` == 0){$IOL = " ";}
+        if(`size $comamnd_1` == 0){$comamnd_1 = " ";}
+        if(`size $ann_1` == 0){$ann_1 = " ";}
+        
+        fprint $file_1 ($Iconname + "��");
+        fprint $file_1 ($name + "��" );
+        fprint $file_1 ($IOL + "��");
+        int $a = `gmatch $comamnd_1 ("\*" + "mel.eval(" + "\*")`;//----.mel������ƃG���[�ł�̂ŕ����񂩂�폜
+        if($a == 1){
+            string $new = `substitute "mel.eval" $comamnd_1 "eval"`;
+            fprint $file_1 ($new + "��");
+        }
+        else{
+            fprint $file_1 ($comamnd_1 + "��");//----�A�C�R���P�ʉ��s
+        }
+        fprint $file_1 ($ann_1 + "��");//----�A�C�R���P�ʉ��s
+    }
+    fclose $file_1;
+}
+
+int $file_2 = `fopen ($myDir + "/" + "TkgShelf_Editor_Save_window_" + $set + ".txt") "w"`;
+fopen ($myDir + "/" + "TkgShelf_Editor_Save_window_" + $set + ".txt") "a";
+int $window_size[] = `window -q -wh TkgShelf_Editor_WINDOW`;
+fprint $file_2 ($window_size[0] + "," + $window_size[1] );  
+
+fclose $file_2;
+
+}
+
+//---------------------------------------------------------������
+
+global proc TkgShelf_Editor_Reset()
+{
+
+string $myDir = `internalVar -userScriptDir`;
+
+int $i = 1;
+for($i = 1 ; $i < 4 ; $i++){
+    if(`filetest -f ($myDir + "/TkgShelf_Editor_Savefile_" + $i + ".txt")` == 0){
+        int $file_1 = `fopen ($myDir + "/" + "/TkgShelf_Editor_Savefile_" + $i + ".txt") "w"`;
+        fprint $file_1 "polySphere.png������ ��polySphere -r 1 -sx 20 -sy 20 -ax 0 1 0 -cuv 2 -ch 1; objectMoveCommand;������";
+        fclose $file_1;  
+    } 
+    if(`filetest -f ($myDir + "/TkgShelf_Editor_Save_window_" + $i + ".txt")` == 0){
+        int $file_1 = `fopen ($myDir + "/" + "/TkgShelf_Editor_Save_window_" + $i + ".txt") "w"`;
+        fprint $file_1 "100,100";
+        fclose $file_1;  
+    }  
+}
+
+}
+
+//---------------------------------------------------------window
+
+global proc TkgShelf_Editor(int $flag)
+{
+
+if(`window -q -ex TkgShelf_Editor_WINDOW`){deleteUI TkgShelf_Editor_WINDOW;}    
+window -w 30 -h 100 -t "TkgShelf_Editor" -toolbox 1 -menuBar 1 TkgShelf_Editor_WINDOW;
+
+menu -l "Layout" ;
+menuItem -l "Save Set" -c "TkgShelf_Editor_Save()" TkgShelf_Editor_Item_s1;
+menuItem -divider true;
+menuItem -l "Load Set 1 ��" Tkg "CyShelf_Editor(Tkg; CyShelf_Editor_LoadTkg)"CyShelf_Editor_Item_l1;  
+menuItem -l "Load Set 2" -c "TkgShelf_Editor(0); TkgShelf_Editor_Load(2)"TkgShelf_Editor_Item_l2; 
+menuItem -l "Load Set 3" -c "TkgShelf_Editor(0); TkgShelf_Editor_Load(3)"TkgShelf_Editor_Item_l3;
+
+shelfLayout  -style "iconOnly" -bgc 0.26 0.26 0.26 "TkgShelf_Editor_TAB";
+setParent ..;setParent ..;
+
+showWindow TkgShelf_Editor_WINDOW;
+
+TkgShelf_Editor_Reset();//----window������
+
+if($flag == 1){
+    TkgShelf_Editor_Load(1);
+}
+
+}

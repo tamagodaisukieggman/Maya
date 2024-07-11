@@ -1,0 +1,459 @@
+
+global proc yk_UV_Mapping_Tool_Cmd()
+{
+
+string $selecm1[] = `filterExpand -sm 34`;  //---face
+string $selecm2[] = `filterExpand -sm 35`;  //---UV
+if(((`size $selecm1`)==0) && ((`size $selecm2`)==0)){return;}
+
+string $flag;
+if(`radioButton -q -sl yk_UV_Mapping_Tool_RADIO2`){
+	$flag = "c";
+}
+else if(`radioButton -q -sl yk_UV_Mapping_Tool_RADIO3`){
+	$flag = "x";
+}
+else if(`radioButton -q -sl yk_UV_Mapping_Tool_RADIO4`){
+	$flag = "y";
+}
+else if(`radioButton -q -sl yk_UV_Mapping_Tool_RADIO5`){
+	$flag = "z";
+}
+
+PolySelectConvert 1;
+polyProjection -ch 1 -type Planar -ibd on -kir -md $flag;
+PolySelectConvert 4;
+
+if(`checkBox -q -v yk_UV_Mapping_Tool_CHECK1`){  //----�����������I���̏ꍇ
+	yk_UV_Mapping_Tool_Cmd2();
+}
+
+}
+
+//------------------------------------------------------------------------------//�֐�
+
+global proc yk_UV_Mapping_Tool_Cmd2()
+{
+
+string $uv[] = `ls -sl -fl -l`;
+if((`size $uv`)==0){return;}
+string $uv_c[] = `polyListComponentConversion -tuv $uv`;
+float $uv_xy[] = `polyEditUV -q $uv_c[0]`;
+
+/////////////////////////////////////////////////////////texture�̃T�C�Y�𒲂ׂ�
+
+string $Shader[] = selectMaterial();
+string $layed[] = `listConnections -d false -type "layeredTexture" $Shader[0]`;  //----���C���[�e�N�X�`���m�[�h�擾
+string $material[] = `listConnections -d false -type file $Shader[0]`;  //----�e�N�X�`���m�[�h�擾
+
+if((`size $layed`) > 0){   
+    $material = `listConnections -d false -type file $layed[0]`;  //----���C���[�e�N�X�`���m�[�h�擾
+    string $bake = "bake";
+    int $tu = `gmatch $material[0] ("\*" + $bake + "\*")`;
+    if($tu == 1){
+        $material[0] = $material[1];
+    }        
+}
+if((`size $layed`) == 0 && (`size $material`) == 0){return;}  //----�e�N�X�`���m�[�h���Ȃ��}�e���A���͏I��
+
+string $mattex[];
+tokenize material[0] "." $mattex;
+int $tex_X = `getAttr ($material[0] + ".outSizeX")`;  //----�e�N�X�`���T�C�Y�@X �擾
+int $tex_Y = `getAttr ($material[0] + ".outSizeY")`;  //----�e�N�X�`���T�C�Y�@Y �擾
+
+/////////////////////////////////////////////////////////uv�̋����𒲂ׂ�
+
+float $tex_hiritsu = float($tex_X) / float($tex_Y);
+
+if($tex_hiritsu==1){}  //----�܂�tex�䗦���X�P�[�����Ă���
+else if($tex_hiritsu == 2 || $tex_hiritsu == 4){
+	polyEditUV -pu $uv_xy[0] -pv $uv_xy[1] -su (1 / $tex_hiritsu);
+}
+else if($tex_hiritsu == 0.5 || $tex_hiritsu == 0.25){
+	polyEditUV -pu $uv_xy[0] -pv $uv_xy[1] -su (1 / $tex_hiritsu);
+}
+else{
+    warning "���Ή��ȃe�N�X�`���T�C�Y�̂��߁A������������܂���ł���";
+}
+
+select $uv;
+string $c_uv[] = `ls -sl -fl`;
+string $full_uv[] = {$c_uv[0] , $c_uv[1]};
+select $full_uv;
+
+float $scale;
+$scale = yk_UV_Mapping_Tool_Pixel_seach(1);
+
+select $uv;
+SelectUVShell;
+if($scale == 0){return;}
+polyEditUV -pu $uv_xy[0] -pv $uv_xy[1] -su (1 / $scale) -sv (1 / $scale);  //----�𑜓x���X�P�[��
+
+}
+
+//------------------------------------------------------------------------------//�}�e���A���I��
+
+global proc string[] selectMaterial()
+{
+    string $uvs[] = `ls -sl`;
+    string $faces[] = `polyListComponentConversion -tf $uvs`;
+    $faces = `ls -fl $faces`;
+    string $materials[];
+    for($face in $faces){
+        $sg = `listSets -o $face`;
+		 $mat = `listConnections ($sg[0] + ".surfaceShader")`;
+		 if (stringArrayContains($mat[0] , $materials) == false){
+			 stringArrayInsertAtIndex(0 , $materials , $mat[0]);		
+		 }
+	 }	
+	 return $materials;
+}
+
+//------------------------------------------------------------------------------//�A���t�H�[���h
+
+global proc yk_UV_Mapping_Tool_Unfold( int $yk)
+{
+
+string $se[] = `ls -sl`;
+if((`size $se`) > 0){
+	PolySelectConvert 4;
+	int $i;
+	if($yk == 1){
+		$i = 0;
+	}
+	else if($yk == 2){
+		$i = 2;
+	}
+	else if($yk == 3){
+		$i = 1;
+	}
+	unfold -i 5000 -ss 0.001 -gb 0.0 -gmb 0.5 -pub 0 -ps 0 -oa $i -us off; 	
+	if(`checkBox -q -v yk_UV_Mapping_Tool_CHECK1`){  //----�����������I���̏ꍇ
+		yk_UV_Mapping_Tool_Cmd2();
+	}
+}
+
+}
+
+//------------------------------------------------------------------------------//�s�N�Z���T�C�N��
+
+global proc yk_UV_Mapping_Tool_Pixel()
+{
+
+int $value = `button -q -l yk_UV_Mapping_Tool_INT1`;
+
+if($value == 16){
+	button -e -w 38 -l 512 yk_UV_Mapping_Tool_INT1;
+}
+else{
+	button -e -w 38 -l ($value/2) yk_UV_Mapping_Tool_INT1;
+}
+yk_UV_Mapping_Tool_Save();  //----�Z�[�u
+
+}
+
+//------------------------------------------------------------------------------//�g�����X�T�C�N��
+
+global proc yk_UV_Mapping_Tool_Move()
+{
+
+$yk_UV_Mapping_Tool_INT2value =`button  -q  -l  yk_UV_Mapping_Tool_INT2`;
+
+if($yk_UV_Mapping_Tool_INT2value == 1.0){
+	button  -e -l 0.5 yk_UV_Mapping_Tool_INT2;
+}
+else if($yk_UV_Mapping_Tool_INT2value == 0.5){
+	button  -e -l 0.25 yk_UV_Mapping_Tool_INT2;
+}
+else if($yk_UV_Mapping_Tool_INT2value == 0.25){
+	button  -e -l (0.125) yk_UV_Mapping_Tool_INT2;
+}
+else if($yk_UV_Mapping_Tool_INT2value == 0.125){
+	button  -e -l (0.0625) yk_UV_Mapping_Tool_INT2;
+}
+else if($yk_UV_Mapping_Tool_INT2value == (0.0625)){
+	button  -e -l 1  yk_UV_Mapping_Tool_INT2;
+}
+button -e -w 51 yk_UV_Mapping_Tool_INT2;
+
+}
+
+//��-------------------------------------------------------------------------//�s�N�Z���T�[�`
+
+global proc float yk_UV_Mapping_Tool_Pixel_seach(int $flag)
+{
+
+float $uv_X[] , $uv_Y[];
+string $uv[] = `ls -sl -fl -type "float2"`;
+
+if((`size $uv`) != 2){ //----2�_�I���łȂ���ΏI��
+    button -e -w 230 -bgc 0.831 0.816 0.784 -l ("  UV��"+ (`size $uv`) +"�_�I������Ă��܂��@�v������2�_��I�����Ă�������") yk_UV_Mapping_Tool_BUTTON2;
+    return 0;
+}
+
+/////////////////////////////////////////////////////////texture�̃T�C�Y�𒲂ׂ�
+
+string $Shader[] = selectMaterial();
+string $layed[] = `listConnections -d false -type "layeredTexture" $Shader[0]`;  //----���C���[�e�N�X�`���m�[�h�擾
+string $material[] = `listConnections -d false -type file $Shader[0]`;  //----�e�N�X�`���m�[�h�擾
+if((`size $layed`) > 0){   
+    $material = `listConnections -d false -type file $layed[0]`;  //----���C���[�e�N�X�`���m�[�h�擾
+    string $bake = "bake";
+    int $tu = `gmatch $material[0] ("\*" + $bake + "\*")`;
+    if($tu == 1){
+        $material[0] = $material[1];
+    }     
+}
+if((`size $layed`) == 0 && (`size $material`) == 0){return 0;}  //----�e�N�X�`���m�[�h���Ȃ��}�e���A���͏I��
+
+string $mattex[];
+tokenize material[0] "." $mattex;
+int $tex_X = `getAttr ($material[0] + ".outSizeX")`;  //----�e�N�X�`���T�C�Y�@X �擾
+int $tex_Y = `getAttr ($material[0] + ".outSizeY")`;  //----�e�N�X�`���T�C�Y�@Y �擾
+
+/////////////////////////////////////////////////////////uv�̋����𒲂ׂ�
+
+float $get_uv1[] , $get_uv2[];
+float $tex_hiritsu = float($tex_X) / float($tex_Y);
+
+if($tex_hiritsu == 1 || $tex_hiritsu == 0.5 || $tex_hiritsu == 0.25 || $tex_hiritsu == 2 || $tex_hiritsu == 4){  //----�䗦������
+	polyEditUV -sv (1 / $tex_hiritsu);  //----�䗦��UV�̃X�P�[��������
+	float $get_uv1[] = `polyEditUV -q $uv[0]`;  //----���̒l���擾
+	float $get_uv2[] = `polyEditUV -q $uv[1]`;
+	polyEditUV -sv $tex_hiritsu;  //----�擾��X�P�[�������ɖ߂�
+	$uv_X[0] = $get_uv1[0];
+	$uv_X[1] = $get_uv2[0];
+	$uv_X = `sort $uv_X`;
+	$uv_Y[0] = $get_uv1[1];
+	$uv_Y[1] = $get_uv2[1];
+	$uv_Y = `sort $uv_Y`;
+}
+else{  //---�䗦�O�͏I��
+	button -e -w 230 -l ("���Ή��̃e�N�X�`���T�C�Y�ł�") -bgc 1 1 1  yk_UV_Mapping_Tool_BUTTON2;
+	return 0;
+}
+
+float $aa = ($uv_X[1] - $uv_X[0]) * ($uv_X[1] - $uv_X[0]);
+float $bb = ($uv_Y[1] - $uv_Y[0]) * ($uv_Y[1] - $uv_Y[0]);
+float $uv_hiritsu = sqrt ($aa + $bb);  //----UV�䗦�l�擾�i0�`1�̒l�j
+if($uv_hiritsu == 0){
+    $uv_hiritsu+=0.00001;
+}
+print ("UV�䗦�@"+$uv_hiritsu);
+/////////////////////////////////////////////////////////vertex�̋����𒲂ׂ�
+
+string $vertex1[] = `polyListComponentConversion -tv $uv[0]`;  //----uv1��vertex1�ɕϊ�
+string $vertex2[] = `polyListComponentConversion -tv $uv[1]`;  //----uv2��vertex2�ɕϊ�
+vector $vector1 = `pointPosition -w $vertex1[0]`;  //----vertex1�̍��W���擾
+vector $vector2 = `pointPosition -w $vertex2[0]`;  //----vertex2�̍��W���擾
+float $vertex_distance = `mag ($vector1 - $vector2)`;  //----vertex�Ԃ̋����̎擾
+if(`currentUnit -query -linear` == "cm"){   	
+   $vertex_distance = $vertex_distance * 0.01; 
+}
+
+print (" �@�@�@�@���_�����@"+$vertex_distance);
+
+/////////////////////////////////////////////////////////
+
+int $pixel = `button -q -l yk_UV_Mapping_Tool_INT1`;
+
+int $genzai = ($tex_X / (1 / $uv_hiritsu));  //----����pixel�擾
+int $tekisetsu = $vertex_distance * $pixel;  //----�K��pixel�擾
+float $size = (1 / $uv_hiritsu);
+float $scale = ($tex_X /$size) / ($vertex_distance * $pixel);
+$scale = yk_UV_Mapping_Tool_SISYA($scale , 4);  //----�l�̌ܓ��̐��l�ɂ���
+
+print (" �@�@�@�@���݁@"+$genzai);
+print (" �@�@�@�@�K�؁@"+$tekisetsu);
+print (" �@�@�@�@�X�P�[���@"+$scale);
+print ("@"+$scale);
+if($flag == 1){return $scale;}  //----��
+
+button -e -w 230 -l (" ����:"+$genzai+"Pix" +"   " +"�K��:"+$tekisetsu+"Pix"+"   "+$scale) yk_UV_Mapping_Tool_BUTTON2;
+
+float $a = $genzai;  //----float�ɃL���X�g
+float $b = $tekisetsu;
+$resize = yk_UV_Mapping_Tool_SISYA(($b / $a) , 4);  //----�l�̌ܓ��̐��l�ɂ���
+floatField -e -v $resize yk_UV_Mapping_Tool_FloatField;
+
+float $rgb[];
+if ($genzai >= ($tekisetsu * 1.2)){  //----�Ō�䗦�̃J���[�\��
+    $rgb = {1.0 , 0.8 , 0.8};
+}
+else if($genzai <= ($tekisetsu * 0.8)){
+    $rgb = {0.8 , 0.8 , 1.0};
+}
+else{
+    $rgb = {1.0 , 1.0 , 1.0};
+}
+button -e -w 230 -l (" ����:"+$genzai+"Pix" +"   " +"�K��:"+$tekisetsu+"Pix"+"   "+$scale) -bgc $rgb[0] $rgb[1] $rgb[2] yk_UV_Mapping_Tool_BUTTON2;
+return 0;
+
+}
+
+//-------------------------------------------------------------------------//UV���T�C�Y
+
+global proc yk_UV_Mapping_Tool_Resize()
+{
+
+string $sele[] = `ls -sl -type float2`;
+if((`floatField -q -v yk_UV_Mapping_Tool_FloatField`) != 0){
+	if((`size $sele`) > 0){
+		float $get = `floatField -q -v yk_UV_Mapping_Tool_FloatField`;
+		SelectUVShell;
+		polyMoveUV -su $get -sv $get;
+	}
+}
+
+}
+
+//----------------------------------------------------------------------------------//�l�̌ܓ��T���v��
+
+global proc float  yk_UV_Mapping_Tool_SISYA (float $inValue, int $precision)
+{
+           int $negative = 0;
+           if ($inValue < 0.0){
+                      $inValue = -$inValue;
+                      $negative = 1;
+           }// ----Example: yk_Transform_Clean_com2 1.26456 2
+
+           $adjuster = 5.0 / pow (10,$precision);// ----$adjuster = 0.05
+           $gain = pow (10, ($precision-1));// ----$gain = 10
+           $inValue = $inValue + $adjuster;//----1.26456 + 0.05 = 1.31456
+           $inValue = $inValue * $gain;// ----1.26456 * 10 = 13.1456
+           $inValue = floor($inValue);//---- floor(13.1456) = 13
+           $inValue = $inValue / $gain;// ----13 / 10 = 1.3
+
+           if ($negative){
+                       $inValue = -$inValue;
+           }
+           return $inValue;
+}
+
+//----------------------------------------------------------------//�Z�[�u
+
+global proc yk_UV_Mapping_Tool_Save()
+{
+
+string $myScriptDir = `internalVar -userScriptDir`;
+$CBC_listId = `fopen ($myScriptDir +"/"+"yk_UV_Mapping_Tool"+".txt") "w"`;
+fopen ($myScriptDir +"/"+"yk_UV_Mapping_Tool" + ".txt") "a";
+
+int $kei = `button -q -l yk_UV_Mapping_Tool_INT1`;
+fprint $CBC_listId $kei;
+fprint $CBC_listId ",";
+fprint $CBC_listId "old";
+
+fclose $CBC_listId;
+
+}
+
+//-----------------------------------------------------------------------//���[�h
+
+global proc yk_UV_Mapping_Tool_Lord()
+{
+
+int $CBC_listId;
+string $myScriptDir = `internalVar -userScriptDir`;
+int $zo = `filetest -f ($myScriptDir+"/yk_UV_Mapping_Tool.txt")`;
+if($zo == 1){
+	$CBC_listId = `fopen($myScriptDir +"/"+ "yk_UV_Mapping_Tool" + ".txt") "r"`;
+	string  $text = `fread $CBC_listId $text`;
+	string $buffer[];
+	int $buffer_size = `tokenize $text "," $buffer`;
+
+	button -e -l $buffer[0] yk_UV_Mapping_Tool_INT1;
+	button -e -w 38 yk_UV_Mapping_Tool_INT1;
+}
+
+fclose $CBC_listId;
+
+}
+
+//------------------------------------------------------------------------------//WINDOW
+
+global proc TkgUVMapping_Tool()
+{
+
+if(`window -q -ex yk_UV_Mapping_Tool_WINDOW`){deleteUI yk_UV_Mapping_Tool_WINDOW;}
+
+window -t "UV Mapping Tool" -toolbox 1 -s 1 yk_UV_Mapping_Tool_WINDOW;
+columnLayout -adjustableColumn true ;
+
+
+frameLayout -label " Development UV" -borderStyle "etchedIn";
+columnLayout;
+
+rowLayout -nc 4 -cw4 1 175 250 50;
+text -l "";
+text -l " Auto Adjusts UVsize";
+checkBox -l  "On" -v 1 yk_UV_Mapping_Tool_CHECK1;
+text -l "";
+setParent ..;
+
+separator -height 6 -style "none";
+
+rowLayout -nc 6 -cw6 3 54 67 35 35 38;
+text -l "";
+radioCollection;
+radioButton -label "None" -select yk_UV_Mapping_Tool_RADIO1;
+radioButton -label "Camera" yk_UV_Mapping_Tool_RADIO2;
+radioButton -label "X" yk_UV_Mapping_Tool_RADIO3;
+radioButton -label "Y" yk_UV_Mapping_Tool_RADIO4;
+radioButton -label "Z" yk_UV_Mapping_Tool_RADIO5;
+setParent ..;
+
+separator -height 5 -style "none";
+
+rowLayout -nc 2 -cw2 2 150;
+text -l "";
+button -w 230 -h 22 -l "Apply" -c"yk_UV_Mapping_Tool_Cmd()";
+setParent..; 
+
+separator -height 6 -style "none";
+
+rowLayout -nc 6 -cw6 2 150 40 10 5 5;
+text -l "";
+text  -h 22 -l " Texture size 1m  =";
+button -w 38 -h 22 -l 128 -bgc 1 1 1 -c "yk_UV_Mapping_Tool_Pixel()" yk_UV_Mapping_Tool_INT1;
+text -l " Pixel";
+setParent..; 
+
+separator -height 6 -style "none";
+separator -hr true -w 250 -style "in";
+separator -height 6 -style "none";
+
+rowLayout -nc 4 -cw4 2 68 68 68;
+text -l "";
+button -w 75 -h 22 -l "Unfold" -c "yk_UV_Mapping_Tool_Unfold(1)" -ann "U+V�ɃA���t�H�[�h�����s���܂�";
+button -w 75 -h 22 -l "U" -c "yk_UV_Mapping_Tool_Unfold(2)" -ann "U�݂̂ɃA���t�H�[�h�����s���܂�";
+button -w 76 -h 22 -l "V" -c "yk_UV_Mapping_Tool_Unfold(3)" -ann "V�݂̂ɃA���t�H�[�h�����s���܂�";
+
+setParent ..;
+separator -height 6 -style "none";
+setParent ..;setParent ..;
+
+separator -height 6 -style "none";
+
+rowLayout -nc 3 -cw3 4 188 30;
+text -l "";
+button -w 230 -h 22 -l "Pixel Search"-c "yk_UV_Mapping_Tool_Pixel_seach(0)" -ann "UV�Ԃ̌��݂̃s�N�Z���ƓK�؂ȃs�N�Z����\�����܂�" yk_UV_Mapping_Tool_BUTTON2;
+setParent..; 
+
+separator -height 4 -style "none";
+
+rowLayout -nc 6 -cw6 3 36 60 43 100 5;
+text -l "";
+text  -h 22 -l" Scale";
+floatField -w 60 -h 22 -pre 3 -v 0 -min -100 yk_UV_Mapping_Tool_FloatField;
+button -w 131 -h 22 -l "UV Resize" -c "yk_UV_Mapping_Tool_Resize()" -ann "����pix��K��pix�ɂ���UV�X�P�[���l��UVSell�ŃX�P�[������܂�" yk_UV_Mapping_Tool_BUTTON3;
+setParent..; 
+
+separator -height 6 -style "none";
+
+showWindow yk_UV_Mapping_Tool_WINDOW;
+window -e -wh 246 243 yk_UV_Mapping_Tool_WINDOW;
+
+yk_UV_Mapping_Tool_Lord();  //----���[�h
+}
+

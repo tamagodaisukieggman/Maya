@@ -39,7 +39,7 @@ from ..character_checker import app as chr_checker
 g_tool_name = "Wizard2CharaUtility"
 CURRENT_PATH = os.path.dirname(__file__)
 YAML_PATH = (
-    r"C:\cygames\wiz2\tools\maya\settings\character_utility" + r"\utility_settings.yaml"
+    r"C:\tkgpublic\wiz2\tools\maya\settings\character_utility" + r"\utility_settings.yaml"
 )
 
 
@@ -244,7 +244,7 @@ def show_manual():
     """コンフルのツールマニュアルページを開く"""
     try:
         webbrowser.open(
-            "https://wisdom.cygames.jp/pages/viewpage.action?pageId=440909007"
+            "https://wisdom.tkgpublic.jp/pages/viewpage.action?pageId=440909007"
         )
     except Exception:
         cmds.warning("マニュアルページがみつかりませんでした")

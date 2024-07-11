@@ -1,0 +1,71 @@
+global proc TkgUVSnap()
+{
+
+string $sels[] = `ls -sl -fl -type float2`;
+string $hilite_model[]=`ls -hl`;
+string $tokens[] , $object , $vertex , $obj;
+if((`size $sels`)==0){return;}
+
+int $numTokens = `tokenize $sels[0] "." $tokens`;  //----�R���|�[�l���g�����Ȃ����I�u�W�F�N�g���𒊏o
+if($numTokens > 0) {
+	$object = $tokens[0];
+}
+
+string $get[] , $obj; //----�SUV��$get�Ɋi�[
+int $cc=0 , $i=0;  //----$CC�͑SUV�����J�E���g�A$i��1�ɑSUV���i�[
+for($obj in $hilite_model) { 
+	int $sizeUV[] = `polyEvaluate -uv $obj `;  //----UV�����擾
+	for($i = 0 ; $i < ($sizeUV[0] ) ; $i++) { 
+		$get[$cc] = $obj + ".map[" + $i + "]";
+		$cc++;
+	}
+	$i=0;
+}
+
+string $diffs[] = stringArrayRemove($sels, $get);
+
+/////////////////////////    
+int $amount = 0;
+int $size = `size  $sels`;
+/////////////////////////    
+
+for($vertex in $sels){
+/////////////////////////    
+	progressWindow -t "Working" -progress $amount -min 0 -max $size -status "Completed : "-isInterruptable true;
+	progressWindow -e -progress $amount -status ( "Completed UV : "+$amount+" / "+ $size );
+/////////////////////////  
+
+	float $selectedUV[] = `polyEditUV -q $vertex`;  //----�I��UV�l���擾
+
+	float $diff[], $min_diff[], $dist, $min_dist;
+	int  $flag=0 ,$c=0;
+
+	string $v;
+	for($v in $diffs) {  //----���b�V��UV�ɑ΂��郋�[�v
+
+		float $UV[] = `polyEditUV -q $v`;  //----�eUV�̒l���擾���A�I��UV�Ƃ̋������Z�o
+		$diff[0] = $UV[0] - $selectedUV[0];
+		$diff[1] = $UV[1] - $selectedUV[1];
+		$dist = `sqrt ($diff[0] * $diff[0] + $diff[1] * $diff[1])`;
+		if($c == 0 || $dist < $min_dist) {  //----�ŒZ������UV���L�^
+			$min_dist = $dist;
+			$min_diff[0] = $diff[0];
+			$min_diff[1] = $diff[1];
+			$c++;
+		}
+	}
+
+/////////////////////////  
+	if ( `progressWindow -q -isCancelled` ) break;
+	if ( `progressWindow -q -progress` >= $size) break;
+	$amount += 1;
+	//pause -seconds 1;
+/////////////////////////  
+
+	polyEditUV -r true -u $min_diff[0] -v $min_diff[1] $vertex ;  //----�I��UV���A�ŒZ�����ɂ���UV�Ɉړ�
+	clear $min_diff;
+}
+
+progressWindow -endProgress;
+
+}

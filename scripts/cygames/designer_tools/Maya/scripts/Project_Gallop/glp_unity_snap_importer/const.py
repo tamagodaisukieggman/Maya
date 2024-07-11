@@ -70,7 +70,7 @@ ALL_OBJ_ATTR_DICT = {
     ATTR_ORG_LIGHT_DIR_KEY: 'xOriginalDirectionalLightDir',
     ATTR_CHEEK_PRETENSE_KEY: 'xCheekPretenseThreshold',
     ATTR_NOSE_PRETENSE_KEY: 'xNosePretenseThreshold',
-    ATTR_CYLINDER_BLEND_KEY: 'xCylinderBlend',
+    ATTR_CYLINDER_BLEND_KEY: 'xTkglinderBlend',
     ATTR_HAIR_BLEND_KEY: 'xHairNormalBlend',
     ATTR_CHARA_COLOR_KEY: 'xCharaColor',
     ATTR_TOON_BRIGHT_KEY: 'xToonBrightColor',

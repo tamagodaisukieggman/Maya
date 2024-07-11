@@ -113,7 +113,7 @@ class BoneImporter:
         Args:
             character_type (str): キャラクターの種類(p0/p1/p2)
         """
-        base_path = "C:/cygames/wiz2/team/3dcg/chr/cmn/bone/basebone01/fbx"
+        base_path = "C:/tkgpublic/wiz2/team/3dcg/chr/cmn/bone/basebone01/fbx"
         if character_type == "p1":
             self.import_fbx(f"{base_path}/p1_basebone01.fbx")
         elif character_type == "p2":

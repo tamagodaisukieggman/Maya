@@ -1,0 +1,19 @@
+global proc TkgBatchRender(string $targetPath)
+{	
+	//�����_�����O�p�̃e�L�X�g�쐬
+	string $renderTextPath = python("import TkgBatchRender;reload(TkgBatchRender);TkgBatchRender.Execute(\"" + $targetPath + "\")");
+
+	//�t�@�C���`�F�b�N��A�����_�����O�J�n
+	$existFile = `filetest -f $renderTextPath`;
+
+	if($existFile)
+	{
+		print "Rendering...";
+
+		system($renderTextPath);
+		
+		sysFile -delete $renderTextPath;
+
+		print "Complete!\r\n";
+	}
+}

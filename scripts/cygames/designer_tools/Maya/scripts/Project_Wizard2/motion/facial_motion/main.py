@@ -124,7 +124,7 @@ class FacialMotionWindow(MayaQWidgetBaseMixin, QtWidgets.QMainWindow):
         """
         import webbrowser
         try:
-            webbrowser.open('https://wisdom.cygames.jp/pages/viewpage.action?pageId=741538008')
+            webbrowser.open('https://wisdom.tkgpublic.jp/pages/viewpage.action?pageId=741538008')
         except Exception:
             cmds.confirmDialog(title='FacialMotionTool', message='マニュアルのURLが開けませんでした')
 
@@ -230,7 +230,7 @@ class FacialMotionWindow(MayaQWidgetBaseMixin, QtWidgets.QMainWindow):
             eyebrow_mesh_to_hide (str): インポート後、代わりに非表示にするメッシュ
         """
         # rig班が作っているツールの設定json
-        p4_tool_json_path = 'C:/cygames/wiz2/tools/maya/scripts/rig/avatarReferenceTool/data/avatar_collection.json'
+        p4_tool_json_path = 'C:/tkgpublic/wiz2/tools/maya/scripts/rig/avatarReferenceTool/data/avatar_collection.json'
         if not os.path.exists(p4_tool_json_path):
             p4_tool_json_path = cmds.fileDialog2(caption='アバターリファレンスツールのavatar_collection.jsonを選択してください',
                                                  fileFilter='*.json', dialogStyle=2, fileMode=1)
@@ -992,7 +992,7 @@ class ImportWindow(QtWidgets.QDialog):
             import rig.avatarReferenceTool.commands as avatarReferenceTool
             reload(avatarReferenceTool)
         except Exception as ex:
-            # C:\cygames\wiz2\tools\maya\scripts\rig\avatarReferenceTool にある想定
+            # C:\tkgpublic\wiz2\tools\maya\scripts\rig\avatarReferenceTool にある想定
             print(ex)
             cmds.confirmDialog(title='Warning', 
                                message='PerforceリポジトリのavatarReferenceToolが見つかりませんでした\n' +

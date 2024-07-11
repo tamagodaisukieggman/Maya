@@ -9,7 +9,7 @@ import maya.cmds as cmds
 # from wzdx.maya.utils.perforce import Perforce
 from .command import MiniMapRender
 
-log_root = '{}/.cygames/wzdx'.format(os.environ['TEMP'])
+log_root = '{}/.tkgpublic/wzdx'.format(os.environ['TEMP'])
 if not os.path.exists(log_root):
     os.makedirs(log_root)
 log_file = '{}/wx_minimap_render_bat.csv'.format(log_root)

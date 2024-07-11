@@ -1,5 +1,5 @@
 # 背景モデル命名規則
-# https://wisdom.cygames.jp/pages/viewpage.action?pageId=436230414
+# https://wisdom.tkgpublic.jp/pages/viewpage.action?pageId=436230414
 
 root_location_regex: ^BG([a-z]{1})
 

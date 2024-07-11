@@ -102,9 +102,9 @@
                 // 顔用のライティング処理
 #ifdef TOON_FACE
                 float3 vtxVector = posWorld - _FaceCenterPos.xyz;
-                float3 rawCylinderNormal = posWorld - (_FaceCenterPos.xyz + (dot(_FaceUp, vtxVector) * _FaceUp));
-                float3 cylinderNormal = normalize(rawCylinderNormal);
-                normal = lerp(cylinderNormal, mul((float3x3)UNITY_MATRIX_M, normal), v.vcolor.b * (1 - _CylinderBlend));
+                float3 rawTkglinderNormal = posWorld - (_FaceCenterPos.xyz + (dot(_FaceUp, vtxVector) * _FaceUp));
+                float3 cylinderNormal = normalize(rawTkglinderNormal);
+                normal = lerp(cylinderNormal, mul((float3x3)UNITY_MATRIX_M, normal), v.vcolor.b * (1 - _TkglinderBlend));
 #endif
 
 #if defined(TOON_SHADING) || defined(TOON_SPECULAR) || defined(TOON_RIM) || defined(TOON_ENVIRONMENT)

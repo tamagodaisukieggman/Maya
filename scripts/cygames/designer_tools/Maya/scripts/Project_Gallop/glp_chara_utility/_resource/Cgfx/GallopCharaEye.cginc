@@ -127,7 +127,7 @@ float4 _ToonDarkColor : Ambient <
     string UIWidget = "Color";
 > = { 1,1,1,0 };
 
-float _CylinderBlend <
+float _TkglinderBlend <
     string UIWidget = "slider";
     float UIMin = 0.0;
     float UIMax = 1.0;
@@ -226,7 +226,7 @@ uniform half4 _ToonColor;
 uniform half4 _ToonBrightColor;
 uniform half4 _ToonDarkColor;
 
-uniform half _CylinderBlend;
+uniform half _TkglinderBlend;
 
 // 顔オブジェクトの上要素ベクトル
 uniform float3 _FaceUp;
@@ -351,9 +351,9 @@ v2f vert(appdata_t v)
 
     // 顔用のライティング処理
     float3 vtxVector = posWorld.xyz - _FaceCenterPos.xyz;
-    float3 rawCylinderNormal = posWorld.xyz - (_FaceCenterPos.xyz + (dot(_FaceUp, vtxVector) * _FaceUp));
-    float3 cylinderNormal = normalize(rawCylinderNormal);
-    normal = lerp(mul((float3x3)UNITY_MATRIX_M, normal), cylinderNormal, _CylinderBlend);
+    float3 rawTkglinderNormal = posWorld.xyz - (_FaceCenterPos.xyz + (dot(_FaceUp, vtxVector) * _FaceUp));
+    float3 cylinderNormal = normalize(rawTkglinderNormal);
+    normal = lerp(mul((float3x3)UNITY_MATRIX_M, normal), cylinderNormal, _TkglinderBlend);
 
     // 顔ライティングの場合法線はすでにモデルマトリックスと計算済みなのでそのまま使う
     o.normalDir = normal;

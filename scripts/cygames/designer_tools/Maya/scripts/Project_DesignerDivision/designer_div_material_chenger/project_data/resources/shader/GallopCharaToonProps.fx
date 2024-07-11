@@ -492,7 +492,7 @@ float _HairNormalBlend <
 #endif // defined(TOON_FACE) || defined(TOON_HAIR)
 
 #if defined(TOON_FACE) || defined(TOON_HAIR) || defined(TOON_EYE)
-float _CylinderBlend <
+float _TkglinderBlend <
     string UIWidget = "slider";
     float UIMin = 0.0;
     float UIMax = 1.0;
@@ -738,7 +738,7 @@ uniform float4 _ZekkenFontColor;
 uniform float _CheekPretenseThreshold;
 uniform float _NosePretenseThreshold;
 uniform float _NoseVisibility;
-uniform float _CylinderBlend;
+uniform float _TkglinderBlend;
 uniform float _HairNormalBlend;
 // 顔オブジェクトの上要素ベクトル
 uniform float3 _FaceUp;

@@ -118,7 +118,7 @@ class Wiz2EnvNameSpace(CheckTaskBase):
 
 class Wiz2EnvMeshName(CheckTaskBase):
     """メッシュ名が背景モデル命名規則に沿っていればOK
-    背景モデル命名規則: https://wisdom.cygames.jp/pages/viewpage.action?pageId=436230414
+    背景モデル命名規則: https://wisdom.tkgpublic.jp/pages/viewpage.action?pageId=436230414
     """
 
     env_dict = {}

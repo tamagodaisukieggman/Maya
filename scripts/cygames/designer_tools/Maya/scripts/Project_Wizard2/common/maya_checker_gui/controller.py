@@ -309,7 +309,7 @@ class CheckerMainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         """コンフルのツールマニュアルページを開く"""
         try:
             utils.search_website(
-                "https://wisdom.cygames.jp/pages/viewpage.action?pageId=673570123", ""
+                "https://wisdom.tkgpublic.jp/pages/viewpage.action?pageId=673570123", ""
             )
         except Exception:
             cmds.warning("マニュアルページがみつかりませんでした")

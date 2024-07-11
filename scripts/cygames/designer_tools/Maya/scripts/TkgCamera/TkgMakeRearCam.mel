@@ -1,0 +1,17 @@
+// TkgMakeRearCam v1.0  (Aug 18 2015)
+//
+// by Toshiyuki Yonekura
+// yonekura_toshiyuki@tkgpublic.co.jp
+//
+// I heard about Maya2013 don't have "Back" preset orthgraphic camera.
+// Maya2015 have it.
+//
+// Usage:
+// Select your view panel and tool bar "Panels > Orthgraphic > rear"
+
+global proc TkgMakeRearCam(){
+	string $camera[] = `camera -n rear -hc "viewSet -b %camera"`;
+	viewSet -b $camera[0];
+	hide $camera[0];
+	};
+TkgMakeRearCam();

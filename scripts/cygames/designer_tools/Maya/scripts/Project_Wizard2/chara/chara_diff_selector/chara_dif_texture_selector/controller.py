@@ -223,7 +223,7 @@ class DiffTextureSelectorController:
         """コンフルのツールマニュアルページを開く"""
         try:
             webbrowser.open(
-                "https://wisdom.cygames.jp/pages/viewpage.action?pageId=660614235"
+                "https://wisdom.tkgpublic.jp/pages/viewpage.action?pageId=660614235"
             )
         except Exception:
             cmds.warning("マニュアルページがみつかりませんでした")

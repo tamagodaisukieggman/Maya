@@ -9,7 +9,7 @@ from __future__ import print_function
 import os
 
 TOOL_NAME = 'glp_shotgrid_tool'
-SG_URL = "https://cygames.shotgunstudio.com/"
+SG_URL = "https://tkgpublic.shotgunstudio.com/"
 SG_PROJECT_NAME = "gallop"
 
 SG_FIELD_CODE_LIST = [
@@ -26,5 +26,5 @@ SG_FIELD_CODE_LIST = [
 ]
 
 # 設定jsonファイルパス
-UI_SETTING_JSON_PATH = os.getenv('APPDATA') + '/Cygames/' + TOOL_NAME + '_ui_setting.json'
-SG_USER_SETTING_JSON_PATH = os.getenv('APPDATA') + '/Cygames/' + TOOL_NAME + '_user_setting.json'
+UI_SETTING_JSON_PATH = os.getenv('APPDATA') + '/TKG/' + TOOL_NAME + '_ui_setting.json'
+SG_USER_SETTING_JSON_PATH = os.getenv('APPDATA') + '/TKG/' + TOOL_NAME + '_user_setting.json'

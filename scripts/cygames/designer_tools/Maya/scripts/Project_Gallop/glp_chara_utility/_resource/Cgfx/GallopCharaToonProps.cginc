@@ -465,7 +465,7 @@ float _NoseVisibility <
     float UIMax = 1.0;
     float UIStep = 1.0;
 > = 1.0;
-float _CylinderBlend <
+float _TkglinderBlend <
     string UIWidget = "slider";
     float UIMin = 0.0;
     float UIMax = 1.0;
@@ -660,7 +660,7 @@ uniform half _NosePretenseThreshold;
 
 uniform half _NoseVisibility;
 
-uniform half _CylinderBlend;
+uniform half _TkglinderBlend;
 
 uniform half _HairNormalBlend;
 

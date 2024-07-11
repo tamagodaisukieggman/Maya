@@ -38,7 +38,7 @@ class CompareBoneToolController:
         """コンフルのツールマニュアルページを開く"""
         try:
             webbrowser.open(
-                "https://wisdom.cygames.jp/pages/viewpage.action?pageId=780851467"
+                "https://wisdom.tkgpublic.jp/pages/viewpage.action?pageId=780851467"
             )
         except Exception:
             cmds.warning("マニュアルページがみつかりませんでした")

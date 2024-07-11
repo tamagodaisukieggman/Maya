@@ -43,8 +43,8 @@ EYE_UV_SET_SHELL_COUNT = 2
 MINI_FACE_PATH = 'W:/gallop/svn/svn_gallop/80_3D/01_character/01_model/mini/head/mchr0001_00/scenes/mdl_mchr0001_00_face0.ma'
 
 # フェイシャル向けデータのCSVパス
-FACIAL_CNT_CSV = 'C:/cygames/designer_tools/Maya/scripts/Project_Gallop/glp_chara_facial_tool/resource/facial_controller_info.csv'
-FACIAL_TARGET_CSV = 'C:/cygames/designer_tools/Maya/scripts/Project_Gallop/glp_chara_facial_tool/resource/facial_target_info.csv'
+FACIAL_CNT_CSV = 'C:/tkgpublic/designer_tools/Maya/scripts/Project_Gallop/glp_chara_facial_tool/resource/facial_controller_info.csv'
+FACIAL_TARGET_CSV = 'C:/tkgpublic/designer_tools/Maya/scripts/Project_Gallop/glp_chara_facial_tool/resource/facial_target_info.csv'
 
 # Mayaのアトリビュート上では表示しきれない、微小値などの許容値
 TORELANCE = 0.001

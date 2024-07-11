@@ -368,7 +368,7 @@ class Main(object):
         import webbrowser
         try:
             webbrowser.open(
-                'https://wisdom.cygames.jp/pages/viewpage.action?pageId=93395566')
+                'https://wisdom.tkgpublic.jp/pages/viewpage.action?pageId=93395566')
         except Exception:
             print('マニュアルページがみつかりませんでした。')
 

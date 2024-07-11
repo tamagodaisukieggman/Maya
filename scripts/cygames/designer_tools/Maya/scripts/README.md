@@ -5,23 +5,23 @@ scriptsフォルダ以下にならぶ、各フォルダやプロジェクト向�
 下記のフォルダはmaya_legacyの一般向けツールとして公開されており、汎用的なツールを機能別に分けたフォルダ構成を取っています。
 |フォルダ名|説明|備考|
 |:--:|:--|:--:|
-|[CyAnimate](https://wisdom.cygames.jp/display/designersmanual/Maya%3A+Animate)|アニメーション関連ツール||
-|[CyCamera](https://wisdom.cygames.jp/display/designersmanual/Maya%3A+Camera)|カメラ関連ツール||
-|CyCommon|共通機能ツール||
-|[CyDev](https://wisdom.cygames.jp/display/designersmanual/Maya%3A+Dev)|開発用のツール||
-|CyEtc|その他の様々なツール||
-|[CyFile](https://wisdom.cygames.jp/display/designersmanual/Maya%3A+File)|ファイルの入出力関連ツール||
-|[CyGeneral](https://wisdom.cygames.jp/display/designersmanual/Maya%3A+General)|一般的なツール||
-|CyMaterial|マテリアル関連ツール||
-|[CyModel](https://wisdom.cygames.jp/display/designersmanual/Maya%3A+Model)|モデル関連ツール||
-|[CyModelPolygon](https://wisdom.cygames.jp/display/designersmanual/Maya%3A+ModelPolygon)|モデルのポリゴン関連ツール||
-|CyRender|レンダー関連ツール||
-|[CySelect](https://wisdom.cygames.jp/display/designersmanual/Maya%3A+Select)|選択機能関連ツール||
-|[CySkin](https://wisdom.cygames.jp/display/designersmanual/Maya%3A+Skin)|スキン関連ツール||
-|[CyTexture](https://wisdom.cygames.jp/display/designersmanual/Maya%3A+Texture)|テクスチャー関連ツール||
-|[CyUV](https://wisdom.cygames.jp/display/designersmanual/Maya%3A+UV)|UV操作関連ツール||
-|[CyVertexColor](https://wisdom.cygames.jp/display/designersmanual/Maya%3A+VertexColor)|頂点カラー関連ツール||
-|[CyWindow](https://wisdom.cygames.jp/display/designersmanual/Maya%3A+Window)|ウィンドウ関連ツール||
+|[TkgAnimate](https://wisdom.tkgpublic.jp/display/designersmanual/Maya%3A+Animate)|アニメーション関連ツール||
+|[TkgCamera](https://wisdom.tkgpublic.jp/display/designersmanual/Maya%3A+Camera)|カメラ関連ツール||
+|TkgCommon|共通機能ツール||
+|[TkgDev](https://wisdom.tkgpublic.jp/display/designersmanual/Maya%3A+Dev)|開発用のツール||
+|TkgEtc|その他の様々なツール||
+|[TkgFile](https://wisdom.tkgpublic.jp/display/designersmanual/Maya%3A+File)|ファイルの入出力関連ツール||
+|[TkgGeneral](https://wisdom.tkgpublic.jp/display/designersmanual/Maya%3A+General)|一般的なツール||
+|TkgMaterial|マテリアル関連ツール||
+|[TkgModel](https://wisdom.tkgpublic.jp/display/designersmanual/Maya%3A+Model)|モデル関連ツール||
+|[TkgModelPolygon](https://wisdom.tkgpublic.jp/display/designersmanual/Maya%3A+ModelPolygon)|モデルのポリゴン関連ツール||
+|TkgRender|レンダー関連ツール||
+|[TkgSelect](https://wisdom.tkgpublic.jp/display/designersmanual/Maya%3A+Select)|選択機能関連ツール||
+|[TkgSkin](https://wisdom.tkgpublic.jp/display/designersmanual/Maya%3A+Skin)|スキン関連ツール||
+|[TkgTexture](https://wisdom.tkgpublic.jp/display/designersmanual/Maya%3A+Texture)|テクスチャー関連ツール||
+|[TkgUV](https://wisdom.tkgpublic.jp/display/designersmanual/Maya%3A+UV)|UV操作関連ツール||
+|[TkgVertexColor](https://wisdom.tkgpublic.jp/display/designersmanual/Maya%3A+VertexColor)|頂点カラー関連ツール||
+|[TkgWindow](https://wisdom.tkgpublic.jp/display/designersmanual/Maya%3A+Window)|ウィンドウ関連ツール||
 
 ## 試験的または一時的な用途で使用するツール
 下記のフォルダはmaya_legacyの一般向けツールとして公開する前の試験的なツールや、一時的な用途で使用するために公開したツールを置いておくフォルダとなっております。

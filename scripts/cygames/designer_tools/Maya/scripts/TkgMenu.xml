@@ -1,0 +1,258 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TkgMenu>
+	<MenuList>
+		<Menu name="エクスプローラーを開く">
+			<Item name="maya設定フォルダ" shelfName="COWE" type="Python" command="import TkgOpenWinExplorer;reload(TkgOpenWinExplorer);TkgOpenWinExplorer.open('maya_setting','')"/>
+			<Item name="現在のmayaプロジェクトフォルダ" shelfName="COWE" type="Python" command="import TkgOpenWinExplorer;reload(TkgOpenWinExplorer);TkgOpenWinExplorer.open('maya_project','')"/>
+			<Item name="現在のmayaシーンフォルダ" shelfName="COWE" type="Python" command="import TkgOpenWinExplorer;reload(TkgOpenWinExplorer);TkgOpenWinExplorer.open('maya_scene','')"/>
+		</Menu>
+
+		<Menu name="General">
+			<Item name="[ General ヘルプ ]" shelfName="MH" type="Python" command="import TkgOpenWebPage;reload(TkgOpenWebPage);TkgOpenWebPage.open('https://wisdom.tkgpublic.jp/display/designersmanual/Maya%3A+General')"/>
+			<Separator/>
+			<Item name="TkgSceneOpener" shelfName="Open" type="Python" command="import TkgSceneOpener;reload(TkgSceneOpener);TkgSceneOpener.main()" image="TkgSceneOpener.png"/>
+			<Item name="TkgSceneExplorer" image="tkg_scene_explorer.png" shelfName="scex" type="Python" command="import TkgSceneExplorer.main;reload(TkgSceneExplorer.main);main=TkgSceneExplorer.main.Main();main.show_ui();"/>
+			<Item name="Easy Setting" shelfName="Easy" type="Python" command="import TkgEasySetting;reload(TkgEasySetting);TkgEasySetting.UI()"/>
+			<Item name="Delete Namespace" shelfName="DelNs" type="Python" command="import TkgDeleteNamespace;reload(TkgDeleteNamespace);TkgDeleteNamespace.Execute()"/>
+			<Item name="Select Joint" shelfName="SelJnt" type="Python" command="import TkgSelectJoint;reload(TkgSelectJoint);TkgSelectJoint.Execute()"/>
+			<Item name="Delete Turtle Node : Turtleノードを削除" shelfName="DLTur" type="Python" command="import TkgDeleteTurtleNode;reload(TkgDeleteTurtleNode);TkgDeleteTurtleNode.main()"/>
+			<Item name="Delete Unknown Node : Unknownノードを削除" shelfName="DelUn" type="Python" command="import TkgDeleteUnknown;reload(TkgDeleteUnknown);TkgDeleteUnknown.main()"/>
+			<Separator/>
+			<Item name="TkgMayaRenamer : 一括リネーム" shelfName="Name" type="Python" command="import TkgMayaRenamer.TkgMayaRenamerGUI; reload(TkgMayaRenamer.TkgMayaRenamerGUI); TkgMayaRenamer.TkgMayaRenamerGUI.main();" image="TkgMayaRenamer.png"/>
+			<Item name="TkgDisplayEditor : 表示機能まとめ" shelfName="TkgDisplayEditor" type="Mel" command="TkgDisplayEditor;" />
+			<Item name="CompressPlayblast : playblastの圧縮を行うツール" image="cmn_low_common.png" shelfName="cmppb" type="Python" command="import cdt_compress_playblast.main;reload(cdt_compress_playblast.main);main=cdt_compress_playblast.main.Main();main.show_ui();"/>
+		</Menu>
+
+		<Menu name="File">
+			<Item name="[ File ヘルプ ]" shelfName="MH" type="Python" command="import TkgOpenWebPage;reload(TkgOpenWebPage);TkgOpenWebPage.open('https://wisdom.tkgpublic.jp/display/designersmanual/Maya%3A+File')"/>
+			<Separator/>
+			<Item name="TkgExportModel : モデルエクスポーター (FBX)" shelfName="FBX" type="Python" command="import TkgExportModel;reload(TkgExportModel);TkgExportModel.main('fbx')"/>
+			<Separator/>
+			<Item name="TkgCreateExportModel : エクスポート用のモデルを作成 (確認用)" shelfName="CCEM" type="Python" command="import TkgCreateExportModel;reload(TkgCreateExportModel);TkgCreateExportModel.createAll()"/>
+			<Separator/>
+
+		</Menu>
+
+		<Menu name="Select">
+			<Item name="[ Select ヘルプ ]" shelfName="MH" type="Python" command="import TkgOpenWebPage;reload(TkgOpenWebPage);TkgOpenWebPage.open('https://wisdom.tkgpublic.jp/display/designersmanual/Maya%3A+Select')"/>
+			<Separator/>
+			<Item name="TkgSelectChildNode : 子ノードを選択" shelfName="CSCN" type="Python" command="import TkgSelectChildNode;reload(TkgSelectChildNode);TkgSelectChildNode.selectWithSettings(1)"/>
+			<Item name="TkgSelectChildNode : 子ノードを選択" shelfName="CSCN" type="Python" command="import TkgSelectChildNode;reload(TkgSelectChildNode);TkgSelectChildNode.main()" optionBox="True"/>
+			<Item name="TkgSelectChildNode : 子ノードを選択 (ポリゴンメッシュ)" shelfName="CSCN" type="Python" command="import TkgSelectChildNode;reload(TkgSelectChildNode);TkgSelectChildNode.select(['mesh'], 1, 0, 0, 1)"/>
+			<Separator/>
+			<Item name="TkgSelectShell : コンポーネントのアイランド選択" shelfName="CSS" type="Python" command="import TkgSelectShell;reload(TkgSelectShell);TkgSelectShell.select(1)"/>
+			<Separator/>
+		</Menu>
+
+		<Menu name="Model">
+			<Item name="[ Model ヘルプ ]" shelfName="MH" type="Python" command="import TkgOpenWebPage;reload(TkgOpenWebPage);TkgOpenWebPage.open('https://wisdom.tkgpublic.jp/display/designersmanual/Maya%3A+Model')"/>
+			<Separator/>
+			<Item name="TkgRelativeTransformTool : 相対変形(移動・回転・スケール)ツール" shelfName="CRTT" type="Python" command="import TkgRelativeTransformTool;reload(TkgRelativeTransformTool);TkgRelativeTransformTool.main()"/>
+			<Item name="TkgAlignTool : 整列ツール" shelfName="CAT" type="Python" command="import TkgAlignTool;reload(TkgAlignTool);TkgAlignTool.main()"/>
+			<Separator/>
+			<Item name="TkgPivotTool : センター＆ピボット → 選択コンポーネント" shelfName="CPT" type="Python" command="import TkgPivotTool;reload(TkgPivotTool);TkgPivotTool.moveCenterPivotToComponent()"/>
+			<Item name="TkgPivotTool : センター → ピボット" shelfName="CPT" type="Python" command="import TkgPivotTool;reload(TkgPivotTool);TkgPivotTool.moveCenterToPivot()"/>
+			<Item name="TkgPivotTool : ピボット → センター" shelfName="CPT" type="Python" command="import TkgPivotTool;reload(TkgPivotTool);TkgPivotTool.movePivotToCenter()"/>
+			<Separator/>
+			<Item name="TkgMatchTransform : 移動・回転・スケール値のマッチング" shelfName="CMT" type="Python" command="import TkgMatchTransform;reload(TkgMatchTransform);TkgMatchTransform.match('all', 1)"/>
+			<Item name="TkgMatchTransform : 移動値のマッチング" shelfName="CMT" type="Python" command="import TkgMatchTransform;reload(TkgMatchTransform);TkgMatchTransform.match('translate', 1)"/>
+			<Item name="TkgMatchTransform : 回転値のマッチング" shelfName="CMT" type="Python" command="import TkgMatchTransform;reload(TkgMatchTransform);TkgMatchTransform.match('rotate', 1)"/>
+			<Item name="TkgMatchTransform : スケール値のマッチング" shelfName="CMT" type="Python" command="import TkgMatchTransform;reload(TkgMatchTransform);TkgMatchTransform.match('scale', 1)"/>
+			<Separator/>
+			<Item name="TkgCombine : カスタムコンバイン" shelfName="CC" type="Python" command="import TkgCombine;reload(TkgCombine);TkgCombine.combine(1)"/>
+			<Item name="TkgKeepCombine : 名前、階層、ピボットを維持してコンバイン" shelfName="TkgKeepCombine" type="Mel" command="TkgKeepCombine()"/>
+			<Item name="TkgPivotEditor : ピボット編集" shelfName="TkgPivotEditor" type="Mel" command="TkgPivotEditor()"/>
+			<Item name="TkgVertexCopy : 頂点コピー" shelfName="TkgVertexCopy" type="Mel" command="TkgVertexCopy()"/>
+		</Menu>
+
+		<Menu name="ModelPolygon">
+			<Item name="[ ModelPolygon ヘルプ ]" shelfName="MH" type="Python" command="import TkgOpenWebPage;reload(TkgOpenWebPage);TkgOpenWebPage.open('https://wisdom.tkgpublic.jp/display/designersmanual/Maya%3A+ModelPolygon')"/>
+			<Separator/>
+			<Item name="TkgDetachPolygon : 選択ポリゴンの切り離し" shelfName="CDP" type="Python" command="import TkgDetachPolygon;reload(TkgDetachPolygon);TkgDetachPolygon.detach(1)"/>
+			<Item name="TkgNormalEditor : ノーマル調整ツール" shelfName="NEdit" type="Python" command="import TkgNormalEditor;reload(TkgNormalEditor);TkgNormalEditor.UI()"/>
+			<Item name="TkgVertexPositionEditor : 頂点位置編集ツール" shelfName="VpEditor" type="Python" command="import TkgVertexPositionEditor;reload(TkgVertexPositionEditor);TkgVertexPositionEditor.UI()"/>
+			<Item name="SameEdgeLength : エッジの長さ編集ツール" shelfName="VpEditor" type="Python" command="import SameEdgeLength;reload(SameEdgeLength);SameEdgeLength.main()"/>
+		</Menu>
+
+		<Menu name="Texture">
+			<Item name="[ Texture ヘルプ ]" shelfName="MH" type="Python" command="import TkgOpenWebPage;reload(TkgOpenWebPage);TkgOpenWebPage.open('https://wisdom.tkgpublic.jp/display/designersmanual/Maya%3A+Texture')"/>
+			<Separator/>
+			<Item name="TkgUVSnapShot : UVスナップショット" shelfName="TkgUVSnapShot" type="Mel" command="TkgUVSnapShot()"/>
+			<Item name="TkgOpen_psd : モデル（マテリアルも可）選択からpsdを開く" shelfName="TkgOpen_psd" type="Mel" command="TkgOpen_psd()"/>
+			<Item name="TkgTexture_AllReload : テクスチャ全リロード" shelfName="TkgTexture_AllReload" type="Mel" command="TkgTexture_AllReload()"/>
+			<Separator/>
+			<Item name="TkgConnectPhotoshop : Photoshopとの通信用にポート(30000)を開く" shelfName="CCP" type="Python" command="import TkgConnectPhotoshop;reload(TkgConnectPhotoshop);TkgConnectPhotoshop.open()"/>
+		</Menu>
+
+		<Menu name="UV">
+			<Item name="[ UV ヘルプ ]" shelfName="MH" type="Python" command="import TkgOpenWebPage;reload(TkgOpenWebPage);TkgOpenWebPage.open('https://wisdom.tkgpublic.jp/display/designersmanual/Maya%3A+UV')"/>
+			<Separator/>
+			<Item name="TkgUVDeformation : UV変形ツール" shelfName="UVDeform" type="Python" command="import TkgUVDeformation;reload(TkgUVDeformation);TkgUVDeformation.UI()"/>
+			<Item name="TkgUVSnap : 近くのUVにスナップ" shelfName="UVSnap" type="Mel" command="TkgUVSnap();"/>
+			<Item name="TkgUVAdjuster : UV調整ツール" shelfName="CUA" type="Python" command="import TkgUVAdjuster;reload(TkgUVAdjuster);TkgUVAdjuster.main()"/>
+			<Item name="TkgUVMapping_Tool : UV貼りツール" shelfName="TkgUVMapping_Tool" type="Mel" command="TkgUVMapping_Tool();"/>
+			<Item name="TkgUVPixel_move_Tool : UVピクセル移動ツール" shelfName="TkgUV_Pixel_move" type="Mel" command="yk_UV_Pixel_move();"/>
+			<Item name="CheckUVPadding : UVパディングチェック" shelfName="TTFM" type="Python" command="import CheckUVPadding;reload(CheckUVPadding);CheckUVPadding.main();"/>
+		</Menu>
+
+		<Menu name="VertexColor">
+			<Item name="[ VertexColor ヘルプ ]" shelfName="MH" type="Python" command="import TkgOpenWebPage;reload(TkgOpenWebPage);TkgOpenWebPage.open('https://wisdom.tkgpublic.jp/display/designersmanual/Maya%3A+VertexColor')"/>
+			<Separator/>
+			<Item name="TkgVertexColorLayer : 頂点カラーレイヤーツール" shelfName="VcLayer" type="Python" command="import TkgVertexColorLayer;reload(TkgVertexColorLayer);TkgVertexColorLayer.UI()"/>
+			<Item name="TkgVertexColorEditor : 頂点カラー編集ツール" shelfName="VcEditor" type="Python" command="import TkgVertexColorEditor;reload(TkgVertexColorEditor);TkgVertexColorEditor.UI()"/>
+		</Menu>
+
+		<Menu name="Skin">
+			<Item name="[ Skin ヘルプ ]" shelfName="MH" type="Python" command="import TkgOpenWebPage;reload(TkgOpenWebPage);TkgOpenWebPage.open('https://wisdom.tkgpublic.jp/display/designersmanual/Maya%3A+Skin')"/>
+			<Separator/>
+			<Item name="TkgWeightEditor : ウェイト調整ツール" shelfName="WEdit" type="Python" command="import TkgWeightEditor;reload(TkgWeightEditor);TkgWeightEditor.UI()"/>
+			<Item name="TkgScaleSkinModel : スキニングモデルをウェイトを保ったままスケーリング" shelfName="CSSM" type="Python" command="import TkgScaleSkinModel;reload(TkgScaleSkinModel);TkgScaleSkinModel.main()"/>
+			<Item name="TkgJointChecker : ジョイントのチェッカー" shelfName="Jcheck" type="Python" command="import TkgJointChecker;reload(TkgJointChecker);TkgJointChecker.UI()"/>
+		</Menu>
+
+		<Menu name="Animation">
+			<Item name="[ Animation ヘルプ ]" shelfName="MH" type="Python" command="import TkgOpenWebPage;reload(TkgOpenWebPage);TkgOpenWebPage.open('https://wisdom.tkgpublic.jp/display/designersmanual/Maya%3A+Animate')"/>
+			<Separator/>
+			<Item name="TkgSimplifyCurve : カーブリダクションツール" shelfName="SimCuv" type="Python" command="import TkgSimplifyCurve;reload(TkgSimplifyCurve);TkgSimplifyCurve.UI();"/>
+			<Item name="TkgFrameCutter : 指定フレームでモーション書き出し" shelfName="FmCut" type="Python" command="import TkgFrameCutter;reload(TkgFrameCutter);TkgFrameCutter.UI();"/>
+			<Item name="TkgExchangeConstraint : コンストレイント主従関係切り替え(Point,Orient,Scale,Parent対応)" shelfName="CEC" type="Python" command="import TkgExchangeConstraint;reload(TkgExchangeConstraint);TkgExchangeConstraint.UI()"/>
+			<Item name="TkgKeyAdjuster : キーの調整ツール" shelfName="CKA" type="Python" command="import TkgKeyAdjuster;reload(TkgKeyAdjuster);TkgKeyAdjuster.main()"/>
+		</Menu>
+
+		<Menu name="Camera">
+			<Item name="[ Camera ヘルプ ]" shelfName="MH" type="Python" command="import TkgOpenWebPage;reload(TkgOpenWebPage);TkgOpenWebPage.open('https://wisdom.tkgpublic.jp/display/designersmanual/Maya%3A+Camera')"/>
+			<Separator/>
+			<Item name="TkgExportCameraToUnity : Unityへのカメラ出力" shelfName="CamUni" type="Python" command="import TkgExportCameraToUnity;reload(TkgExportCameraToUnity);TkgExportCameraToUnity.UI()"/>
+			<Item name="TkgMakeRearCam : 後面カメラの作成" shelfName="RearCam" type="Mel" command="TkgMakeRearCam;" image="TkgMakeRearCam.bmp"/>
+			<Item name="TkgUnityCameraImporter : Unityカメラのインポータ" shelfName="UniCam" type="Python" command="import TkgUnityCameraImporter;reload(TkgUnityCameraImporter);TkgUnityCameraImporter.Execute()"/>
+		</Menu>
+
+		<Menu name="Effect">
+			<Item name="[ Effect ヘルプ ]" shelfName="MH" type="Python" command="import TkgOpenWebPage;reload(TkgOpenWebPage);TkgOpenWebPage.open('https://wisdom.tkgpublic.jp/pages/viewpage.action?pageId=498871082')"/>
+			<Separator/>
+			<Item name="QuickPathAnimation : パスを描いて動きをUnityのAnimatorで再現する" shelfName="QPAni" type="Python" command="import QuickPathAnimation;reload(QuickPathAnimation);QuickPathAnimation.UI()"/>
+			<Item name="QuickPathToSurface : パスからSurfaceMeshの作成を簡易化する" shelfName="QPtS" type="Python" command="import QuickPathToSurface;reload(QuickPathToSurface);QuickPathToSurface.UI()"/>
+			<Item name="UVScrollToUnity : UVスクロールをUnityに渡して連携させる" shelfName="UVStU" type="Python" command="import UVScrollToUnity;reload(UVScrollToUnity);UVScrollToUnity.UI()"/>
+			<Item name="GradientVertexColor : 頂点カラーをさまざまな方法でグラデーションで塗ります" shelfName="GVC" type="Python" command="import GradientVertexColor;reload(GradientVertexColor);GradientVertexColor.UI()"/>
+		</Menu>
+
+		<Menu name="Dev">
+			<Item name="[ Dev ヘルプ ]" shelfName="MH" type="Python" command="import TkgOpenWebPage;reload(TkgOpenWebPage);TkgOpenWebPage.open('https://wisdom.tkgpublic.jp/display/designersmanual/Maya%3A+Dev')"/>
+			<Separator/>
+			<Item name="TkgSourceScript : スクリプトの簡易テストツール" shelfName="CSS" type="Python" command="import TkgSourceScript;reload(TkgSourceScript);TkgSourceScript.main()"/>
+			<Item name="TkgPrintMayaEnvValue : Maya環境変数の値を出力" shelfName="CPMEV" type="Python" command="import TkgPrintMayaEnvValue;reload(TkgPrintMayaEnvValue);TkgPrintMayaEnvValue.main()"/>
+			<Separator/>
+			<Item name="TkgConnectEclipse : Eclipseへの接続" shelfName="CCE" type="Python" command="import TkgConnectEclipse;reload(TkgConnectEclipse);TkgConnectEclipse.main()"/>
+		</Menu>
+
+		<Menu name="Project_Gallop">
+			<Item name="---- 重要ツール --------------------------------"/>
+			<Item name="GallopSceneCleaner : (暫定)シーンから不要設定・ゴミノード除去" image="glp_cmn_low_common.png" shelfName="scle" type="Python" command="import Project_Gallop.glp_scene_cleanup.main;reload(Project_Gallop.glp_scene_cleanup.main);Project_Gallop.glp_scene_cleanup.main.Main().exec_cleanup_event(True);"/>
+			<Item name="---- キャラ系ツール --------------------------------"/>
+			<Item name="GallopCharaExporter : キャラエクスポーター" image="glp_chr_chara_exporter.png" shelfName="glcex" type="Python" command="import Project_Gallop.glp_chara_exporter.main;reload(Project_Gallop.glp_chara_exporter.main);Project_Gallop.glp_chara_exporter.main.show_ui();"/>
+			<Item name="GallopCharaFaicialTool : キャラフェイシャルツール" image="glp_chr_facial_tool.png" shelfName="glcft" type="Python" command="import Project_Gallop.glp_chara_facial_tool.main;reload(Project_Gallop.glp_chara_facial_tool.main);Project_Gallop.glp_chara_facial_tool.main.main();"/>
+			<Item name="GallopCharaChecker : キャラチェッカー" image="glp_chr_chara_checker.png" shelfName="glchck" type="Python" command="import Project_Gallop.glp_chara_checker.main;reload(Project_Gallop.glp_chara_checker.main);Project_Gallop.glp_chara_checker.main.main();"/>
+			<Item name="GallopCharaUtilityTool : キャラユーティリティ" image="glp_chr_chara_utility.png" shelfName="glcutln" type="Python" command="import Project_Gallop.glp_chara_utility;reload(Project_Gallop.glp_chara_utility);Project_Gallop.glp_chara_utility.main.Main().show_ui();"/>
+			<Item name="GallopNormalEditor : 法線編集ツール" image="glp_chr_normal_editor.png" shelfName="glne" type="Python" command="import Project_Gallop.glp_normal_editor.main;reload(Project_Gallop.glp_normal_editor.main);Project_Gallop.glp_normal_editor.main.main();"/>
+			<Item name="GallopCharaBodyDifference : 体型差分作成ツール" image="glp_chr_chara_body_difference.png" shelfName="gcbd" type="Python" command="import Project_Gallop.glp_chara_body_difference.main;reload(Project_Gallop.glp_chara_body_difference.main);Project_Gallop.glp_chara_body_difference.main.main();"/>
+			<Item name="GallopUVdistanceChecker : UV距離チェックツール" image="glp_chr_UV_distance_checker.png" shelfName="DRVTX" type="Python" command="import Project_Gallop.glp_uv_distance_checker.main;reload(Project_Gallop.glp_uv_distance_checker.main);Project_Gallop.glp_uv_distance_checker.main.main();"/>
+			<Item name="GallopEyeCoverTool : 目隠し作成補助ツール" image="glp_chr_eye_cover.png" shelfName="glne" type="Python" command="import Project_Gallop.glp_eye_cover_tool.main;reload(Project_Gallop.glp_eye_cover_tool.main);main=Project_Gallop.glp_eye_cover_tool.main.Main();main.show_ui()"/>
+			<Item name="GallopAttachUtility : アタッチユーティリティ" image="glp_chr_attach_utility.png" shelfName="glne" type="Python" command="import Project_Gallop.glp_attach_utility.main;reload(Project_Gallop.glp_attach_utility.main);Project_Gallop.glp_attach_utility.main.main();"/>
+			<Item name="GallopDirtPsdMaker : ダートPSD作成ツール" image="glp_chr_dirt_maker.png" shelfName="glne" type="Python" command="import Project_Gallop.glp_dirt_psd_maker.main;reload(Project_Gallop.glp_dirt_psd_maker.main);Project_Gallop.glp_dirt_psd_maker.main.main();"/>
+			<Item name="GallopClothCollisionChecker : キャラクロスチェッカー" image="glp_chr_cloth_checker.png" shelfName="gccc" type="Python" command="import Project_Gallop.glp_cloth_collision_checker.cloth_collision_checker.cloth_collision_checker;reload(Project_Gallop.glp_cloth_collision_checker.cloth_collision_checker.cloth_collision_checker);Project_Gallop.glp_cloth_collision_checker.cloth_collision_checker.cloth_collision_checker.ClothCollisionChecker(True).create_ui();"/>
+			<Item name="GallopSymmetricalWeightChecker : 対称性ウェイトチェック" image="glp_chr_symmetrical_weight_checker.png" shelfName="gswc" type="Python" command="import Project_Gallop.glp_symmetrical_weight_checker.main;reload(Project_Gallop.glp_symmetrical_weight_checker.main);Project_Gallop.glp_symmetrical_weight_checker.main.Main().show_ui();"/>
+			<Item name="GallopSymmetricalPositionChecker : 対称性ポジションチェック" image="glp_chr_tmp_common.png" shelfName="gspc" type="Python" command="import Project_Gallop.glp_symmetrical_position_checker.main;reload(Project_Gallop.glp_symmetrical_position_checker.main);Project_Gallop.glp_symmetrical_position_checker.main.Main().show_ui();"/>
+			<Item name="GallopArrangeVtxOrder : 半透明用に頂点番号を修正" image="glp_chr_tmp_common.png" shelfName="gavo" type="Python" command="import Project_Gallop.glp_arrange_vtx_order.main;reload(Project_Gallop.glp_arrange_vtx_order.main);arrenger=Project_Gallop.glp_arrange_vtx_order.main.Main();arrenger.show_ui();"/>
+			<Item name="GallopIconMaskMaker : アイコン撮影用マスク作成" image="glp_chr_tmp_common.png" shelfName="gimm" type="Python" command="import Project_Gallop.glp_icon_mask_maker.main;reload(Project_Gallop.glp_icon_mask_maker.main);tool_main=Project_Gallop.glp_icon_mask_maker.main.Main();tool_main.show_ui();"/>
+			<Item name="GallopSkinweightEditor : Gallop向けスキンウェイトエディタ" image="glp_chr_tmp_common.png" shelfName="gswe" type="Python" command="import Project_Gallop.glp_skinweight_editor.main;reload(Project_Gallop.glp_skinweight_editor.main);Project_Gallop.glp_skinweight_editor.main.main();"/>
+			<Menu name="GallopBindMeshEdit: バインド済みメッシュの編集ツール">
+				<Item name="---- UI --------------------------------"/>
+				<Item name="GallopBindMeshEdit: バインド済みメッシュの編集ツール" image="glp_chr_tmp_common.png" shelfName="gbme" type="Python" command="import Project_Gallop.glp_bind_mesh_edit_tool.main;reload(Project_Gallop.glp_bind_mesh_edit_tool.main);Project_Gallop.glp_bind_mesh_edit_tool.main.Main().show_ui();"/>
+				<Separator/>
+				<Item name="---- 個別コマンド起動 --------------------------------"/>
+				<Item name="DevideSkinnedMesh: 選択したメッシュのフェースをスキニングを維持したまま分割する" image="glp_chr_tmp_common.png" shelfName="gavo" type="Python" command="import Project_Gallop.glp_bind_mesh_edit_tool.main;reload(Project_Gallop.glp_bind_mesh_edit_tool.main);Project_Gallop.glp_bind_mesh_edit_tool.main.Main().devide_skinned_mesh();"/>
+				<Item name="MergeSkinnedMeshes: 選択したメッシュ同士をスキニング及びウェイトを維持したまま結合する" image="glp_chr_tmp_common.png" shelfName="gavo" type="Python" command="import Project_Gallop.glp_bind_mesh_edit_tool.main;reload(Project_Gallop.glp_bind_mesh_edit_tool.main);Project_Gallop.glp_bind_mesh_edit_tool.main.Main().merge_skinned_meshes();"/>
+			</Menu>
+			<Item name="GallopCharaCopyWorkData : 作業データコピー" image="glp_chr_tmp_common.png" shelfName="glcwd" type="Python" command="import Project_Gallop.glp_chara_copy_work_data.main;reload(Project_Gallop.glp_chara_copy_work_data.main);main=Project_Gallop.glp_chara_copy_work_data.main.Main();main.show_ui();"/>
+			<Separator/>
+			<Item name="---- キャラ涙系ツール --------------------------------"/>
+			<Item name="glp_tear_exporter : 涙エクスポーター" image="glp_chr_tear_exporter.png" shelfName="tearexp" type="Python" command="import Project_Gallop.glp_tear_exporter.main;reload(Project_Gallop.glp_tear_exporter.main);Project_Gallop.glp_tear_exporter.main.main();"/>
+			<!-- <Item name="glp_mesh_path_locator : メッシュパス作成" image="glp_chr_mesh_path.png" shelfName="mpath" type="Python" command="import Project_Gallop.glp_mesh_path_creator.main;reload(Project_Gallop.glp_mesh_path_creator.main);Project_Gallop.glp_mesh_path_creator.main.main();"/> -->
+			<!-- <Item name="glp_tear_creator : 涙作成" shelfName="tcreate" image="glp_chr_tear_creator.png" type="Python" command="import Project_Gallop.glp_tear_creator.main;reload(Project_Gallop.glp_tear_creator.main);Project_Gallop.glp_tear_creator.main.main();"/> -->
+			<!-- <Item name="glp_texture_animation_creator : テクスチャアニメーション作成" image="glp_chr_texture_animation.png" shelfName="texanim" type="Python" command="import Project_Gallop.glp_texture_animation_creator.main;reload(Project_Gallop.glp_texture_animation_creator.main);Project_Gallop.glp_texture_animation_creator.main.main();"/> -->
+			<Separator/>
+			<Item name="---- 背景系ツール --------------------------------"/>
+			<Item name="TkgLightMapMaker : ライトマップ作成ツール" image="glp_env_lightmap_maker.png" shelfName="LMM" type="Python" command="import Project_Gallop.cdt_lightmap_maker.main as lightmap_maker;reload(lightmap_maker);lightmap_maker.main()"/>
+			<Item name="GlpLightMapMaker : Glpライトマップ作成ツール" image="glp_env_lightmap_maker.png" shelfName="glmm" type="Python" command="import Project_Gallop.glp_lightmap_maker.main;reload(Project_Gallop.glp_lightmap_maker.main);main=Project_Gallop.glp_lightmap_maker.main.Main();main.show_ui();"/>
+			<Item name="GallopBGExporter : BGエクスポーター" image="glp_env_BG_exporter.png" shelfName="GBE" type="Python" command="import Project_Gallop.glp_bg_exporter.main;reload(Project_Gallop.glp_bg_exporter.main);Project_Gallop.glp_bg_exporter.main.main();"/>
+			<Item name="GallopRandomPlacement : ランダム配置ツール" image="glp_env_high_common.png" shelfName="GBE" type="Python" command="import Project_Gallop.glp_random_obj_placement.main;reload(Project_Gallop.glp_random_obj_placement.main);Project_Gallop.glp_random_obj_placement.main.Main().show_ui();"/>
+			<Item name="GallopSetEmvImpactParam : 草揺れ影響値設定ツール" image="glp_env_high_common.png" shelfName="GBE" type="Python" command="import Project_Gallop.glp_set_env_impact_param.main;reload(Project_Gallop.glp_set_env_impact_param.main);Project_Gallop.glp_set_env_impact_param.main.Main().show_ui();"/>
+			<Item name="GallopSetEnvShadow : 落ち影確認ツール" image="glp_env_high_common.png" shelfName="gses" type="Python" command="import Project_Gallop.glp_set_env_shadow.main;reload(Project_Gallop.glp_set_env_shadow.main);gses=Project_Gallop.glp_set_env_shadow.main.Main();gses.show_ui();"/>
+			<Item name="GallopMobAudienceSetting : モブ観客配置セッティングツール" image="glp_env_high_common.png" shelfName="gses" type="Python" command="import Project_Gallop.glp_mob_audience_setting.main;reload(Project_Gallop.glp_mob_audience_setting.main);Project_Gallop.glp_mob_audience_setting.main.Main().show_ui();"/>
+			<Item name="GallopViewUVAlphaMask : UVAlphaMask表示ツール" image="glp_env_high_common.png" shelfName="guam" type="Python" command="import Project_Gallop.glp_view_uv_alpha_mask.main;reload(Project_Gallop.glp_view_uv_alpha_mask.main);main=Project_Gallop.glp_view_uv_alpha_mask.main.Main();main.show_ui();"/>
+			<Separator/>
+			<Item name="---- モーション系ツール --------------------------------"/>
+			<Item name="GallopTimewarpBaker : タイムワープベイクツール" image="glp_mot_high_common.png" shelfName="gtwb" type="Python" command="import Project_Gallop.glp_timewarp_baker.main;reload(Project_Gallop.glp_timewarp_baker.main);main=Project_Gallop.glp_timewarp_baker.main.Main();main.show_ui();"/>
+			<Item name="GallopCopyKeyFrame : キーフレームコピーツール" image="glp_mot_high_common.png" shelfName="gckf" type="Python" command="import Project_Gallop.glp_copy_key_frame.main;reload(Project_Gallop.glp_copy_key_frame.main);main=Project_Gallop.glp_copy_key_frame.main.Main();main.show_ui();"/>
+			<Separator/>
+			<Item name="---- 移植ツール --------------------------------"/>
+			<Item name="GallopCameraImporter : StageCameraImporterのgallop移植版" image="glp_cmn_low_common.png" shelfName="GCAMIM" type="Python" command="import Project_Gallop.glp_camera_importer.camera_importer;reload(Project_Gallop.glp_camera_importer.camera_importer);Project_Gallop.glp_camera_importer.camera_importer.CameraImporter().show_ui();"/>
+			<Separator/>
+			<Item name="---- 汎用ツール --------------------------------"/>
+			<Item name="GallopColorSpace : 色空間を全部Rawにするツール" image="glp_cmn_low_common.png" shelfName="glcs" type="Python" command="import Project_Gallop.glp_color_space.main;reload(Project_Gallop.glp_color_space.main);Project_Gallop.glp_color_space.main.main();"/>
+			<Item name="GallopUnitySnapImporter : Unityで記録した情報を読み込むツール" image="glp_cmn_low_common.png" shelfName="gusi" type="Python" command="import Project_Gallop.glp_unity_snap_importer.main as tool_main;reload(tool_main);tool = tool_main.Main();tool.show_ui();"/>
+			<Item name="GallopRecorderDataImporter : Unityの情報をベイクするツール" image="glp_cmn_low_common.png" shelfName="rimp" type="Python" command="import Project_Gallop.cdt_recorder_data_importer.main;reload(Project_Gallop.cdt_recorder_data_importer.main);Project_Gallop.cdt_recorder_data_importer.main.main();"/>
+			<Item name="GallopFacialRecorderImporter : Unityのフェイシャルをベイクするツール" image="glp_cmn_low_common.png" shelfName="fimp" type="Python" command="import Project_Gallop.glp_facial_recorder_importer.main;reload(Project_Gallop.glp_facial_recorder_importer.main);importer=Project_Gallop.glp_facial_recorder_importer.main.Main();importer.show_ui();"/>
+			<Item name="GallopSpJointFinder : 特殊骨の一覧ツール" image="glp_cmn_low_common.png" shelfName="jntf" type="Python" command="import Project_Gallop.glp_sp_joint_finder.glp_sp_joint_finder;reload(Project_Gallop.glp_sp_joint_finder.glp_sp_joint_finder);Project_Gallop.glp_sp_joint_finder.glp_sp_joint_finder.GlpSpJointFinder().show_ui();"/>
+			<Item name="GallopScanScene : FileScanを一括で行うツール" image="glp_cmn_low_common.png" shelfName="rimp" type="Python" command="import Project_Gallop.glp_scan_scene.scan_scene;reload(Project_Gallop.glp_scan_scene.scan_scene);Project_Gallop.glp_scan_scene.scan_scene.ScanScene().show_ui();"/>
+			<Item name="GallopCompressPlayblast : playblastの圧縮を行うツール" image="glp_cmn_low_common.png" shelfName="cmppb" type="Python" command="import Project_Gallop.glp_compress_playblast.main;reload(Project_Gallop.glp_compress_playblast.main);main=Project_Gallop.glp_compress_playblast.main.Main();main.show_ui();"/>
+			<Item name="GallopMayaToShotgrid : MayaからShotgridにSSやPlayblastを登録するツール" image="glp_cmn_low_common.png" shelfName="mtsg" type="Python" command="import Project_Gallop.glp_maya_to_shotgrid.main;reload(Project_Gallop.glp_maya_to_shotgrid.main);Project_Gallop.glp_maya_to_shotgrid.main.Main().show_ui();"/>
+			<Item name="GallopSceneCleaner : シーンから不要設定・ゴミノード除去(UI実行版)" image="glp_cmn_low_common.png" shelfName="scle" type="Python" command="import Project_Gallop.glp_scene_cleanup.main;reload(Project_Gallop.glp_scene_cleanup.main);Project_Gallop.glp_scene_cleanup.main.Main().show_ui();"/>
+			<Item name="GallopCreateUnionModel : 合体モデル作成ツール" image="glp_cmn_low_common.png" shelfName="cum" type="Python" command="import Project_Gallop.glp_create_union_model.main;reload(Project_Gallop.glp_create_union_model.main);Project_Gallop.glp_create_union_model.main.Main().show_ui();"/>
+			<Item name="GallopTpSimulator : UnityのTp骨制御を再現するツール" image="glp_cmn_low_common.png" shelfName="gltps" type="Python" command="import Project_Gallop.glp_tp_simulator.main;reload(Project_Gallop.glp_tp_simulator.main);tool=Project_Gallop.glp_tp_simulator.main.Main();tool.show_ui();"/>
+		</Menu>
+
+		<Menu name="Project_DesignerDivision">
+			<Item name="---- キャラ系ツール --------------------------------"/>
+			<Item name="DesignerDivFacialTool : フェイシャルツール(デザイナー部用)" shelfName="ddft" type="Python" command="import Project_DesignerDivision.designer_div_facial_tool.main;reload(Project_DesignerDivision.designer_div_facial_tool.main);Project_DesignerDivision.designer_div_facial_tool.main.Main().show_ui();"/>
+			<Item name="OutlineToUVCharaExporter : アウトラインNormalをUVに焼き付けてから出力するエクスポーター" shelfName="ccexp" type="Python" command="import Project_DesignerDivision.outline_to_uv_chara_exporter.outline_to_uv_chara_exporter.main;reload(Project_DesignerDivision.outline_to_uv_chara_exporter.outline_to_uv_chara_exporter.main);Project_DesignerDivision.outline_to_uv_chara_exporter.outline_to_uv_chara_exporter.main.main();"/>
+			<Item name="DesignerDivMaterialChanger : マテリアル切り替えツール" shelfName="ddmc" type="Python" command="import Project_DesignerDivision.designer_div_material_chenger.main;reload(Project_DesignerDivision.designer_div_material_chenger.main);changer=Project_DesignerDivision.designer_div_material_chenger.main.Main();changer.show_ui();"/>
+		</Menu>
+
+		<Menu name="Project_Wizard2">
+			<Item name="---- キャラ系ツール --------------------------------"/>
+			<Item name="CharacterToolLauncher : キャラクターツールのランチャー" shelfName="W2CTL" type="Python" command="import Project_Wizard2.chara.chara_tools_launcher.controller as controller;from importlib import reload;reload(controller);controller.show() "/>
+			<Item name="NormalEditor : 法線編集ツール" shelfName="W2N" type="Python" command="import Project_Wizard2.chara.normal_editor.main;reload(Project_Wizard2.chara.normal_editor.main);Project_Wizard2.chara.normal_editor.main.main();"/>
+			<Item name="TextureSelector : テクスチャー選択ツール" shelfName="W2T" type="Python" command="import Project_Wizard2.chara.chara_texture_selector.controller as ctrl;from importlib import reload;reload(ctrl);ctrl.show();"/>
+			<Item name="CharacterChecker : キャラクターのデータチェッカー" shelfName="W2CC" type="Python" command="import Project_Wizard2.chara.character_checker as chr_checker;chr_checker.show_chr_checker();"/>
+
+			<Separator/>
+			<Item name="---- 背景系ツール --------------------------------"/>
+			<Item name="EnvChecker : FBXエクスポートチェッカー" shelfName="W2EC" type="Python" command="import Project_Wizard2.env.env_checker.env_app as app;app.show_checker_gui()"/>
+			<Item name="Minimap : 色分け" shelfName="W2M" type="Python" command="import Project_Wizard2.env.collision_material.gui;reload(Project_Wizard2.env.collision_material.gui);Project_Wizard2.env.collision_material.gui.run()"/>
+			<Item name="Minimap : レンダリング" shelfName="W2M" type="Python" command="import Project_Wizard2.env.minimaprender;reload(Project_Wizard2.env.minimaprender);Project_Wizard2.env.minimaprender.main()"/>
+			<Separator/>
+			<Item name="---- エフェクト系ツール --------------------------------"/>
+			<Separator/>
+			<Item name="---- モーション系ツール --------------------------------"/>
+			<Item name="Shift Hip 1.5: HipのTrans Y 1.5上げる" shelfName="W2Y" type="Python" command="import Project_Wizard2.motion.raise_hip_joint_for_geta.main;reload(Project_Wizard2.motion.raise_hip_joint_for_geta.main);Project_Wizard2.motion.raise_hip_joint_for_geta.main.main()"/>
+			<Item name="Export FBX: FBXエクスポート" shelfName="W2F" type="Python" command="import Project_Wizard2.motion.motion_fbx.main;reload(Project_Wizard2.motion.motion_fbx.main);Project_Wizard2.motion.motion_fbx.main.main()"/>
+			<Item name="Export FBX: Prop FBXエクスポート" shelfName="W2F" type="Python" command="import Project_Wizard2.motion.motion_fbx_prop.main;reload(Project_Wizard2.motion.motion_fbx_prop.main);Project_Wizard2.motion.motion_fbx_prop.main.main()"/>
+			<Item name="Export Facial: 表情イベント" shelfName="W2Fa" type="Python" command="import Project_Wizard2.motion.facial_motion.main;reload(Project_Wizard2.motion.facial_motion.main);Project_Wizard2.motion.facial_motion.main.main()"/>
+			<Item name="Unityカメラインポート" shelfName="W2C" type="Python" command="import Project_Wizard2.motion.unity_camera.main;reload(Project_Wizard2.motion.unity_camera.main);Project_Wizard2.motion.unity_camera.main.main()"/>
+			<Item name="FBX to Rig" shelfName="W2" type="Python" command="import rig.fbxToRig.ui as fbxToRig_UI;reload(fbxToRig_UI);ftr = fbxToRig_UI.FbxToRigWindow();ftr.show();"/>
+			<Item name="FBX Mixer" shelfName="W2" type="Python" command="import rig.fbxMixer.ui as fbxMixer_UI;reload(fbxMixer_UI);fbx_mxui = fbxMixer_UI.FBXMixer();fbx_mxui.buildUI();fbx_mxui.show(dockable=True);"/>
+			<Item name="Picker Anim Tools" shelfName="W2" type="Python" command="import rig.picker.ui as wiz2PickUi;reload(wiz2PickUi);ui = wiz2PickUi.PickerAnimTools();ui.buildUI();ui.show(dockable=True)"/>
+			<Item name="Avatar Reference Tool" shelfName="W2" type="Python" command="import rig.avatarReferenceTool.ui as avatarReferenceToolUI;reload(avatarReferenceToolUI);avareftool = avatarReferenceToolUI.AvatarReferenceTool();avareftool.buildUI();avareftool.show(dockable=True)"/>
+		</Menu>
+
+		<Menu name="Project_Temp">
+		</Menu>
+
+		<Menu name="Trial_Tools">
+			<Item name="[ From_Mutsunokami ]"/>
+			<Item name="CreateAssetFolder : アセットフォルダ作成ツール" shelfName="TTFM" type="Python" command="import CreateAssetFolder;reload(CreateAssetFolder);CreateAssetFolder.show();"/>
+		</Menu>
+
+	</MenuList>
+</TkgMenu>

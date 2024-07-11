@@ -1,0 +1,294 @@
+
+//-------------------------------------------------------------------------------------------//
+
+global proc yk_PivotEditor_Cmds(int $flag , int $minus)
+{
+
+string $sele[] = `ls -sl -fl -type transform`;
+if((`size $sele`) == 0){return;}
+
+string $x , $model_1[] , $model_2[] , $un_parent[];
+float $xyz[];
+
+for($x in $sele){
+    $model_1 = `duplicate -rr $x`; 
+    $un_parent[0] = $model_1[0];  //----�����������f��
+    string $child[] = `listRelatives -p -f $un_parent[0]`;
+    if(`size $child` > 0){  //----�e������ꍇ�̓y�A�����g���Ă����$un_parent[0]�ɓ����
+        $un_parent = `parent -w $model_1[0]`;
+    }
+    if(`checkBox -q -v yk_FGH4` == 1){  //---ON�̎��̓Z���^�[�̃s�{�b�g���W���擾�ł���悤��
+        select $un_parent[0];
+        CenterPivot $un_parent[0];
+    }
+    $xyz = `xform -q -t -ws ($un_parent[0] + ".rotatePivot") `;  //----�s�{�b�g�ʒu���擾���Ă���
+    makeIdentity -a 1 -t 1 -r 1 -s 1 -n 0 -pn 1 $un_parent[0];  //----�t���[�Y����BB���擾����
+    $model_2 = `lattice -divisions 2 2 2 -objectCentered 1 $un_parent[0]`;
+    float $bb_xyz[] = `xform -q -ws -bb $model_2[1]`;
+    
+    float $result[2] = {$bb_xyz[3] , $bb_xyz[4] , $bb_xyz[5]};  //----BB�̒l������
+    if($minus == -1){  //----�}�C�i�X�t���O
+        $result[0] = $bb_xyz[0];  //----�}�C�i�X�͍ŏ��l������
+        $result[1] = $bb_xyz[1];
+        $result[2] = $bb_xyz[2];
+    }
+    
+    if($flag == 1){  //----x
+	    move $result[0] ($xyz[1]) ($xyz[2]) ($x + ".scalePivot") ($x + ".rotatePivot"); 
+    }
+    else if($flag == 2){  //----y
+	    move ($xyz[0]) $result[1] ($xyz[2]) ($x + ".scalePivot") ($x + ".rotatePivot"); 
+    }
+    else if($flag == 3){  //----z
+	    move ($xyz[0]) ($xyz[1]) $result[2] ($x + ".scalePivot") ($x + ".rotatePivot"); 
+    }
+    
+    clear $result $bb_xyz $xyz; 
+    delete $un_parent[0] $model_2;  //----�����������f���ƃ��e�B�X���f���폜   
+}
+
+select $sele;  
+
+}
+
+//-------------------------------------------------------------------------------------------//�s�{�b�g�Q�b�g
+
+global proc yk_PivotEditor_Get()
+{
+
+string $sele_model[] = `ls -sl -type transform`;
+string $sele_vertex[] = `filterExpand -sm 31`;
+if((`size $sele_model`) == 0 && (`size $sele_vertex`) == 0){return;}
+
+float $v_x[] , $v_y[] , $v_z[];
+string $x;
+int $i = 0;
+
+if((`size $sele_model`) > 0){  //----���f���I���̂Ƃ�
+    for($x in $sele_model){
+        float $pivot[] = `xform -q -t -ws ($x + ".rotatePivot")`;
+        $v_x[$i] = $pivot[0];
+        $v_y[$i] = $pivot[1];
+        $v_z[$i] = $pivot[2];     
+        $i++;
+    }
+}
+else if((`size $sele_vertex`) > 0){  //----���_�I���̎�
+    for($x in $sele_vertex){
+        float $vertex[] = `xform -q -t -ws $x`;
+        $v_x[$i] = $vertex[0];
+        $v_y[$i] = $vertex[1];
+        $v_z[$i] = $vertex[2];     
+        $i++;
+    }
+}
+
+$v_x = `sort $v_x`;
+$v_y = `sort $v_y`;
+$v_z = `sort $v_z`;
+float $get_x = (($v_x[0] + $v_x[((`size $v_x`) - 1)]) / 2);
+float $get_y = (($v_y[0] + $v_y[((`size $v_y`) - 1)]) / 2);
+float $get_z = (($v_z[0] + $v_z[((`size $v_z`) - 1)]) / 2);
+
+floatField -e -v $get_x yk_PivotEditor_FLOATFIELD1;
+floatField -e -v $get_y yk_PivotEditor_FLOATFIELD2;
+floatField -e -v $get_z yk_PivotEditor_FLOATFIELD3;
+  
+}
+
+//-------------------------------------------------------------------------------------------//�s�{�b�g�ړ�
+
+global proc yk_PivotEditor_Move()
+{
+
+string $sele[] = `ls -sl -type transform`;
+if((`size $sele`) == 0){return;}
+
+float $xyz[];
+$xyz[0] = `floatField -q -v yk_PivotEditor_FLOATFIELD1`;
+$xyz[1] = `floatField -q -v yk_PivotEditor_FLOATFIELD2`;
+$xyz[2] = `floatField -q -v yk_PivotEditor_FLOATFIELD3`;
+
+string $x;
+for($x in $sele){
+    float $get[] = `xform -q -t -ws ($x + ".rotatePivot")`;
+    move -r ($xyz[0] - $get[0]) ($xyz[1] - $get[1]) ($xyz[2] - $get[2]) $x;
+}
+    
+}
+
+//-------------------------------------------------------------------------------------------//�s�{�b�g�R�s�[
+
+global proc yk_PivotEditor_Copy()
+{
+
+string $sele[] = `ls -sl -type transform`;
+if((`size $sele`) == 0){return;}
+
+float $xyz[];
+$xyz[0] = `floatField -q -v yk_PivotEditor_FLOATFIELD1`;
+$xyz[1] = `floatField -q -v yk_PivotEditor_FLOATFIELD2`;
+$xyz[2] = `floatField -q -v yk_PivotEditor_FLOATFIELD3`;
+
+string $x;
+for($x in $sele){
+    move $xyz[0] $xyz[1] $xyz[2] ($x + ".scalePivot") ($x + ".rotatePivot");
+}
+    
+}
+
+//-------------------------------------------------------------------------------------------//�Z���^�[
+
+global proc yk_PivotEditor_Center()
+{
+    
+string $select[] = `ls -sl`; 
+if(`size $select` == 0){return;}  //---�I��0�Ȃ�I��
+   
+string $model_sele[] = `ls -sl -type transform`;
+if((`size $model_sele`) > 0){  //----���f�����I������Ă���Ώ���
+	CenterPivot;
+	return;
+}
+
+string $sele[] = `filterExpand -sm 32 -sm 34`;  //----���_�A�ʑI���̏���
+if((`size $sele`) != 1){
+    confirmDialog -t "Confirm" -m "Edge�AFace�̏ꍇ�A�����I���͂ł��܂���" -b "OK" ;
+    return;
+}
+
+int $i = 0;
+float $get_x[] , $get_y[] , $get_z[] , $xyz[];
+
+yk_PivotEditor_ObjSelect();  //----���f���̎����I��
+string $model_name[] = `ls -sl -fl`;
+select $sele[0]; 
+
+PolySelectConvert 3;
+string $vertex[] = `ls -sl -fl`;
+
+string $x;
+for($x in $vertex){
+    float $position[] = `xform -q -t -ws $x`;
+    $get_x[$i] = $position[0];
+    $get_y[$i] = $position[1];
+    $get_z[$i] = $position[2];
+    $i++;
+}
+
+$get_x = `sort $get_x`;
+$get_y = `sort $get_y`;
+$get_z = `sort $get_z`;
+$xyz[0] = (($get_x[0] + $get_x[`size $vertex` - 1]) / 2);
+$xyz[1] = (($get_y[0] + $get_y[`size $vertex` - 1]) / 2);
+$xyz[2] = (($get_z[0] + $get_z[`size $vertex` - 1]) / 2);
+
+move $xyz[0] $xyz[1] $xyz[2] ($model_name[0] + ".scalePivot") ($model_name[0] + ".rotatePivot");
+select $model_name;
+
+}
+
+//-------------------------------------------------------------------------------------------//�I���W�����_
+
+global proc yk_PivotEditor_Origin()
+{
+
+string $sele[] = `ls -sl -type transform`;
+if((`size $sele`) == 0){return;}
+
+string $x;
+for($x in $sele){
+    move 0 0 0 ($x + ".scalePivot") ($x + ".rotatePivot");
+}
+    
+}
+
+//-------------------------------------------------------------------------------------------//���f�������I��
+
+global proc yk_PivotEditor_ObjSelect()
+{
+
+string $name[] = `ls- sl -fl`; 
+if((`size $name`) > 0){
+	select -d;
+	string $x;
+	for($x in $name){
+		string $buffer[];
+		$size = `tokenize $x "." $buffer`;
+		select -add $buffer[0];
+	}
+}
+
+}
+
+//-------------------------------------------------------------------------------------------//WINDOW
+
+global proc TkgPivotEditor()
+{
+
+if(`window -q -ex yk_PivotEditor_WINDOW`){deleteUI yk_PivotEditor_WINDOW;}
+
+window -t "Pivot Editor" -toolbox 1 -s 0 yk_PivotEditor_WINDOW;
+columnLayout -adjustableColumn true;
+
+rowLayout -nc 3 -cw3 2 175 50;
+text  -h 22 -l "";
+checkBox -l "Object Center" -v 1 yk_FGH4;
+setParent ..;
+
+rowLayout -nc 3 -cw3 2 20 1;
+button -w 50 -h 22 -l "X" -c "yk_PivotEditor_Cmds(1 , 1)" -ann "�s�{�b�g�����f���̍ő�X�ɂ��܂�";
+button -w 51 -h 22 -l "Y" -c "yk_PivotEditor_Cmds(2 , 1)" -ann "�s�{�b�g�����f���̍ő�Y�ɂ��܂�";
+button -w 51 -h 22 -l "Z" -c "yk_PivotEditor_Cmds(3 , 1)" -ann "�s�{�b�g�����f���̍ő�Z�ɂ��܂�";
+setParent..; 
+
+rowLayout -nc 3 -cw3 2 20 1;
+button -w 50 -h 22 -l "-X" -c "yk_PivotEditor_Cmds(1 , -1)" -ann "�s�{�b�g�����f���̍ŏ�X�ɂ��܂�";
+button -w 51 -h 22 -l "-Y" -c "yk_PivotEditor_Cmds(2 , -1)" -ann "�s�{�b�g�����f���̍ŏ�Y�ɂ��܂�";
+button -w 51 -h 22 -l "-Z" -c "yk_PivotEditor_Cmds(3 , -1)" -ann "�s�{�b�g�����f���̍ŏ�Z�ɂ��܂�";
+setParent..; 
+
+rowLayout -nc 3 -cw3 2 20 1;
+button -w 77 -h 22 -l "Center" -c "yk_PivotEditor_Center()" -ann "�s�{�b�g�����f���̒��S�ɂ��܂�(Edge 1 �I���AFace 1 �I���ł��\)";;
+button -w 77 -h 22 -l "Origin" -c "yk_PivotEditor_Origin()" -ann "�s�{�b�g�����_(0,0,0)�ɂ��܂�";;
+setParent..; 
+
+separator -height 3 -style "none";
+
+frameLayout -w 70 -l "Coordinate" -bs "out" -pcc "window -e -wh 160 122 yk_PivotEditor_WINDOW" 
+                                            -pec "window -e -wh 160 256 yk_PivotEditor_WINDOW" -collapsable 1;  //----�t���[��
+
+columnLayout;
+
+rowLayout -nc 3 -cw3 10 20 1;
+button -w 153 -h 22 -l "Pivot Get" -c "yk_PivotEditor_Get()" -ann "���f���̃s�{�b�g���W��\�����܂��B���_�I���ł��\�B(�����I�����͒��ԍ��W)";
+setParent..; 
+
+separator -height 5 -style "none";
+
+rowLayout -nc 3 -cw3 30 10 1;
+text  -h 22 -l "  X";
+floatField -w 115 -h 22 -v 0 -pre 10 yk_PivotEditor_FLOATFIELD1;
+setParent..; 
+
+rowLayout -nc 3 -cw3 30 10 1;
+text  -h 22 -l "  Y";
+floatField -w 115 -h 22 -v 0 -pre 10 yk_PivotEditor_FLOATFIELD2;
+setParent..; 
+
+rowLayout -nc 3 -cw3 30 10 1;
+text  -h 22 -l "  Z";
+floatField -w 115 -h 22 -v 0 -pre 10 yk_PivotEditor_FLOATFIELD3;
+setParent..; 
+
+separator -height 5 -style "none";
+
+rowLayout -nc 3 -cw3 2 20 1;
+button -w 75 -h 22 -l "Move" -c "yk_PivotEditor_Move()" -ann "���W�l�Ƀ��f�����ړ����܂�";
+button -w 75 -h 22 -l "Copy" -c "yk_PivotEditor_Copy()" -ann "���W�l�Ƀ��f���̃s�{�b�g���R�s�[���܂�";
+setParent..; 
+
+showWindow yk_PivotEditor_WINDOW;
+window -e -wh 160 256 yk_PivotEditor_WINDOW;
+
+}

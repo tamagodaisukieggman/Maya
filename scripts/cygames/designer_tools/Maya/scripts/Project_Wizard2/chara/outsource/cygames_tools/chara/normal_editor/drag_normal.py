@@ -20,7 +20,7 @@ Created: 2022/01/13
 Last Modified: 2022/04/21
 Author(s): Natsuko Kinoshita
 チケット
-https://prodigy.cygames.jp/browse/TDN-4680
+https://prodigy.tkgpublic.jp/browse/TDN-4680
 """
 
 g_tool_name = "drag_normal"

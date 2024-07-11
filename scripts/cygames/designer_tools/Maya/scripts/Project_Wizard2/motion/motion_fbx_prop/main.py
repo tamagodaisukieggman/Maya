@@ -253,7 +253,7 @@ class MotionFBXWindow(MayaQWidgetBaseMixin, QtWidgets.QMainWindow):
         """コンフルのツールマニュアルページを開く
         """
         try:
-            webbrowser.open('https://wisdom.cygames.jp/pages/viewpage.action?pageId=513849649#id-%E3%80%90Motion%E3%80%91FBX%E3%82%A8%E3%82%AF%E3%82%B9%E3%83%9D%E3%83%BC%E3%82%BF%E3%83%BC-Prop%E3%81%AEFBX%E3%82%A8%E3%82%AF%E3%82%B9%E3%83%9D%E3%83%BC%E3%83%88')
+            webbrowser.open('https://wisdom.tkgpublic.jp/pages/viewpage.action?pageId=513849649#id-%E3%80%90Motion%E3%80%91FBX%E3%82%A8%E3%82%AF%E3%82%B9%E3%83%9D%E3%83%BC%E3%82%BF%E3%83%BC-Prop%E3%81%AEFBX%E3%82%A8%E3%82%AF%E3%82%B9%E3%83%9D%E3%83%BC%E3%83%88')
         except Exception:
             cmds.warning('マニュアルページがみつかりませんでした')
 

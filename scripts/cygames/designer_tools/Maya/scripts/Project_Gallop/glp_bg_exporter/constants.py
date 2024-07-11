@@ -19,7 +19,7 @@ REGEX_MOB_CYALUME_ROOT = re.compile(r'mdl_env_live_cmn_(cyalume_d|cyalume_r|mob)
 REGEX_MOB_CYALUME_GROUP = re.compile(r'(cyalume_d|cyalume_r|mob)[0-9]{3}_.*?_([0-1])([0-9])$')
 
 # マニュアルページのURL
-HELP_URL = 'https://wisdom.cygames.jp/x/odoCBg'
+HELP_URL = 'https://wisdom.tkgpublic.jp/x/odoCBg'
 
 # ファイルタイプオプションメニューの項目
 FILE_TYPES = ['ma', 'mb', 'obj', 'fbx']
@@ -31,7 +31,7 @@ MULTI_DST_MODE_OPTION_KEY = 'gallopBGExporterMultiDstMode'
 
 FOLDER_PATH_ATTR_NAME = 'exportInfo_folderPath'
 
-SETTING_LOCATOR_NAME = 'CygamesTools'
+SETTING_LOCATOR_NAME = 'TKGTools'
 
 TEMP_NODE_SUFFIX = 'TEMP_TEMP_TEMP'
 

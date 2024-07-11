@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'D:\tech-designer\CyDesignerTools_Legacy\Maya\scripts\Project_Gallop\glp_facial_recorder_importer\glp_facial_recorder_importer_ui.ui'
+# Form implementation generated from reading ui file 'D:\tech-designer\TkgDesignerTools_Legacy\Maya\scripts\Project_Gallop\glp_facial_recorder_importer\glp_facial_recorder_importer_ui.ui'
 #
 # Created: Fri Jan 22 17:39:58 2021
 #      by: pyside2-uic  running on PySide2 2.0.0~alpha0

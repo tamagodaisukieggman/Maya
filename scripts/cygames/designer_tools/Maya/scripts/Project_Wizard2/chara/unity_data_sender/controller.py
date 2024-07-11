@@ -28,7 +28,7 @@ from ..chara_utility import utility as chara_utility
 g_tool_name = "Unity_Sender"
 UI_PATH = os.path.dirname(__file__) + "/ui"
 YAML_PATH = (
-    r"C:\cygames\wiz2\tools\maya\settings\character_utility" + r"\utility_settings.yaml"
+    r"C:\tkgpublic\wiz2\tools\maya\settings\character_utility" + r"\utility_settings.yaml"
 )
 
 
@@ -71,7 +71,7 @@ class UnityDataSenderMainWindow(MayaQWidgetBaseMixin, QtWidgets.QMainWindow):
         """
         unity_path = Path(unity_path + "\\3d\\chr").as_posix()
 
-        p4_path = Path("c:\\cygames\\wiz2\\team\\3dcg\\chr").as_posix()
+        p4_path = Path("c:\\tkgpublic\\wiz2\\team\\3dcg\\chr").as_posix()
         self.data_sender = DataSender(p4_path, unity_path)
 
         unity_path = self.data_sender.get_unity_path()
@@ -184,7 +184,7 @@ def show_manual():
     """コンフルのツールマニュアルページを開く"""
     try:
         webbrowser.open(
-            "https://wisdom.cygames.jp/pages/viewpage.action?pageId=440909007"
+            "https://wisdom.tkgpublic.jp/pages/viewpage.action?pageId=440909007"
         )
     except Exception:
         cmds.warning("マニュアルページがみつかりませんでした")

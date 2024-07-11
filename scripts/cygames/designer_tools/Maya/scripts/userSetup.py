@@ -16,8 +16,8 @@ import traceback
 # -------------------------------------------------
 # Maya起動後に実行する処理
 def add_menu():
-    import CyMenu
-    CyMenu.UI()
+    import TkgMenu
+    TkgMenu.UI()
 
 
 def add_paths():
@@ -32,18 +32,18 @@ def add_paths():
 
     try:
         # Mayaスクリプトパスを追加
-        import CyAddMayaScriptPath
+        import TkgAddMayaScriptPath
         try:
             # Python 2
-            reload(CyAddMayaScriptPath)
+            reload(TkgAddMayaScriptPath)
         except NameError:
             try:
                 # Python 3.4+
                 from importlib import reload
-                reload(CyAddMayaScriptPath)
+                reload(TkgAddMayaScriptPath)
             except Exception:
                 pass
-        CyAddMayaScriptPath.add(os.path.dirname(thisFilePath))
+        TkgAddMayaScriptPath.add(os.path.dirname(thisFilePath))
     except Exception as e:
         print(u"   Mayaスクリプトパスを追加 : 失敗！")
         print(e)
@@ -51,7 +51,7 @@ def add_paths():
     # Mayaプラグインパスを追加
     try:
         pluginPaths = [
-            r'C:\cygames\designer_tools\Maya\plug-ins',
+            r'C:\tkgpublic\designer_tools\Maya\plug-ins',
         ]
 
         if 'MAYA_PLUG_IN_PATH' in os.environ:

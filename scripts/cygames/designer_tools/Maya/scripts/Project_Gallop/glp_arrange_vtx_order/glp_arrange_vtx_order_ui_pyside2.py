@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'D:\tech-designer\CyDesignerTools_Legacy\Maya\scripts\Project_Gallop\glp_arrange_vtx_order\glp_arrange_vtx_order_ui.ui'
+# Form implementation generated from reading ui file 'D:\tech-designer\TkgDesignerTools_Legacy\Maya\scripts\Project_Gallop\glp_arrange_vtx_order\glp_arrange_vtx_order_ui.ui'
 #
 # Created: Thu Apr  8 18:18:23 2021
 #      by: pyside2-uic  running on PySide2 2.0.0~alpha0

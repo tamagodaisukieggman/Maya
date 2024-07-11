@@ -7,9 +7,9 @@ import maya.cmds as cmds
 import maya.mel as mel
 
 
-class CygamesMenu(object):
+class TKGMenu(object):
     # メニュー名
-    menu_name = 'Cygames'
+    menu_name = 'TKG'
 
     @classmethod
     def _add_items(cls):

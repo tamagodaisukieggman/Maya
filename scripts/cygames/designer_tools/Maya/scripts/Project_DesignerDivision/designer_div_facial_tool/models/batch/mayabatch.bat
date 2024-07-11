@@ -20,16 +20,16 @@ set FIX_PYTHON_SCRIPT=python(%FIX_PYTHON_SCRIPT%);
 
 echo %FIX_PYTHON_SCRIPT%
 
-@REM TA—p ©g‚ÌmayaLegacyƒpƒX‚É‘‚«Š·‚¦‚ÄƒRƒƒ“ƒgƒAƒEƒg‚µ‚Äg—p
+@REM TAï¿½p ï¿½ï¿½ï¿½gï¿½ï¿½mayaLegacyï¿½pï¿½Xï¿½Éï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÄƒRï¿½ï¿½ï¿½ï¿½ï¿½gï¿½Aï¿½Eï¿½gï¿½ï¿½ï¿½Ägï¿½p
 @REM set MAYA_SCRIPT_PATH=D:\tech-designer\Maya\scripts
 @REM set PYTHONPATH=D:\tech-designer\Maya\scripts;%localPythonSitepackagePath%;
-@REM set XBMLANGPATH=C:\cygames\designer_tools\Maya\icons
+@REM set XBMLANGPATH=C:\tkgpublic\designer_tools\Maya\icons
 @REM set MAYA_UI_LANGUAGE=en_US
 
 call "%MAYA_INSTALL_PATH%\mayabatch.exe" -noAutoloadPlugins -command "%FIX_PYTHON_SCRIPT%"
 
 echo;
-echo ‰½‚©ƒL[‚ğ‰Ÿ‚·‚Æ‚±‚Ì‰æ–Ê‚Í•Â‚¶‚Ü‚·
+echo ï¿½ï¿½ï¿½ï¿½ï¿½Lï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ‚ï¿½ï¿½Ì‰ï¿½Ê‚Í•Â‚ï¿½ï¿½Ü‚ï¿½
 echo;
 pause
 exit /b

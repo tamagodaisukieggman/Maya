@@ -428,7 +428,7 @@ class LongpantsTextureSelector(TextureSelectorBase):
 class SocksTextureSelector(TextureSelectorBase):
     def __init__(self, **kwargs):
         self.material_id = kwargs["parts_id"]
-        self.sourceimages_path = Path(r"C:\cygames\wiz2\team\3dcg\chr\ply\legs\socks")
+        self.sourceimages_path = Path(r"C:\tkgpublic\wiz2\team\3dcg\chr\ply\legs\socks")
         super().__init__(**kwargs)
 
     def initialize_diff_datas(self):

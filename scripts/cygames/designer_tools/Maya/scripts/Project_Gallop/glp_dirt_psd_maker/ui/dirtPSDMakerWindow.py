@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'D:\CyDesignerTools_Legacy\Maya\scripts\Project_Gallop\glp_dirt_psd_maker\ui\dirtPSDMakerWindow.ui'
+# Form implementation generated from reading ui file 'D:\TkgDesignerTools_Legacy\Maya\scripts\Project_Gallop\glp_dirt_psd_maker\ui\dirtPSDMakerWindow.ui'
 #
 # Created: Fri Jun 11 16:33:43 2021
 #      by: pyside2-uic  running on PySide2 2.0.0~alpha0

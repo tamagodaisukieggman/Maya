@@ -31,8 +31,8 @@ class MiniMapRenderWindow(object):
         self.main_layout = None
         self.column_layout = None
 
-        # self.url = 'https://wisdom.cygames.jp/x/fcT6B'
-        self.url = 'https://wisdom.cygames.jp/pages/viewpage.action?pageId=857199267'
+        # self.url = 'https://wisdom.tkgpublic.jp/x/fcT6B'
+        self.url = 'https://wisdom.tkgpublic.jp/pages/viewpage.action?pageId=857199267'
 
         self._output_directory_field = ''
         self._output_file_field = ''

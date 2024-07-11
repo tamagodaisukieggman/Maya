@@ -62,7 +62,7 @@ def show_manual():
     """コンフルのツールマニュアルページを開く"""
     try:
         webbrowser.open(
-            "https://wisdom.cygames.jp/pages/viewpage.action?pageId=440909007"
+            "https://wisdom.tkgpublic.jp/pages/viewpage.action?pageId=440909007"
         )
     except Exception:
         cmds.warning("マニュアルページがみつかりませんでした")

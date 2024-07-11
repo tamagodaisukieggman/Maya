@@ -52,7 +52,7 @@ class Main(main_template.Main):
                     'param': {}
                 },
                 {
-                    'attr': 'xCylinderBlend',
+                    'attr': 'xTkglinderBlend',
                     'part': 'face',
                     'data_type': 'head',
                     'type': 'float',

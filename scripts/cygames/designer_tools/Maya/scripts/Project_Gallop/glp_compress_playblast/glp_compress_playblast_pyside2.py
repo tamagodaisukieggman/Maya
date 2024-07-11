@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'D:\tech-designer\CyDesignerTools_Legacy\Maya\scripts\Project_Gallop\cdt_compress_playblast\cdt_compress_playblast.ui'
+# Form implementation generated from reading ui file 'D:\tech-designer\TkgDesignerTools_Legacy\Maya\scripts\Project_Gallop\cdt_compress_playblast\cdt_compress_playblast.ui'
 #
 # Created: Tue Mar 23 15:56:50 2021
 #      by: pyside2-uic  running on PySide2 2.0.0~alpha0
