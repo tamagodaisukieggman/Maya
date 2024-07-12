@@ -1,0 +1,268 @@
+[
+    {
+        "driver_attr": "unitConversion1.output",
+        "keyframes": [
+            {
+                "driver_value": -90.0,
+                "driven_values": {
+                    "QuickRigCharacter_LeftHand_helper.translateX": 16.59998768312214
+                },
+                "itt": "auto",
+                "ott": "auto"
+            },
+            {
+                "driver_value": 0.0,
+                "driven_values": {
+                    "QuickRigCharacter_LeftHand_helper.translateX": 18.946
+                },
+                "itt": "auto",
+                "ott": "auto"
+            },
+            {
+                "driver_value": 90.0,
+                "driven_values": {
+                    "QuickRigCharacter_LeftHand_helper.translateX": 15.537175284883748
+                },
+                "itt": "auto",
+                "ott": "auto"
+            }
+        ]
+    },
+    {
+        "driver_attr": "unitConversion4.output",
+        "keyframes": [
+            {
+                "driver_value": -90.0,
+                "driven_values": {
+                    "QuickRigCharacter_LeftHand_helper.translateX": -1.1910273887008955
+                },
+                "itt": "auto",
+                "ott": "auto"
+            },
+            {
+                "driver_value": -0.0030000172555446625,
+                "driven_values": {
+                    "QuickRigCharacter_LeftHand_helper.translateX": 0.0
+                },
+                "itt": "auto",
+                "ott": "auto"
+            },
+            {
+                "driver_value": 90.0,
+                "driven_values": {
+                    "QuickRigCharacter_LeftHand_helper.translateX": -1.1757555740190853
+                },
+                "itt": "auto",
+                "ott": "auto"
+            }
+        ]
+    },
+    {
+        "driver_attr": "unitConversion2.output",
+        "keyframes": [
+            {
+                "driver_value": -90.0,
+                "driven_values": {
+                    "QuickRigCharacter_LeftHand_helper.translateY": 0.0001228369177718377
+                },
+                "itt": "auto",
+                "ott": "auto"
+            },
+            {
+                "driver_value": 0.0,
+                "driven_values": {
+                    "QuickRigCharacter_LeftHand_helper.translateY": 0.0
+                },
+                "itt": "auto",
+                "ott": "auto"
+            },
+            {
+                "driver_value": 90.0,
+                "driven_values": {
+                    "QuickRigCharacter_LeftHand_helper.translateY": 0.0001784856448883792
+                },
+                "itt": "auto",
+                "ott": "auto"
+            }
+        ]
+    },
+    {
+        "driver_attr": "unitConversion5.output",
+        "keyframes": [
+            {
+                "driver_value": -90.0,
+                "driven_values": {
+                    "QuickRigCharacter_LeftHand_helper.translateY": -6.798988495608654
+                },
+                "itt": "auto",
+                "ott": "auto"
+            },
+            {
+                "driver_value": -0.0030000172555446625,
+                "driven_values": {
+                    "QuickRigCharacter_LeftHand_helper.translateY": 0.0
+                },
+                "itt": "auto",
+                "ott": "auto"
+            },
+            {
+                "driver_value": 90.0,
+                "driven_values": {
+                    "QuickRigCharacter_LeftHand_helper.translateY": 4.227174339826941
+                },
+                "itt": "auto",
+                "ott": "auto"
+            }
+        ]
+    },
+    {
+        "driver_attr": "unitConversion3.output",
+        "keyframes": [
+            {
+                "driver_value": -90.0,
+                "driven_values": {
+                    "QuickRigCharacter_LeftHand_helper.translateZ": 3.048313152480579
+                },
+                "itt": "auto",
+                "ott": "auto"
+            },
+            {
+                "driver_value": 0.0,
+                "driven_values": {
+                    "QuickRigCharacter_LeftHand_helper.translateZ": 0.0
+                },
+                "itt": "auto",
+                "ott": "auto"
+            },
+            {
+                "driver_value": 90.0,
+                "driven_values": {
+                    "QuickRigCharacter_LeftHand_helper.translateZ": -3.075717732811186
+                },
+                "itt": "auto",
+                "ott": "auto"
+            }
+        ]
+    },
+    {
+        "driver_attr": "unitConversion6.output",
+        "keyframes": [
+            {
+                "driver_value": -90.0,
+                "driven_values": {
+                    "QuickRigCharacter_LeftHand_helper.translateZ": -5.551115123125783e-15
+                },
+                "itt": "auto",
+                "ott": "auto"
+            },
+            {
+                "driver_value": -0.0030000172555446625,
+                "driven_values": {
+                    "QuickRigCharacter_LeftHand_helper.translateZ": 0.0
+                },
+                "itt": "auto",
+                "ott": "auto"
+            },
+            {
+                "driver_value": 90.0,
+                "driven_values": {
+                    "QuickRigCharacter_LeftHand_helper.translateZ": 6.106226635438361e-15
+                },
+                "itt": "auto",
+                "ott": "auto"
+            }
+        ]
+    },
+    {
+        "driver_attr": "unitConversion10.output",
+        "keyframes": [
+            {
+                "driver_value": -90.0,
+                "driven_values": {
+                    "QuickRigCharacter_LeftHand_helper.rotateX": -45.0
+                },
+                "itt": "auto",
+                "ott": "auto"
+            },
+            {
+                "driver_value": 0.0,
+                "driven_values": {
+                    "QuickRigCharacter_LeftHand_helper.rotateX": 0.0
+                },
+                "itt": "auto",
+                "ott": "auto"
+            },
+            {
+                "driver_value": 90.0,
+                "driven_values": {
+                    "QuickRigCharacter_LeftHand_helper.rotateX": 45.0
+                },
+                "itt": "auto",
+                "ott": "auto"
+            }
+        ]
+    },
+    {
+        "driver_attr": "unitConversion7.output",
+        "keyframes": [
+            {
+                "driver_value": 16.250999450683594,
+                "driven_values": {
+                    "QuickRigCharacter_LeftForeArm_helper.rotateX": 0.009
+                },
+                "itt": "auto",
+                "ott": "auto"
+            },
+            {
+                "driver_value": 126.05097961425781,
+                "driven_values": {
+                    "QuickRigCharacter_LeftForeArm_helper.rotateX": -0.0445991536378517
+                },
+                "itt": "auto",
+                "ott": "auto"
+            }
+        ]
+    },
+    {
+        "driver_attr": "unitConversion8.output",
+        "keyframes": [
+            {
+                "driver_value": 16.250999450683594,
+                "driven_values": {
+                    "QuickRigCharacter_LeftForeArm_helper.rotateY": 0.06
+                },
+                "itt": "auto",
+                "ott": "auto"
+            },
+            {
+                "driver_value": 126.05097961425781,
+                "driven_values": {
+                    "QuickRigCharacter_LeftForeArm_helper.rotateY": 0.041132904187458776
+                },
+                "itt": "auto",
+                "ott": "auto"
+            }
+        ]
+    },
+    {
+        "driver_attr": "unitConversion9.output",
+        "keyframes": [
+            {
+                "driver_value": 16.250999450683594,
+                "driven_values": {
+                    "QuickRigCharacter_LeftForeArm_helper.rotateZ": 16.251
+                },
+                "itt": "auto",
+                "ott": "auto"
+            },
+            {
+                "driver_value": 126.05097961425781,
+                "driven_values": {
+                    "QuickRigCharacter_LeftForeArm_helper.rotateZ": -39.59505117439163
+                },
+                "itt": "auto",
+                "ott": "auto"
+            }
+        ]
+    }
+]

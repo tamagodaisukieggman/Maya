@@ -126,7 +126,7 @@ def save_driven_keys_to_file(file_path):
             continue
 
         for anim_curve in anim_curves:
-            connections = cmds.listConnections(anim_curve + '.input', plugs=True)
+            connections = cmds.listConnections(anim_curve + '.input', plugs=True, skipConversionNodes=True)
             if not connections:
                 continue
             driver_attr = connections[0]
