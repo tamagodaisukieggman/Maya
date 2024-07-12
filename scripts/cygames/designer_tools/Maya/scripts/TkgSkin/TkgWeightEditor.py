@@ -1650,6 +1650,8 @@ class VertexWeightInfo(object):
 
         self.SortWeightInfo()
 
+        print('self.weightInfoList', self.weightInfoList)
+
         restWeight = 0
         for i in range(len(self.weightInfoList)):
 

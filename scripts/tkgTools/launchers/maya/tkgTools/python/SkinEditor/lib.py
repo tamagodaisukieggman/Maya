@@ -18,6 +18,16 @@ import maya.OpenMaya as OpenMaya
 import maya.OpenMayaAnim as OpenMayaAnim
 import maya.api.OpenMaya as OpenMaya2
 
+# skinweightコマンドプラグインのロード
+plugins = [
+    'skinWeightCmd'
+]
+plugin_results = []
+for plugin in plugins:
+    plugin_result = cmds.loadPlugin(plugin) if not cmds.pluginInfo(plugin, q=True, l=True) else False
+    plugin_results.append(plugin_result)
+
+print(f'{plugin_results} loaded')
 
 def get_maya_version():
     u"""mayaバージョンを取得
@@ -1360,8 +1370,15 @@ def normalize_weights(clst, comps):
         cmds.setAttr('{}.normalizeWeights'.format(clst), 1)
         cmds.skinPercent(clst, comps, normalize=True)
 
+def normalize_list(numbers):
+    u"""リストをノーマライズ
+    """
+    total = sum(numbers)
+    if total == 0:
+        raise ValueError("The sum of the list elements is zero, cannot normalize.")
+    return [num / total for num in numbers]
 
-def prune_weights(clst, comps, pruneWeights=0.01):
+def prune_weights(clst, comps, prune_weights=0.01):
     u"""prune weights
     """
 
@@ -1391,59 +1408,101 @@ def prune_weights(clst, comps, pruneWeights=0.01):
             cmds.setAttr(k, v)
 
 
-def round_weights(clst, comps, roundDigits=3):
+def round_weights(skincluster, comps, roundDigits=3):
     u"""round weights
     """
 
-    if not cmds.objExists(clst):
+    if not cmds.objExists(skincluster):
         return
 
-    with waitCursorBlock():
-        sc_data = get_skinCluster_weights(clst, comps)
-        flat_comps = sc_data.components
-        all_curWeights = sc_data.get_fillVacantWeights()
-        array_size = sc_data.get_maxInfluenceIndex() + 1
+    index_list, infl_list = list_influences(skincluster, as_object=False, long_name=False)
+    if len(infl_list) < 2:
+        return
 
-        eps = 0.1 ** (roundDigits + 1)
-        mind = 0.1 ** roundDigits
+    eps = 0.1 ** (roundDigits + 1)
+    mind = 0.1 ** roundDigits
 
-        for i, comp in enumerate(flat_comps):
-            idx = get_component_index(comp)
-            curWeights = all_curWeights[i]
-            newWeights, dWeights, allW = [], [], 0.0
-            allW, allW0 = 0.0, 0.0
-            for j in range(array_size):
-                w0 = curWeights[j]
-                allW0 += w0
+    comps = cmds.ls(comps, fl=True)
+    # print('comps', comps)
+
+    sel_list = OpenMaya.MSelectionList()
+    [sel_list.add(x) for x in comps]
+    dag_path = OpenMaya.MDagPath()
+    comps_obj = OpenMaya.MObject()
+    sel_list.getDagPath(0, dag_path, comps_obj)
+
+    sc_obj = get_MObject(skincluster)
+    sc_fn = OpenMayaAnim.MFnSkinCluster(sc_obj)
+
+    current_weights = OpenMaya.MDoubleArray()
+    infls = OpenMaya.MDagPathArray()
+    util = OpenMaya.MScriptUtil()
+    int_ptr = util.asUintPtr()
+    sc_fn.influenceObjects(infls)
+    num_infls = infls.length()
+
+    sc_fn.getWeights(dag_path, comps_obj, current_weights, int_ptr)
+    current_weights = [v for v in current_weights]
+    set_weights = OpenMaya.MDoubleArray()
+
+    for i in range(len(comps)):
+        comp_weights = current_weights[i * num_infls: i * num_infls + num_infls]
+
+        # Round Weights
+        comp_set_weights, comp_diff_weights = [], []
+        for j in range(num_infls):
+            w0 = comp_weights[j]
+            w = round(w0, roundDigits)
+            comp_set_weights.append(w)
+            comp_diff_weights.append(w0 - w)
+
+        comp_weights_sum = sum(comp_weights)
+        comp_set_weights_sum = sum(comp_set_weights)
+
+        if abs(comp_weights_sum - 1.0) > 1e-08:
+            comp_set_weights_sum = 0.0
+            for j in range(num_infls):
+                w0 = comp_weights[j] / comp_weights_sum
                 w = round(w0, roundDigits)
-                newWeights.append(w)
-                dWeights.append(w0 - w)
-                allW += w
+                comp_set_weights[j] = w
+                comp_diff_weights[j] = w0 - w
+                comp_set_weights_sum += w
 
-            if abs(allW0 - 1.0) > 1e-08:
-                allW = 0.0
-                for j in range(array_size):
-                    w0 = curWeights[j] / allW0
-                    w = round(w0, roundDigits)
-                    newWeights[j] = w
-                    dWeights[j] = w0 - w
-                    allW += w
+        if 1.0 - comp_set_weights_sum > eps:
+            d = max(comp_diff_weights)
+            j = comp_diff_weights.index(d)
+            comp_set_weights[j] += mind
 
-            if 1.0 - allW > eps:
-                d = max(dWeights)
-                j = dWeights.index(d)
-                newWeights[j] += mind
+        elif 1.0 - comp_set_weights_sum < -eps:
+            d = min(comp_diff_weights)
+            j = comp_diff_weights.index(d)
+            comp_set_weights[j] -= mind
 
-            elif 1.0 - allW < -eps:
-                d = min(dWeights)
-                j = dWeights.index(d)
-                newWeights[j] -= mind
+        if sum(comp_set_weights) != 1.0:
+            # _eps = round(0.1 ** roundDigits, roundDigits)
+            search_comp_set_weights = [round(sw, roundDigits) for sw in comp_set_weights if not sw != 0]
+            set_weights_list = [round(sw, roundDigits) for sw in comp_set_weights]
+            max_sw = max(search_comp_set_weights)
+            max_sw_idx = set_weights_list.index(max_sw)
+            if sum(comp_set_weights) < 1.0:
+                dif_val = 1.0 - sum(comp_set_weights)
+                comp_set_weights[max_sw_idx] = comp_set_weights[max_sw_idx] + dif_val
+            elif sum(comp_set_weights) > 1.0:
+                dif_val = sum(comp_set_weights) - 1.0
+                comp_set_weights[max_sw_idx] = comp_set_weights[max_sw_idx] - dif_val
 
-            cmds.setAttr('{}.wl[{}].w[0:{}]'.format(clst, idx, array_size - 1), *newWeights, s=array_size)
+        [set_weights.append(v) for v in comp_set_weights]
 
-        # prune weights を実行してウェイトが0.0のインデックスを除去
-        prune_weights(clst, flat_comps, pruneWeights=eps, normalize=True)
 
+    cmds.skinWeightCmd(
+        geometry=dag_path.partialPathName(),
+        components=comps,
+        skinCluster=skincluster,
+        weights=set_weights
+    )
+
+    # prune weights を実行してウェイトが0.0のインデックスを除去
+    prune_weights(skincluster, comps, prune_weights=eps)
 
 def smooth_weights(**kwargs):
     geometry = kwargs.get('geometry', kwargs.get('geo', None))
@@ -1515,6 +1574,13 @@ def smooth_weights(**kwargs):
     flat_components = flatten_components(comps)
     comps = [get_component_index(x) for x in flat_components]
 
+    sel_list = OpenMaya.MSelectionList()
+    [sel_list.add(x) for x in flat_components]
+    dag_path = OpenMaya.MDagPath()
+    comps_obj = OpenMaya.MObject()
+    sel_list.getDagPath(0, dag_path, comps_obj)
+    setWeights = OpenMaya.MDoubleArray()
+
     with waitCursorBlock():
         # 編集前のウェイトを取得
         original_weights = {idx: cmds.getAttr('{}.wl[{}].w{}'.format(clst, idx, w_slice)) for idx in comps}
@@ -1551,20 +1617,27 @@ def smooth_weights(**kwargs):
             return
 
         unlock_weight_ratio = get_unlock_weight_ratio(src_weight, dst_weight, lockStateList) if keepLock else 1.0
-        setWeights = None
+        comp_set_weights = None
         if blend < 1.0:
             if keepLock:
-                setWeights = [dst_weight[i] if lockStateList[i] else (dst_weight[i] * rest + src_weight[i] * blend * unlock_weight_ratio) for i in range(setSize)]
+                comp_set_weights = [dst_weight[i] if lockStateList[i] else (dst_weight[i] * rest + src_weight[i] * blend * unlock_weight_ratio) for i in range(setSize)]
             else:
-                setWeights = [dst_weight[i] * rest + src_weight[i] * blend for i in range(setSize)]
+                comp_set_weights = [dst_weight[i] * rest + src_weight[i] * blend for i in range(setSize)]
         else:
             if keepLock:
-                setWeights = [dst_weight[i] if lockStateList[i] else (src_weight[i] * unlock_weight_ratio) for i in range(setSize)]
+                comp_set_weights = [dst_weight[i] if lockStateList[i] else (src_weight[i] * unlock_weight_ratio) for i in range(setSize)]
             else:
-                setWeights = src_weight[::]
+                comp_set_weights = src_weight[::]
 
-        if setWeights:
-            cmds.setAttr('{}.wl[{}].w{}'.format(clst, idx, w_slice), *setWeights, **wKwargs)
+        if comp_set_weights:
+            cmds.skinWeightCmd(
+                geometry=dag_path.partialPathName(),
+                components=[f'{dag_path.partialPathName()}.vtx[{idx}]'],
+                skinCluster=clst,
+                weights=comp_set_weights
+            )
+
+            # cmds.setAttr('{}.wl[{}].w{}'.format(clst, idx, w_slice), *setWeights, **wKwargs)
 
     # progress window 表示
     if showProgress and not is_maya_batch():

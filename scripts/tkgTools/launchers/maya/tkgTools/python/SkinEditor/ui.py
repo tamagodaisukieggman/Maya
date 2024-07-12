@@ -8,12 +8,13 @@ import os
 import re
 import traceback
 from collections import OrderedDict
+from imp import reload
 
 import maya.cmds as cmds
 import maya.mel as mel
 
 from . import lib
-
+reload(lib)
 
 Tool_Name_Prefix = 'SkinEditor'
 Tool_Title_Prefix = 'Skin Editor'
