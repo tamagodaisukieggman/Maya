@@ -1385,6 +1385,149 @@ class RoundWeightsUI(object):
 
         cmds.iconTextButton(self.applyBtn, e=True, en=True)
 
+class SetMaxInfluenceWeightsUI(object):
+    u"""
+    """
+
+    WINDOW_NAME = '{}_setMaxInfluenceWeights'.format(Tool_Name_Prefix)
+    WINDOW_TITLE = '{} SetMaxInfluence Weights'.format(Tool_Title_Prefix)
+
+    def __init__(self, *args, **kwargs):
+        self._win = None
+        self._width = 250
+        self._height = 80
+
+    def save_settings(self, *args, **kwargs):
+        options = self.get_options()
+        save_optionvar('{}__ui_options'.format(self.WINDOW_NAME), options)
+
+    def load_settings(self, *args, **kwargs):
+        update_ui = kwargs.get('update_ui', True)
+
+        loadValue = load_optionvar('{}__ui_options'.format(self.WINDOW_NAME))
+        if loadValue:
+            try:
+                if 'setMaxInfluenceDigits' in loadValue:
+                    cmds.intFieldGrp(self.setMaxInfluenceDigits, e=True, v1=loadValue['setMaxInfluenceDigits'])
+
+            except Exception as e:
+                cmds.error(e)
+                self.reset_settings()
+
+        if update_ui:
+            self.update_ui()
+
+    def reset_settings(self, *args, **kwargs):
+        update_ui = kwargs.get('update_ui', True)
+
+        cmds.intFieldGrp(self.setMaxInfluenceDigits, e=True, v1=4)
+
+        if update_ui:
+            self.update_ui()
+
+    def remove_settings(self, *args, **kwargs):
+        remove_optionvar('{}__ui_options'.format(self.WINDOW_NAME))
+        self.reset_settings()
+
+    def get_options(self, *args, **kwargs):
+        return {
+            'setMaxInfluenceDigits': cmds.intFieldGrp(self.setMaxInfluenceDigits, q=True, v1=True),
+        }
+
+    def close(self, *args, **kwargs):
+        if cmds.window(self.WINDOW_NAME, q=True, ex=True):
+            cmds.deleteUI(self.WINDOW_NAME)
+
+    def show(self, *args, **kwargs):
+        if cmds.window(self.WINDOW_NAME, q=True, ex=True):
+            cmds.deleteUI(self.WINDOW_NAME)
+
+        self._win = cmds.window(self.WINDOW_NAME, title=self.WINDOW_TITLE, mb=True, w=self._width, h=self._height)
+
+        cw1 = 100
+        h = 24
+        margin = 2
+
+        # Menu
+        editMenu = cmds.menu(l='Edit', p=self._win)
+        cmds.menuItem(l='Save Settings', p=editMenu, c=self.save_settings)
+        cmds.menuItem(l='Reset Settings', p=editMenu, c=self.reset_settings)
+        cmds.menuItem(l='Remove Settings', p=editMenu, c=self.remove_settings)
+
+        mainLay = cmds.formLayout(p=self._win, nd=100)
+
+        # Options
+        optionLay = cmds.frameLayout(l='Options', lv=False, mw=2, mh=2, cll=False, p=mainLay)
+        optionColumn = cmds.columnLayout(adj=True, p=optionLay, rs=2)
+
+        self.setMaxInfluenceDigits = cmds.intFieldGrp(label='SetMaxInfluence Digits : ', cw2=[cw1, 50], v1=4, h=h, p=optionColumn)
+
+        self.applyBtn = cmds.iconTextButton(l='Apply', c=self.apply, p=mainLay, rpt=True, style='textOnly', fn='boldLabelFont', bgc=[0.4, 0.4, 0.4])
+
+        cmds.formLayout(mainLay, e=True,
+                        af=[[optionLay, 'top', margin],
+                            [optionLay, 'left', margin],
+                            [optionLay, 'right', margin],
+                            [self.applyBtn, 'left', margin],
+                            [self.applyBtn, 'right', margin],
+                            [self.applyBtn, 'bottom', margin],
+                            ],
+                        ac=[[optionLay, 'bottom', margin * 2, self.applyBtn],
+                            ],
+                        an=[[self.applyBtn, 'top'],
+                            ]
+                        )
+
+        cmds.showWindow(self._win)
+        cmds.scriptJob(e=['SelectionChanged', self.selection_changed], p=self._win, rp=True)
+
+        self.reset_settings(update_ui=False)
+        self.load_settings()
+
+    def update_ui(self, *args, **kwargs):
+        self.get_options()
+
+        self.selection_changed()
+
+    def apply(self, *args, **kwargs):
+        options = self.get_options()
+
+        opt = {
+            'setMaxInfluenceDigits': options['setMaxInfluenceDigits'],
+        }
+
+        clst_and_comps = lib.get_selected_clst_and_components()
+        if not clst_and_comps:
+            return
+
+        clst, comps = clst_and_comps
+        lib.set_max_influence(clst, comps, **opt)
+
+        refresh_componentEditors()
+
+        self.save_settings()
+
+    def selection_changed(self, *args, **kwargs):
+        cmds.iconTextButton(self.applyBtn, e=True, en=False)
+
+        sels = cmds.ls(os=True, fl=True)
+        selObjects = lib.get_objects(sels)
+        if not selObjects:
+            return
+
+        histories = cmds.listHistory(selObjects, interestLevel=1) or []
+        geos = cmds.ls(histories, type='controlPoint', ni=1)
+        geos = sorted(set(geos), key=geos.index)
+        if len(geos) < 1:
+            return
+
+        src = geos[0]
+        src_clst = lib.list_related_skinClusters(src)
+        if not (src and src_clst):
+            return
+
+        cmds.iconTextButton(self.applyBtn, e=True, en=True)
+
 
 class EditSkinUI(object):
     u"""
@@ -1452,6 +1595,7 @@ class EditSkinUI(object):
         cmds.menuItem(l='Normalize', p=editWeightMenu, c=self.normalize_weights)
         cmds.menuItem(l='Prune...', p=editWeightMenu, c=self.pruneweights_ui)
         cmds.menuItem(l='Round...', p=editWeightMenu, c=self.roundweights_ui)
+        cmds.menuItem(l='SetMaxInfluence...', p=editWeightMenu, c=self.setMaxInfluenceWeights_ui)
         cmds.menuItem(l='Move...', p=editWeightMenu, c=functools.partial(self.swap_move_weights_ui, 'move'))
         cmds.menuItem(l='Swap...', p=editWeightMenu, c=functools.partial(self.swap_move_weights_ui, 'swap'))
 
@@ -2055,6 +2199,9 @@ class EditSkinUI(object):
 
     def roundweights_ui(self, *args, **kwargs):
         RoundWeightsUI().show()
+
+    def setMaxInfluenceWeights_ui(self, *args, **kwargs):
+        SetMaxInfluenceWeightsUI().show()
 
     def swap_move_weights_ui(self, mode, *args, **kwargs):
         SwapMoveWeightsUI(mode).show()

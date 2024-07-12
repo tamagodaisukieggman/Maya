@@ -9,18 +9,36 @@ import itertools
 import json
 import math
 import os
+import sys
+import time
 import traceback
 from collections import OrderedDict
 from contextlib import contextmanager
+from functools import wraps
 
 import maya.cmds as cmds
 import maya.OpenMaya as OpenMaya
 import maya.OpenMayaAnim as OpenMayaAnim
 import maya.api.OpenMaya as OpenMaya2
 
+try:
+    # Maya 2022-
+    from builtins import str
+    from builtins import range
+    from builtins import object
+    from importlib import reload
+    from past.utils import old_div
+except Exception:
+    pass
+
+dir_path = '/'.join(__file__.replace('\\', '/').split('/')[0:-1])
+print(dir_path)
+
+skinWeightCmd_py = f'{dir_path}/skinWeightCmd.py'
+
 # skinweightコマンドプラグインのロード
 plugins = [
-    'skinWeightCmd'
+    skinWeightCmd_py
 ]
 plugin_results = []
 for plugin in plugins:
@@ -28,6 +46,17 @@ for plugin in plugins:
     plugin_results.append(plugin_result)
 
 print(f'{plugin_results} loaded')
+
+def measure_time(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        print(f"{func.__name__} executed in: {elapsed_time:.6f} seconds")
+        return result
+    return wrapper
 
 def get_maya_version():
     u"""mayaバージョンを取得
@@ -1378,6 +1407,20 @@ def normalize_list(numbers):
         raise ValueError("The sum of the list elements is zero, cannot normalize.")
     return [num / total for num in numbers]
 
+def find_indices(input_list, value):
+    u"""
+    同じ値があってもそれぞれのindexを取得
+    """
+    return [index for index, element in enumerate(input_list) if element == value]
+
+def sort_numbers(numbers):
+    u"""
+    昇順、降順で返す
+    """
+    ascending = sorted(numbers)
+    descending = sorted(numbers, reverse=True)
+    return ascending, descending
+
 def prune_weights(clst, comps, prune_weights=0.01):
     u"""prune weights
     """
@@ -1407,7 +1450,7 @@ def prune_weights(clst, comps, prune_weights=0.01):
         for k, v in hold_stat.iteritems():
             cmds.setAttr(k, v)
 
-
+@measure_time
 def round_weights(skincluster, comps, roundDigits=3):
     u"""round weights
     """
@@ -1504,6 +1547,7 @@ def round_weights(skincluster, comps, roundDigits=3):
     # prune weights を実行してウェイトが0.0のインデックスを除去
     prune_weights(skincluster, comps, prune_weights=eps)
 
+@measure_time
 def smooth_weights(**kwargs):
     geometry = kwargs.get('geometry', kwargs.get('geo', None))
     comps = kwargs.get('components', kwargs.get('comps', None))
@@ -1670,7 +1714,7 @@ def smooth_weights(**kwargs):
         [_set_weights(compIndex) for compIndex in comps]
         normalize_weights(clst, flat_components)
 
-
+@measure_time
 def transfer_weights(**kwargs):
     src = kwargs.get('source', kwargs.get('src', None))
     dst = kwargs.get('destination', kwargs.get('dst', None))
@@ -1852,7 +1896,7 @@ def transfer_weights(**kwargs):
         [_set_weights(compIndex) for compIndex in comps]
         normalize_weights(dst_clst, flat_components)
 
-
+@measure_time
 def set_component_weights(skinCluster, target_components, src_data, **kwargs):
     u"""skinClusterのウェイトを設定
 
@@ -1951,6 +1995,85 @@ def set_component_weights(skinCluster, target_components, src_data, **kwargs):
 
         normalize_weights(skinCluster, target_components)
 
+@measure_time
+def set_max_influence(skincluster, comps, setMaxInfluenceDigits=4):
+    u"""
+    max influenceを強制的に指定する
+    """
+
+    sel_list = OpenMaya.MSelectionList()
+    [sel_list.add(x) for x in comps]
+    dag_path = OpenMaya.MDagPath()
+    comps_obj = OpenMaya.MObject()
+    sel_list.getDagPath(0, dag_path, comps_obj)
+
+    sc_obj = get_MObject(skincluster)
+    sc_fn = OpenMayaAnim.MFnSkinCluster(sc_obj)
+
+    current_weights = OpenMaya.MDoubleArray()
+    infls = OpenMaya.MDagPathArray()
+    util = OpenMaya.MScriptUtil()
+    int_ptr = util.asUintPtr()
+    sc_fn.influenceObjects(infls)
+    num_infls = infls.length()
+
+    sc_fn.getWeights(dag_path, comps_obj, current_weights, int_ptr)
+    current_weights = [v for v in current_weights]
+    set_weights = OpenMaya.MDoubleArray()
+
+    for i in range(len(comps)):
+        comp_weights = current_weights[i * num_infls: i * num_infls + num_infls]
+        buf_comp_weights = [cw for cw in comp_weights]
+        asc_weights, desc_weights = sort_numbers(buf_comp_weights)
+
+        rest_weight = 0
+        for j, weight in enumerate(desc_weights):
+            if j < setMaxInfluenceDigits:
+                continue
+            rest_weight += weight
+            desc_weights[j] = 0.0
+
+        weightSum = 0
+        for weight in buf_comp_weights:
+            weightSum += weight
+
+        zero_idxes = []
+        for m, weight in enumerate(desc_weights):
+            if weight != 0:
+                # p = buf_comp_weights.index(weight)
+                p_indices = find_indices(buf_comp_weights, weight)
+                for p in p_indices:
+                    if not p in zero_idxes:
+                        zero_idxes.append(p)
+                    if sys.version_info.major == 2:
+                        comp_weights[p] += rest_weight * weight / weightSum
+                    else:
+                        # for Maya 2022-
+                        comp_weights[p] += old_div(rest_weight * weight, weightSum)
+
+        for i in range(len(comp_weights)):
+            if not i in zero_idxes:
+                comp_weights[i] = 0.0
+
+        comp_weights = normalize_list(comp_weights)
+
+        if sum(comp_weights) > 1:
+            max_cw_idx = comp_weights.index(max(comp_weights))
+            dif = sum(comp_weights) - 1.0
+            comp_weights[max_cw_idx] -= dif
+        if sum(comp_weights) < 1:
+            min_cw_idx = comp_weights.index(min(comp_weights))
+            dif = 1.0 - sum(comp_weights)
+            comp_weights[min_cw_idx] += dif
+
+        [set_weights.append(v) for v in comp_weights]
+
+    cmds.skinWeightCmd(
+        geometry=dag_path.partialPathName(),
+        components=comps,
+        skinCluster=skincluster,
+        weights=set_weights
+    )
 
 def swap_or_move_weights(clsts, src='', dst='', components=None, **kwargs):
     u"""swap or move weights
