@@ -56,14 +56,21 @@ def get_anim_curves_from_node(node):
     :param node: str, The name of the node to check for driven animCurve connections.
     :return: list of str, The driven animCurve nodes connected to the node.
     """
-    anim_curve_types = ['animCurveTA', 'animCurveTL', 'animCurveTT', 'animCurveTU', 'animCurveUA', 'animCurveUU']
+    anim_curve_types = [
+        'animCurveTA',
+        'animCurveTL',
+        'animCurveTT',
+        'animCurveTU',
+        'animCurveUA',
+        'animCurveUU',
+        'animCurveUL']
     anim_curves = []
     connections = cmds.listConnections(node, source=True, destination=False, skipConversionNodes=True)
     if not connections:
         return anim_curves
 
     for conn in connections:
-        if cmds.nodeType(conn) in anim_curve_types:
+        if 'animCurve' in cmds.nodeType(conn):
             anim_curves.append(conn)
         elif cmds.nodeType(conn) == 'blendWeighted':
             anim_curves += get_anim_curves_from_node(conn)
@@ -114,6 +121,7 @@ def save_driven_keys_to_file(file_path):
 
     for obj in selected_objects:
         anim_curves = get_anim_curves_from_node(obj)
+
         if not anim_curves:
             continue
 

@@ -1,0 +1,65 @@
+[
+    {
+        "driver_attr": "locator1.translateZ",
+        "keyframes": [
+            {
+                "driver_value": 0.0,
+                "driven_values": {
+                    "pSphere1.rotateX": 0.0
+                },
+                "itt": "auto",
+                "ott": "auto"
+            },
+            {
+                "driver_value": 10.0,
+                "driven_values": {
+                    "pSphere1.rotateX": 90.0
+                },
+                "itt": "auto",
+                "ott": "auto"
+            }
+        ]
+    },
+    {
+        "driver_attr": "locator1.translateX",
+        "keyframes": [
+            {
+                "driver_value": 0.0,
+                "driven_values": {
+                    "pSphere1.translateY": 0.0
+                },
+                "itt": "auto",
+                "ott": "auto"
+            },
+            {
+                "driver_value": 10.0,
+                "driven_values": {
+                    "pSphere1.translateY": -10.0
+                },
+                "itt": "auto",
+                "ott": "auto"
+            }
+        ]
+    },
+    {
+        "driver_attr": "locator2.translateX",
+        "keyframes": [
+            {
+                "driver_value": -10.0,
+                "driven_values": {
+                    "pSphere1.translateY": 10.0
+                },
+                "itt": "auto",
+                "ott": "auto"
+            },
+            {
+                "driver_value": 0.0,
+                "driven_values": {
+                    "pSphere1.translateY": 0.0
+                },
+                "itt": "auto",
+                "ott": "auto"
+            }
+        ]
+    }
+]
