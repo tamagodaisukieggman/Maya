@@ -1,0 +1,47 @@
+[
+    {
+        "driver_attr": "pSphere1.translateX",
+        "keyframes": [
+            {
+                "driver_value": 0.0,
+                "driven_values": {
+                    "pCube1.rotateY": 0.0,
+                    "pCube1.scaleZ": 1.0
+                },
+                "itt": "spline",
+                "ott": "spline"
+            },
+            {
+                "driver_value": 5.0,
+                "driven_values": {
+                    "pCube1.rotateY": 45.0,
+                    "pCube1.scaleZ": 0.5
+                },
+                "itt": "linear",
+                "ott": "linear"
+            },
+            {
+                "driver_value": 10.0,
+                "driven_values": {
+                    "pCube1.rotateY": 90.0,
+                    "pCube1.scaleZ": 1.0
+                },
+                "itt": "spline",
+                "ott": "spline"
+            }
+        ]
+    },
+    {
+        "driver_attr": "pSphere2.translateY",
+        "keyframes": [
+            {
+                "driver_value": 31.0,
+                "driven_values": {
+                    "pCube1.rotateY": 180.0
+                },
+                "itt": "linear",
+                "ott": "linear"
+            }
+        ]
+    }
+]

@@ -1,0 +1,19 @@
+[
+    {
+        "driver_attr": "pSphere1.translateX",
+        "keyframes": [
+            {"driver_value": 0, "driven_values": {"pCube1.rotateY": 0, "pCube1.scaleZ": 1}, "itt": "spline", "ott": "spline"},
+            {"driver_value": 5, "driven_values": {"pCube1.rotateY": 45, "pCube1.scaleZ": 0.5}, "itt": "linear", "ott": "linear"},
+            {"driver_value": 10, "driven_values": {"pCube1.rotateY": 90, "pCube1.scaleZ": 1}, "itt": "spline", "ott": "spline"}
+        ]
+    },
+    {
+        "driver_attr": "pSphere2.translateY",
+        "keyframes": [
+            {"driver_value": 0, "driven_values": {"pCube2.rotateX": 0}, "itt": "linear", "ott": "linear"},
+            {"driver_value": 10, "driven_values": {"pCube2.rotateX": 90}, "itt": "linear", "ott": "linear"},
+            {"driver_value": 20, "driven_values": {"pCube2.rotateX": 180}, "itt": "linear", "ott": "linear"},
+            {"driver_value": 30, "driven_values": {"pCube1.rotateY": 180}, "itt": "linear", "ott": "linear"}
+        ]
+    }
+]
